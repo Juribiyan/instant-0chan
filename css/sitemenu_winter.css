@@ -1,0 +1,62 @@
+body {
+	margin: 8px;
+}
+
+a {
+	text-decoration: none;
+	color: #005;
+}
+
+h1, h2 {
+	background: #DDDDEE;
+	text-align: left;
+	background-image: url(images/winter/topbar-center.png);
+	background-repeat: repeat-x;
+}
+
+h1 {
+	margin-top: 0px;
+	font-size: 150%;
+	color: #FFF;
+}
+
+h2 {
+	font-size: 100%;
+	margin-top: 1em;
+}
+
+.plus {
+	float: right;
+	font-size: 8px;
+	font-weight: normal;
+	padding: 1px 4px 2px 4px;
+	margin: 0px 0px;
+	background: #8888FF;
+	background-image: url(images/winter/topbar-center.png);
+	background-repeat: repeat-x;
+	color: #000;
+	border: 1px solid #00137F;
+	cursor: hand;
+	cursor: pointer;
+}
+
+ul {
+	list-style: none; 
+	padding-left: 0px;
+	margin: 0px;
+}
+
+li {
+	margin: 0px;
+	padding-left: 3px;
+	background: #D6E7FF;
+}
+
+li:hover {
+	background: #EFF6FF;
+}
+
+/*li a {
+	display: inline;
+	width: 100%;
+}*/

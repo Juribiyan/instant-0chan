@@ -1,0 +1,229 @@
+body {
+  font-family: "Calibri", "Trebuchet MS", Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  color: #333;
+  background:transparent;
+}
+
+h1,h2 {
+  font-weight: bold;
+}
+
+/*h1,h2 {
+  font-family: trebuchet ms;
+  font-weight: bold;
+  color: #333;
+}
+
+h1 {
+  font-size: 180%;
+  margin: 0;
+}
+
+h2 {
+  font-size: 140%;
+  padding-bottom: 2px;
+  border-bottom: 1px solid #CCC;
+  margin: 0;
+}*/
+br {
+  clear: left;
+}
+
+label,input {
+  display: block;
+  width: auto;
+  float: left;
+  margin-bottom: 10px;
+}
+
+label {
+  font-size: 12px;
+  text-align: right;
+  width: 175px;
+  padding-right: 20px;
+}
+
+/*.desc {
+  text-indent: 5px;
+  font-size : 80%;
+}*/
+a {
+  color: #3399ff !important;
+  text-decoration: none !important;
+}
+a:hover {
+  color: #cc0000 !important;
+  text-decoration: none !important;
+}
+
+#topmenu li {
+  float: left;
+  display: inline;
+  margin-left: 26px;
+  padding: 0;
+  line-height: 36px;
+}
+
+#topmenu li.current {
+color:#000;
+}
+#main #menu {
+height: 70px;
+}
+#naw {
+float: left;
+list-style: none;
+margin: 0;
+padding: 0;
+color: #333;
+font-weight: 600;
+}
+
+#main {
+width: 870px;
+margin: 24px auto;
+}
+#main #content {
+margin: 50px 0 54px 0;
+}
+.center{text-align: center;}
+#main #topmenu {
+height: 70px;
+}
+#content .header2 {
+margin-top: 0px;
+background-color: #EEF2FB;
+border: 1px solid #DDE7FF;
+color:#333;
+font-size: 100%;
+padding: 1px 5px 1px 5px;
+}
+.newssub {position: absolute;}
+.permalink {text-align: right;display: block;}
+#content .header2 a {color:#000;text-decoration: underline;}
+h1 {
+/*font-weight: 600;*/
+font-size: 22px;
+line-height: 30px;
+letter-spacing: -.02em;
+margin: 0 0 10px 0;
+padding: 0;
+}
+h2 {
+font-color: #666;
+/*font-weight: 400;*/
+font-size: 18px;
+margin: 0;
+}
+/*h2 {
+font-weight: 600;
+font-size: 18px;
+line-height: 24px;
+padding: 0;
+margin: 0 0 10px 0;
+}
+*/
+#help {
+  opacity: 0;
+display: inline-block;
+max-width: 400px;
+position: fixed;
+background: rgba(241,241,241,0.98);
+border: 1px solid rgba(0, 128, 255, 0.5);
+padding: 10px;
+box-shadow: 0 0 42px rgba(51, 153, 255, 0.56);
+border-radius: 5px;
+-webkit-transition: top 0.2s;
+-o-transition: top 0.2s;
+transition: top 0.2s;
+-moz-transition: top 0.2s;
+}
+
+._td {
+  display: table-cell;
+  box-sizing: border-box;
+}
+.banner-entry {
+  border: 1px solid rgba(0, 128, 255, 0.1);
+  display: inline-block;
+  -webkit-transition: background 0.2s, box-shadow 0.2s, border-color 0.2s;
+  transition: background 0.2s, box-shadow 0.2s, border-color 0.2s;
+  -o-transition: background 0.2s, box-shadow 0.2s, border-color 0.2s;
+  -moz-transition: background 0.2s, box-shadow 0.2s, border-color 0.2s;
+  -ms-transition: background 0.2s, box-shadow 0.2s, border-color 0.2s;
+  border-radius: 5px;
+}
+.banner-entry, ._td {
+  height: 110px;
+}
+.banner-entry:hover {
+  background: rgba(241, 241, 241, 0.98);
+  border: 1px solid rgba(0, 128, 255, 0.5);
+  box-shadow: 0 0 42px rgba(51, 153, 255, 0.56);
+}
+.deleting, .deleting.banner-entry:hover {
+  background: rgba(255, 232, 232, 0.98);
+border: 1px solid rgba(214, 17, 0, 0.5);
+box-shadow: 0 0 42px rgba(214, 17, 0, 0.56);
+}
+.deleting img{
+  filter: grayscale(1);
+  -webkit-filter: grayscale(1);
+  -moz-filter: grayscale(1);
+  -o-filter: grayscale(1);
+  -ms-filter: grayscale(1);
+}
+.editing, .editing.banner-entry:hover {
+background: rgba(233, 248, 232, 0.98);
+border: 1px solid rgba(13, 163, 7, 0.5);
+box-shadow: 0 0 42px rgba(13, 163, 7, 0.56);
+}
+.boardname {
+vertical-align: top;
+height: 110px;
+line-height: 110px;
+min-width: 170px;
+text-align: center;
+font-size: 20px;
+font-weight: bold;
+}
+.custom-link {
+  vertical-align: middle;
+  width: 170px;
+padding: 5px;
+  -ms-word-break: break-all;
+
+     /* Be VERY careful with this, breaks normal words wh_erever */
+     word-break: break-all;
+
+     /* Non standard for webkit */
+     word-break: break-word;
+
+-webkit-hyphens: auto;
+   -moz-hyphens: auto;
+        hyphens: auto;
+}
+.custom-link-a {
+display: inline-block;
+max-height: 100px;
+overflow-y: auto;
+}
+
+.actions {
+  vertical-align: middle;
+  min-width: 120px;
+}
+.bannerimg {
+  min-width: 310px;
+}
+.bannerimg, actions {
+  vertical-align: middle;
+}
+.custom-link-a {
+  text-decoration: underline!important;
+  font-size: 16px;
+}
+/*input[type="file"] {
+  margin: 0;
+}*/

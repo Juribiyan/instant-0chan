@@ -1,0 +1,4 @@
+<script type="text/javascript">
+var defaultPattern = { pattern: 
+    '000000aaaaaaaa0000000000aaaaaaaaaaaa0000000aaaaaaaaaaaaaa00000aaaaaa2222aaaaaa000aaaaa22222222aaaaa00aaaa2222222222aaaa0aaaa22aaaaaaa222aaaaaaaa22aaaaaaaa22aaaaaaa22222aa22aaa22aaaaaa22222aa222aa22aaaaaa22222aa222aa22aaaaaa22222aa22aaa22aaaaaaa22aaaaaaaa22aaaaaaaa22aaaaaaa222aaaa0aaaa2222222222aaaa00aaaaa22222222aaaaa000aaaaaa2222aaaaaa00000aaaaaaaaaaaaaa0000000aaaaaaaaaaaa0000000000aaaaaaaa000000', x: 20, y: 20 }; 
+</script>

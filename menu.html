@@ -1,0 +1,375 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Øchan Navigation</title>
+	<link rel="stylesheet" type="text/css" href="http://n2rg/css/menu_global.css" />
+				<link rel="alternate stylesheet" type="text/css" href="/css/site_summer.css" title="Summer" />
+			<link rel="alternate stylesheet" type="text/css" href="/css/sitemenu_summer.css" title="Summer" />
+				<link rel="alternate stylesheet" type="text/css" href="/css/site_winter.css" title="Winter" />
+			<link rel="alternate stylesheet" type="text/css" href="/css/sitemenu_winter.css" title="Winter" />
+				<link rel="stylesheet" type="text/css" href="/css/site_autumn.css" title="Autumn" />
+			<link rel="stylesheet" type="text/css" href="/css/sitemenu_autumn.css" title="Autumn" />
+				<link rel="alternate stylesheet" type="text/css" href="/css/site_photon.css" title="Photon" />
+			<link rel="alternate stylesheet" type="text/css" href="/css/sitemenu_photon.css" title="Photon" />
+	
+
+
+<script type="text/javascript"><!--
+			// var style_cookie_site = "kustyle_site";
+			var style_cookie = "kustyle";
+		//--></script>
+<link rel="shortcut icon" href="/favicon.ico" />
+<script type="text/javascript" src="/lib/javascript/gettext.js"></script>
+<!-- <script type="text/javascript" src="/lib/javascript/menu.js"></script> -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script type="text/javascript" src="/lib/javascript/kusaba.new.js"></script>
+<script type="text/javascript"><!--
+var ku_boardspath = 'http://n2rg';
+	if (getCookie(tcshowdirs) == yes) {
+		window.location = 'http://n2rg/menu_dirs.html';
+	}
+
+
+function showstyleswitcher() {
+		var switcher = document.getElementById('sitestyles');
+		switcher.innerHTML = 'Стили:[<a href="#" onclick="javascript:set_stylesheet(\'Summer\', false, true);reloadmain();" style="display: inline;" target="_self">S</a>] [<a href="#" onclick="javascript:set_stylesheet(\'Winter\', false, true);reloadmain();" style="display: inline;" target="_self">W</a>] [<a href="#" onclick="javascript:set_stylesheet(\'Autumn\', false, true);reloadmain();" style="display: inline;" target="_self">A</a>] [<a href="#" onclick="javascript:set_stylesheet(\'Photon\', false, true);reloadmain();" style="display: inline;" target="_self">P</a>]';
+
+}
+
+function toggle(button, area) {
+	var tog=document.getElementById(area);
+	if(tog.style.display)	{
+		tog.style.display="";
+	} else {
+		tog.style.display="none";
+	}
+	button.innerHTML=(tog.style.display)?'+':'&minus;';
+	set_cookie('nav_show_'+area, tog.style.display?'0':'1', 30);
+}
+
+function removeframes() {
+	var boardlinks = document.getElementsByTagName("a");
+	for(var i=0;i<boardlinks.length;i++) if(boardlinks[i].className == "boardlink") boardlinks[i].target = "_top";
+
+	document.getElementById("removeframes").innerHTML = 'Фреймы убраны.';
+
+	return false;
+}
+function reloadmain() {
+	if (parent.main) {
+		parent.main.location.reload();
+	}
+}
+
+function hidedirs() {
+	set_cookie('tcshowdirs', '', 30);
+			window.location = '/menu.html';
+	
+}
+function showdirs() {
+	set_cookie('tcshowdirs', 'yes', 30);
+			window.location = '/menu_dirs.html';
+	
+}
+
+function updatenewpostscount() {
+    $.ajax({
+        url: '/newpostscount.php',
+        data: localStorage['lastvisits'] ? (JSON.parse(localStorage['lastvisits']) || { }) : { },
+        dataType: 'json',
+        success: function(data) {
+            iter_obj(data, function(brd, val) {
+            	if(val != 0 || $('#newposts_'+brd).text() !== '') {
+            		var newtext = (val == 0) ? '' : ' ('+val+')';
+            		$('#newposts_'+brd).text(newtext);
+            	}
+            });
+        },
+        error: function() {
+            alert(_.oops);
+        }
+    });
+}
+function iter_obj(object, callback) {
+    for (var property in object) {
+        if (object.hasOwnProperty(property)) {
+            callback(property, object[property]);
+        }
+    }
+}
+//--></script>
+<base target="main" />
+</head>
+<body>
+<h1><a href="/" target="_top" title="Главная">Øchan</a></h1>
+<ul>
+	<li><a onclick="javascript:showdirs();" href="menu_dirs.html" target="_self">[Показать директории]</a></li>
+
+	<li id="sitestyles"><a onclick="javascript:showstyleswitcher();" href="#" target="_self">[Стили сайта]</a></li>
+
+<li id="refreshnewposts"><a href="#" onclick="javascript:updatenewpostscount();return false" target="_self">Обновить</a></li>
+</ul>
+
+		
+					<h2>
+		
+					<span class="plus" onclick="toggle(this, '20');" title="Нажмите Показать/Спрятать">+</span>&nbsp;
+		
+		2.0</h2>
+					<div id="20" style="display: none;">
+		
+		<ul>
+					<li>Нет видимых досок</li>
+		
+		</ul>
+					</div>
+		
+		
+					<h2>
+		
+					<span class="plus" onclick="toggle(this, 'all');" title="Нажмите Показать/Спрятать">&minus;</span>&nbsp;
+		
+		all</h2>
+					<div id="all">
+		
+		<ul>
+									<li><a href="http://n2rg/b/" class="boardlink">
+				
+				Бред
+				
+				<span id="newposts_b"></span>
+				</a></li>
+							<li><a href="http://n2rg/d/" class="boardlink">
+				
+				Рисунки
+				
+				<span id="newposts_d"></span>
+				</a></li>
+							<li><a href="http://n2rg/r/" class="boardlink">
+				
+				Реквесты
+				
+				<span id="newposts_r"></span>
+				</a></li>
+							<li><a href="http://n2rg/0/" class="boardlink">
+				
+				Øчан
+				
+				<span id="newposts_0"></span>
+				</a></li>
+			
+		
+		</ul>
+					</div>
+		
+		
+					<h2>
+		
+					<span class="plus" onclick="toggle(this, 'geek');" title="Нажмите Показать/Спрятать">&minus;</span>&nbsp;
+		
+		geek</h2>
+					<div id="geek">
+		
+		<ul>
+									<li><a href="http://n2rg/e/" class="boardlink">
+				
+				Радиоэлектроника
+				
+				<span id="newposts_e"></span>
+				</a></li>
+							<li><a href="http://n2rg/t/" class="boardlink">
+				
+				Технологии
+				
+				<span id="newposts_t"></span>
+				</a></li>
+							<li><a href="http://n2rg/hw/" class="boardlink">
+				
+				Железо
+				
+				<span id="newposts_hw"></span>
+				</a></li>
+							<li><a href="http://n2rg/s/" class="boardlink">
+				
+				Софт
+				
+				<span id="newposts_s"></span>
+				</a></li>
+							<li><a href="http://n2rg/c/" class="boardlink">
+				
+				Быдлокодинг
+				
+				<span id="newposts_c"></span>
+				</a></li>
+							<li><a href="http://n2rg/vg/" class="boardlink">
+				
+				Видеоигры
+				
+				<span id="newposts_vg"></span>
+				</a></li>
+							<li><a href="http://n2rg/8/" class="boardlink">
+				
+				8-bit и pixel art
+				
+				<span id="newposts_8"></span>
+				</a></li>
+							<li><a href="http://n2rg/bg/" class="boardlink">
+				
+				Настольные игры
+				
+				<span id="newposts_bg"></span>
+				</a></li>
+							<li><a href="http://n2rg/wh/" class="boardlink">
+				
+				Warhammer
+				
+				<span id="newposts_wh"></span>
+				</a></li>
+			
+		
+		</ul>
+					</div>
+		
+		
+					<h2>
+		
+					<span class="plus" onclick="toggle(this, 'other');" title="Нажмите Показать/Спрятать">&minus;</span>&nbsp;
+		
+		other</h2>
+					<div id="other">
+		
+		<ul>
+									<li><a href="http://n2rg/a/" class="boardlink">
+				
+				Аниме
+				
+				<span id="newposts_a"></span>
+				</a></li>
+							<li><a href="http://n2rg/au/" class="boardlink">
+				
+				Автомобили
+				
+				<span id="newposts_au"></span>
+				</a></li>
+							<li><a href="http://n2rg/bo/" class="boardlink">
+				
+				Книги
+				
+				<span id="newposts_bo"></span>
+				</a></li>
+							<li><a href="http://n2rg/co/" class="boardlink">
+				
+				Комиксы
+				
+				<span id="newposts_co"></span>
+				</a></li>
+							<li><a href="http://n2rg/cook/" class="boardlink">
+				
+				Лепка супов
+				
+				<span id="newposts_cook"></span>
+				</a></li>
+							<li><a href="http://n2rg/f/" class="boardlink">
+				
+				Flash
+				
+				<span id="newposts_f"></span>
+				</a></li>
+							<li><a href="http://n2rg/fa/" class="boardlink">
+				
+				Мода и стиль
+				
+				<span id="newposts_fa"></span>
+				</a></li>
+							<li><a href="http://n2rg/fl/" class="boardlink">
+				
+				Иностранные языки
+				
+				<span id="newposts_fl"></span>
+				</a></li>
+							<li><a href="http://n2rg/m/" class="boardlink">
+				
+				Музыка
+				
+				<span id="newposts_m"></span>
+				</a></li>
+							<li><a href="http://n2rg/med/" class="boardlink">
+				
+				Медицина
+				
+				<span id="newposts_med"></span>
+				</a></li>
+							<li><a href="http://n2rg/ph/" class="boardlink">
+				
+				Фотографии
+				
+				<span id="newposts_ph"></span>
+				</a></li>
+							<li><a href="http://n2rg/tv/" class="boardlink">
+				
+				Кино и сериалы
+				
+				<span id="newposts_tv"></span>
+				</a></li>
+							<li><a href="http://n2rg/war/" class="boardlink">
+				
+				Вооружение
+				
+				<span id="newposts_war"></span>
+				</a></li>
+							<li><a href="http://n2rg/wp/" class="boardlink">
+				
+				Обои
+				
+				<span id="newposts_wp"></span>
+				</a></li>
+			
+		
+		</ul>
+					</div>
+		
+		
+					<h2>
+		
+					<span class="plus" onclick="toggle(this, 'adult');" title="Нажмите Показать/Спрятать">&minus;</span>&nbsp;
+		
+		adult</h2>
+					<div id="adult">
+		
+		<ul>
+									<li><a href="http://n2rg/h/" class="boardlink">
+				
+				Хентай
+				
+				<span id="newposts_h"></span>
+				</a></li>
+							<li><a href="http://n2rg/g/" class="boardlink">
+				
+				Девушки
+				
+				<span id="newposts_g"></span>
+				</a></li>
+							<li><a href="http://n2rg/fur/" class="boardlink">
+				
+				Фурри
+				
+				<span id="newposts_fur"></span>
+				</a></li>
+			
+		
+		</ul>
+					</div>
+		
+	
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+	updatenewpostscount();
+	$('#refreshnewposts').click(updatenewpostscount);
+})</script>
+</body>
+</html>
+
+

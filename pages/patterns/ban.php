@@ -1,0 +1,4 @@
+<script type="text/javascript">
+var defaultPattern = { pattern: 
+    '000000dddddddd0000000000dddddddddddd0000000dddddddddddddd00000ddddddd555dddddd000ddddd5555555dddddd00dddd5555555ddddddd0dddd5555555ddddddddddddd555555ddddd5dddddddd55555ddddd555dddddd55555ddddd5555dddddd5555ddddd55555dddddd555ddddd55555dddddddd5ddddd555555ddddddddddddd5555555dddd0ddddddd5555555dddd00dddddd5555555ddddd000dddddd555ddddddd00000dddddddddddddd0000000dddddddddddd0000000000dddddddd000000', x: 20, y: 20 }; 
+</script>

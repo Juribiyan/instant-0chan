@@ -1,0 +1,35 @@
+a{color: #15C !important;}
+ul {list-style: none;padding:0;}
+h2{font-size: 13px;}
+li:hover {text-decoration: underline;}
+h1 a{color:#444;}
+h1 {font-size: 14px;}
+body{margin:0;}
+.yoba {
+-webkit-border-start: 6px solid rgb(78, 87, 100);
+-webkit-padding-start: 18px;
+color: #464E5A;
+font-size: 12px;
+cursor: pointer;
+line-height: 17px;
+margin: 5px 0;
+text-transform: uppercase;
+}
+.yoba-l {
+-webkit-padding-start: 10px;
+color: #464E5A;
+font-size: 12px;
+margin: 0;
+}
+.yoba:hover{-webkit-border-start-color: rgb(221, 75, 57);}
+#navbar-container li{margin-left: 10px;}
+#title{
+-webkit-user-select: none;
+color: #303942;
+font-size: 18px;
+font-weight: normal;
+margin-top: 1em;
+-webkit-margin-before: 15px;
+-webkit-margin-start: 15px;
+color: #5C6166;
+}

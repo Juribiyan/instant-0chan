@@ -1,0 +1,300 @@
+html, body {
+	background-color: #EEEEEE;
+	color: #333333;
+	font-family: "Open Sans", "Trebuchet MS",Trebuchet,sans-serif;
+	background: url(/css/images/modern/bg.png);
+	font-size: 15px;
+}
+a {
+	color: rgb(33, 169, 175);
+}
+a:visited {
+	color: rgb(33, 169, 175);
+}
+ a:hover {
+	color: rgb(42, 120, 139);
+	text-shadow: 0 0 3px white;
+} 
+.adminbar {
+	clear:both;
+	float:right;
+	font-size: .8em;
+}
+.adminbar a {
+	font-weight: bold;
+}
+.logo {
+	clear:both;
+	text-align:left;
+	font-size:2em;
+	font-weight: bold;
+	color: rgb(33, 169, 175);
+	/*width:100%;*/
+}
+.replymode, .passvalid {
+	background:#DDDDDD;
+	text-align:center;
+	padding:2px;
+	color:#2266AA;
+	clear: both;
+	font-weight: bold;
+	margin-bottom: .5em;
+	border: solid 1px #CCCCCC;
+	border-radius: 5px;
+}
+.catalogmode {
+	background: #0040E0;
+	text-align: center;
+	padding: 2px;
+	color: #DDDDDD;
+	clear: both;
+	font-weight: bold;
+	margin-bottom: .5em;
+	border: solid 1px #CCCCCC;
+	border-radius: 5px;
+}
+.postarea {
+}
+.rules {
+	font-size:0.7em;
+}
+.postblock {
+	background:transparent;
+	color:#002244;
+	font-weight:bold;
+}
+.footer {
+	text-align:center;
+	font-size:12px;
+	font-family:serif;
+	margin: 2em 0 0 0;
+}
+.dellist {
+	font-weight: bold;
+	text-align:center;
+}
+.delbuttons {
+	text-align:center;
+	padding-bottom:4px;
+}
+.managehead {
+	background:#DDDDDD;
+	color:#002244;
+	padding:0px;
+}
+.postlists {
+	background:#FFFFFF;
+	width:100%;
+	padding:0px;
+	color:#800000;
+}
+.row1 {
+	background:#DDDDDD;
+	color:#002244;
+}
+.row2 {
+	background:#CCCCCC;
+	color:#002244;
+}
+.unkfunc {
+	background:inherit;
+	color:#789922;
+}
+.reflink {
+	font-size: .8em;
+	font-weight: bold;
+	padding-right: 6px;
+}
+.filesize {
+	text-decoration:none;
+	color: #666666;
+	font-size: .8em;
+}
+.filetitle {
+	background:inherit;
+	font-size:1.2em;
+	color:#002244;
+	font-weight:bold;
+}
+.postername {
+	color:#004A99;
+	font-weight:bold;
+}
+.postertrip {
+	color:#FF3300;
+}
+.oldpost {
+	color:#CC1105;
+	font-weight:bold;
+}
+.omittedposts, .omittedposts a, .xlink {
+	color:#666666 !important;
+}
+.reply {
+	background: #fafafa;
+	box-shadow: 0 1px 1px rgb(185, 185, 185);
+	padding: 0;
+	padding-right: 2px;
+	border-radius: 0px;
+}
+blockquote {
+	margin: .5em .5em .5em 1em;
+}
+blockquote p {
+	margin: 0;
+	padding: 0;
+}
+.reply blockquote {
+	margin: .5em;
+}
+.doubledash {
+	display: none;
+ 	vertical-align:top;
+	clear:both;
+	float:left;
+}
+.replytitle {
+	font-size: 1.2em;
+	color:#002244;
+	font-weight:bold;
+}
+.commentpostername {
+	color:#004A99;
+	font-weight:800;
+}
+.thumbnailmsg {
+	font-size: .8em;
+	color:#666666;
+}
+hr {
+	border-style: solid none none none;
+	border-width: 1px;
+	border-color: #BBBBBB;
+}
+table {
+	border-style: none;
+}
+table td {
+	border-style: none;
+}
+.nothumb {
+	background-color: #FFFFFF;
+	border-style: dotted;
+	margin: .3em .5em;
+}
+
+.abbrev {
+	color:#666666;
+}
+.highlight {
+	background:#EEDACB;
+	color:#333333;
+	border: 2px dashed #EE6600;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+#watchedthreads {
+	background-color: #DDDDDD !important;
+  	border: 1px solid #CCCCCC !important;
+  	border-radius: 5px;
+}
+
+.spritebtn {
+	background-color: #aba8a6;
+	border-color: #aba8a6;
+}
+.spritebtn:hover {
+	background-color: rgb(42, 120, 139);
+	border-color: rgb(42, 120, 139);
+}
+
+.topbar-left {
+	height: 0px;
+}
+
+.topbar-right {
+	height: 0px;
+}
+
+.topbar-center {
+	height: 6px;
+	background: rgba(0, 0, 0, 0.06);
+}
+
+.content-background {
+	background-color: #f3f3f3;
+	box-shadow: 0 1px 1px rgb(185, 185, 185);
+}
+
+.maintable {
+	width: 100%;
+	table-layout: fixed;
+}
+#overlay_menu {
+	-webkit-transition: box-shadow 0.2s;
+	box-shadow: none;
+}
+
+#overlay_menu:hover {
+	box-shadow: 0 0 20px #ccc;
+}
+
+.replies table {
+	border-spacing: 2px 4px;
+}
+
+.menu-item {
+padding: 2px 5px;
+border-radius: 3px;
+}
+
+.menu-item:hover {
+	background: rgba(255, 255, 255, 0.4);
+}
+
+.maintable hr {
+	margin-left: -9px;
+margin-right: -9px;
+}
+
+.reflinkpreview {
+	border: 1px #CCC solid;
+	border-radius: none;
+	-webkit-box-shadow: 0 0 20px #ccc;
+	-moz-box-shadow: 0 0 20px #ccc;
+	box-shadow: 0 0 20px #ccc;
+}
+
+/* .replies table, .replies table tbody, .replies table tbody tr {
+	display: block;
+}
+
+.reply {
+	max-width: 100%;
+	margin: 4px;
+} */
+
+.reflinkpreview .reply {
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	/*margin: 0px;*/
+}
+
+.prettyprint {
+	overflow: auto;
+	max-height: 500px;
+}
+
+.prettyprint-container {
+	display: inline-block; 
+    margin-left: 2px;
+    margin-bottom: 4px;
+    margin-top: 4px;
+}
+
+.omittedposts a, .xlink {
+	text-decoration: inherit;
+	border-bottom: 1px dashed rgb(133, 133, 133);
+}
