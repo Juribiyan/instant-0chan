@@ -1,3 +1,6 @@
+<p align="center">
+  <img src="https://dl.dropboxusercontent.com/u/43313258/instant_0chan.png" alt="Instant 0chan"/>
+</p>
 # Instant 0chan
 
 Набор для быстрого развертывания нульчана на движке, использовавшимся на Nullch.org (на основе Kusaba X).
