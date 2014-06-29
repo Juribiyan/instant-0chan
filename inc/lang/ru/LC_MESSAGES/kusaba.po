@@ -2011,5 +2011,21 @@ msgstr "У вас нет досок."
 msgid "Manage banners"
 msgstr "Менеджер баннеров"
 
-msgid "captcha will be shown on click"
-msgstr "капча появится по клику"
+msgid ""
+msgstr ""
+
+msgid ""
+msgstr ""
+
+msgid ""
+msgstr ""
+
+msgid ""
+msgstr ""
+
+msgid ""
+msgstr ""
+
+msgid ""
+msgstr ""
+

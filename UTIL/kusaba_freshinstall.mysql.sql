@@ -404,6 +404,7 @@ INSERT INTO `filetypes`
 (   'jpg',                   '',                     '',          0,         0,           0),
 (   'gif',                   '',                     '',          0,         0,           0),
 (   'png',                   '',                     '',          0,         0,           0),
+(   'webm',              'video/webm',               '',          0,         0,           0),
 (   'swf',     'application/x-shockwave-flash', 'flash.png',      48,        48,          1);
 
 INSERT INTO `PREFIX_events` (`name`, `at`) VALUES ('pingback', 0), ('sitemap', 0);
