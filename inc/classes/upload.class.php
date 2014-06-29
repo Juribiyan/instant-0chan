@@ -76,8 +76,6 @@ class Upload {
 						exitWithErrorPage(_gettext('Unknown File Error'));
 					}
 
-					$this->file_type = strtolower($this->file_type);
-
 					$this->file_type = preg_replace('/.*(\..+)/','\1',$_FILES['imagefile']['name']);
 					if ($this->file_type == '.jpeg') {
 						/* Fix for the rarely used 4-char format */
@@ -88,13 +86,10 @@ class Upload {
 					if (!is_file($_FILES['imagefile']['tmp_name']) || !is_readable($_FILES['imagefile']['tmp_name'])) {
 						$pass = false;
 					} else {
-						if(in_array($this->file_type, array('.jpg', '.gif', '.png'))) {
+						if ($this->file_type == '.jpg' || $this->file_type == '.gif' || $this->file_type == '.png') {
 							if (!@getimagesize($_FILES['imagefile']['tmp_name'])) {
 								$pass = false;
 							}
-						}
-						elseif($this->file_type == '.webm') {
-							$pass = $this->webmCheck($_FILES['imagefile']['tmp_name']);
 						}
 					}
 					if (!$pass) {
@@ -111,23 +106,18 @@ class Upload {
 						exitWithErrorPage(_gettext('Duplicate file entry detected.'), sprintf(_gettext('Already posted %shere%s.'),'<a href="' . KU_BOARDSPATH . '/' . $board_class->board['name'] . '/res/' . $exists_thread[0] . '.html#' . $exists_thread[1] . '">','</a>'));
 					}
 
-					if ($this->file_type == 'svg') {
+					if (strtolower($this->file_type) == 'svg') {
 						require_once 'svg.class.php';
 						$svg = new Svg($_FILES['imagefile']['tmp_name']);
 						$this->imgWidth = $svg->width;
 						$this->imgHeight = $svg->height;
-					} 
-					elseif($this->file_type == '.webm') {
-						$webminfo = $pass;
-						$this->imgWidth = $webminfo['width'];
-						$this->imgHeight = $webminfo['height'];
-					}
-					else {
+					} else {
 						$imageDim = getimagesize($_FILES['imagefile']['tmp_name']);
 						$this->imgWidth = $imageDim[0];
 						$this->imgHeight = $imageDim[1];
 					}
-					
+
+					$this->file_type = strtolower($this->file_type);
 					$this->file_size = $_FILES['imagefile']['size'];
 
 					$filetype_forcethumb = $tc_db->GetOne("SELECT " . KU_DBPREFIX . "filetypes.force_thumb FROM " . KU_DBPREFIX . "boards, " . KU_DBPREFIX . "filetypes, " . KU_DBPREFIX . "board_filetypes WHERE " . KU_DBPREFIX . "boards.id = " . KU_DBPREFIX . "board_filetypes.boardid AND " . KU_DBPREFIX . "filetypes.id = " . KU_DBPREFIX . "board_filetypes.typeid AND " . KU_DBPREFIX . "boards.name = '" . $board_class->board['name'] . "' and " . KU_DBPREFIX . "filetypes.filetype = '" . substr($this->file_type, 1) . "';");
@@ -158,56 +148,39 @@ class Upload {
 							/* Otherwise, use this script alone */
 							} else {
 								$this->file_location = KU_BOARDSDIR . $board_class->board['name'] . '/src/' . $this->file_name . $this->file_type;
+								$this->file_thumb_location = KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $this->file_name . 's' . $this->file_type;
+								$this->file_thumb_cat_location = KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $this->file_name . 'c' . $this->file_type;
 
-								if($this->file_type == '.webm') {
-									$thumbs = $this->webmThumb($_FILES['imagefile']['tmp_name'], KU_BOARDSDIR . $board_class->board['name'] . '/thumb/', $this->file_name, $webminfo['midtime']);
-									// var_dump($thumbs);
-									if($thumbs) {
-										$this->imgWidth_thumb = $thumbs['thumbwidth'];
-										$this->imgHeight_thumb = $thumbs['thumbheight'];
-										if (!move_uploaded_file($_FILES['imagefile']['tmp_name'], $this->file_location)) {
-											exitWithErrorPage(_gettext('Could not copy uploaded image.'));
-										}
-										chmod($this->file_location, 0644);
-										if ($_FILES['imagefile']['size'] != filesize($this->file_location)) exitWithErrorPage(_gettext('File was not fully uploaded. Please go back and try again.'));
-										$imageused = true;
-									}
-									else exitWithErrorPage(_gettext('Could not create thumbnail.'));
+								if (!move_uploaded_file($_FILES['imagefile']['tmp_name'], $this->file_location)) {
+									exitWithErrorPage(_gettext('Could not copy uploaded image.'));
 								}
-								else {
-									$this->file_thumb_location = KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $this->file_name . 's' . $this->file_type;
-									$this->file_thumb_cat_location = KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $this->file_name . 'c' . $this->file_type;
+								chmod($this->file_location, 0644);
 
-									if (!move_uploaded_file($_FILES['imagefile']['tmp_name'], $this->file_location)) {
-										exitWithErrorPage(_gettext('Could not copy uploaded image.'));
-									}
-									chmod($this->file_location, 0644);
-
-									if ($_FILES['imagefile']['size'] == filesize($this->file_location)) {
-										if ((!$this->isreply && ($this->imgWidth > KU_THUMBWIDTH || $this->imgHeight > KU_THUMBHEIGHT)) || ($this->isreply && ($this->imgWidth > KU_REPLYTHUMBWIDTH || $this->imgHeight > KU_REPLYTHUMBHEIGHT))) {
-											if (!$this->isreply) {
-												if (!createThumbnail($this->file_location, $this->file_thumb_location, KU_THUMBWIDTH, KU_THUMBHEIGHT)) {
-													exitWithErrorPage(_gettext('Could not create thumbnail.'));
-												}
-											} else {
-												if (!createThumbnail($this->file_location, $this->file_thumb_location, KU_REPLYTHUMBWIDTH, KU_REPLYTHUMBHEIGHT)) {
-													exitWithErrorPage(_gettext('Could not create thumbnail.'));
-												}
+								if ($_FILES['imagefile']['size'] == filesize($this->file_location)) {
+									if ((!$this->isreply && ($this->imgWidth > KU_THUMBWIDTH || $this->imgHeight > KU_THUMBHEIGHT)) || ($this->isreply && ($this->imgWidth > KU_REPLYTHUMBWIDTH || $this->imgHeight > KU_REPLYTHUMBHEIGHT))) {
+										if (!$this->isreply) {
+											if (!createThumbnail($this->file_location, $this->file_thumb_location, KU_THUMBWIDTH, KU_THUMBHEIGHT)) {
+												exitWithErrorPage(_gettext('Could not create thumbnail.'));
 											}
 										} else {
-											if (!createThumbnail($this->file_location, $this->file_thumb_location, $this->imgWidth, $this->imgHeight)) {
+											if (!createThumbnail($this->file_location, $this->file_thumb_location, KU_REPLYTHUMBWIDTH, KU_REPLYTHUMBHEIGHT)) {
 												exitWithErrorPage(_gettext('Could not create thumbnail.'));
 											}
 										}
-										if (!createThumbnail($this->file_location, $this->file_thumb_cat_location, KU_CATTHUMBWIDTH, KU_CATTHUMBHEIGHT)) {
+									} else {
+										if (!createThumbnail($this->file_location, $this->file_thumb_location, $this->imgWidth, $this->imgHeight)) {
 											exitWithErrorPage(_gettext('Could not create thumbnail.'));
 										}
-										$imageDim_thumb = getimagesize($this->file_thumb_location);
-										$this->imgWidth_thumb = $imageDim_thumb[0];
-										$this->imgHeight_thumb = $imageDim_thumb[1];
-									} else {
-										exitWithErrorPage(_gettext('File was not fully uploaded. Please go back and try again.'));
 									}
+									if (!createThumbnail($this->file_location, $this->file_thumb_cat_location, KU_CATTHUMBWIDTH, KU_CATTHUMBHEIGHT)) {
+										exitWithErrorPage(_gettext('Could not create thumbnail.'));
+									}
+									$imageDim_thumb = getimagesize($this->file_thumb_location);
+									$this->imgWidth_thumb = $imageDim_thumb[0];
+									$this->imgHeight_thumb = $imageDim_thumb[1];
+									$imageused = true;
+								} else {
+									exitWithErrorPage(_gettext('File was not fully uploaded. Please go back and try again.'));
 								}
 							}
 						} else {
@@ -435,39 +408,5 @@ class Upload {
 			unlink($oekaki);
 		}
 	}
-
-	function webmCheck($filepath) {
-		if(KU_FFMPEGPATH) putenv('PATH=' . getenv('PATH') . PATH_SEPARATOR . KU_FFMPEGPATH);
-		$finfo = shell_exec("ffmpeg -i ".$filepath." 2>&1");
-		preg_match('/Duration: (\d\d\:\d\d\:\d\d\.\d\d)/', $finfo, $duration);
-		preg_match('/(\d+)x(\d+)/', $finfo, $dimensions);
-		$hhmmss = explode(':', $duration[1]);
-		if(count($duration) == 2 && count($dimensions) == 3) return array(
-			'width' => $dimensions[1],
-			'height' => $dimensions[2],
-			'midtime' => gmdate("H:i:s", ($hhmmss[0]*3600 + $hhmmss[1]*60+ round($hhmmss[2]))/2)
-		);
-		else return false;
-	}
-
-	function webmThumb($filepath, $thumbpath, $filename, $midtime) {
-		if(KU_FFMPEGPATH) putenv('PATH=' . getenv('PATH') . PATH_SEPARATOR . KU_FFMPEGPATH);
-		$scale = "w=".KU_THUMBWIDTH.":h=".KU_THUMBHEIGHT;
-		$scalecat = "w=".KU_CATTHUMBWIDTH.":h=".KU_CATTHUMBHEIGHT;
-		$foar = ':force_original_aspect_ratio=decrease';
-		$rawdur = shell_exec("ffmpeg -i ".$filepath." 2>&1");
-		$common = ' -ss '.$midtime.' -vframes 1 -filter:v scale=';
-		$newfn = $thumbpath.$filename;
-		$result = shell_exec('ffmpeg -i '.$filepath.$common.$scale.$foar.' '.$newfn.'s.jpg'.$common.$scalecat.$foar.' '.$newfn.'c.jpg 2>&1');
-		preg_match('/Output[\s\S]+?(\d+)x(\d+)[\s\S]+?(\d+)x(\d+)/m', $result, $ths);
-		if(count($ths) == 5) return array(
-			'thumbwidth' => $ths[1], 
-			'thumbheight' => $ths[2], 
-			'catthumbwidth' => $ths[3], 
-			'catthumbheight' => $ths[4]
-		);
-		else return false;
-	}
-
 }
 ?>

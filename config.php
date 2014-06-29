@@ -67,7 +67,6 @@ if (!$cache_loaded) {
 		$cf['KU_20_BOARDSLIMIT'] = 5;	// How many 2.0 boards a user can create
 		$cf['KU_20_CLOUDTIME'] = "-24 hours";
 		$cf['KU_SUPPORTED_LOCALES'] = 'ru|en';	// 
-		$cf['KU_FFMPEGPATH'] = '/usr/local/bin/ffmpeg'; // Path to ffmpeg, for example 'C:\ffmpeg\bin'
 
 	// Database
 		$cf['KU_DBTYPE']          = 'mysqli';	// Database type. Valid values are mysql and mysqli (reccomended for mysql). 
