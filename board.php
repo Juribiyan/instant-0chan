@@ -95,7 +95,7 @@ if (isset($_POST['board']) || isset($_GET['board'])) $_POST['board'] = (isset($_
 // If the script was called using a board name:
 if (isset($_POST['board'])) {
 	$board_name = $tc_db->GetOne("SELECT `name` FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($_POST['board']) . "");
-	if (!empty($board_name)) {
+	if ($board_name !== false) {
 		$board_class = new Board($board_name);
 		if (!empty($board_class->board['locale'])) {
 			changeLocale($board_class->board['locale']);
