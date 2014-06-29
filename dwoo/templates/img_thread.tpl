@@ -102,10 +102,11 @@ boardid = '{$board.id}';
 						{t}File<br />Removed{/t}
 					</div>
 				{else}
-					<a 
+					<a
+					{if $post.file_type eq 'webm'} class="movie" data-id="{$post.id}" data-thumb="{$post.nonstandard_file}" data-width="{$post.image_w}" data-height="{$post.image_h}"{/if}
 					{if %KU_NEWWINDOW}
 						target="_blank" 
-					{/if}
+					{/if}								
 					href="{$file_path}/src/{$post.file}.{$post.file_type}">
 					<span id="thumb{$post.id}"><img src="{$post.nonstandard_file}" alt="{$post.id}" class="thumb" height="{$post.thumb_h}" width="{$post.thumb_w}" /></span>
 					</a>
@@ -335,13 +336,14 @@ boardid = '{$board.id}';
 									{t}File<br />Removed{/t}
 								</div>
 							{else}
-								<a 
-								{if %KU_NEWWINDOW}
-									target="_blank" 
-								{/if}
-								href="{$file_path}/src/{$post.file}.{$post.file_type}">
-								<span id="thumb{$post.id}"><img src="{$post.nonstandard_file}" alt="{$post.id}" class="thumb" height="{$post.thumb_h}" width="{$post.thumb_w}" /></span>
-								</a>
+								<a
+					{if $post.file_type eq 'webm'} class="movie" data-id="{$post.id}" data-thumb="{$post.nonstandard_file}" data-width="{$post.image_w}" data-height="{$post.image_h}"{/if}
+					{if %KU_NEWWINDOW}
+						target="_blank" 
+					{/if}								
+					href="{$file_path}/src/{$post.file}.{$post.file_type}">
+					<span id="thumb{$post.id}"><img src="{$post.nonstandard_file}" alt="{$post.id}" class="thumb" height="{$post.thumb_h}" width="{$post.thumb_w}" /></span>
+					</a>
 							{/if}
 						{/if}
 
