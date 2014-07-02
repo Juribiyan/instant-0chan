@@ -61,7 +61,7 @@ autocomplete="off">
 			{t}Message{/t}
 		</td>
 		<td>
-			<div><nobr style="font-size: 2px;">
+			<div class="markupbtns"><nobr style="font-size: 2px;">
 				<a title="{t}Bold{/t}" href="#" class="uibutton uib-mup" data-mups="**" data-mupe="**"><b>{t}B{/t}</b></a>
 				<a title="{t}Italic{/t}" href="#" class="uibutton uib-mup" data-mups="*" data-mupe="*"><i>{t}I{/t}</i></a>
 				<a title="{t}Undeline{/t}" href="#" class="uibutton uib-mup" data-mups="[u]" data-mupe="[/u]"><u>{t}U{/t}</u></a>
