@@ -99,6 +99,10 @@ pre {
 	border-radius: 5px;
 }
 
+.reflinkpreview .postnode {
+	border-spacing: 0;
+}
+
 .nothumb {
 	float: left;
 	background: #eee;

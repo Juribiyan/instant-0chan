@@ -1,19 +1,21 @@
 html, body {
-	background-color: #EEEEEE;
+	background-color: #eee;
 	color: #333333;
-	font-family: "Open Sans", "Trebuchet MS",Trebuchet,sans-serif;
-	background: url(/css/images/modern/bg.png);
+	font-family: "Roboto", "Open Sans", "Trebuchet MS",Trebuchet,sans-serif;
 	font-size: 15px;
 }
+.content-background {
+	background-color: #eee;
+}
+
 a {
-	color: rgb(33, 169, 175);
+	color: rgb(97, 138, 182);
 }
 a:visited {
-	color: rgb(33, 169, 175);
+	color: rgb(97, 138, 182);
 }
  a:hover {
-	color: rgb(42, 120, 139);
-	text-shadow: 0 0 3px white;
+	color: rgb(83, 156, 235);
 } 
 .adminbar {
 	clear:both;
@@ -28,31 +30,17 @@ a:visited {
 	text-align:left;
 	font-size:2em;
 	font-weight: bold;
-	color: rgb(33, 169, 175);
-	/*width:100%;*/
+	color: rgb(97, 138, 182);
 }
-.replymode, .passvalid {
-	background:#DDDDDD;
-	text-align:center;
-	padding:2px;
-	color:#2266AA;
-	clear: both;
-	font-weight: bold;
-	margin-bottom: .5em;
-	border: solid 1px #CCCCCC;
-	border-radius: 5px;
-}
-.catalogmode {
-	background: #0040E0;
+.replymode, .passvalid, .catalogmode {
+	background: rgb(228, 228, 228);
 	text-align: center;
 	padding: 2px;
-	color: #DDDDDD;
 	clear: both;
 	font-weight: bold;
 	margin-bottom: .5em;
-	border: solid 1px #CCCCCC;
-	border-radius: 5px;
 }
+
 .postarea {
 }
 .rules {
@@ -60,7 +48,7 @@ a:visited {
 }
 .postblock {
 	background:transparent;
-	color:#002244;
+	color:#5F5F5F;
 	font-weight:bold;
 }
 .footer {
@@ -98,12 +86,13 @@ a:visited {
 }
 .unkfunc {
 	background:inherit;
-	color:#789922;
+	color: #26AF4C;
 }
 .reflink {
 	font-size: .8em;
 	font-weight: bold;
 	padding-right: 6px;
+	/* color: #fff; */
 }
 .filesize {
 	text-decoration:none;
@@ -131,11 +120,11 @@ a:visited {
 	color:#666666 !important;
 }
 .reply {
-	background: #fafafa;
-	box-shadow: 0 1px 1px rgb(185, 185, 185);
+	background: #F8F8F8;
 	padding: 0;
 	padding-right: 2px;
 	border-radius: 0px;
+	border: 1px #CCC solid;
 }
 blockquote {
 	margin: .5em .5em .5em 1em;
@@ -174,6 +163,9 @@ hr {
 table {
 	border-style: none;
 }
+.bottom-center, .bottom-left, .bottom-right {
+	height: 0px;
+}
 table td {
 	border-style: none;
 }
@@ -201,12 +193,13 @@ table td {
 }
 
 .spritebtn {
-	background-color: #aba8a6;
-	border-color: #aba8a6;
+	background-image: url('/css/icons/black.gif');
+	opacity: 0.3;
+	/* border-radius: 30px; */
 }
 .spritebtn:hover {
-	background-color: rgb(42, 120, 139);
-	border-color: rgb(42, 120, 139);
+	/* background-color: rgb(233, 233, 233); */
+	opacity: 1;
 }
 
 .topbar-left {
@@ -218,13 +211,8 @@ table td {
 }
 
 .topbar-center {
-	height: 6px;
-	background: rgba(0, 0, 0, 0.06);
-}
-
-.content-background {
-	background-color: #f3f3f3;
-	box-shadow: 0 1px 1px rgb(185, 185, 185);
+	height: 0;
+	/* background: rgba(0, 0, 0, 0.06); */
 }
 
 .maintable {
@@ -232,12 +220,17 @@ table td {
 	table-layout: fixed;
 }
 #overlay_menu {
-	-webkit-transition: box-shadow 0.2s;
+	-webkit-transition: box-shadow 0.2s, background-color 0.2s;
+	transition: box-shadow 0.2s, background-color 0.2s;
+	-o-transition: box-shadow 0.2s, background-color 0.2s;
+	-moz-transition: box-shadow 0.2s, background-color 0.2s;
 	box-shadow: none;
+	border-radius: 0;
 }
 
 #overlay_menu:hover {
 	box-shadow: 0 0 20px #ccc;
+	background: rgb(247, 247, 247);
 }
 
 .replies table {
@@ -264,22 +257,19 @@ margin-right: -9px;
 	-webkit-box-shadow: 0 0 20px #ccc;
 	-moz-box-shadow: 0 0 20px #ccc;
 	box-shadow: 0 0 20px #ccc;
+	border-radius: 0;
 }
 
-/* .replies table, .replies table tbody, .replies table tbody tr {
-	display: block;
+input[type="text"], textarea {
+	border: 1px solid rgb(180, 180, 180);
 }
-
-.reply {
-	max-width: 100%;
-	margin: 4px;
-} */
 
 .reflinkpreview .reply {
 	-webkit-box-shadow: none;
 	-moz-box-shadow: none;
 	box-shadow: none;
 	/*margin: 0px;*/
+	border: none;
 }
 
 .prettyprint {
@@ -288,7 +278,7 @@ margin-right: -9px;
 }
 
 .prettyprint-container {
-	display: inline-block; 
+	/*display: inline-block; */
     margin-left: 2px;
     margin-bottom: 4px;
     margin-top: 4px;
@@ -297,4 +287,25 @@ margin-right: -9px;
 .omittedposts a, .xlink {
 	text-decoration: inherit;
 	border-bottom: 1px dashed rgb(133, 133, 133);
+}
+
+.postnode label {
+font-size: .9em;
+color: rgb(109, 109, 109);
+}
+
+.reflink a, .reflink a:visited {
+color: #696969;
+text-decoration: none;
+}
+.uibutton {
+	border-radius: 0;
+	background: none;
+	border-color: rgba(75, 129, 187, 0.42);
+}
+.uibutton:hover {
+	/* color: red; */
+	border-color: rgba(75, 129, 187, 0.67);
+	background: rgba(234, 244, 255, 0.67);
+	color: rgba(75, 129, 187, 1);
 }
