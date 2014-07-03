@@ -279,12 +279,13 @@ class Board {
 					if ($row <= $maxrows) {
 						$replies = $tc_db->GetOne("SELECT COUNT(*) FROM `".KU_DBPREFIX."posts` WHERE `boardid` = " . $this->board['id'] . " AND `IS_DELETED` = 0 AND `parentid` = " . $line['id']);
 						$catalog_page .= '<td valign="middle">' . "\n" .
-						'<a href="' . KU_BOARDSFOLDER . $this->board['name'] . '/res/' . $line['id'] . '.html"';
+						'<a class="catalog-entry" href="' . KU_BOARDSFOLDER . $this->board['name'] . '/res/' . $line['id'] . '.html"';
 						if ($line['subject'] != '') {
 							$catalog_page .= ' title="' . $line['subject'] . '"';
 						}
 						$catalog_page .= '>';
 						if ($line['file'] != '' && $line['file'] != 'removed') {
+							if($line['file_type'] == 'webm') $line['file_type'] = 'jpg';
 							if ($line['file_type'] == 'jpg' || $line['file_type'] == 'png' || $line['file_type'] == 'gif') {
 								$file_path = getCLBoardPath($this->board['name'], $this->board['loadbalanceurl_formatted'], $this->archive_dir);
 								$catalog_page .= '<img src="' . $file_path . '/thumb/' . $line['file'] . 'c.' . $line['file_type'] . '" alt="' . $line['id'] . '" border="0" />';
@@ -717,11 +718,6 @@ class Board {
 			$oekposts = $tc_db->GetAll("SELECT `id` FROM `" . KU_DBPREFIX."posts` WHERE `boardid` = " . $this->board['id']." AND (`id` = ".$replythread." OR `parentid` = ".$replythread.") AND `file` != '' AND `file` != 'removed' AND `file_type` IN ('jpg', 'gif', 'png') AND `IS_DELETED` = 0 ORDER BY `parentid` ASC, `timestamp` ASC");
 			$this->dwoo_data->assign('oekposts', $oekposts);
 		}
-		/*if ($this->board['enablecaptcha'] ==  1) {
-			require_once(KU_ROOTDIR.'recaptchalib.php');
-			$publickey = "6LdVg8YSAAAAAOhqx0eFT1Pi49fOavnYgy7e-lTO";
-			$this->dwoo_data->assign('recaptcha', recaptcha_get_html($publickey));
-		}*/
 		if(($this->board['type'] == 1 && $replythread == 0) || $this->board['type'] != 1) {
 			$postbox .= $this->dwoo->get(KU_TEMPLATEDIR . '/' . $this->board['text_readable'] . '_post_box.tpl', $this->dwoo_data);
 		}
