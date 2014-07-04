@@ -238,12 +238,17 @@ table td {
 }
 
 .menu-item {
-padding: 2px 5px;
-border-radius: 3px;
+	margin: 0 -3px 0 -3px;
+	padding: 2px 5px;
+	border-radius: 0px;
+}
+
+.menu-item:last-child {
+	margin-bottom: -3px;
 }
 
 .menu-item:hover {
-	background: rgba(255, 255, 255, 0.4);
+	background: rgba(97, 138, 182, 0.07);
 }
 
 .maintable hr {
