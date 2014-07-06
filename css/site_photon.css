@@ -104,3 +104,10 @@ table td {
         text-decoration: none;
 	font-size: 14px;
 }
+
+.sitelogo {
+	background: url(/images/0chan-autumn.png);
+	width: 420px;
+	height: 150px;
+	margin-top: 8px;
+}

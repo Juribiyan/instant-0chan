@@ -36,7 +36,7 @@ function showstyleswitcher() {
 		{if %KU_MENUSTYLESWITCHER && %KU_MENUTYPE eq 'normal'}
 			{t}Styles{/t}:
 			{loop $styles}
-				[<a href="#" onclick="javascript:set_stylesheet(\'{$|capitalize}\', false, true);reloadmain();" style="display: inline;" target="_self">{$|substr:0:1|upper}</a>]{if !$dwoo.loop.default.last} {/if}
+				[<a href="#" onclick="javascript:Styles.change(\'{$|capitalize}\', false, true);reloadmain();" style="display: inline;" target="_self">{$|substr:0:1|upper}</a>]{if !$dwoo.loop.default.last} {/if}
 			{/loop}
 		{/if}
 		{/strip}';

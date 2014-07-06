@@ -1,0 +1,77 @@
+body {
+	font-family: sans-serif;
+	font-size: 75%;
+	color: #A0A0A0;
+	margin: 0;
+	width: 90%;
+	background-color: #2B2B2B;
+	background-color: #eee;  color: #333333;
+}
+
+
+a, a:visited {
+	text-decoration: none;
+	color: rgb(97, 138, 182);
+}
+
+a:hover {
+color: rgb(83, 156, 235);
+}
+
+h2 {
+	margin: 0px;
+	padding: 2px;
+	color: #696969;
+	border-radius: 3px 3px 0 0;
+}
+
+h2 a {
+	text-decoration: none;
+}
+
+h1, h3, .menu {
+	font-family: Verdana,Tahoma,sans-serif;
+}
+
+h1 {
+	margin: 0;
+	text-align: center;
+	margin-top: 1em;
+}
+
+h3 {
+	margin: 0;
+	text-align: center;
+	font-weight: normal;
+	font-size: medium;
+}
+
+.menu {
+	margin-top: 1em;
+	text-align: center;
+}
+
+.content {
+	margin-left: 3em;
+	padding: 0px;      
+	background: #F8F8F8;  border: 1px #CCC solid;
+}
+
+.newssub {
+	padding: 2px;
+	position: absolute;
+    background-repeat: repeat-x;
+}
+
+.permalink {
+	padding: 2px;
+	text-align: right;
+	display: block;
+}
+
+.sitelogo {
+	background: url(/images/0chan-modern.png);
+	width: 420px;
+	height: 150px;
+	margin-top: 8px;
+}

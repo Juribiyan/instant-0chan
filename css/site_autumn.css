@@ -75,15 +75,10 @@ h3 {
 	color: #333333;
 	text-decoration: underline;
 }
-/*h1 { font-size: 150% }*/
-/*h2 { font-size: 100%; margin-top: 1em }
-.hl {
-	font-style: italic;
+
+.sitelogo {
+	background: url(/images/0chan-autumn.png);
+	width: 420px;
+	height: 150px;
+	margin-top: 8px;
 }
-.plus { float: right; font-size: 8px; font-weight: normal; padding: 1px 4px 2px 4px; margin: 0px 0px; background: #eb9; color: #000; border: 1px 
-solid #CCC; cursor: hand; cursor: pointer }
-.plus:hover { background: #da8; border: 1px solid #c97 }
-ul { list-style: none; padding-left: 0px; margin: 0px }
-li { margin: 0px }
-li:hover { background: #fec; }
-li a { display: block; width: 100%; }/*
