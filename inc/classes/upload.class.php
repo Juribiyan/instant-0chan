@@ -76,9 +76,7 @@ class Upload {
 						exitWithErrorPage(_gettext('Unknown File Error'));
 					}
 
-					$this->file_type = strtolower($this->file_type);
-
-					$this->file_type = preg_replace('/.*(\..+)/','\1',$_FILES['imagefile']['name']);
+					$this->file_type = strtolower(preg_replace('/.*(\..+)/','\1',$_FILES['imagefile']['name']));
 					if ($this->file_type == '.jpeg') {
 						/* Fix for the rarely used 4-char format */
 						$this->file_type = '.jpg';
