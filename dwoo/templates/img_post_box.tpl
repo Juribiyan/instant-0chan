@@ -36,7 +36,7 @@ autocomplete="off">
 		<td class="postblock"></td>
 		<td><nobr>
 			<input type="text" onclick="javascript:captcha_show();return false;" name="captcha" size="28" accesskey="c">
-			<span class="captcha_status">({t}captcha will be shown on click{/t})</span>
+			<span class="captcha_status">(капча появится по клику)</span>
 			<div class="captchawrap" style="display: none"><img class="captchaimage content-background" onclick="javascript:refreshCaptcha();" valign="middle" border="0" alt="Captcha image"></div>
 		</nobr></td>
 	</tr>
@@ -101,7 +101,7 @@ autocomplete="off">
 				{t}Embed{/t}
 			</td>
 			<td>
-				<input type="text" name="embed" size="28" maxlength="75" accesskey="e" />&nbsp;<select name="embedtype">
+				<input type="text" name="embed" size="28" maxlength="75" accesskey="e" /><input style="display:none" type="text" name="fakeandgay"/>&nbsp;<select name="embedtype">
 				{foreach name=embed from=$embeds item=embed}
 					{if in_array($embed.filetype,explode(',' $board.embeds_allowed))}
 						<option value="{$embed.name|lower}">{$embed.name}</option>
