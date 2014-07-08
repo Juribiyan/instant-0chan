@@ -36,7 +36,7 @@ autocomplete="off">
 		<td class="postblock"></td>
 		<td><nobr>
 			<input type="text" onclick="javascript:captcha_show();return false;" name="captcha" size="28" accesskey="c">
-			<span class="captcha_status">(капча появится по клику)</span>
+			<span class="captcha_status">({t}captcha will be shown on click{/t})</span>
 			<div class="captchawrap" style="display: none"><img class="captchaimage content-background" onclick="javascript:refreshCaptcha();" valign="middle" border="0" alt="Captcha image"></div>
 		</nobr></td>
 	</tr>
