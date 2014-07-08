@@ -10,7 +10,7 @@ autocomplete="off">
 {if $board.maximagesize > 0}
 	<input type="hidden" name="MAX_FILE_SIZE" value="{$board.maximagesize}" />
 {/if}
-<input type="text" name="email" size="28" maxlength="75" value="" style="display: none;" />
+<input type="text" name="email" size="28" maxlength="{%KU_MAXEMAILLENGTH}" value="" style="display: none;" />
 <table class="postform">
 	<tbody>
 	{if $board.forcedanon neq 1}
@@ -18,7 +18,7 @@ autocomplete="off">
 			<td class="postblock">
 				{t}Name{/t}</td>
 			<td>
-				<input type="text" name="name" size="28" maxlength="75" accesskey="n" autocomplete="on"/>
+				<input type="text" name="name" size="28" maxlength="{%KU_MAXNAMELENGTH}" accesskey="n" autocomplete="on"/>
 			</td>
 		</tr>
 	{/if}
@@ -46,7 +46,7 @@ autocomplete="off">
 			{t}Subject{/t}
 		</td>
 		<td>
-			{strip}<input type="text" name="subject" size="35" maxlength="75" accesskey="s" />&nbsp;<input type="submit" value="
+			{strip}<input type="text" name="subject" size="35" maxlength="{%KU_MAXSUBJLENGTH}" accesskey="s" />&nbsp;<input type="submit" value="
 			{if %KU_QUICKREPLY && $replythread eq 0}
 				{t}Submit{/t}" accesskey="z" />&nbsp;<small id="posttypeindicator">({t}new thread{/t})</small>
 			{elseif %KU_QUICKREPLY && $replythread neq 0}

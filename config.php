@@ -37,6 +37,7 @@ Warning: Do not insert single quotes in the value yourself, or else you will cau
 	define('KU_NAME', 'Jason\'s chan');
 
 */
+mb_internal_encoding("UTF-8");
 // Sets error reporting to hide notices.
 error_reporting(E_ALL ^ E_NOTICE);
 if (!headers_sent()) {
@@ -69,6 +70,10 @@ if (!$cache_loaded) {
 		$cf['KU_SUPPORTED_LOCALES'] = 'ru|en';	// 
 		$cf['KU_FFMPEGPATH'] = '/usr/local/bin/ffmpeg'; //path to FFMPEG, for example 'C:\ffmpeg\bin'
 
+		$cf['KU_MAXNAMELENGTH'] = 75; 
+		$cf['KU_MAXEMAILLENGTH'] = 4; 	// do we need more?
+		$cf['KU_MAXSUBJLENGTH'] = 75; 
+		
 	// Database
 		$cf['KU_DBTYPE']          = 'mysqli';	// Database type. Valid values are mysql and mysqli (reccomended for mysql). 
 							// PostgreSQL is also supported. Supported values are postgres64, postgres7 and postgres8. Only postgres8 is tested.

@@ -322,10 +322,10 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 			$post['country'] = isset($_SERVER["HTTP_CF_IPCOUNTRY"]) ? strtolower($_SERVER["HTTP_CF_IPCOUNTRY"]) : 'xx';
 
 			$post['board'] = $board_class->board['name'];
-			$post['name'] = substr($name, 0, 74);
+			$post['name'] = mb_substr($name, 0, KU_MAXNAMELENGTH);
 			$post['name_save'] = true;
 			$post['tripcode'] = $tripcode;
-			$post['email'] = substr($post_email, 0, 74);
+			$post['email'] = mb_substr($post_email, 0, KU_MAXEMAILLENGTH);
 			// First array is the converted form of the japanese characters meaning sage, second meaning age
 			$ords_email = unistr_to_ords($post_email);
 			if (strtolower($_POST['em']) != 'sage' && $ords_email != array(19979, 12370) && strtolower($_POST['em']) != 'age' && $ords_email != array(19978, 12370) && $_POST['em'] != 'return' && $_POST['em'] != 'noko') {
@@ -333,7 +333,7 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 			} else {
 				$post['email_save'] = false;
 			}
-			$post['subject'] = substr($post_subject, 0, 74);
+			$post['subject'] = mb_substr($post_subject, 0, KU_MAXSUBJLENGTH);
 			$post['message'] = $post_message;
 
 			$post = hook_process('posting', $post);
