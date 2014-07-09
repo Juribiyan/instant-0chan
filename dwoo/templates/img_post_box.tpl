@@ -101,7 +101,7 @@ autocomplete="off">
 				{t}Embed{/t}
 			</td>
 			<td>
-				<input type="text" name="embed" size="28" maxlength="75" accesskey="e" /><input style="display:none" type="text" name="fakeandgay"/>&nbsp;<select name="embedtype">
+				<input type="text" name="embed" size="28" maxlength="75" accesskey="e" />&nbsp;<select name="embedtype">
 				{foreach name=embed from=$embeds item=embed}
 					{if in_array($embed.filetype,explode(',' $board.embeds_allowed))}
 						<option value="{$embed.name|lower}">{$embed.name}</option>
@@ -116,6 +116,7 @@ autocomplete="off">
 				{t}Password{/t}
 			</td>
 			<td>
+				<input style="display:none" type="text" name="fakeandgay"/>
 				<input type="password" name="postpassword" size="8" accesskey="p" autocomplete="on"/>&nbsp;{t}(for post and file deletion){/t}
 			</td>
 		</tr>
