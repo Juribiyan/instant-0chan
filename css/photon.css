@@ -125,6 +125,8 @@ a:hover {
 }
 .omittedposts a, .xlink {
 	color:#666666;
+	text-decoration: inherit;
+	border-bottom: 1px dashed rgb(133, 133, 133);
 }
 .reply {
 	background:#DDDDDD;
@@ -174,7 +176,7 @@ table td {
 	border-style: none;
 }
 .nothumb {
-	background-color: #FFFFFF;
+	background-color: transparent;
 	border-style: dotted;
 	margin: .3em .5em;
 }
@@ -224,9 +226,4 @@ table td {
 .maintable {
 	width: 100%;
 	table-layout: fixed;
-}
-
-.omittedposts a, .xlink {
-	text-decoration: inherit;
-	border-bottom: 1px dashed rgb(133, 133, 133);
 }

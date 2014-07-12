@@ -246,16 +246,7 @@ table td {
 
 #overlay_menu:hover {
 	box-shadow: 0 0 20px rgba(0, 0, 0, 1);
-	background: rgb(18, 119, 124);
-	color: rgb(213, 213, 213);
-}
-
-#overlay_menu:hover a, #overlay_menu:hover a:visited {
-	color: rgb(34, 246, 255);
-}
-
-#overlay_menu:hover a:hover {
-	color: rgb(255, 255, 255);
+	background: rgb(27, 27, 27);
 }
 
 .replies table {
@@ -267,20 +258,14 @@ padding: 2px 5px;
 border-radius: 3px;
 }
 
-.menu-item:hover {
-	background: rgba(75, 75, 75, 0.4);
-}
-
 .maintable hr {
 	margin-left: -9px;
 margin-right: -9px;
 }
 
 .reflinkpreview {
-	/*border: 1px rgb(17, 98, 102) dashed;*/
 	border: none;
 	border-radius: none;
-	/* -webkit-box-shadow: 0 0 20px #000; */
 	-moz-box-shadow: 0 0 20px #ccc;
 	box-shadow: 0 0 20px #000;
 }
@@ -352,7 +337,7 @@ border: 1px solid rgb(83, 83, 83);
 color: rgb(36, 218, 226);
 }
 #postclone, #postclone .captchaimage {
-	background-color: rgb(13, 67, 70);
+	background-color: rgb(27, 27, 27);
 }
 .postmessage span[style*="color:blue"] {
 	color: rgb(173, 212, 255)!important;

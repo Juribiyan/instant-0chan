@@ -264,3 +264,8 @@ table td {
         width: 98%;
         table-layout: fixed;
 }
+.omittedposts a, .xlink {
+	color:#666666;
+	text-decoration: inherit;
+	border-bottom: 1px dashed rgb(133, 133, 133);
+}
