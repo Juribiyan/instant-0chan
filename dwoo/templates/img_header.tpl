@@ -56,6 +56,10 @@ if (!window.prettyPrint) {
 <script><!--
 	var hiddenthreads = getCookie('hiddenthreads').split('!');
 //--></script>
+{if %KU_REACT_ENA}
+<script src="{%KU_CLI_REACT_API}/socket.io/socket.io.js"></script>
+{/if}
+<script src="//cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
 </head>
 <body>
 <table width="98%" border="0" align="center" cellpadding="0" cellspacing="0" class="maintable">
