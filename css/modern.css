@@ -15,7 +15,7 @@ a:visited {
 	color: rgb(97, 138, 182);
 }
  a:hover {
-	color: rgb(83, 156, 235);
+	color: rgb(23, 53, 85);
 } 
 .adminbar {
 	clear:both;
@@ -102,7 +102,7 @@ a:visited {
 .filetitle {
 	background:inherit;
 	font-size:1.2em;
-	color:#002244;
+	color:#3F5264;
 	font-weight:bold;
 }
 .postername {
@@ -302,6 +302,9 @@ color: rgb(109, 109, 109);
 .reflink a, .reflink a:visited {
 color: #696969;
 text-decoration: none;
+}
+.reflink a:hover {
+color: #000;
 }
 .uibutton {
 	border-radius: 0;
