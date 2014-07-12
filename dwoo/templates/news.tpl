@@ -14,7 +14,7 @@
 <script type="text/javascript" src="{%KU_WEBFOLDER}lib/javascript/gettext.js"></script>
 <script type="text/javascript" src="{$dwoo.const.KU_WEBFOLDER}lib/javascript/kusaba.js"></script></head>
 <body>
-	<center><div class="sitelogo"></div></center>
+	<center><!-- img src="images/logo.png" style="margin-top: 20px;" --><div class="sitelogo"></div></center>
 	{if $dwoo.const.KU_SLOGAN neq ''}<center><h3>{$dwoo.const.KU_SLOGAN}</h3></center>{/if}
 	
 	<div class="menu" id="topmenu">
@@ -25,7 +25,7 @@
 	<div class="content">
 		<h2><span class="newssub">{$entry.subject|stripslashes}{if $dwoo.get.p eq ''} by {if $entry.email neq ''}<a href="mailto:{$entry.email|stripslashes}">{/if}{$entry.poster|stripslashes}{if $entry.email neq ''}</a>{/if} - {$entry.timestamp|date_format:"%D @ %I:%M %p %Z"}{/if}</span>
 		<span class="permalink"><a href="#{$entry.id}">#</a></span></h2>
-		<div style="margin:5px;">{$entry.message|stripslashes}</div>
+		<div style="margin:5px; padding-bottom: 5px;">{$entry.message|stripslashes}</div>
 	</div><br />
 {/foreach}
 	{$botads}

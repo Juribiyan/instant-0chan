@@ -34,9 +34,24 @@
 	<link rel="alternate" type="application/rss+xml" title="RSS" href="{%KU_BOARDSPATH}/{$board.name}/rss.xml" />
 {/if}
 <script type="text/javascript" src="{$cwebpath}/lib/javascript/gettext.js"></script>
-<!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> -->
-<script src="{$cwebpath}/lib/javascript/jquery.min.js"></script>
-<script type="text/javascript" src="{%KU_WEBPATH}/lib/javascript/prettify/prettify.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.load.min.js"></script>
+<script>
+if (!window.head) {
+    document.write('<script src="{$cwebpath}/lib/javascript/head.load.min.js"><\/script>');
+}
+</script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script>
+if (!window.jQuery) {
+    document.write('<script src="{$cwebpath}/lib/javascript/jquery-1.11.1.min.js"><\/script>');
+}
+</script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<script>
+if (!window.prettyPrint) {
+    document.write('<script src="{$cwebpath}/lib/javascript/prettify/prettify.js"><\/script>');
+}
+</script>
 <script src="{%KU_WEBPATH}/lib/javascript/kusaba.new.js?v={%KU_JSVER}"></script>
 <script><!--
 	var hiddenthreads = getCookie('hiddenthreads').split('!');

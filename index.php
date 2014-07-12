@@ -49,7 +49,12 @@ $body = 'pages/contents/'.$page['body'].'.php';
 	<title><?php echo $title;?></title>
     <?php include($pattern);?>
 	<link href="/pages/index.css?v=<?php echo KU_CSSVER?>" media="all" rel="stylesheet" type="text/css">
-	<script src="/lib/javascript/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script>
+    if (!window.jQuery) {
+        document.write('<script src="/lib/javascript/jquery-1.11.1.min.js"><\/script>');
+    }
+    </script>
 	<script src="/pages/index.js?v=<?php echo KU_JSVER?>"></script>
 </head>
 <body>
