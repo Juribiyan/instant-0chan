@@ -178,7 +178,7 @@ table td {
 	border-style: none;
 }
 .nothumb {
-	background-color: #FFFFFF;
+	background-color: transparent;
 	border-style: dotted;
 	margin: .3em .5em;
 }
