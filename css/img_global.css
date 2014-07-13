@@ -12,6 +12,16 @@ form {
 	margin-bottom: 0px;
 }
 
+.blotter {
+	font-size:0.7em;
+}
+.blotterhead {
+	text-align: center;
+}
+.blotter-entries {
+	padding-top: 0.7em;
+}
+
 .captchawrap {
 	display: inline-block;
 	width: 150px;

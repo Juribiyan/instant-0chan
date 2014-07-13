@@ -130,11 +130,12 @@ autocomplete="off">
 			</label>
 			</td>
 		</tr>
-		<tr id="passwordbox"><td></td><td></td></tr>
+		<tr id="passwordbox" style="display: none;"><td></td><td></td></tr>
 
 		<tr>
-			<td colspan="2" class="rules">
-				<ul style="margin-left: 0; margin-top: 0; margin-bottom: 0; padding-left: 0;">
+			<td colspan="2" class="blotter">
+				<div class="blotterhead">[<a href="#" onclick="toggleblotter();return false;" class="xlink"><b>{t}Info{/t}</b></a>{if $board.enablecatalog eq 1}  | <a href="{%KU_BOARDSFOLDER}{$board.name}/catalog.html"><b>{t}Catalog{/t}</b></a>{/if}]</div>
+				<ul style="margin-left: 0; margin-top: 0; margin-bottom: 0; padding-left: 0;" class="blotter-entries">
 					<li>{t}Supported file types are{/t}:
 					{if $board.filetypes_allowed neq ''}
 						{foreach name=files item=filetype from=$board.filetypes_allowed}
@@ -145,33 +146,14 @@ autocomplete="off">
 					{/if}
 					</li>
 					<li>{t}Maximum file size allowed is{/t} {math "round(x/1024)" x=$board.maximagesize} KB.</li>
-					<li>{t 1=%KU_THUMBWIDTH 2=%KU_THUMBHEIGHT}Images greater than %1x%2 pixels will be thumbnailed.{/t}</li>
-					<li>{t 1=$board.uniqueposts}Currently %1 unique user posts.{/t}
-					{if $board.enablecatalog eq 1} 
-						<a href="{%KU_BOARDSFOLDER}{$board.name}/catalog.html">{t}View catalog{/t}</a>
-					{/if}
 					</li>
 					<li><b>Информация для тех, кто хочет <a href="/?p=donate">поддержать нульчан</a></b></li>
 				</ul>
-			{if %KU_BLOTTER && $blotter}
-				<br />
-				<ul style="margin-left: 0; margin-top: 0; margin-bottom: 0; padding-left: 0;">
-				<li style="position: relative;">
-					<span style="color: red;">
-				{t}Blotter updated{/t}: {$blotter_updated|date_format:"%Y-%m-%d"}
-				</span>
-					<span style="color: red;text-align: right;position: absolute;right: 0px;">
-						<a href="#" onclick="javascript:toggleblotter(true);return false;">{t}Show/Hide{/t}</a> <a href="{%KU_WEBPATH}/blotter.php">{t}Show All{/t}</a>
-					</span>
-				</li>
-				{$blotter}
-				</ul>
-				<script type="text/javascript"><!--
-				if (getCookie('ku_showblotter') == '1') {
-					toggleblotter(false);
+			<script type="text/javascript"><!--
+				if (getCookie('ku_showblotter') != '1') {
+					hideblotter();
 				}
 				--></script>
-			{/if}
 			</td>
 		</tr>
 	</tbody>
