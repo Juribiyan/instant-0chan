@@ -165,9 +165,7 @@ boardid = '{$board.id}';
 			<span class="reflink">
 				{$post.reflink}
 			</span>
-			{if $board.showid}
-				ID: {$post.ipmd5|substr:0:6}
-			{/if}
+			{if $board.showid}<img src="data:image/png;base64,{rainbow($post.ipmd5, $post.id);}" />{/if}
 			<span class="extrabtns">
 			{if $post.locked eq 1}
 				<img style="border: 0;" src="{$boardpath}css/locked.gif" alt="{t}Locked{/t}" />
@@ -245,9 +243,7 @@ boardid = '{$board.id}';
 						<span class="reflink">
 							{$post.reflink}
 						</span>
-						{if $board.showid}
-							ID: {$post.ipmd5|substr:0:6}
-						{/if}
+						{if $board.showid}<img src="data:image/png;base64,{rainbow($post.ipmd5, $post.parentid);}" />{/if}
 						<span class="extrabtns">
 						{if %KU_QUICKREPLY}
 						<a href="#" data-parent="{$post.parentid}" data-postnum="{$post.id}" class="qrl" title="{t}Quick Reply{/t} в тред {$post.parentid}">

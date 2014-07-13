@@ -162,9 +162,7 @@ boardid = '{$board.id}';
 			{if $board.balls}
 			<img class="_country_" src="{%KU_WEBPATH}/images/flags/{$post.country}.PNG">
 			{/if}
-			{if $board.showid}
-				ID: {$post.ipmd5|substr:0:6}
-			{/if}
+			{if $board.showid}<img src="data:image/png;base64,{rainbow($post.ipmd5, $post.id);}" />{/if}
 			<span id="dnb-{$board.name}-{$post.id}-y"></span>
 			</span>
 			<br />
@@ -233,9 +231,7 @@ boardid = '{$board.id}';
 						<span class="reflink">
 							{$post.reflink}
 						</span>
-						{if $board.showid}
-							ID: {$post.ipmd5|substr:0:6}
-						{/if}
+						{if $board.showid}<img src="data:image/png;base64,{rainbow($post.ipmd5, $post.parentid);}" />{/if}
 						<span class="extrabtns">
 						{if %KU_QUICKREPLY}
 						<a href="#" data-parent="{$post.parentid}" data-boardname="{$board.name}" data-postnum="{$post.id}" class="qrl" title="{t}Quick Reply{/t} в тред {$post.parentid}">
