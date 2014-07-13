@@ -22,10 +22,10 @@ function img_code($code) {
    		    $scolor=array(33, 0, 127);
    		    break;
    		case "Modern":
-   		    $scolor=array(97, 138, 182);
+   		    $scolor=array(95,95,95);
    		    break;
    		case "Dark":
-   		    $scolor=array(33, 169, 175);
+   		    $scolor=array(200,200,200);
    		    break;
    		default: $scolor=array(85,85,85);
    		 	break;
