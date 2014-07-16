@@ -41,7 +41,6 @@ li a { display: block; width: 100%; }
 <body>
 <div style="text-align:center;"><h1>MySQL Batch File Importing Script</h1></div>
 <?php
-
 if (!isset($_POST["confirm"])) {
 ?>
 <br /><br />
@@ -67,6 +66,7 @@ Before running this script, make sure that:<br />
 <?php
 } else {
 	require('config.php');
+	require KU_ROOTDIR . 'inc/func/custom.php';
 	$reqiredtables = array("ads","announcements","banlist","bannedhashes","blotter","boards","board_filetypes","embeds","events","filetypes","front","loginattempts","modlog","module_settings","posts","reports","sections","staff","watchedthreads","wordfilter");
 	foreach ($reqiredtables as $tablename) {
 			if (mysql_table_exists(KU_DBDATABASE,KU_DBPREFIX.$tablename)) {
@@ -130,7 +130,7 @@ Before running this script, make sure that:<br />
 	}
 	// All done :)
 	$allboards = $tc_db->GetAll("SELECT `name`, `id` FROM `".KU_DBPREFIX."boards`");
-	$img_ft = $tc_db->GetAll("SELECT `id` FROM `".KU_DBPREFIX."filetypes` WHERE `filetype` = 'jpg' OR `filetype` = 'png' OR `filetype` = 'gif'");
+	$img_ft = $tc_db->GetAll("SELECT `id` FROM `".KU_DBPREFIX."filetypes` WHERE `filetype` = 'jpg' OR `filetype` = 'png' OR `filetype` = 'gif' OR `filetype` = 'webm'");
 	$flash_ft = $tc_db->GetAll("SELECT `id` FROM `".KU_DBPREFIX."filetypes` WHERE `filetype` = 'swf'");
 	$ft_query = "INSERT INTO `".KU_DBPREFIX."board_filetypes` (`boardid`, `typeid`) VALUES ";
 	$ft_rows = [];
