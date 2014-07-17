@@ -656,3 +656,14 @@ height: 100px;
 }
 .movie img { cursor: pointer;}
 .markupbtns {margin-left: 2px;}
+.sending-loading {
+	vertical-align: middle;
+	display: none;
+	margin: -10px 0;
+}
+.form-sending .sending-loading {
+	display: inline;
+}
+.form-sending input[type=submit] {
+	display: none;
+}
