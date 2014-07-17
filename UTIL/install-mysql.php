@@ -133,7 +133,6 @@ Before running this script, make sure that:<br />
 	$img_ft = $tc_db->GetAll("SELECT `id` FROM `".KU_DBPREFIX."filetypes` WHERE `filetype` = 'jpg' OR `filetype` = 'png' OR `filetype` = 'gif' OR `filetype` = 'webm'");
 	$flash_ft = $tc_db->GetAll("SELECT `id` FROM `".KU_DBPREFIX."filetypes` WHERE `filetype` = 'swf'");
 	$ft_query = "INSERT INTO `".KU_DBPREFIX."board_filetypes` (`boardid`, `typeid`) VALUES ";
-	$ft_rows = [];
 	$err = false;
 	foreach($allboards as $dir) {
 		$bid = $dir['id'];
