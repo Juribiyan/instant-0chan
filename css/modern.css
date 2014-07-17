@@ -117,7 +117,7 @@ a:visited {
 .omittedposts, .omittedposts a, .xlink {
 	color:#666666 !important;
 }
-.reply {
+.reply, .highlight {
 	background: #F8F8F8;
 	padding: 0;
 	padding-right: 2px;
@@ -177,11 +177,7 @@ table td {
 	color:#666666;
 }
 .highlight {
-	background:#EEDACB;
-	color:#333333;
-	border: 2px dashed #EE6600;
-	-moz-border-radius: 5px;
-	border-radius: 5px;
+	border: 1px dashed #EE6600;
 }
 
 #watchedthreads {
