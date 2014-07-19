@@ -111,8 +111,8 @@ msgstr "Разрешенные типы файлов"
 msgid "Already posted %shere%s."
 msgstr "Уже есть %sздесь%s."
 
-msgid "An image, or message, is required for a reply."
-msgstr "Для ответа нужна картинка или сообщение."
+msgid "An image, video, or message, is required for a reply."
+msgstr "Для ответа нужна картинка, видео или сообщение."
 
 msgid "Anonymous"
 msgstr "Аноним"

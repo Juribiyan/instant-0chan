@@ -235,8 +235,8 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 	$post_tag = $posting_class->GetPostTag();
 
 	if ($post_isreply) {
-		if ($imagefile_name == '' && !$is_oekaki && $post_message == '') {
-			exitWithErrorPage(_gettext('An image, or message, is required for a reply.'));
+		if ($imagefile_name == '' && !$is_oekaki && $post_message == '' && $_POST['embed'] == '') {
+			exitWithErrorPage(_gettext('An image, video, or message, is required for a reply.'));
 		}
 	} else {
 		if ($imagefile_name == '' && !$is_oekaki && ((!isset($_POST['nofile'])&&$board_class->board['enablenofile']==1) || $board_class->board['enablenofile']==0) && ($board_class->board['type'] == 0 || $board_class->board['type'] == 2 || $board_class->board['type'] == 3)) {
