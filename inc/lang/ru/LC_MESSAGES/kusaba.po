@@ -2013,3 +2013,9 @@ msgstr "Менеджер баннеров"
 
 msgid "captcha will be shown on click"
 msgstr "капча появится по клику"
+
+msgid "Info"
+msgstr "Информация"
+
+msgid "Catalog"
+msgstr "Каталог"
