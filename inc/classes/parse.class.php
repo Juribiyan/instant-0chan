@@ -179,8 +179,62 @@ class Parse {
 		
 		/* Add html for links to posts made in a different board */
 		$buffer = preg_replace_callback('/&gt;&gt;\/([a-z]+)\/([0-9]+)/', array(&$this, 'InterboardQuoteCheck'), $buffer);
+
+		/* Add html for links to posts in the board the post was made */
+		$buffer = preg_replace_callback('/##([0-9]+|op|оп)##/i', array(&$this, 'InterthreadProofLabel'), $buffer);
+		
+		/* Add html for links to posts made in a different board */
+		$buffer = preg_replace_callback('/##\/([a-z]+)\/([0-9]+)##/', array(&$this, 'InterboardProofLabel'), $buffer);
 		
 		return $buffer;
+	}
+
+	function InterthreadProofLabel($matches) {
+		global $tc_db, $ispage, $thread_board_return, $thread_board_id;
+
+		if(in_array(strtoupper($matches[1]), array('OP', 'ОП'))) $matches[1] = $this->parentid;
+		if ($this->boardtype != 1 && is_numeric($matches[1])) {
+			$result = $tc_db->GetAll("SELECT `parentid`, `ipmd5` FROM `".KU_DBPREFIX."posts` WHERE `boardid` = " . $this->boardid . " AND `id` = ".$tc_db->qstr($matches[1]));
+			if(count($result) > 0) {
+				$result = $result[0];
+				$proven = ($result['ipmd5'] == $this->ipmd5) ? 'proven' : 'disproven';
+				if ($result['parentid'] == 0) {
+					$realid = $matches[1];
+				} else {
+					$realid = $result['parentid'];
+				}
+				return '<a href="'.KU_BOARDSFOLDER.$thread_board_return.'/res/'.$realid.'.html#'.$matches[1].'" onclick="return highlight(\'' . $matches[1] . '\', true);" class="ref|' . $thread_board_return . '|' .$realid . '|' . $matches[1] . ' prooflabel '.$proven.'">'.$matches[0].'</a>';
+			}
+			else return $matches[0];
+		}
+		return $matches[0];
+	}
+
+	function InterboardProofLabel($matches) {
+		global $tc_db;
+
+		$result = $tc_db->GetAll("SELECT `id`, `type` FROM `".KU_DBPREFIX."boards` WHERE `name` = ".$tc_db->qstr($matches[1])."");
+		if ($result[0]["type"] != '') {
+			$result2 = $tc_db->GetAll("SELECT `parentid`, `ipmd5` FROM `".KU_DBPREFIX."posts` WHERE `boardid` = " . $result[0]['id'] . " AND `id` = ".$tc_db->qstr($matches[2])."");
+			if(count($result2) > 0) {
+				$result2 = $result2[0];
+				$proven = ($result2['ipmd5'] == $this->ipmd5) ? 'proven' : 'disproven';
+
+				if ($result2['parentid'] == 0) {
+					$realid = $matches[2];
+				} 
+				else $realid = $result2['parentid'];
+				
+				if ($result[0]["type"] != 1) {
+					return '<a href="'.KU_BOARDSFOLDER.$matches[1].'/res/'.$realid.'.html#'.$matches[2].'" class="ref|' . $matches[1] . '|' . $realid . '|' . $matches[2] . ' prooflabel '.$proven.'">'.$matches[0].'</a>';
+				} else {
+					return '<a href="'.KU_BOARDSFOLDER.$matches[1].'/res/'.$realid.'.html" class="ref|' . $matches[1] . '|' . $realid . '|' . $realid . ' prooflabel '.$proven.'">'.$matches[0].'</a>';
+				}
+			}
+			else return $matches[0];
+			
+		}
+		return $matches[0];
 	}
 	
 	function InterthreadQuoteCheck($matches) {
@@ -189,12 +243,11 @@ class Parse {
 		$lastchar = '';
 		// If the quote ends with a , or -, cut it off.
 		if(substr($matches[0], -1) == "," || substr($matches[0], -1) == "-") {
-			$lastchar = substr($matches[0], -1);
+			$lastchar = substr($matches[0], -1);     
 			$matches[1] = substr($matches[1], 0, -1);
 			$matches[0] = substr($matches[0], 0, -1);
 		}
 		if ($this->boardtype != 1 && is_numeric($matches[1])) {
-
 			$query = "SELECT `parentid` FROM `".KU_DBPREFIX."posts` WHERE `boardid` = " . $this->boardid . " AND `id` = ".$tc_db->qstr($matches[1]);
 			$result = $tc_db->GetOne($query);
 			if ($result !== '') {
@@ -206,7 +259,6 @@ class Parse {
 			} else {
 				return $matches[0];
 			}
-			
 			$return = '<a href="'.KU_BOARDSFOLDER.$thread_board_return.'/res/'.$realid.'.html#'.$matches[1].'" onclick="return highlight(\'' . $matches[1] . '\', true);" class="ref|' . $thread_board_return . '|' .$realid . '|' . $matches[1] . '">'.$matches[0].'</a>'.$lastchar;
 		} else {
 			$return = $matches[0];
@@ -364,10 +416,11 @@ class Parse {
 		return $ret;
 	}
 
-	function ParsePost($message, $board, $boardtype, $parentid, $boardid, $ispage = false, $useragent, $dice) {
+	function ParsePost($message, $board, $boardtype, $parentid, $boardid, $ispage = false, $useragent, $dice, $ipmd5) {
 		$this->boardtype = $boardtype;
 		$this->parentid = $parentid;
 		$this->boardid = $boardid;	
+		$this->ipmd5 = $ipmd5;	
 		$message = trim($message);
 		$message = $this->CutWord($message, (KU_LINELENGTH / 15));
 		$message = htmlspecialchars($message, ENT_QUOTES);

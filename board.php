@@ -187,7 +187,8 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 		$nextid = 1;
 	$parse_class->id = $nextid;
 	$ua = ($board_class->board['useragent']) ? htmlspecialchars($_SERVER['HTTP_USER_AGENT']) : false;
-	$dice = (in_array($_POST['board'], explode('|', KU_DICE_ENABLED))) ? true : false;
+	$dice = ($board_class->board['dice']) ? true : false;
+	$ipmd5 = md5($_SERVER['REMOTE_ADDR']);
 	// If they are just a normal user, or vip...
 	if (isNormalUser($user_authority)) {
 		// If the thread is locked
@@ -196,7 +197,7 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 			exitWithErrorPage(_gettext('Sorry, this thread is locked and can not be replied to.'));
 		}
 		
-		$post_message = $parse_class->ParsePost($_POST['message'], $board_class->board['name'], $board_class->board['type'], $thread_replyto, $board_class->board['id'], false, $ua, $board_class->board['dice']);
+		$post_message = $parse_class->ParsePost($_POST['message'], $board_class->board['name'], $board_class->board['type'], $thread_replyto, $board_class->board['id'], false, $ua, $dice, $ipmd5);
 	// Or, if they are a moderator/administrator...
 	} else {
 		// If they checked the D checkbox, set the variable to tell the script to display their staff status (Admin/Mod) on the post during insertion
@@ -209,7 +210,7 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 			$post_message = $_POST['message'];
 		// Otherwise, parse it as usual...
 		} else {
-			$post_message = $parse_class->ParsePost($_POST['message'], $board_class->board['name'], $board_class->board['type'], $thread_replyto, $board_class->board['id'], false, $ua, $board_class->board['dice']);
+			$post_message = $parse_class->ParsePost($_POST['message'], $board_class->board['name'], $board_class->board['type'], $thread_replyto, $board_class->board['id'], false, $ua, $dice, $ipmd5);
 			// (Moved) check against blacklist and detect flood
 		}
 

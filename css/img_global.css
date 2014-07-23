@@ -667,3 +667,10 @@ height: 100px;
 .form-sending input[type=submit] {
 	display: none;
 }
+proven.prooflabel {
+	font-wight: bold;
+}
+.disproven.prooflabel {
+	text-decoration: line-through;
+	color: inherit;
+}
