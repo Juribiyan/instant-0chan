@@ -195,7 +195,7 @@ function calculateNameAndTripcode($post_name) {
  */
 function formatLongMessage($message, $board, $threadid, $page) {
 	$output = '';
-	if ((strlen($message) > KU_LINELENGTH || count(explode('<br />', $message)) > 15) && $page) {
+	if ((strlen($message) > KU_LINELENGTH || count(explode('<br />', $message)) > 15) && $page && KU_CUTPOSTS) {
 		$message_exploded = explode('<br />', $message);
 		$message_shortened = '';
 		for ($i = 0; $i <= 14; $i++) {
