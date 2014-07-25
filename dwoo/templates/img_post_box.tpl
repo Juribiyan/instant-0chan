@@ -3,8 +3,7 @@
 <form name="postform" id="postform" action="{%KU_CGIPATH}/board.php" method="post" enctype="multipart/form-data"
 {if $board.enablecaptcha eq 1}
 	onsubmit="return checkcaptcha('postform');"
-{/if}
-autocomplete="off">
+{/if}>
 <input type="hidden" name="board" value="{$board.name}" />
 <input type="hidden" name="replythread" value="<!sm_threadid>" />
 {if $board.maximagesize > 0}
@@ -18,7 +17,7 @@ autocomplete="off">
 			<td class="postblock">
 				{t}Name{/t}</td>
 			<td>
-				<input type="text" name="name" size="28" maxlength="{%KU_MAXNAMELENGTH}" accesskey="n" autocomplete="on"/>
+				<input type="text" name="name" size="28" maxlength="{%KU_MAXNAMELENGTH}" accesskey="n"/>
 			</td>
 		</tr>
 	{/if}
