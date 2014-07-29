@@ -410,7 +410,7 @@ INSERT INTO `filetypes`
 INSERT INTO `PREFIX_events` (`name`, `at`) VALUES ('pingback', 0), ('sitemap', 0);
 
 INSERT INTO `PREFIX_embeds` (`filetype`, `name`, `videourl`, `width`, `height`, `code`) VALUES
-('you', 'Youtube', 'http://www.youtube.com/watch?v=', 255, 255, '<div class=\"youtube embed wrapper\" style=\"background-image:url(http://img.youtube.com/vi/EMBED_ID/0.jpg)\" data-id=\"EMBED_ID\" data-site=\"youtube\"></div>'),
+('you', 'Youtube', 'http://www.youtube.com/watch?v=', 255, 255, '<div class=\"youtube embed wrapper\" style=\"background-image:url(http://i.ytimg.com/vi/EMBED_ID/0.jpg)\" data-id=\"EMBED_ID\" data-site=\"youtube\"></div>'),
 ('vim', 'Vimeo', 'http://vimeo.com/', 200, 164, '<div class=\"vimeo embed wrapper\" data-id=\"EMBED_ID\" data-site=\"vimeo\"></div>'),
 ('cob', 'Coub', 'http://coub.com/view/', 200, 164, '<div class=\"coub embed wrapper\" data-id=\"EMBED_ID\" data-site=\"coub\"></div>');
 
