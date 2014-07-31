@@ -60,6 +60,7 @@ if (!$cache_loaded) {
 	// Custom shit!
 		$cf['KU_REACT_ENA'] = false;
 		$cf['KU_LOCAL_REACT_API'] = 'http://127.0.0.1:1337';
+		$cf['KU_REACT_SITENAME'] = 'yourchanid';
 		$cf['KU_CLI_REACT_API'] = 'http://example.com:1337';
 		$cf['KU_REACT_SRVTOKEN'] = 'ENTERRANDOMSHIT';
 		$cf['KU_CSSVER'] = '001';

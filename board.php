@@ -52,30 +52,26 @@ $bans_class = new Bans();
 $parse_class = new Parse();
 $posting_class = new Posting();
 
-
-require KU_ROOTDIR . '/inc/ElephantIO/Client.php';
-use ElephantIO\Client as Elephant;
-
-
-$clitoken = $_POST['token'];
-function elephant_emit($id="???") {
+function notify($id="???", $newthreadid = '') {
 	if($id[0] == '_') {
 		$cl20 = new Cloud20();
 		$cl20->rebuild();
 	}
-	if(KU_REACT_ENA)
-	try {
-		$elephant = new Elephant(KU_LOCAL_REACT_API, 'socket.io', 1, false, true, true);
-		$elephant->init();
-		$elephant->send(
-		    Elephant::TYPE_EVENT,
-		    null,
-		    null,
-		    json_encode(array('name' => 'srvmsg', 'args' => array('srvtoken' => KU_REACT_SRVTOKEN, 'room' => $id, 'clitoken' => $_POST['token'], 'timestamp' => time() )))
-		);
-		$elephant->close();
-	} catch(Exception $e) {
-		return;
+	if(KU_REACT_ENA) {
+		$data_string = json_encode(array('srvtoken' => KU_REACT_SRVTOKEN, 'room' => $id, 'clitoken' => $_POST['token'], 'timestamp' => time(), 'newthreadid' => $newthreadid ));                                                                            
+		$suckTo = KU_REACT_SITENAME ? KU_LOCAL_REACT_API.'/qr/'.KU_REACT_SITENAME : KU_LOCAL_REACT_API;
+		$ch = curl_init($suckTo);                                                                      
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+		curl_setopt($ch, CURLOPT_PROXY, "");    
+		curl_setopt($ch, CURLOPT_TIMEOUT, 0.5);                                                                      
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);                                                                  
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                      
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(                                                                          
+		    'Content-Type: application/json',                                                                                
+		    'Content-Length: ' . strlen($data_string))                                                                       
+		);  
+		curl_exec($ch);
+		if(curl_errno($ch)) error_log('Curl error during Notify: ' . curl_error($ch).' (Error code: '.curl_errno($ch).')');
 	}
 }
 
@@ -118,8 +114,6 @@ $oekaki = $posting_class->CheckOekaki();
 $is_oekaki = empty($oekaki) ? false : true;
 /* Ensure that UTF-8 is used on some of the post variables */
 $posting_class->UTF8Strings();
-
-if (isset($_POST['embed'])) $_POST['embed'] = trim($_POST['embed']);
 
 /* Check if the user sent a valid post (image for thread, image/message for reply, etc) */
 if ($posting_class->CheckValidPost($is_oekaki)) {
@@ -413,11 +407,11 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 		if ($thread_replyto == '0') {
 			// Regenerate the thread
 			$board_class->RegenerateThreads($post_id);
-			elephant_emit($board_class->board['name'].':'.$post_id);
+			notify($board_class->board['name'].':newthreads', $post_id);
 		} else {
 			// Regenerate the thread
 			$board_class->RegenerateThreads($thread_replyto);
-			elephant_emit($board_class->board['name'].':'.$thread_replyto);
+			notify($board_class->board['name'].':'.$thread_replyto);
 		}
 	} else {
 		exitWithErrorPage(_gettext('Sorry, this board is locked and can not be posted in.'));

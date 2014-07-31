@@ -674,3 +674,8 @@ proven.prooflabel {
 	text-decoration: line-through;
 	color: inherit;
 }
+#wild_thread_appeared {
+	display: block;
+text-align: center;
+border: none;
+}

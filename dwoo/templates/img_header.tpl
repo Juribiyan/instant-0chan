@@ -3,6 +3,7 @@
 		var captchaTimeout = ( {%KU_CAPTCHALIFE} * 1000 ) - 500;
 		var react_api = '{%KU_CLI_REACT_API}';
 		var react_ena = '{%KU_REACT_ENA}';
+		var react_sitename = {if %KU_REACT_SITENAME}'{%KU_REACT_SITENAME}:'{else}''{/if};
 		var this_board_dir = '{$board.name}';
 		var ku_boardspath = '{%KU_BOARDSPATH}';
 		var ku_cgipath = '{%KU_CGIPATH}';
