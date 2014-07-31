@@ -119,6 +119,8 @@ $is_oekaki = empty($oekaki) ? false : true;
 /* Ensure that UTF-8 is used on some of the post variables */
 $posting_class->UTF8Strings();
 
+if (isset($_POST['embed'])) $_POST['embed'] = trim($_POST['embed']);
+
 /* Check if the user sent a valid post (image for thread, image/message for reply, etc) */
 if ($posting_class->CheckValidPost($is_oekaki)) {
 	$tc_db->Execute("START TRANSACTION");
