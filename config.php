@@ -65,7 +65,7 @@ if (!$cache_loaded) {
 		$cf['KU_REACT_SRVTOKEN'] = 'ENTERRANDOMSHIT';
 		$cf['KU_CSSVER'] = '001';
 		$cf['KU_JSVER'] = '001';
-		$cf['KU_CAPTCHALIFE'] = 18;		// Captcha time-to-live in seconds
+		$cf['KU_CAPTCHALIFE'] = 150;		// Captcha time-to-live in seconds
 		$cf['KU_20_BOARDSLIMIT'] = 5;	// How many 2.0 boards a user can create
 		$cf['KU_20_CLOUDTIME'] = "-24 hours";
 		$cf['KU_SUPPORTED_LOCALES'] = 'ru|en';	// 
