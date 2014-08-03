@@ -71,7 +71,7 @@ text-align: center;
 .link20 {padding: 0 0.2em;}
 </style>
     <center>
-    <a href="/?p=boards" title="Доски">Доски</a> | <b>Nullchorg 2.0<sup>beta</sup></b> | <a href="/?p=faq" title="FAQ">FAQ</a>
+    <a href="/?p=boards" title="Доски">Доски</a> | <b>2.0chan<sup>beta</sup></b> | <a href="/?p=faq" title="FAQ">FAQ</a>
     </center>
     <div id="container20">
     	<div id="inputs20">

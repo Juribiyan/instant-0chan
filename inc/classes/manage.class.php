@@ -1245,7 +1245,7 @@ class Manage {
 							
 							$salt = $this->CreateSalt();
 							$tc_db->Execute("INSERT HIGH_PRIORITY INTO `" .KU_DBPREFIX. "staff` ( `username` , `password` , `salt` , `type` , `addedon` ) VALUES (" .$tc_db->qstr($_POST['username']). " , '" .md5($_POST['pass1'] . $salt). "' , '" .$salt. "' , '3' , '" .time(). "' )");
-							management_addlogentry('New user '.$_POST['username'].' has joined Nullchorg 2.0', 6, 'Nullchorg 2.0 service');
+							management_addlogentry('New user '.$_POST['username'].' has joined 2.0chan', 6, '2.0 service');
 							$tpl_page = _gettext('Successfully registered new user. Now you can log in.');
 							$this->LoginForm();
 							
