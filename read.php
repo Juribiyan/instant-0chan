@@ -192,6 +192,8 @@ if ($board_class->board['type'] == 1) {
 	}
 	$board_class->dwoo_data->assign('posts', $results);
 
+	$board_class->dwoo_data->assign('replink', $_GET['replink']);
+
 	$page .= $board_class->dwoo->get(KU_TEMPLATEDIR . '/' . $board_class->board['text_readable'] . '_thread.tpl', $board_class->dwoo_data);
 
 	if (!$singlepost) {

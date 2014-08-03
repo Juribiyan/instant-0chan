@@ -164,6 +164,7 @@ boardid = '{$board.id}';
 			{/if}
 			{if $board.showid}<img src="data:image/png;base64,{rainbow($post.ipmd5, $post.id);}" />{/if}
 			<span id="dnb-{$board.name}-{$post.id}-y"></span>
+			{if $replink eq 1}[<a href="{%KU_BOARDSFOLDER}{$board.name}/res/{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}.html">{t}Reply{/t}</a>]{/if}
 			</span>
 			<br />
 		{else}
