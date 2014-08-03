@@ -167,7 +167,7 @@ boardid = '{$board.id}';
 			</span>
 			<br />
 		{else}
-		{if $numimages > 0 && $isexpand && $.foreach.postsloop.first}
+		{* if $numimages > 0 && $isexpand && $.foreach.postsloop.first}
 				<a class="xlink" href="#top" onclick="javascript:
 				{foreach key=postkey2 item=post2 from=$posts}
 					{if $post2.parentid neq 0}
@@ -177,7 +177,7 @@ boardid = '{$board.id}';
 					{/if}
 				{/foreach}
 				return false;">{t}Expand all images{/t}</a>
-			{/if}
+			{/if *}
 
 			<table class="postnode">
 				<tbody>
@@ -382,7 +382,7 @@ boardid = '{$board.id}';
 					{t}omitted{/t}. {t}Last 50 shown{/t}.
 					</span>
 			{/if}
-			{if $numimages > 0}
+			{* if $numimages > 0}
 				<a href="#top" onclick="javascript:
 				{foreach key=postkey2 item=post2 from=$posts}
 					{if $post2.parentid neq 0}
@@ -392,7 +392,7 @@ boardid = '{$board.id}';
 					{/if}
 				{/foreach}
 				return false;">{t}Expand all images{/t}</a>
-			{/if}
+			{/if *}
 		{else}
 				</td>
 			</tr>
