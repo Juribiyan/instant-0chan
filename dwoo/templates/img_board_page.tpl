@@ -178,7 +178,7 @@ boardid = '{$board.id}';
 				<a href="#" data-parent="{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}" class="qrl" title="{t}Quick Reply{/t}"><img src="{$boardpath}css/icons/blank.gif" border="0" class="quickreply spritebtn" alt="quickreply" /></a>
 			{/if}
 			{if $board.balls}
-			<img class="_country_" src="{%KU_WEBPATH}/images/flags/{$post.country}.PNG">
+			<img class="_country_" src="{%KU_WEBPATH}/images/flags/{$post.country}.png">
 			{/if}
 			</span>
 			<span id="dnb-{$board.name}-{$post.id}-y"></span>
@@ -251,7 +251,7 @@ boardid = '{$board.id}';
 						</a>
 						{/if}
 						{if $board.balls}
-						<img class="_country_" src="{%KU_WEBPATH}/images/flags/{$post.country}.PNG">
+						<img class="_country_" src="{%KU_WEBPATH}/images/flags/{$post.country}.png">
 						{/if}
 						{if $post.locked eq 1}
 							<img style="border: 0;" src="{$boardpath}css/locked.gif" alt="{t}Locked{/t}" />

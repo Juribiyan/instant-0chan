@@ -160,7 +160,7 @@ boardid = '{$board.id}';
 				</a>
 			{/if}
 			{if $board.balls}
-			<img class="_country_" src="{%KU_WEBPATH}/images/flags/{$post.country}.PNG">
+			<img class="_country_" src="{%KU_WEBPATH}/images/flags/{$post.country}.png">
 			{/if}
 			{if $board.showid}<img src="data:image/png;base64,{rainbow($post.ipmd5, $post.id);}" />{/if}
 			<span id="dnb-{$board.name}-{$post.id}-y"></span>
@@ -240,7 +240,7 @@ boardid = '{$board.id}';
 						</a>
 						{/if}
 						{if $board.balls}
-						<img class="_country_" src="{%KU_WEBPATH}/images/flags/{$post.country}.PNG">
+						<img class="_country_" src="{%KU_WEBPATH}/images/flags/{$post.country}.png">
 						{/if}
 						{if $post.locked eq 1}
 							<img style="border: 0;" src="{$boardpath}css/locked.gif" alt="{t}Locked{/t}" />
