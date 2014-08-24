@@ -44,7 +44,6 @@ class Parse {
 			'`\[aa\](.+?)\[/aa\]`is', 
 			'`\[spoiler\](.+?)\[/spoiler\]`is', 
 			'`\[lination\](.+?)\[/lination\]`is', 
-			'`\[l\](.+?)\[/l\]`is', 
 			'`\[caps\](.+?)\[/caps\]`is',
 			'`&quot;(.+?)&quot;`is'
 			);
@@ -58,8 +57,7 @@ class Parse {
 			'<strike>\\1</strike>', 
 			'<span style="font-family: Mona,\'MS PGothic\' !important;">\\1</span>', 
 			'<os>\\1</os>', 
-			'<ol>\\1</ol>',
-			'<span>\\1</span>',
+			'<table class="lination"><tr><td><img src="/images/lina.png"/></td><td><div class="bubble">\\1</div></td></tr></table>',
 			'<span style="text-transform: uppercase;">\\1</span>',
 			'«\\1»'
 			);

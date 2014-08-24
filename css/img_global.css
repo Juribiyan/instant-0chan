@@ -679,3 +679,46 @@ proven.prooflabel {
 text-align: center;
 border: none;
 }
+.bubble {
+    position: relative;
+	background: #ADB400;
+	border: #000 solid 2px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	display: inline-block;
+	vertical-align: top;
+	margin-left: 20px;
+	padding: 11px 10px;
+	color: #000;
+	text-shadow: none;
+}
+
+.bubble:after {
+    content: "";
+    position: absolute;
+    top: 14px;
+    left: -11px;
+    border-style: solid;
+    border-width: 6px 11px 6px 0;
+    border-color: transparent #ADB400;
+    display: block;
+    width: 0;
+    z-index: 1;
+}
+
+.bubble:before {
+    content: "";
+    position: absolute;
+    top: 13px;
+    left: -14px;
+    border-style: solid;
+    border-width: 7px 12px 7px 0;
+    border-color: transparent #000000;
+    display: block;
+    width: 0;
+    z-index: 0;
+}
+.lination td {
+	vertical-align: top;
+}
