@@ -247,7 +247,7 @@ class Upload {
 									die();
 								}
 								
-								if($this->file_type == '.mp3') {
+								if($this->file_type == '.mp3' || $this->file_type == '.ogg') {
 									require_once(KU_ROOTDIR . 'lib/getid3/getid3.php');
 
 									$getID3 = new getID3;

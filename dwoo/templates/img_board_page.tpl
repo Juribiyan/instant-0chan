@@ -34,7 +34,7 @@ boardid = '{$board.id}';
 			
 			{if ($post.file neq '' || $post.file_type neq '' ) && (($post.videobox eq '' && $post.file neq '') && $post.file neq 'removed')}
 				<span class="filesize">
-							{if $post.file_type eq 'mp3'}
+							{if $post.file_type eq 'mp3' or $post.file_type eq 'ogg'}
 								{t}Audio{/t}
 							{else}
 								{t}File{/t}
@@ -115,6 +115,7 @@ boardid = '{$board.id}';
 				{else}
 					<a
 					{if $post.file_type eq 'webm'} class="movie" data-id="{$post.id}" data-thumb="{$post.nonstandard_file}" data-width="{$post.image_w}" data-height="{$post.image_h}"{/if}
+					{if $post.file_type eq 'mp3' or $post.file_type eq 'ogg'} class="audiowrap" {/if}
 					{if %KU_NEWWINDOW}
 						target="_blank" 
 					{/if}								
@@ -264,7 +265,7 @@ boardid = '{$board.id}';
 						{if ($post.file neq '' || $post.file_type neq '' ) && (( $post.videobox eq '' && $post.file neq '') && $post.file neq 'removed')}
 							<br />
 							<span class="filesize">
-							{if $post.file_type eq 'mp3'}
+							{if $post.file_type eq 'mp3' or $post.file_type eq 'ogg'}
 								{t}Audio{/t}
 							{else}
 								{t}File{/t}
@@ -348,6 +349,7 @@ boardid = '{$board.id}';
 					{else}
 					<a
 					{if $post.file_type eq 'webm'} class="movie" data-id="{$post.id}" data-thumb="{$post.nonstandard_file}" data-width="{$post.image_w}" data-height="{$post.image_h}"{/if}
+					{if $post.file_type eq 'mp3' or $post.file_type eq 'ogg'} class="audiowrap" {/if}
 					{if %KU_NEWWINDOW}
 						target="_blank" 
 					{/if}								
@@ -357,19 +359,6 @@ boardid = '{$board.id}';
 							{/if}
 						{/if}
 
-		{/if}
-		{if $post.file_type eq 'mp3'}
-			<!--[if !IE]> -->
-			<object type="application/x-shockwave-flash" data="{%KU_WEBPATH}/inc/player/player.swf?playerID={$post.id}&amp;soundFile={$file_path}/src/{$post.file|utf8_encode|urlencode}.mp3{if $post.id3.comments_html.artist.0 neq ''}&amp;artists={$post.id3.comments_html.artist.0}{/if}{if $post.id3.comments_html.title.0 neq ''}&amp;titles={$post.id3.comments_html.title.0|html_entity_decode|utf8_encode|urlencode}{/if}&amp;wmode=transparent" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=10,0,22,87" width="290" height="24">
-			<param name="wmode" value="transparent" />
-			<!-- <![endif]-->
-			<!--[if IE]>
-			<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=10,0,22,87" width="290" height="24">
-				<param name="movie" value="{%KU_WEBPATH}/inc/player/player.swf?playerID={$post.id}&amp;soundFile={$file_path}/src/{$post.file|utf8_encode|urlencode}.mp3{if $post.id3.comments_html.artist.0 neq ''}&amp;artists={$post.id3.comments_html.artist.0}{/if}{if $post.id3.comments_html.title.0 neq ''}&amp;titles={$post.id3.comments_html.title.0|html_entity_decode|utf8_encode|urlencode}{/if}&amp;wmode=transparent" />
-				<param name="wmode" value="transparent" />
-			<!-->
-			</object>
-			<!-- <![endif]-->
 		{/if}
 		<blockquote class="postmessage">
 		{if $post.videobox}
