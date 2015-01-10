@@ -301,11 +301,12 @@ class Upload {
 								/* Check if the filetype provided comes with a MIME restriction */
 								if ($filetype_required_mime != '') {
 									/* Check if the MIMEs don't match up */
-									if (mime_content_type($this->file_location) != $filetype_required_mime) {
+									if (finfo_file( finfo_open( FILEINFO_MIME_TYPE ), $this->file_location) != $filetype_required_mime) {
 										/* Delete the file we just uploaded and kill the script */
 										unlink($this->file_location);
 										exitWithErrorPage(_gettext('Invalid MIME type for this filetype.'));
 									}
+									finfo_close($finfo);
 								}
 
 								/* Make sure the entire file was uploaded */
