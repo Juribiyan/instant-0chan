@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <head>
+<meta http-equiv="Content-Type" content="text/html;charset={%KU_CHARSET}" />
 <title>{$title}</title>
 <link rel="apple-touch-icon" sizes="57x57" href="/fav/apple-touch-icon-57x57.png">
 <link rel="apple-touch-icon" sizes="114x114" href="/fav/apple-touch-icon-114x114.png">
@@ -22,4 +23,3 @@
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="cache-control" content="no-cache" />
 <meta http-equiv="expires" content="Sat, 17 Mar 1990 00:00:01 GMT" />
-<meta http-equiv="Content-Type" content="text/html;charset={%KU_CHARSET}" />
