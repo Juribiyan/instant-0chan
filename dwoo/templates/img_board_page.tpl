@@ -378,30 +378,33 @@ boardid = '{$board.id}';
 			{if $post.replies}
 				<span class="omittedposts">
 				{if %KU_EXPAND}<a href="{%KU_BOARDSFOLDER}{$board.name}/res/{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}.html" onclick="javascript:expandthread('{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}','{$board.name}');return false;" title="{t}Expand Thread{/t}">{/if}
-					{if $post.stickied eq 0}
-						{$post.replies} 
-						{if $post.replies eq 1}
-							{t lower="yes"}Post{/t} 
-						{else}
-							{t lower="yes"}Posts{/t} 
-						{/if}
+					{if $locale == 'ru'}
+					{omitted_syntax($post.replies, $post.images)}
 					{else}
-						{$post.replies}
-						{if $post.replies eq 1}
-							{t lower="yes"}Post{/t} 
+						{if $post.stickied eq 0}
+							{$post.replies}
+							{if $post.replies eq 1}
+								{t lower="yes"}Post{/t} 
+							{else}
+								{t lower="yes"}Posts{/t} 
+							{/if}
 						{else}
-							{t lower="yes"}Posts{/t} 
+							{$post.replies}
+							{if $post.replies eq 1}
+								{t lower="yes"}Post{/t} 
+							{else}
+								{t lower="yes"}Posts{/t} 
+							{/if}
 						{/if}
-					{/if}
-					{if $post.images > 0}
-						{t}and{/t} {$post.images}
-						{if $post.images eq 1}
-							{t lower="yes"}Image{/t} 
-						{else}
-							{t lower="yes"}Images{/t} 
+						{if $post.images > 0}
+							{t}and{/t} {$post.images}
+							{if $post.images eq 1}
+								{t lower="yes"}Image{/t} 
+							{else}
+								{t lower="yes"}Images{/t} 
+							{/if}
 						{/if}
-					{/if}
-					{t}omitted{/t}.{if %KU_EXPAND}</a>{/if}
+					{t}omitted{/t}.{/if}{if %KU_EXPAND}</a>{/if}
 					</span>
 				{/if}
 			{else}

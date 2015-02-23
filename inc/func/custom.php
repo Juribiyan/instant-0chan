@@ -67,4 +67,29 @@ return base64_encode ($image_data);
 
 } 
 
+function omitted_syntax($posts, $images) {
+  $pd = declense($posts); $id = declense($images); 
+  if($pd == 0) $pw = 'постов';
+  elseif($pd == 1) $pw = 'пост';
+  else $pw = 'поста';
+  $s = $posts.' '.$pw;
+  $omit = ' пропущено.';
+  if($images) {
+    if($id == 0) $iw = 'изображений';
+    elseif($id == 1) $iw = 'изображение';
+    else $iw = 'изображения';
+    $s .= ' и '.$images.' '.$iw;
+  }
+  elseif($posts == 1) $omit = ' пропущен.';
+  return $s.$omit;
+}
+
+function declense($num) {
+  if($num >= 11 && $num <= 20) return 0;
+  $lastnum = $num % 10;
+  if($lastnum == 0 || $lastnum >= 5) return 0;
+  elseif($lastnum == 1) return 1;
+  else return 2;
+}
+
 ?>
