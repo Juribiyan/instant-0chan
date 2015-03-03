@@ -1322,6 +1322,8 @@ class Manage {
 		global $tc_db;
 		$this->AdministratorsOnly();
 
+		$desc = htmlescapechars($desc);
+
 		$output = '';
 		$output .= '<h2>'. _gettext('Add Results') .'</h2><br />';
 		$dir = cleanBoardName($dir);
@@ -1366,6 +1368,9 @@ class Manage {
 	function addBoard_mod($dir, $desc) {
 		global $tc_db;
 		$this->BoardOwnersOnly();
+
+		$desc = htmlescapechars($desc);
+
 		$output = '';
 		$output .= '<h2>'. _gettext('Add Results') .'</h2><br />';
 		$dir = '_'.cleanBoardName($dir);
@@ -2843,6 +2848,8 @@ class Manage {
 		global $tc_db, $tpl_page;
 		$this->AdministratorsOnly();
 
+		$_POST['desc'] = htmlescapechars($_POST['desc']);
+
 		$tpl_page .= '<h2>'. _gettext('Board options') . '</h2><br />';
 		if (isset($_GET['updateboard']) && isset($_POST['order']) && isset($_POST['maxpages']) && isset($_POST['maxage']) && isset($_POST['messagelength'])) {
       		$this->CheckToken($_POST['token']);
@@ -3269,6 +3276,9 @@ class Manage {
 
 	function boardopts_mod() {
 		global $tc_db, $tpl_page;
+
+		$_POST['desc'] = htmlescapechars($_POST['desc']);
+
 		$this->BoardOwnersOnly();
 
 		$tpl_page .= '<h2>'. _gettext('Board options') . '</h2><br />';
