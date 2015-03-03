@@ -1322,7 +1322,7 @@ class Manage {
 		global $tc_db;
 		$this->AdministratorsOnly();
 
-		$desc = htmlescapechars($desc);
+		$desc = htmlspecialchars($desc);
 
 		$output = '';
 		$output .= '<h2>'. _gettext('Add Results') .'</h2><br />';
@@ -1369,7 +1369,7 @@ class Manage {
 		global $tc_db;
 		$this->BoardOwnersOnly();
 
-		$desc = htmlescapechars($desc);
+		$desc = htmlspecialchars($desc);
 
 		$output = '';
 		$output .= '<h2>'. _gettext('Add Results') .'</h2><br />';
@@ -2848,7 +2848,7 @@ class Manage {
 		global $tc_db, $tpl_page;
 		$this->AdministratorsOnly();
 
-		$_POST['desc'] = htmlescapechars($_POST['desc']);
+		$_POST['desc'] = htmlspecialchars($_POST['desc']);
 
 		$tpl_page .= '<h2>'. _gettext('Board options') . '</h2><br />';
 		if (isset($_GET['updateboard']) && isset($_POST['order']) && isset($_POST['maxpages']) && isset($_POST['maxage']) && isset($_POST['messagelength'])) {
@@ -3277,7 +3277,7 @@ class Manage {
 	function boardopts_mod() {
 		global $tc_db, $tpl_page;
 
-		$_POST['desc'] = htmlescapechars($_POST['desc']);
+		$_POST['desc'] = htmlspecialchars($_POST['desc']);
 
 		$this->BoardOwnersOnly();
 
