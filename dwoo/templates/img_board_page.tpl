@@ -25,7 +25,7 @@ boardid = '{$board.id}';
 	<div id="thread{$post.id}{$board.name}">
 	<div class="postnode op">
 	<script type="text/javascript"><!--
-		if (localStorage['hiddenThreads.' + '{$board.name}'] && localStorage['hiddenThreads.' + '{$board.name}'].indexOf('{$post.id}')!==-1) {
+		if (localStorage['hiddenThreads.' + '{$board.name}'] && in_array('{$post.id}', localStorage['hiddenThreads.' + '{$board.name}'].split(',') ) ) {
 			document.getElementById('unhidethread{$post.id}{$board.name}').style.display = 'inline-block';
 			document.getElementById('thread{$post.id}{$board.name}').style.display = 'none';
 		}
