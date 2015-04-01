@@ -726,3 +726,11 @@ border: none;
 .lination td {
 	vertical-align: top;
 }
+
+#postclone {
+	max-width: 100%;
+	overflow: auto;
+}
+#postclone table {
+	display: block;
+}
