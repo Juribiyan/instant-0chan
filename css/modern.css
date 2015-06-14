@@ -187,12 +187,10 @@ table td {
 }
 
 .spritebtn {
-	background-image: url('/css/icons/black.gif');
+	background-image: url('icons/black.gif');
 	opacity: 0.3;
-	/* border-radius: 30px; */
 }
 .spritebtn:hover {
-	/* background-color: rgb(233, 233, 233); */
 	opacity: 1;
 }
 

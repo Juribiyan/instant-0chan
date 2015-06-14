@@ -19,7 +19,7 @@
 	background: #59c44d;
 }
 .i2-sprite {
-	background-image: url(../images/icons.png);
+	background-image: url(./images/icons.png);
 }
 .i2s-cloud {background-position: -43px 0px } .i2s-selected .i2s-cloud {background-position: -43px -30px }
 .i2s-list {background-position: 0px 0px } .i2s-selected .i2s-list {background-position: 0px -30px }
@@ -71,13 +71,13 @@ text-align: center;
 .link20 {padding: 0 0.2em;}
 </style>
     <center>
-    <a href="/?p=boards" title="Доски">Доски</a> | <b>2.0chan<sup>beta</sup></b> | <a href="/?p=faq" title="FAQ">FAQ</a>
+    <a href="?p=boards" title="Доски">Доски</a> | <b>2.0chan<sup>beta</sup></b> | <a href="?p=faq" title="FAQ">FAQ</a>
     </center>
     <div id="container20">
     	<div id="inputs20">
     		<div class="submenu20">
-    			<a href="/?p=register" onclick="toggleregister();return false;" id="register">$регистрация</a> |
-    			<a href="../manage.php" id="register">Админка</a>
+    			<a href="?p=register" onclick="toggleregister();return false;" id="register">$регистрация</a> |
+    			<a href="./manage.php" id="register">Админка</a>
     		</div><br />
     		<div class="i20switcher is-left">
     			<div title="Все в куче" data-action="cloud" class="switch switch-left i2s-selected"><div class="i2-sprite i2s-cloud"></div></div>

@@ -18,7 +18,7 @@
 <meta name="msapplication-TileColor" content="#00a300">
 <meta name="msapplication-TileImage" content="/fav/mstile-144x144.png">
 {if $locale != 'en'}
-	<link rel="gettext" type="application/x-po" href="{$cwebpath}/inc/lang/{$locale}/LC_MESSAGES/kusaba.po" />
+	<link rel="gettext" type="application/x-po" href="{$cwebpath}inc/lang/{$locale}/LC_MESSAGES/kusaba.po" />
 {/if}
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="cache-control" content="no-cache" />

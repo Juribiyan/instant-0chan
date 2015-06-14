@@ -22,7 +22,7 @@ input[type=submit] {
 </style>
 <div id="boards">
     <center>
-    <a href="/?p=boards" title="Доски">Доски</a> | <a href="/?p=2.0" title="2.0"><b>2.0chan<sup>beta</sup></b></a> | <a href="/?p=faq" title="FAQ">FAQ</a>
+    <a href="?p=boards" title="Доски">Доски</a> | <a href="?p=2.0" title="2.0"><b>2.0chan<sup>beta</sup></b></a> | <a href="?p=faq" title="FAQ">FAQ</a>
     </center>
     <table id="boardlist" border="0" align="center" cellpadding="0" cellspacing="0" style="border-top:1px #AAA solid">
     <tbody>

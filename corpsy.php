@@ -1,5 +1,5 @@
 <?php
-define('JSONFOLDER', $_SERVER['DOCUMENT_ROOT'].'/coub_json/');
+define('JSONFOLDER', realpath(dirname(__FILE__)).'/coub_json/');
 define('URLPREFIX', 'http://coub.com/api/oembed.json?url=http://coub.com/view/');
 
 if(!isset($_GET['code'])) exit('Nigga what are yo doin');

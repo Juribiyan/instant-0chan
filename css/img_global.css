@@ -263,7 +263,7 @@ pre {
 }
 
 .spritebtn {
-	background-image: url('/css/icons/white.gif');
+	background-image: url('icons/white.gif');
 	border-radius: 3px;
 	-webkit-transition: background-color 0.3s, border-color 0.3s;
 	-moz-transition: background-color 0.3s, border-color 0.3s;
@@ -434,10 +434,10 @@ border-radius: 5px;
 }
 .youtube.wrapper:before {
 	position: absolute;
-    width: 368px;
+  width: 368px;
 	height: 237px;
 	content: '';
-    background: url('../images/yt-ol.png');
+  background: url('../images/yt-ol.png');
 	display: block;
 	cursor: pointer;
 }
@@ -604,14 +604,14 @@ border-radius: 5px;
 	font-size: 12px;
 	border-radius: 4px;
 	border: 1px solid #cccccc;
-	background: #f6f6f6 url(/css/images/ui-bg_glass_100_f6f6f6_1x400.png) 50% 50% repeat-x;
+	background: #f6f6f6 url(images/ui-bg_glass_100_f6f6f6_1x400.png) 50% 50% repeat-x;
 	text-decoration: none;
 	padding: 0 14px;
 }
 .uibutton:hover {
 	color: #c77405;
 	border: 1px solid #fbcb09;
-	background: #fdf5ce url(/css/images/ui-bg_glass_100_fdf5ce_1x400.png) 50% 50% repeat-x;
+	background: #fdf5ce url(images/ui-bg_glass_100_fdf5ce_1x400.png) 50% 50% repeat-x;
 }
 #interface-notifier {
 display: inline-block;
@@ -633,7 +633,7 @@ display: inline-block;
 height: 39px;
 width: 49px;
 position: absolute;
-background: url(/images/bnr-overlay.png);
+background: url(../images/bnr-overlay.png);
 bottom: 0;
 right: 0;
 opacity: 0;

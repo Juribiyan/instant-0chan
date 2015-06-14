@@ -1,8 +1,7 @@
 body {
-        font-size:10pt !important;
-        font-family:"Trebuchet MS",Trebuchet,serif;
-
-	background: url(/css/images/summer/bg_bottom.png) bottom repeat-x;
+  font-size:10pt !important;
+  font-family:"Trebuchet MS",Trebuchet,serif;
+	background: url(images/summer/bg_bottom.png) bottom repeat-x;
 	background-color: #F6FFEC;
 	margin-left: 0px;
 	margin-top: 0px;
@@ -11,54 +10,54 @@ body {
 	padding: 0px !important;
 }
 a {
-        background:inherit;
-        color:#345C34;
-        text-decoration:underline;
-        font-family:"Trebuchet MS",Trebuchet,serif;
+  background:inherit;
+  color:#345C34;
+  text-decoration:underline;
+  font-family:"Trebuchet MS",Trebuchet,serif;
 }
 a:visited {
-        background:inherit;
-        color:#345C34;
+  background:inherit;
+  color:#345C34;
 }
 a:hover {
-        color:#117743;
-        text-decoration:underline;
+  color:#117743;
+  text-decoration:underline;
 }
 .adminbar {
-        text-align:right;
-        background:inherit;
-        clear:both;
-        float:right;
+  text-align:right;
+  background:inherit;
+  clear:both;
+  float:right;
 }
 .logo {
-        clear:both;
-        text-align:center;
-        background:inherit;
-        font-size:24pt;
-        color:#117743;
-        width:100%;
+  clear:both;
+  text-align:center;
+  background:inherit;
+  font-size:24pt;
+  color:#117743;
+  width:100%;
 }
 .theader {
-        background:#00E010;
-        color:#FFFFFF;
-        width:100%;
+  background:#00E010;
+  color:#FFFFFF;
+  width:100%;
 }
 .postarea {
         background:inherit;
 }
 .rules {
-        font-size:10px;
+  font-size:10px;
 	font-family:sans-serif;
 }
 .postblock {
-        background:#DDEEDD;
-        color:#000000;
-        font-weight:800;
+  background:#DDEEDD;
+  color:#000000;
+  font-weight:800;
 }
 .footer {
-        text-align:center;
-        font-size:10px;
-        font-family:sans-serif;
+  text-align:center;
+  font-size:10px;
+  font-family:sans-serif;
 }
 .passvalid {
 	background:#99EE88;
@@ -96,10 +95,10 @@ a:hover {
 	color:#000000;
 }
 .row2 {
-        background:#FFFFFF;
-        font-family:sans-serif;
-        font-size:12px;
-        color:#000000;
+  background:#FFFFFF;
+  font-family:sans-serif;
+  font-size:12px;
+  color:#000000;
 }
 .unkfunc {
 	color:#117743;
@@ -125,21 +124,21 @@ a:hover {
 	font-family:inherit;
 }
 .oldpost {
-        background:inherit;
-        font-size:18px;
-        color:#0F5D0C;
-        font-weight:800;
+  background:inherit;
+  font-size:18px;
+  color:#0F5D0C;
+  font-weight:800;
 }
 .omittedposts {
-        background:inherit;
-        font-size:14px;
-        color:#333333;
-        font-weight:800;
+  background:inherit;
+  font-size:14px;
+  color:#333333;
+  font-weight:800;
 }
 .reply {
 	background:#FAFFF4;
 	color:#000000;
-        font-family:"Trebuchet MS",Trebuchet,serif;
+  font-family:"Trebuchet MS",Trebuchet,serif;
 	border: solid 1px #669966;
 	-moz-border-radius: 7px;
 	-webkit-border-bottom-left-radius: 7px;
@@ -152,28 +151,23 @@ a:hover {
   word-wrap: break-word;
 
 }
-/*.postnode {
-  
-  width:expression(document.body.offsetWidth-150 + 'px');
-  overflow: auto !important;
-  overflow-y: hidden !important;
-}*/
+
 .doubledash {
  	vertical-align:top;
 	clear:both;
 	float:left;
 }
 .replytitle {
-        background:inherit;
-        font-size:18px;
-        color:#0F5D0C;
-        font-weight:800;
+  background:inherit;
+  font-size:18px;
+  color:#0F5D0C;
+  font-weight:800;
 }
 .commentpostername {
-        background:inherit;
-        font-size:12px;
-        color:#117743;
-        font-weight:800;
+  background:inherit;
+  font-size:12px;
+  color:#117743;
+  font-weight:800;
 }
 .thumbnailmsg {
 	background:inherit;
@@ -229,35 +223,35 @@ a:hover {
 }
 
 .topbar-left {
-	background: url('/css/images/summer/topbar-left.png');
+	background: url('images/summer/topbar-left.png');
 }
 
 .topbar-center {
-        background: url('/css/images/summer/topbar-center.png');
+  background: url('images/summer/topbar-center.png');
 }
 
 .topbar-right {
-        background: url('/css/images/summer/topbar-right.png');
+  background: url('images/summer/topbar-right.png');
 }
 
 .border-left {
-        background: url('/css/images/summer/border-left.png');
+  background: url('images/summer/border-left.png');
 }
 
 .border-right {
-        background: url('/css/images/summer/border-right.png');
+  background: url('images/summer/border-right.png');
 }
 
 .bottom-left {
-        background: url('/css/images/summer/bottom-left.png');
+  background: url('images/summer/bottom-left.png');
 }
 
 .bottom-right {
-        background: url('/css/images/summer/bottom-right.png');
+  background: url('images/summer/bottom-right.png');
 }
 
 .bottom-center {
-        background: url('/css/images/summer/bottom-center.png');
+  background: url('images/summer/bottom-center.png');
 }
 
 .content-background {
@@ -265,7 +259,6 @@ a:hover {
 }
 
 .maintable {
-        width: 98%;
-        table-layout: fixed;
+  width: 98%;
+  table-layout: fixed;
 }
-

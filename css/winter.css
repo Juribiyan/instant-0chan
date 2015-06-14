@@ -1,8 +1,8 @@
 body {
-        font-size:10pt !important;
-        font-family:"Trebuchet MS",Trebuchet,serif;
+  font-size:10pt !important;
+  font-family:"Trebuchet MS",Trebuchet,serif;
 
-	background: url(/css/images/winter/bg_bottom.png) bottom  repeat-x;
+	background: url(images/winter/bg_bottom.png) bottom  repeat-x;
 	background-color: #ECF1FF;
 	margin-left: 0px;
 	margin-top: 0px;
@@ -11,54 +11,54 @@ body {
 	padding: 0px !important;
 }
 a {
-        background:inherit;
-        color:#344063;
-        text-decoration:underline;
-        font-family:"Trebuchet MS",Trebuchet,serif;
+  background:inherit;
+  color:#344063;
+  text-decoration:underline;
+  font-family:"Trebuchet MS",Trebuchet,serif;
 }
 a:visited {
-        background:inherit;
-        color:#344063;
+  background:inherit;
+  color:#344063;
 }
 a:hover {
-        color:#133B5E;
-        text-decoration:underline;
+  color:#133B5E;
+  text-decoration:underline;
 }
 .adminbar {
-        text-align:right;
-        background:inherit;
-        clear:both;
-        float:right;
+  text-align:right;
+  background:inherit;
+  clear:both;
+  float:right;
 }
 .logo {
-        clear:both;
-        text-align:center;
-        background:inherit;
-        font-size:24pt;
-        color:#21007F;
-        width:100%;
+  clear:both;
+  text-align:center;
+  background:inherit;
+  font-size:24pt;
+  color:#21007F;
+  width:100%;
 }
 .theader {
-        background:#0010E0;
-        color:#FFFFFF;
-        width:100%;
+  background:#0010E0;
+  color:#FFFFFF;
+  width:100%;
 }
 .postarea {
-        background:inherit;
+  background:inherit;
 }
 .rules {
-        font-size:10px;
+  font-size:10px;
 	font-family:sans-serif;
 }
 .postblock {
-        background:#DDDDEE;
-        color:#000000;
-        font-weight:800;
+  background:#DDDDEE;
+  color:#000000;
+  font-weight:800;
 }
 .footer {
-        text-align:center;
-        font-size:10px;
-        font-family:sans-serif;
+  text-align:center;
+  font-size:10px;
+  font-family:sans-serif;
 }
 .passvalid {
 	background:#9988EE;
@@ -96,10 +96,10 @@ a:hover {
 	color:#000000;
 }
 .row2 {
-        background:#FFFFFF;
-        font-family:sans-serif;
-        font-size:12px;
-        color:#000000;
+  background:#FFFFFF;
+  font-family:sans-serif;
+  font-size:12px;
+  color:#000000;
 }
 .unkfunc {
 	color:#3648A0;
@@ -125,22 +125,22 @@ a:hover {
 	font-family:inherit;
 }
 .oldpost {
-        background:inherit;
-        font-size:18px;
-        color:#3D5B96;
-        font-weight:800;
+  background:inherit;
+  font-size:18px;
+  color:#3D5B96;
+  font-weight:800;
 }
 .omittedposts {
-        background:inherit;
-        font-size:14px;
-        color:#333333;
-        font-weight:800;
+  background:inherit;
+  font-size:14px;
+  color:#333333;
+  font-weight:800;
 }
 .reply {
 	background:#F7F8FF;
 	/*color:#000000;*/
 	color: rgb(5, 56, 165);
-        font-family:"Trebuchet MS",Trebuchet,serif;
+  font-family:"Trebuchet MS",Trebuchet,serif;
 	border: solid 1px #666699;
 	-moz-border-radius: 7px;
 		-webkit-border-bottom-left-radius: 7px;
@@ -165,16 +165,16 @@ a:hover {
 	float:left;
 }
 .replytitle {
-        background:inherit;
-        font-size:18px;
-        color:#00137F;
-        font-weight:800;
+  background:inherit;
+  font-size:18px;
+  color:#00137F;
+  font-weight:800;
 }
 .commentpostername {
-        background:inherit;
-        font-size:12px;
-        color:#3648A0;
-        font-weight:800;
+  background:inherit;
+  font-size:12px;
+  color:#3648A0;
+  font-weight:800;
 }
 .thumbnailmsg {
 	background:inherit;
@@ -230,35 +230,35 @@ a:hover {
 }
 
 .topbar-left {
-	background: url('/css/images/winter/topbar-left.png');
+	background: url('images/winter/topbar-left.png');
 }
 
 .topbar-center {
-        background: url('/css/images/winter/topbar-center.png');
+  background: url('images/winter/topbar-center.png');
 }
 
 .topbar-right {
-        background: url('/css/images/winter/topbar-right.png');
+  background: url('images/winter/topbar-right.png');
 }
 
 .border-left {
-        background: url('/css/images/winter/border-left.png');
+  background: url('images/winter/border-left.png');
 }
 
 .border-right {
-        background: url('/css/images/winter/border-right.png');
+  background: url('images/winter/border-right.png');
 }
 
 .bottom-left {
-        background: url('/css/images/winter/bottom-left.png');
+  background: url('images/winter/bottom-left.png');
 }
 
 .bottom-right {
-        background: url('/css/images/winter/bottom-right.png');
+  background: url('images/winter/bottom-right.png');
 }
 
 .bottom-center {
-        background: url('/css/images/winter/bottom-center.png');
+  background: url('images/winter/bottom-center.png');
 }
 
 .content-background {
@@ -266,7 +266,7 @@ a:hover {
 }
 
 .maintable {
-        width: 98%;
-        table-layout: fixed;
+  width: 98%;
+  table-layout: fixed;
 }
 
