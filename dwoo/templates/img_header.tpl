@@ -9,6 +9,7 @@
 		var ku_cgipath = '{%KU_CGIPATH}';
 		var style_cookie = "kustyle";
 		var locale = '{$locale}';
+		var ku_youtube_apikey = '{%KU_YOUTUBE_APIKEY}';
 {if $replythread > 0}
 		var ispage = false;
 {else}

@@ -463,15 +463,18 @@ border-radius: 5px;
 }
 .yt-title-overlay {
 	display: block;
-	color: rgba(255, 255, 255, 0.8) !important;
-	background: rgba(0, 0, 0, 0.8);
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	font-size: 13px;
-	line-height: 30px;
-	padding-left: 10px;
-	text-decoration: none;
+  color: rgb(238, 238, 238) !important;
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+  font-size: 16.5px;
+  box-shadow: inset 0 120px 90px -90px rgba(8,8,8,.8);
+  height: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 30px;
+  padding: 8px 12px 0 12px;
+  text-decoration: none;
+  text-shadow: rgba(0, 0, 0, 0.498039) 0px 0px 2px;
 }
 .yt-title-overlay:hover {
 	text-decoration: underline;

@@ -74,6 +74,7 @@ if (!$cache_loaded) {
 		$cf['KU_MAXNAMELENGTH'] = 75; 
 		$cf['KU_MAXEMAILLENGTH'] = 4; 	// do we need more?
 		$cf['KU_MAXSUBJLENGTH'] = 75; 
+		$cf['KU_YOUTUBE_APIKEY'] = '';	//Your personal anal probe ID. Can be obtained it Google Dev. Console
 		
 	// Database
 		$cf['KU_DBTYPE']          = 'mysqli';	// Database type. Valid values are mysql and mysqli (reccomended for mysql). 
