@@ -418,7 +418,7 @@ INSERT INTO `PREFIX_embeds` (`filetype`, `name`, `videourl`, `width`, `height`, 
 
 INSERT INTO `PREFIX_boards` 
 (`section`, `order`, `name`, `desc`,                    `maximagesize`, `maxpages`, `createdon`,           `anonymous`, `forcedanon`, `enablenofile`, `dice`, `useragent` ) VALUES
-('1',       '1',     'b',    'Бред',                       '10240000',      '11',    UNIX_TIMESTAMP(NOW()), '',              '0',           '0',        '0',      '0' ),
+('1',       '1',     'b',    'Бред',                       '10240000',      '11',    UNIX_TIMESTAMP(NOW()), '',              '1',           '0',        '0',      '0' ),
 ('1',       '2',     'd',    'Рисунки',                    '10240000',      '5',     UNIX_TIMESTAMP(NOW()), 'Аноним',        '0',           '0',        '0',      '0' ),
 ('1',       '3',     'r',    'Реквесты',                   '10240000',      '11',    UNIX_TIMESTAMP(NOW()), 'Аноним',        '0',           '1',        '0',      '0' ),
 ('1',       '4',     '0',    'Øчан',                       '10240000',      '11',    UNIX_TIMESTAMP(NOW()), 'Аноним',        '0',           '1',        '0',      '1' ),
