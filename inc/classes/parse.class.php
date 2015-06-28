@@ -29,9 +29,10 @@ class Parse {
 	function BBCode($string){
 	
 	$string = preg_replace_callback('`\[code\](.+?)\[/code\]`is', array(&$this, 'code_callback'), $string);
+	$string = preg_replace_callback('#`(.+?)`#is', array(&$this, 'inline_code_callback'), $string);
 	$string = preg_replace_callback('`\[tex\](.+?)\[/tex\]`is', array(&$this, 'latex_callback'), $string);
-	$string = preg_replace_callback('`((?:(?:(?:^\* )(?:[^\r\n]+))[\r\n]*)+)`m', array(&$this, 'bullet_list'), $string);
-	$string = preg_replace_callback('`((?:(?:(?:^[+\-\#] )(?:[^\r\n]+))[\r\n]*)+)`m', array(&$this, 'number_list'), $string);
+	$string = preg_replace_callback('`((?:(?:(?:^[\-\*] )(?:[^\r\n]+))[\r\n]*)+)`m', array(&$this, 'bullet_list'), $string);
+	$string = preg_replace_callback('`((?:(?:(?:[+\#] )(?:[^\r\n]+))[\r\n]*)?(?:(?:(?:^[+\#] )(?:[^\r\n]+))[\r\n]*)+)`m', array(&$this, 'number_list'), $string);
 
 		$patterns = array(
 			'`\*\*(.+?)\*\*`is', 
@@ -41,25 +42,31 @@ class Parse {
 			'`\[i\](.+?)\[/i\]`is', 
 			'`\[u\](.+?)\[/u\]`is', 
 			'`\[s\](.+?)\[/s\]`is', 
+			'`~~(.+?)~~`is',
 			'`\[aa\](.+?)\[/aa\]`is', 
 			'`\[spoiler\](.+?)\[/spoiler\]`is', 
 			'`\[lination\](.+?)\[/lination\]`is', 
 			'`\[caps\](.+?)\[/caps\]`is',
-			'`&quot;(.+?)&quot;`is'
+			'`&quot;(.+?)&quot;`is',
+			'#`(.+?)`#',
+      '`&gt;(.+?)&lt;`'
 			);
 		$replaces =  array(
 			'<b>\\1</b>', 
 			'<i>\\1</i>',
 			'<span class="spoiler">\\1</span>', 
-			'<ob>\\1</ob>', 
-			'<oi>\\1</oi>', 
+			'<b>\\1</b>', 
+			'<i>\\1</i>', 
 			'<span style="border-bottom: 1px solid">\\1</span>', 
 			'<strike>\\1</strike>', 
+			'<strike>\\1</strike>', 
 			'<span style="font-family: Mona,\'MS PGothic\' !important;">\\1</span>', 
-			'<os>\\1</os>', 
+			'<span class="spoiler">\\1</span>', 
 			'<table class="lination"><tr><td><img src="/images/lina.png"/></td><td><div class="bubble">\\1</div></td></tr></table>',
 			'<span style="text-transform: uppercase;">\\1</span>',
-			'«\\1»'
+			'«\\1»',
+			'<span class="inline-code">\\1</span>',
+      '<span class="unkfunc">&gt;\\1</span>'
 			);
 		$string = preg_replace($patterns, $replaces , $string);
 		return $string;
@@ -99,16 +106,21 @@ class Parse {
 	}
 	
 	function code_callback($matches) {
-	$matches[1]=str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $matches[1]);
-	$tr = array( "["=>"&#91;", "]"=>"&#93;", "*"=>"&#42;", "%"=>"&#37;", "/"=>"&#47;", "&quot;"=>"&#34;", "-"=>"&#45;", ":"=>"&#58;", " "=>"&nbsp;", "#"=>"&#35;",  "&#039;"=>"'", "&apos;"=>"'" );
-		$return = '<pre class="prettyprint" style="font-family:monospace">'
-		. strtr($matches[1],$tr) .
-		'</pre>'; 
+		$matches[1]=str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $matches[1]);
+		$tr = array( "["=>"&#91;", "]"=>"&#93;", "*"=>"&#42;", "%"=>"&#37;", "/"=>"&#47;", "&quot;"=>"&#34;", "-"=>"&#45;", ":"=>"&#58;", " "=>"&nbsp;", "#"=>"&#35;", "~"=>"&#126;",  "&#039;"=>"'", "&apos;"=>"'", "`"=>'&#96;' );
+		$return = '<pre class="prettyprint">'.  strtr($matches[1],$tr) . '</pre>'; 
+		return $return;
+	}
+
+	function inline_code_callback($matches) {
+		$matches[1]=str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $matches[1]);
+		$tr = array( "["=>"&#91;", "]"=>"&#93;", "*"=>"&#42;", "%"=>"&#37;", "/"=>"&#47;", "&quot;"=>"&#34;", "-"=>"&#45;", ":"=>"&#58;", " "=>"&nbsp;", "#"=>"&#35;", "~"=>"&#126;",  "&#039;"=>"'", "&apos;"=>"'" );
+		$return = '<pre class="inline-pp prettyprint">' . strtr($matches[1],$tr) . '</pre>'; 
 		return $return;
 	}
 
 	function latex_callback($matches) {
-	$tr = array( "["=>"&#91;", "]"=>"&#93;", "*"=>"&#42;", "%"=>"&#37;", "/"=>"&#47;", "&quot;"=>"&#34;", "-"=>"&#45;", ":"=>"&#58;" );
+	$tr = array( "["=>"&#91;", "]"=>"&#93;", "*"=>"&#42;", "%"=>"&#37;", "/"=>"&#47;", "&quot;"=>"&#34;", "-"=>"&#45;", ":"=>"&#58;");
 		$return = '<span lang="latex">'
 		. strtr($matches[1],$tr) .
 		'</span>'; 

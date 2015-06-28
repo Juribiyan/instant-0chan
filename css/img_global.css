@@ -210,16 +210,25 @@ pre {
 	background-color: inherit;
 }
 
-.spoiler a { 
-	color: inherit;
+.spoiler * {
+  opacity: 0;
+  -webkit-transition: opacity 0.2s;
+  	-o-transition: opacity 0.2s;
+  	transition: opacity 0.2s;
 }
 
-.spoiler a:visited { 
-	color: inherit;
+.spoiler * * {
+	transition: none;
 }
 
-.spoiler a:hover {
-	color: inherit;
+.spoiler:hover * {
+  opacity: inherit;
+}
+
+.spoiler {
+	-webkit-transition: color 0.2s, background-color 0.2s;
+	-o-transition: color 0.2s, background-color 0.2s;
+	transition: color 0.2s, background-color 0.2s;
 }
 
 .extrabtns, [id^=dnb] {
@@ -334,9 +343,9 @@ img.latex, object.latex  {
 	background: rgba(255, 255, 255, 0.62);
 }
 
-/* table {
-	border-spacing: 0px 2px;
-} */
+.inline-pp {
+	display: inline;
+}
 
 .dice {
 	color: white;
