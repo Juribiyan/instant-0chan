@@ -35,39 +35,39 @@ class Parse {
 	$string = preg_replace_callback('`((?:(?:(?:[+\#] )(?:[^\r\n]+))[\r\n]*)?(?:(?:(?:^[+\#] )(?:[^\r\n]+))[\r\n]*)+)`m', array(&$this, 'number_list'), $string);
 
 		$patterns = array(
-			'`\*\*(.+?)\*\*`is', 
-			'`\*(.+?)\*`is', 
-			'`%%(.+?)%%`is', 
-			'`\[b\](.+?)\[/b\]`is', 
-			'`\[i\](.+?)\[/i\]`is', 
-			'`\[u\](.+?)\[/u\]`is', 
-			'`\[s\](.+?)\[/s\]`is', 
-			'`~~(.+?)~~`is',
-			'`\[aa\](.+?)\[/aa\]`is', 
-			'`\[spoiler\](.+?)\[/spoiler\]`is', 
-			'`\[lination\](.+?)\[/lination\]`is', 
-			'`\[caps\](.+?)\[/caps\]`is',
-			'`&quot;(.+?)&quot;`is',
-			'#`(.+?)`#',
+      '`\*\*(.+?)\*\*`is', 
+      '`\*(.+?)\*`is', 
+      '`%%(.+?)%%`is', 
+      '`\[b\](.+?)\[/b\]`is', 
+      '`\[i\](.+?)\[/i\]`is', 
+      '`\[u\](.+?)\[/u\]`is', 
+      '`\[s\](.+?)\[/s\]`is', 
+      '`~~(.+?)~~`is',
+      '`\[aa\](.+?)\[/aa\]`is', 
+      '`\[spoiler\](.+?)\[/spoiler\]`is', 
+      '`\[lination\](.+?)\[/lination\]`is', 
+      '`\[caps\](.+?)\[/caps\]`is',
+      '`&quot;(.+?)&quot;`is',
+      '#`(.+?)`#',
       '`&gt;(.+?)&lt;`'
-			);
-		$replaces =  array(
-			'<b>\\1</b>', 
-			'<i>\\1</i>',
-			'<span class="spoiler">\\1</span>', 
-			'<b>\\1</b>', 
-			'<i>\\1</i>', 
-			'<span style="border-bottom: 1px solid">\\1</span>', 
-			'<strike>\\1</strike>', 
-			'<strike>\\1</strike>', 
-			'<span style="font-family: Mona,\'MS PGothic\' !important;">\\1</span>', 
-			'<span class="spoiler">\\1</span>', 
-			'<table class="lination"><tr><td><img src="/images/lina.png"/></td><td><div class="bubble">\\1</div></td></tr></table>',
-			'<span style="text-transform: uppercase;">\\1</span>',
-			'«\\1»',
-			'<span class="inline-code">\\1</span>',
+      );
+    $replaces =  array(
+      '<b>\\1</b>', 
+      '<i>\\1</i>',
+      '<span class="spoiler">\\1</span>', 
+      '<b>\\1</b>', 
+      '<i>\\1</i>', 
+      '<span style="border-bottom: 1px solid">\\1</span>', 
+      '<strike>\\1</strike>', 
+      '<strike>\\1</strike>', 
+      '<span style="font-family: Mona,\'MS PGothic\' !important;">\\1</span>', 
+      '<span class="spoiler">\\1</span>', 
+      '<table class="lination"><tr><td><img src="/images/lina.png"/></td><td><div class="bubble">\\1</div></td></tr></table>',
+      '<span style="text-transform: uppercase;">\\1</span>',
+      '«\\1»',
+      '<span class="inline-code">\\1</span>',
       '<span class="unkfunc">&gt;\\1</span>'
-			);
+      );
 		$string = preg_replace($patterns, $replaces , $string);
 		return $string;
 	}
@@ -107,14 +107,14 @@ class Parse {
 	
 	function code_callback($matches) {
 		$matches[1]=str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $matches[1]);
-		$tr = array( "["=>"&#91;", "]"=>"&#93;", "*"=>"&#42;", "%"=>"&#37;", "/"=>"&#47;", "&quot;"=>"&#34;", "-"=>"&#45;", ":"=>"&#58;", " "=>"&nbsp;", "#"=>"&#35;", "~"=>"&#126;",  "&#039;"=>"'", "&apos;"=>"'", "`"=>'&#96;' );
+		$tr = array( "["=>"&#91;", "]"=>"&#93;", "*"=>"&#42;", "%"=>"&#37;", "/"=>"&#47;", "&quot;"=>"&#34;", "-"=>"&#45;", ":"=>"&#58;", " "=>"&nbsp;", "#"=>"&#35;", "~"=>"&#126;",  "&#039;"=>"'", "&apos;"=>"'", "`"=>'&#96;', "&gt;"=>"&#62;", "&lt;"=>"&#60;" );
 		$return = '<pre class="prettyprint">'.  strtr($matches[1],$tr) . '</pre>'; 
 		return $return;
 	}
 
 	function inline_code_callback($matches) {
 		$matches[1]=str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $matches[1]);
-		$tr = array( "["=>"&#91;", "]"=>"&#93;", "*"=>"&#42;", "%"=>"&#37;", "/"=>"&#47;", "&quot;"=>"&#34;", "-"=>"&#45;", ":"=>"&#58;", " "=>"&nbsp;", "#"=>"&#35;", "~"=>"&#126;",  "&#039;"=>"'", "&apos;"=>"'" );
+		$tr = array( "["=>"&#91;", "]"=>"&#93;", "*"=>"&#42;", "%"=>"&#37;", "/"=>"&#47;", "&quot;"=>"&#34;", "-"=>"&#45;", ":"=>"&#58;", " "=>"&nbsp;", "#"=>"&#35;", "~"=>"&#126;",  "&#039;"=>"'", "&apos;"=>"'", "&gt;"=>"&#62;", "&lt;"=>"&#60;" );
 		$return = '<pre class="inline-pp prettyprint">' . strtr($matches[1],$tr) . '</pre>'; 
 		return $return;
 	}
