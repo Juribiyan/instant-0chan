@@ -308,5 +308,6 @@
 {/if}
 </div>
 <script type="text/javascript"><!--
-				set_inputs("postclone");
-				//--></script>
+set_inputs("postform");
+set_inputs("postclone");
+//--></script>
