@@ -35,9 +35,20 @@ $botads = $tc_db->GetOne("SELECT code FROM `" . KU_DBPREFIX . "ads` WHERE `posit
 $dwoo_data->assign('topads', $topads);
 $dwoo_data->assign('botads', $botads);
 
+if(isset($_GET['partial'])) $partial = true;
+else $partial = false;
 
-$entries = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "front` WHERE `page` = 0 ORDER BY `timestamp` DESC");
+$dwoo_data->assign('partial', $partial);
 
+if (!isset($_GET['p'])) $_GET['p'] = '';
+
+if ($_GET['p'] == 'faq') {
+  $entries = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "front` WHERE `page` = 1 ORDER BY `order` ASC");
+} elseif ($_GET['p'] == 'rules') {
+  $entries = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "front` WHERE `page` = 2 ORDER BY `order` ASC");
+} else {
+  $entries = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "front` WHERE `page` = 0 ORDER BY `timestamp` DESC");
+}
 $styles = explode(':', KU_MENUSTYLES);
 
 $dwoo_data->assign('styles', $styles);
