@@ -73,6 +73,7 @@ if (!window.prettyPrint) {
   <tr>
     <td width="13" class="border-left"></td>
     <td class="content-background" style="padding:9px">
+    {include file='disclaimer.tpl'}
 <div class="adminbar">
 [<a href="{%KU_WEBPATH}/kusaba.php" target="_top">{t}Frames{/t}</a>]&nbsp;[<a href="{%KU_CGIPATH}/manage.php" target="_top">{t}Manage{/t}</a>]
 </div>
