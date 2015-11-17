@@ -258,11 +258,12 @@ class Posting {
 			$results = $tc_db->GetAll("SELECT `type`, `boards` FROM `" . KU_DBPREFIX . "staff` WHERE `username` = '" . md5_decrypt($_POST['modpassword'], KU_RANDOMSEED) . "' LIMIT 1");
 
 			if (count($results) > 0) {
-				if ($results[0][0] == 1) {
+				$entry = $results[0];
+				if ($entry['type'] == 1) {
 					$user_authority = 1; // admin
-				} elseif ($results[0][0] == 2 && in_array($board_class->board['name'], explode('|', $results[0][1]))) {
+				} elseif ($entry['type'] == 2 && in_array($board_class->board['name'], explode('|', $entry['boards']) ) ) {
 					$user_authority = 2; // mod
-				} elseif ($results[0][0] == 2 && $results[0][1] == 'allboards') {
+				} elseif ($entry['type'] == 2 && $entry['boards'] == 'allboards') {
 					$user_authority = 2;
 				}/* elseif ($results[0][0] == 3) {
 					$user_authority = 3; // VIP
