@@ -1,0 +1,77 @@
+body {
+	font-family: sans-serif;
+	font-size: 75%;
+	width: 90%;
+	background-color: #393A1E;  
+	color: rgba(255, 255, 255, 0.54);
+	background-image: url(images/leech.png);
+}
+
+
+a, a:visited {
+	text-decoration: none;
+	color: rgb(255, 27, 27);
+}
+
+a:hover {
+color: rgb(187, 19, 19);
+}
+
+h2 {
+	margin: 0px;
+	padding: 2px;
+	color: rgba(255, 255, 255, 0.69);
+}
+
+h2 a {
+	text-decoration: none;
+}
+
+h1, h3, .menu {
+	font-family: Verdana,Tahoma,sans-serif;
+}
+
+h1 {
+	margin: 0;
+	text-align: center;
+	margin-top: 1em;
+}
+
+h3 {
+	margin: 0;
+	text-align: center;
+	font-weight: normal;
+	font-size: medium;
+}
+
+.menu {
+	margin-top: 1em;
+	text-align: center;
+}
+
+.content {
+	margin-left: 3em;
+	padding: 0px;
+	border-radius: 3px;
+	box-shadow: inset 0 -1px rgba(255, 255, 255, 0.12), inset 0 1px rgba(0, 0, 0, 0.31), inset 0 2px 5px rgba(0, 0, 0, 0.47);
+	background: rgba(0, 0, 0, 0.14);
+}
+
+.newssub {
+	padding: 2px;
+	position: absolute;
+    background-repeat: repeat-x;
+}
+
+.permalink {
+	padding: 2px;
+	text-align: right;
+	display: block;
+}
+
+.sitelogo {
+	background: url(/images/0chan-modern.png);
+	width: 420px;
+	height: 150px;
+	margin-top: 8px;
+}
