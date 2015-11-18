@@ -1,0 +1,67 @@
+body {
+	margin: 8px;
+}
+
+a, a:visited {
+	text-decoration: none;
+	color: rgb(55, 201, 153);
+}
+
+a:hover {
+color: rgb(54, 171, 133);
+}
+
+h1, h2 {
+	text-align: left;
+	background-repeat: repeat-x;
+	background: #363F4C;
+	border: 1px rgb(31, 37, 44) solid;
+	border-bottom: none;
+}
+
+h1 {
+	padding-left: 3px;
+	margin-top: 0px;
+	font-size: 150%;
+	color: #000;
+}
+
+h2 {
+	font-size: 100%;
+	margin-top: 1em;
+}
+
+.plus {
+	float: right;
+	font-size: 8px;
+	font-weight: normal;
+	padding: 2px 5px 3px 5px;
+	margin: 0px 0px;
+	cursor: hand;
+	cursor: pointer;
+}
+
+.plus:hover {
+}
+
+ul {
+	list-style: none; 
+	padding-left: 0px;
+	margin: 0px;      
+	background: #363F4C;
+	border: 1px rgb(31, 37, 44) solid;
+	border-top: none;
+}
+
+li {
+	margin: 0px;
+	padding-left: 3px;
+}
+
+li:hover {
+	background: rgba(0, 0, 0, 0.11);
+}
+
+li:last-shild {
+	border-radius: 0 0 3px 3px;
+}
