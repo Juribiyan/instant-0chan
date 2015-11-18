@@ -139,7 +139,7 @@
 					<li>{t}Supported file types are{/t}:
 					{if $board.filetypes_allowed neq ''}
 						{foreach name=files item=filetype from=$board.filetypes_allowed}
-							{$filetype.0|upper}{if $.foreach.files.last}{else}, {/if}
+							{$filetype.filetype|upper}{if $.foreach.files.last}{else}, {/if}
 						{/foreach}
 					{else}
 						{t}None{/t}
@@ -147,7 +147,6 @@
 					</li>
 					<li>{t}Maximum file size allowed is{/t} {math "round(x/1024)" x=$board.maximagesize} KB.</li>
 					</li>
-					<li><b>Информация для тех, кто хочет <a href="/?p=donate">поддержать нульчан</a></b></li>
 				</ul>
 			<script type="text/javascript"><!--
 				if (getCookie('ku_showblotter') != '1') {

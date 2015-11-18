@@ -134,7 +134,7 @@ class Board {
 		$this->InitializeDwoo();
 		$results = $tc_db->GetAll("SELECT `filetype` FROM `" . KU_DBPREFIX . "embeds`");
 		foreach ($results as $line) {
-			$this->board['filetypes'][] .= $line[0];
+			$this->board['filetypes'][] .= $line['filetype'];
 		}
 		$this->dwoo_data->assign('filetypes', $this->board['filetypes']);
 		$maxpages = $this->board['maxpages'];
