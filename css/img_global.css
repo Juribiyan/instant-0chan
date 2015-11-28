@@ -21,15 +21,25 @@ form {
 .blotter-entries {
 	padding-top: 0.7em;
 }
+textarea {
+  width: 397px;
+}
 
 .captchawrap {
 	display: inline-block;
+	vertical-align: middle;
 	width: 150px;
 	height: 32px;
 	background: -webkit-linear-gradient(left, #f21014 0px, #FF8500 22px, #E7D023 56px, #9ADF34 99px, #3AC441 150px);
 	background: -moz-linear-gradient(left, #f21014 0px, #FF8500 22px, #E7D023 56px, #9ADF34 99px, #3AC441 150px);
 	background: -o-linear-gradient(left, #f21014 0px, #FF8500 22px, #E7D023 56px, #9ADF34 99px, #3AC441 150px);
 	background: linear-gradient(left, #f21014 0px, #FF8500 22px, #E7D023 56px, #9ADF34 99px, #3AC441 150px);
+}
+.captcha_status {
+	line-height: 32px;
+	display: inline-block;
+	height: 32px;
+	vertical-align: middle;
 }
 
 form .trap {
@@ -745,4 +755,7 @@ border: none;
 }
 #postclone table {
 	display: block;
+}
+.replymode, .passvalid, .catalogmode {
+  margin-top: -20px; 
 }

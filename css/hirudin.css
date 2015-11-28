@@ -1,11 +1,12 @@
-html, body {
+html, body, .captchawrap img {
 	background-color: #393A1E;
 	background-image: url(images/leech.png);
+}
+
+html, body {
 	color: rgba(255, 255, 255, 0.77);
 	font-family: "Roboto", "Open Sans", "Trebuchet MS",Trebuchet,sans-serif;
 	font-size: 15px;
-}
-.content-background {
 }
 
 a {
