@@ -29,8 +29,7 @@ function img_code($code) {
    		    break;
    		case "Dark": case "Newdark": case "Hirudin":
    		    $scolor=array(200,200,200);
-   		    break;r=array(85,85,85);
-   		 	break;
+   		    break;
    		}
 	else {
 		$scolor=array(85,85,85);
