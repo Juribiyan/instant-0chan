@@ -11,16 +11,17 @@ class Parse {
 	var $boardid;
 	
 	function urlcallback($matches) {
-		return $matches[1].'<a target="_new" href="'.$matches[2].$matches[3].'">'.$matches[2].urldecode($matches[3]).'</a>'; 
+		return '<a target="_new" href="'.$matches[1].$matches[2].'">'.$matches[1].urldecode($matches[2]).'</a>'; 
 	}
 
 	function exturlcallback($matches) {
-		return '<a target="_new" href="'.$matches[2].$matches[3].'">'.urldecode($matches[1]).'</a>'; 
+		$text = strtr(urldecode($matches[1]), array('/' => '&#47;'));
+		return '<a target="_new" href="'.$matches[2].$matches[3].'">'.$text.'</a>'; 
 	}
 	
 	function MakeClickable($txt) {
-		$txt = preg_replace_callback('#([^:]|^)(http://|https://|ftp://)([^(\s<|\[)]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))#',array(&$this, 'urlcallback'),$txt);
-		$txt = preg_replace_callback('#«([^«»]*)»:(http://|https://|ftp://)([^(\s<|\[)]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))#u',array(&$this, 'exturlcallback'),$txt);
+		$txt = preg_replace_callback('#«([^«»]*)»:(http://|https://|ftp://)([^(\s<|\[)]+(?:\([\w\d]+\)|([^[:punct:]«»\s]|/)))#u',array(&$this, 'exturlcallback'),$txt);
+		$txt = preg_replace_callback('#(?<!href=")((?:http:|https:|ftp:)\/\/)([^(\s<|\[)]+(?:\([\w\d]+\)|([^[:punct:]«»\s]|\/)))#',array(&$this, 'urlcallback'),$txt);
 		return $txt;
 	}  
 	
