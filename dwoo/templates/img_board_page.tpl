@@ -34,53 +34,41 @@ boardid = '{$board.id}';
 			
 			{if ($post.file neq '' || $post.file_type neq '' ) && (($post.videobox eq '' && $post.file neq '') && $post.file neq 'removed')}
 				<span class="filesize">
-							{if $post.file_type eq 'mp3' or $post.file_type eq 'ogg'}
-								{t}Audio{/t}
-							{else}
-								{t}File{/t}
-							{/if}
-							<a 
-								{if %KU_NEWWINDOW}
-									target="_blank" 
-								{/if}
-								href="{$file_path}/src/{$post.file}.{$post.file_type}">
-							{if isset($post.id3.comments_html)}
-								{if $post.id3.comments_html.artist.0 neq ''}
-								{$post.id3.comments_html.artist.0}
-									{if $post.id3.comments_html.title.0 neq ''}
-										- 
-									{/if}
-								{/if}
-								{if $post.id3.comments_html.title.0 neq ''}
-									{$post.id3.comments_html.title.0}
-								{/if}
-								</a>
-							{else}
-								{$post.file}.{$post.file_type}</a>
-							{/if}
-							- ({$post.file_size_formatted}
-							{if $post.id3.comments_html.bitrate neq 0 || $post.id3.audio.sample_rate neq 0}
-								{if $post.id3.audio.bitrate neq 0}
-									- {round($post.id3.audio.bitrate / 1000)} kbps
-									{if $post.id3.audio.sample_rate neq 0}
-										- 
-									{/if}
-								{/if}
-								{if $post.id3.audio.sample_rate neq 0}
-									{$post.id3.audio.sample_rate / 1000} kHz
-								{/if}
-							{/if}
-							{if $post.image_w > 0 && $post.image_h > 0}
-								, {$post.image_w}x{$post.image_h}
-							{/if}
-							{* if $post.file_original neq '' && $post.file_original neq $post.file}
-								, {$post.file_original}.{$post.file_type}
-							{/if *}
-							)
-							{if $post.id3.playtime_string neq ''}
-								{t}Length{/t}: {$post.id3.playtime_string}
-							{/if}
-							</span>
+				{if $post.file_type eq 'mp3' or $post.file_type eq 'ogg'}
+					{t}Audio{/t}
+				{else}
+					{t}File{/t}
+				{/if}
+				<a {if %KU_NEWWINDOW}target="_blank"{/if}	href="{$file_path}/src/{$post.file}.{$post.file_type}">
+				{if isset($post.id3.comments_html)}
+					{if $post.id3.comments_html.artist.0 neq ''}
+					{$post.id3.comments_html.artist.0} -
+					{/if}
+					{if $post.id3.comments_html.title.0 neq ''}
+						{$post.id3.comments_html.title.0}{else}{$post.file_original}{if $post.id3.comments_html.artist.0 eq ''}.{$post.file_type}{/if}{/if}</a>
+				{else}
+					{if $post.file_type eq 'mp3' or $post.file_type eq 'ogg' or $post.file_type eq 'swf'}{$post.file_original}{else}{$post.file}{/if}.{$post.file_type}</a>
+				{/if}
+				- ({$post.file_size_formatted}
+				{if $post.id3.comments_html.bitrate neq 0 || $post.id3.audio.sample_rate neq 0}
+					{if $post.id3.audio.bitrate neq 0}
+						- {round($post.id3.audio.bitrate / 1000)} kbps
+						{if $post.id3.audio.sample_rate neq 0}
+							- 
+						{/if}
+					{/if}
+					{if $post.id3.audio.sample_rate neq 0}
+						{$post.id3.audio.sample_rate / 1000} kHz
+					{/if}
+				{/if}
+				{if $post.image_w > 0 && $post.image_h > 0}
+					, {$post.image_w}x{$post.image_h}
+				{/if}
+				)
+				{if $post.id3.playtime_string neq ''}
+					{t}Length{/t}: {$post.id3.playtime_string}
+				{/if}
+				</span>
 				{if %KU_THUMBMSG}
 					<span class="thumbnailmsg"> 
 					{if $post.file_type neq 'jpg' && $post.file_type neq 'gif' && $post.file_type neq 'png' && $post.videobox eq ''}
@@ -270,24 +258,15 @@ boardid = '{$board.id}';
 							{else}
 								{t}File{/t}
 							{/if}
-							<a 
-								{if %KU_NEWWINDOW}
-									target="_blank" 
-								{/if}
-								href="{$file_path}/src/{$post.file}.{$post.file_type}">
+							<a {if %KU_NEWWINDOW}target="_blank"{/if}	href="{$file_path}/src/{$post.file}.{$post.file_type}">
 							{if isset($post.id3.comments_html)}
 								{if $post.id3.comments_html.artist.0 neq ''}
-								{$post.id3.comments_html.artist.0}
-									{if $post.id3.comments_html.title.0 neq ''}
-										- 
-									{/if}
+								{$post.id3.comments_html.artist.0} -
 								{/if}
 								{if $post.id3.comments_html.title.0 neq ''}
-									{$post.id3.comments_html.title.0}
-								{/if}
-								</a>
+									{$post.id3.comments_html.title.0}{else}{$post.file_original}{if $post.id3.comments_html.artist.0 eq ''}.{$post.file_type}{/if}{/if}</a>
 							{else}
-								{$post.file}.{$post.file_type}</a>
+								{if $post.file_type eq 'mp3' or $post.file_type eq 'ogg' or $post.file_type eq 'swf'}{$post.file_original}{else}{$post.file}{/if}.{$post.file_type}</a>
 							{/if}
 							- ({$post.file_size_formatted}
 							{if $post.id3.comments_html.bitrate neq 0 || $post.id3.audio.sample_rate neq 0}
@@ -304,9 +283,6 @@ boardid = '{$board.id}';
 							{if $post.image_w > 0 && $post.image_h > 0}
 								, {$post.image_w}x{$post.image_h}
 							{/if}
-							{* if $post.file_original neq '' && $post.file_original neq $post.file}
-								, {$post.file_original}.{$post.file_type}
-							{/if *}
 							)
 							{if $post.id3.playtime_string neq ''}
 								{t}Length{/t}: {$post.id3.playtime_string}

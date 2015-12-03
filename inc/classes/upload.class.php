@@ -212,14 +212,7 @@ class Upload {
 							/* Fetch the mime requirement for this special filetype */
 							$filetype_required_mime = $tc_db->GetOne("SELECT `mime` FROM `" . KU_DBPREFIX . "filetypes` WHERE `filetype` = " . $tc_db->qstr(substr($this->file_type, 1)));
 
-							$this->file_name = htmlspecialchars_decode($this->file_name, ENT_QUOTES);
-							$this->file_name = stripslashes($this->file_name);
-							$this->file_name = str_replace("\x80", " ", $this->file_name);					
-							$this->file_name = str_replace(' ', '_', $this->file_name);
-							$this->file_name = str_replace('#', '(number)', $this->file_name);
-							$this->file_name = str_replace('@', '(at)', $this->file_name);
-							$this->file_name = str_replace('/', '(fwslash)', $this->file_name);
-							$this->file_name = str_replace('\\', '(bkslash)', $this->file_name);
+              $this->file_name = time() . mt_rand(1, 99);
 
 							/* If this board has a load balance url and password configured for it, attempt to use it */
 							if ($board_class->board['loadbalanceurl'] != '' && $board_class->board['loadbalancepassword'] != '') {
@@ -436,8 +429,10 @@ class Upload {
 	}
 
 	function webmCheck($filepath) {
-		if(KU_FFMPEGPATH) putenv('PATH=' . getenv('PATH') . PATH_SEPARATOR . KU_FFMPEGPATH);
-		$finfo = shell_exec("ffmpeg -i ".$filepath." 2>&1");
+    if(KU_FFMPEGPATH) putenv('PATH=' . KU_FFMPEGPATH . PATH_SEPARATOR . getenv('PATH'));
+		exec("ffprobe -i ".$filepath." 2>&1", $finfo, $x);
+    if($x !== 0) return false;
+    $finfo = implode('<br>', $finfo);
 		preg_match('/Duration: (\d\d\:\d\d\:\d\d\.\d\d)/', $finfo, $duration);
 		preg_match('/(\d+)x(\d+)/', $finfo, $dimensions);
 		$hhmmss = explode(':', $duration[1]);
@@ -450,15 +445,16 @@ class Upload {
 	}
 
 	function webmThumb($filepath, $thumbpath, $filename, $midtime) {
-		if(KU_FFMPEGPATH) putenv('PATH=' . getenv('PATH') . PATH_SEPARATOR . KU_FFMPEGPATH);
+    if(KU_FFMPEGPATH) putenv('PATH=' . KU_FFMPEGPATH . PATH_SEPARATOR . getenv('PATH'));
 		$scale = "w=".KU_THUMBWIDTH.":h=".KU_THUMBHEIGHT;
 		$scalecat = "w=".KU_CATTHUMBWIDTH.":h=".KU_CATTHUMBHEIGHT;
 		$foar = ':force_original_aspect_ratio=decrease';
 		$rawdur = shell_exec("ffmpeg -i ".$filepath." 2>&1");
 		$common = ' -ss '.$midtime.' -vframes 1 -filter:v scale=';
 		$newfn = $thumbpath.$filename;
-		$result = shell_exec('ffmpeg -i '.$filepath.$common.$scale.$foar.' '.$newfn.'s.jpg'.$common.$scalecat.$foar.' '.$newfn.'c.jpg 2>&1');
-		preg_match('/Output[\s\S]+?(\d+)x(\d+)[\s\S]+?(\d+)x(\d+)/m', $result, $ths);
+		exec('ffmpeg -i '.$filepath.$common.$scale.$foar.' '.$newfn.'s.jpg'.$common.$scalecat.$foar.' '.$newfn.'c.jpg 2>&1', $result, $x);
+    if($x !== 0) return false;
+		preg_match('/Output[\s\S]+?(\d+)x(\d+)[\s\S]+?(\d+)x(\d+)/m', implode('<br>', $result), $ths);
 		if(count($ths) == 5) return array(
 			'thumbwidth' => $ths[1], 
 			'thumbheight' => $ths[2], 
