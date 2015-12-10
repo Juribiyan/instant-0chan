@@ -399,7 +399,7 @@ INSERT INTO `PREFIX_sections` (`id`, `order`, `hidden`, `name`, `abbreviation`) 
 
 INSERT INTO `PREFIX_ads` (`id`, `position`, `disp`, `boards`, `code`) VALUES (1, 'top', 0, '', 'Right Frame Top'), (2, 'bot', 0, '', 'Right Frame Bottom');
 
-INSERT INTO `filetypes` 
+INSERT INTO `PREFIX_filetypes` 
 (`filetype`,               `mime`,                `image`,    `image_w`, `image_h`, `force_thumb`) VALUES
 (   'jpg',                   '',                     '',          0,         0,           0),
 (   'gif',                   '',                     '',          0,         0,           0),
