@@ -138,7 +138,7 @@ class Board {
 		}
 		$this->dwoo_data->assign('filetypes', $this->board['filetypes']);
 		$maxpages = $this->board['maxpages'];
-		$numposts = $tc_db->GetAll("SELECT COUNT(*) FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $this->board['id'] . " AND `parentid` = 0 AND `IS_DELETED` = 0");
+		$numposts = $tc_db->GetOne("SELECT COUNT(*) FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $this->board['id'] . " AND `parentid` = 0 AND `IS_DELETED` = 0");
 
 		if ($this->board['type'] == 1) {
 			$postsperpage = KU_THREADSTXT;
@@ -149,7 +149,7 @@ class Board {
 		}
 		$i = 0;
 		$liststooutput = 0;
-		$totalpages = calculatenumpages($this->board['type'], ($numposts[0][0]-1));
+		$totalpages = calculatenumpages($this->board['type'], ($numposts-1));
 		if ($totalpages == '-1') {
 			$totalpages = 0;
 		}
