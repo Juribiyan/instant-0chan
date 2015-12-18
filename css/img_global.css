@@ -759,3 +759,8 @@ border: none;
 .replymode, .passvalid, .catalogmode {
   margin-top: -20px; 
 }
+@media (min-width: 600px) {
+  .replymode, .passvalid, .catalogmode {
+    margin-top: -20px; 
+  }
+}
