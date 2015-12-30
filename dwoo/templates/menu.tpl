@@ -21,6 +21,7 @@
 <script type="text/javascript" src="{%KU_WEBFOLDER}lib/javascript/gettext.js"></script>
 <!-- <script type="text/javascript" src="{%KU_WEBFOLDER}lib/javascript/menu.js"></script> -->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script type="text/javascript" src="{%KU_WEBFOLDER}lib/javascript/lodash.min.js"></script>
 <script type="text/javascript" src="{%KU_WEBFOLDER}lib/javascript/kusaba.new.js"></script>
 <script type="text/javascript"><!--
 var ku_boardspath = '{%KU_BOARDSPATH}';
