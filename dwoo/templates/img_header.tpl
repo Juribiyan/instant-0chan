@@ -48,6 +48,13 @@
 {/if}
 </head>
 <body>
+<script>
+	$.get("{$cwebpath}css/icons/icons.svg", function(data) {
+	  var div = document.createElement("div");
+	  div.innerHTML = new XMLSerializer().serializeToString(data.documentElement);
+	  document.body.insertBefore(div, document.body.childNodes[0]);
+	});
+</script>
 <table width="98%" border="0" align="center" cellpadding="0" cellspacing="0" class="maintable">
   <tbody><tr>
     <td width="13" height="38" class="topbar-left"></td>

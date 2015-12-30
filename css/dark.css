@@ -338,3 +338,61 @@ color: rgb(36, 218, 226);
 .markupbtns {
 	margin-bottom: -2px;
 }
+
+/* catalog */
+.cat-card {
+	border-radius: 3px;
+	background: #353535;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.17), 0 3px 5px rgba(0, 0, 0, 0.48), inset 0 77px 60px -32px rgba(255, 255, 255, 0.08);
+}
+.cat-entry:hover .cat-card {
+  background: #444444;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.17), 0 5px 10px rgba(0, 0, 0, 0.75), inset 0 77px 60px -32px rgba(255, 255, 255, 0);
+}
+.nofile-removed {
+	border: 2px dashed #A6A7A9;
+	color: #A6A7A9;
+}
+.hidden-on {
+	background: rgb(40, 149, 154);
+	color: black!important;
+}
+.hidden-on:hover {
+  background: rgb(36, 218, 226);
+}
+.actor:hover {
+  color: rgb(36, 218, 226);
+}
+.cat-entry:after {
+	background: linear-gradient(to bottom, rgba(135,224,253,0) 0%,rgb(43, 43, 43) 100%);
+	bottom: 0;
+	width: 208px;
+	left: 0;
+	border-radius: 0 0 3px 3px;
+}
+.thumbExpanded .bigThumb {
+	 background: rgb(49, 49, 49);
+}
+.button-group {
+	background: rgba(255, 255, 255, 0.15);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), inset 0 1px rgba(255, 255, 255, 0.29);
+}
+.button-group:hover {
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5), inset 0 1px rgba(255, 255, 255, 0.29);
+  background: rgba(255, 255, 255, 0.25);
+}
+.bg-button:hover {
+	color: #fff;
+	box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.32);
+	background: rgba(255, 255, 255, 0.12); 
+}
+.bgb-selected, .bgb-selected:hover {
+  background: #0C6D71;
+  box-shadow: inset 0 1px 3px black, inset 0 -1px rgba(255, 255, 255, 0.22);
+}
+.ce-gallery .namedate-overlay:hover {
+  background: #444444;
+}
+.icon {
+	-webkit-filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.6));
+}

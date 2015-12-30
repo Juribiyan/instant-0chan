@@ -39,9 +39,9 @@ a:visited {
 	border-radius: 5px;
 }
 
-.postarea {
+.admin{
+	color: #E052E0;
 }
-
 .postblock {
 	background:transparent;
 	color: #949494;
@@ -329,4 +329,50 @@ color: rgb(55, 201, 153);
 }
 .markupbtns {
 	margin-bottom: -2px;
+}
+
+/* catalog */
+.cat-card {
+	border: 1px solid rgba(0, 0, 0, 0.39);
+	background: rgba(0, 0, 0, 0.17);
+}
+.cat-entry:hover .cat-card {
+  background: #2D343E;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.53);
+}
+.nofile-removed {
+	border: 2px dashed #A6A7A9;
+	color: #A6A7A9;
+}
+.hidden-on {
+	background: #33A884;
+	color: black!important;
+}
+.hidden-on:hover {
+  background: #2DCA99;
+}
+.actor:hover {
+  color: rgb(54, 171, 133);
+}
+.cat-entry:after {
+	background: linear-gradient(to bottom, rgba(135,224,253,0) 0%,rgb(37, 42, 51) 100%);
+}
+.thumbExpanded .bigThumb {
+	 background: rgba(37, 42, 51, 0.8);
+}
+.button-group {
+	background: rgba(255, 255, 255, 0.15);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+.button-group:hover {
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.25);
+}
+.bg-button:hover {
+	background-color: rgba(255, 255, 255, 0.12);
+	color: #fff; 
+}
+.bgb-selected, .bgb-selected:hover {
+  background: #167355;
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.5);
 }

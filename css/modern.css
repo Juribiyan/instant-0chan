@@ -41,9 +41,6 @@ a:visited {
 	margin-bottom: .5em;
 }
 
-.postarea {
-}
-
 .postblock {
 	background:transparent;
 	color:#5F5F5F;
@@ -304,8 +301,55 @@ color: #000;
 	border-color: rgba(75, 129, 187, 0.42);
 }
 .uibutton:hover {
-	/* color: red; */
 	border-color: rgba(75, 129, 187, 0.67);
 	background: rgba(234, 244, 255, 0.67);
 	color: rgba(75, 129, 187, 1);
+}
+/* catalog */
+.cat-card {
+	border: 1px #CCC solid;
+	background: #F8F8F8;
+}
+.cat-entry:hover .cat-card {
+  background: #FFFFFF;
+  box-shadow: 0 4px 8px #CCCCCC;
+}
+.nofile-removed {
+	border: 2px dashed #A6A7A9;
+	color: #A6A7A9;
+}
+.hidden-on {
+	background: rgb(72, 106, 142);
+	color: white!important;
+}
+.hidden-on:hover {
+  background: rgb(97, 138, 182);
+}
+.actor:hover {
+  color: rgb(72, 106, 142);
+}
+.cat-entry:after {
+	background: linear-gradient(to bottom, rgba(135,224,253,0) 0%,rgb(248, 248, 248) 100%);
+}
+.thumbExpanded .bigThumb {
+	 background: rgba(248, 248, 248, 0.28);
+}
+.button-group {
+	background: rgba(255, 255, 255, 0.6);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+.button-group:hover {
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.75);
+}
+.bg-button:hover {
+  background-color: rgb(255, 255, 255);
+  color: black;; 
+}
+.bgb-selected, .bgb-selected:hover {
+  background: #BDD4EC;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.ce-gallery .namedate-overlay:hover {
+  background: white;
 }

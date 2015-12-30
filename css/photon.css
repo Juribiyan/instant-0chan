@@ -50,9 +50,6 @@ a:hover {
 	border: solid 1px #CCCCCC;
 	border-radius: 5px;
 }
-.postarea {
-}
-
 .postblock {
 	background:transparent;
 	color:#002244;
@@ -224,4 +221,59 @@ table td {
 .maintable {
 	width: 100%;
 	table-layout: fixed;
+}
+
+/* catalog */
+.cat-card {
+	background: #DDDDDD;
+  border: solid 1px #CCCCCC;
+  border-radius: 5px;
+}
+.cat-entry:hover .cat-card {
+  background: #ECECEC;
+  box-shadow: 0 4px 7px rgba(0, 0, 0, 0.18);
+}
+.nofile-removed {
+	border: 2px dashed #A6A7A9;
+	color: #A6A7A9;
+}
+.hidden-on {
+	background: #191919;
+	color: white!important;
+}
+.hidden-on:hover {
+  background: #A0501C;
+}
+.actor:hover {
+  color: #FF6600;
+}
+.cat-entry:after {
+	background: linear-gradient(to bottom, rgba(135,224,253,0) 0%,rgb(221, 221, 221) 100%);
+	border-radius: 0 0 4px 4px;
+}
+.bigThumb {
+	border-radius: 7px;
+}
+.thumbExpanded .bigThumb {
+  background: rgba(221, 221, 221, 0.56);
+}
+.button-group {
+	background: rgba(255, 255, 255, 0.3);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+.button-group:hover {
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.43);
+  color: #fff;
+}
+.bg-button {
+	color:rgba(255, 255, 255, 0.91);
+}
+.bg-button:hover {
+  background-color: rgba(0, 64, 224, 0.59);
+  color: #fff; 
+}
+.bgb-selected, .bgb-selected:hover {
+  background: #FF6600;
+  color: white!important;
 }
