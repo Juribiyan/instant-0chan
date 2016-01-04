@@ -26,7 +26,6 @@ a:hover {
 	font-size:2em;
 	font-weight: bold;
 	color:#FF6600;
-	/*width:100%;*/
 }
 .replymode, .passvalid {
 	background:#DDDDDD;
@@ -127,7 +126,6 @@ a:hover {
 	background:#DDDDDD;
 	border: solid 1px #CCCCCC;
 	padding: 0;
-	padding-right: 4px;
 	border-radius: 5px;
 }
 blockquote {
@@ -189,17 +187,16 @@ table td {
 
 #watchedthreads {
 	background-color: #DDDDDD !important;
-  	border: 1px solid #CCCCCC !important;
-  	border-radius: 5px;
+  border: 1px solid #CCCCCC !important;
+  border-radius: 5px;
 }
 
-.spritebtn {
+.b-icon {
+	fill: white;
 	background-color: #aba8a6;
-	border-color: #aba8a6;
 }
-.spritebtn:hover {
+.b-icon:hover {
 	background-color: #777;
-	border-color: #777;
 }
 
 .topbar-left {

@@ -243,6 +243,9 @@ pre {
 
 .extrabtns, [id^=dnb] {
 	vertical-align: middle;
+	display: inline-block;
+	line-height: 8px;
+	font-size: 0;
 }
 
 .btngroup {
@@ -256,45 +259,34 @@ pre {
 .extrabtns a {
 	font-size: 0px;
 }
- 
-.hidethread {
-	background-position: -32px -16px;
-}
 
-.unhidethread {
-	background-position: -48px 0px;
-}
-
-.pinned, .unstick {
-	background-position: -48px -16px;
-}
-
-.unpinned, .stick {
-	background-position: -32px 0px;
-}
-
-.expandthread {
-	background-position: 0px -16px;
-}
-
-.quickreply {
-	background-position: 0px 0px;
-}
-
-.spritebtn {
-	background-image: url('icons/white.gif');
+.b-icon {
 	border-radius: 3px;
-	-webkit-transition: background-color 0.3s, border-color 0.3s;
-	-moz-transition: background-color 0.3s, border-color 0.3s;
-	-ms-transition: background-color 0.3s, border-color 0.3s;
-	-o-transition: background-color 0.3s, border-color 0.3s;
-	transition: background-color 0.3s, border-color 0.3s;
+	-webkit-transition-property: background-color, color, box-shadow, fill;
+	-o-transition-property: background-color, color, box-shadow, fill;
+	transition-property: background-color, color, box-shadow, fill;
+	-webkit-transition-duration: 0.3s;
+	-o-transition-duration: 0.3s;
+	transition-duration: 0.3s;
+}
+.b-icon, .i-icon {
+	margin: 0 2px;
+	border-radius: 3px;
+}
+.i-icon {
+	color: white;
 }
 
-.sb-l { border-radius: 3px 0 0 3px; }
-.sb-c { border-radius: 0px; }
-.sb-r { border-radius: 0 3px 3px 0; }
+.i-icon.i-pin {
+	background-color: #2D83DE;
+}
+.i-icon.i-lock {
+	background-color: #FF4800;
+}
 
+.sb-l { border-radius: 3px 0 0 3px; margin-right: 0; }
+.sb-c { border-radius: 0px; margin: 0;}
+.sb-r { border-radius: 0 3px 3px 0; margin-left: 0;}
 
 .getnewposts {
 	background-position: -16px -16px;
@@ -338,6 +330,10 @@ img.latex, object.latex  {
 
 .reply {
 	max-width: 100%;
+}
+
+.reply, .highlight {
+	box-sizing: border-box;
 }
 
 .reflinkpreview .reply {
@@ -1165,4 +1161,10 @@ border: none;
 }
 .cat-prv svg {
 	pointer-events: none;
+}
+.touch-mode .b-icon {
+	width: 24px;
+}
+.unpinned.pinner .use-pin, .pinned.pinner .use-unpin {
+	display: none;
 }

@@ -183,18 +183,18 @@ table td {
 
 #watchedthreads {
 	background-color: #DDDDDD !important;
-  	border: 1px solid #CCCCCC !important;
-  	border-radius: 5px;
+  border: 1px solid #CCCCCC !important;
+  border-radius: 5px;
 }
 
-.spritebtn {
-	border-color: #aba8a6;
-	opacity: 0.7;
+.b-icon {
+	fill: #B4B4B4;
 }
-.spritebtn:hover {
-	background-color: rgba(55, 201, 153, 0.67);
-	opacity: 1;
+.b-icon:hover {
+	fill:white;
+	background-color:rgba(55, 201, 153, 0.67);
 }
+
 
 .topbar-left {
 	height: 0px;

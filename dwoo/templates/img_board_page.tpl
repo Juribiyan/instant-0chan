@@ -18,7 +18,7 @@ boardid = '{$board.id}';
 			<span id="unhidethread{$post.id}{$board.name}" style="display: none;">
 			{t}Thread{/t} <a href="{%KU_BOARDSFOLDER}{$board.name}/res/{$post.id}.html">{$post.id}</a> {t}hidden.{/t}
 			<a href="#" onclick="javascript:togglethread('{$post.id}');return false;" title="{t}Un-Hide Thread{/t}">
-				<img src="{$cwebpath}css/icons/blank.gif" border="0" class="unhidethread spritebtn" alt="{t}Un-Hide Thread{/t}" />
+				<svg class="icon b-icon"><use xlink:href="#i-unhide"></use></svg>
 			</a>
 	</span>
 	
@@ -157,21 +157,27 @@ boardid = '{$board.id}';
 			{if $board.showid}<img src="data:image/png;base64,{rainbow($post.ipmd5, $post.id);}" />{/if}
 			<span class="extrabtns">
 			{if $post.locked eq 1}
-				<img style="border: 0;" src="{$boardpath}css/locked.gif" alt="{t}Locked{/t}" />
+				<svg class="icon i-icon i-lock"><use xlink:href="#i-lock"></use></svg>
 			{/if}
 			{if $post.stickied eq 1}
-				<img style="border: 0;" src="{$boardpath}css/sticky.gif" alt="{t}Stickied{/t}" />
+				<svg class="icon i-icon i-pin"><use xlink:href="#i-pin"></use></svg>
 			{/if}
-			<span id="hide{$post.id}"><a href="#" onclick="javascript:togglethread('{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}');return false;" title="Hide Thread"><img src="{$boardpath}css/icons/blank.gif" border="0" class="hidethread spritebtn" alt="hide" /></a></span>
+			<span id="hide{$post.id}">
+			<a href="#" onclick="javascript:togglethread('{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}');return false;" title="Hide Thread">
+			<svg class="icon b-icon"><use xlink:href="#i-hide"></use></svg>
+			</a>
+			</span>
 			{if %KU_QUICKREPLY}
-				<a href="#" data-parent="{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}" class="qrl" title="{t}Quick Reply{/t}"><img src="{$boardpath}css/icons/blank.gif" border="0" class="quickreply spritebtn" alt="quickreply" /></a>
+				<a href="#" data-parent="{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}" class="qrl" title="{t}Quick Reply{/t}">
+				<svg class="icon b-icon"><use xlink:href="#i-qr"></use></svg>
+				</a>
 			{/if}
 			{if $board.balls}
 			<img class="_country_" src="{%KU_WEBPATH}/images/flags/{$post.country}.png">
 			{/if}
 			</span>
 			<span id="dnb-{$board.name}-{$post.id}-y"></span>
-			[<a href="{%KU_BOARDSFOLDER}{$board.name}/res/{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}.html">{t}Reply{/t}</a>]
+			[<a href="{%KU_BOARDSFOLDER}{$board.name}/res/{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}.html">{if $post.locked eq 1}{t}Enter{/t}{else}{t}Reply{/t}{/if}</a>]
 			{if %KU_FIRSTLAST && (($post.stickied eq 1 && $post.replies + %KU_REPLIESSTICKY > 50) || ($post.stickied eq 0 && $post.replies + %KU_REPLIES > 50))}
 				{if (($post.stickied eq 1 && $post.replies + %KU_REPLIESSTICKY > 100) || ($post.stickied eq 0 && $post.replies + %KU_REPLIES > 100))}
 					[<a href="{%KU_BOARDSFOLDER}{$board.name}/res/{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}-100.html">{t}First 100 posts{/t}</a>]
@@ -236,17 +242,17 @@ boardid = '{$board.id}';
 						<span class="extrabtns">
 						{if %KU_QUICKREPLY}
 						<a href="#" data-parent="{$post.parentid}" data-postnum="{$post.id}" class="qrl" title="{t}Quick Reply{/t} в тред {$post.parentid}">
-							<img src="{$cwebpath}css/icons/blank.gif" border="0" class="quickreply spritebtn" alt="quickreply">
+							<svg class="icon b-icon"><use xlink:href="#i-qr"></use></svg>
 						</a>
 						{/if}
 						{if $board.balls}
 						<img class="_country_" src="{%KU_WEBPATH}/images/flags/{$post.country}.png">
 						{/if}
 						{if $post.locked eq 1}
-							<img style="border: 0;" src="{$boardpath}css/locked.gif" alt="{t}Locked{/t}" />
+							<svg class="icon i-icon i-lock"><use xlink:href="#i-lock"></use></svg>
 						{/if}
 						{if $post.stickied eq 1}
-							<img style="border: 0;" src="{$boardpath}css/sticky.gif" alt="{t}Stickied{/t}" />
+							<svg class="icon i-icon i-pin"><use xlink:href="#i-pin"></use></svg>
 						{/if}
 						</span>
 						<span id="dnb-{$board.name}-{$post.id}-n"></span>

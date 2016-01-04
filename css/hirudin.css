@@ -188,13 +188,15 @@ table td {
   	border-radius: 5px;
 }
 
-.spritebtn {
-	opacity: 0.5;
+.b-icon {
+	fill: rgb(255, 255, 255);
+	background: rgb(106, 111, 43);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.09);
 }
-.spritebtn:hover {
-	opacity: 1;
+.b-icon:hover {
+	background-color: rgb(255, 27, 27);
+	box-shadow: 0 1px 5px rgb(255, 27, 27);
 }
-
 .topbar-left {
 	height: 0px;
 }

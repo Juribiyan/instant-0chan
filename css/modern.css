@@ -183,12 +183,13 @@ table td {
   	border-radius: 5px;
 }
 
-.spritebtn {
-	background-image: url('icons/black.gif');
-	opacity: 0.3;
+.b-icon {
+	fill: dimgrey;
 }
-.spritebtn:hover {
-	opacity: 1;
+.b-icon:hover {
+	background-color: rgba(255, 255, 255, 0.67);
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
+	fill: rgb(23, 53, 85);
 }
 
 .topbar-left {

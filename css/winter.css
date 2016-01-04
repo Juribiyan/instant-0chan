@@ -220,13 +220,12 @@ a:hover {
 	-webkit-border-top-right-radius: 7px;
 }
 
-.spritebtn {
-	background-color: #133b5e;
-	border-color: #133b5e;
+.b-icon {
+  fill: white;
+  background-color: #133B5E;
 }
-.spritebtn:hover {
-	background-color: #3083CC;
-	border-color: #3083CC;
+.b-icon:hover {
+  background-color: #2980C7;
 }
 
 .topbar-left {

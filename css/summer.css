@@ -213,13 +213,12 @@ a:hover {
 	-webkit-border-top-right-radius: 7px;
 }
 
-.spritebtn {
-	background-color: #117743;
-	border-color: #117743;
+.b-icon {
+  fill: white;
+  background-color: #125F13;
 }
-.spritebtn:hover {
-	background-color: #40B46E;
-	border-color: #40B46E;
+.b-icon:hover {
+  background-color: #7AA209;
 }
 
 .topbar-left {

@@ -145,7 +145,7 @@ boardid = '{$board.id}';
 			{if %KU_QUICKREPLY}
 			<span class="extrabtns">
 				<a href="#" data-parent="{$post.id}" data-boardname="{$board.name}" data-postnum="{$post.id}" class="qrl" title="{t}Quick Reply{/t}  в тред {$post.id}">
-					<img src="{$cwebpath}css/icons/blank.gif" border="0" class="quickreply spritebtn" alt="quickreply">
+          <svg class="icon b-icon"><use xlink:href="#i-qr"></use></svg>
 				</a>
 			{/if}
 			{if $board.balls}
@@ -225,7 +225,7 @@ boardid = '{$board.id}';
 						<span class="extrabtns">
 						{if %KU_QUICKREPLY}
 						<a href="#" data-parent="{$post.parentid}" data-boardname="{$board.name}" data-postnum="{$post.id}" class="qrl" title="{t}Quick Reply{/t} в тред {$post.parentid}">
-							<img src="{$cwebpath}css/icons/blank.gif" border="0" class="quickreply spritebtn" alt="quickreply">
+							<svg class="icon b-icon"><use xlink:href="#i-qr"></use></svg>
 						</a>
 						{/if}
 						{if $board.balls}
@@ -394,7 +394,7 @@ boardid = '{$board.id}';
 	{if not $isexpand}
 		<br clear="left" />
 		<div id="newposts_get"><a href="#" onclick="return getnewposts()">
-			<img src="{$cwebpath}css/icons/blank.gif" border="0" class="getnewposts spritebtn" alt="refresh"> Получить новые посты (если есть)</a>
+      <svg class="icon b-icon"><use xlink:href="#i-refresh"></use></svg> Получить новые посты (если есть)</a>
 		</div>
 		<div id="newposts_load" style="display:none;">
 			<img src="{%KU_WEBPATH}/images/loading.gif"> Загрузка...
