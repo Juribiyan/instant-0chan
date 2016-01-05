@@ -18,7 +18,7 @@
 			<td class="postblock">
 				{t}Name{/t}</td>
 			<td>
-				<input type="text" name="name" size="28" maxlength="{%KU_MAXNAMELENGTH}" accesskey="n"/>
+				<input type="text" name="name" placeholder="{t}Name{/t}#{t}tripcode{/t}" size="28" maxlength="{%KU_MAXNAMELENGTH}" accesskey="n"/>
 			</td>
 		</tr>
 	{/if}
@@ -35,7 +35,7 @@
 	<tr>
 		<td class="postblock"></td>
 		<td><nobr>
-			<input type="text" onclick="javascript:captcha_show();return false;" name="captcha" size="28" accesskey="c">
+			<input type="text" onclick="javascript:captcha_show();return false;" name="captcha" placeholder="{t}Captcha{/t}" size="28" accesskey="c">
 			<span class="captcha_status">({t}captcha will be shown on click{/t})</span>
 			<div class="captchawrap" style="display: none"><img class="captchaimage content-background" onclick="javascript:refreshCaptcha();" valign="middle" border="0" alt="Captcha image"></div>
 		</nobr></td>
@@ -46,7 +46,7 @@
 			{t}Subject{/t}
 		</td>
 		<td>
-			{strip}<input type="text" name="subject" size="35" maxlength="{%KU_MAXSUBJLENGTH}" accesskey="s" />&nbsp;<input type="submit" value="
+			{strip}<input type="text" name="subject" placeholder="{t}Subject{/t}" size="35" maxlength="{%KU_MAXSUBJLENGTH}" accesskey="s" />&nbsp;<input type="submit" value="
 			{if %KU_QUICKREPLY && $replythread eq 0}
 				{t}Submit{/t}" accesskey="z" />&nbsp;<small id="posttypeindicator">({t}new thread{/t})</small>
 			{elseif %KU_QUICKREPLY && $replythread neq 0}
@@ -101,7 +101,7 @@
 				{t}Embed{/t}
 			</td>
 			<td>
-				<input type="text" name="embed" size="28" maxlength="75" accesskey="e" />&nbsp;<select name="embedtype">
+				<input type="text" name="embed" placeholder="{t}Embed{/t}" size="28" maxlength="75" accesskey="e" />&nbsp;<select name="embedtype">
 				{foreach name=embed from=$embeds item=embed}
 					{if in_array($embed.filetype,explode(',' $board.embeds_allowed))}
 						<option value="{$embed.name|lower}">{$embed.name}</option>
@@ -178,7 +178,7 @@
 			<td class="postblock">
 				{t}Name{/t}</td>
 			<td>
-				<input type="text" name="name" size="28" maxlength="{%KU_MAXNAMELENGTH}" accesskey="n"/>
+				<input type="text" name="name" placeholder="{t}Name{/t}#{t}tripcode{/t}" size="28" maxlength="{%KU_MAXNAMELENGTH}" accesskey="n"/>
 			</td>
 		</tr>
 	{/if}
@@ -195,7 +195,7 @@
 	<tr>
 		<td class="postblock"></td>
 		<td><nobr>
-			<input type="text" onclick="javascript:captcha_show();return false;" name="captcha" size="28" accesskey="c">
+			<input type="text" onclick="javascript:captcha_show();return false;" name="captcha" placeholder="{t}Captcha{/t}" size="28" accesskey="c">
 			<span class="captcha_status">({t}captcha will be shown on click{/t})</span>
 			<div class="captchawrap" style="display: none"><img class="captchaimage content-background" onclick="javascript:refreshCaptcha();" valign="middle" border="0" alt="Captcha image"></div>
 		</nobr></td>
@@ -206,7 +206,7 @@
 			{t}Subject{/t}
 		</td>
 		<td>
-			{strip}<input type="text" name="subject" size="35" maxlength="{%KU_MAXSUBJLENGTH}" accesskey="s" />&nbsp;<input type="submit" value="
+			{strip}<input type="text" name="subject" placeholder="{t}Subject{/t}" size="35" maxlength="{%KU_MAXSUBJLENGTH}" accesskey="s" />&nbsp;<input type="submit" value="
 			{if %KU_QUICKREPLY && $replythread eq 0}
 				{t}Submit{/t}" accesskey="z" />&nbsp;<small id="posttypeindicator">({t}new thread{/t})</small>
 			{elseif %KU_QUICKREPLY && $replythread neq 0}
@@ -261,7 +261,7 @@
 				{t}Embed{/t}
 			</td>
 			<td>
-				<input type="text" name="embed" size="28" maxlength="75" accesskey="e" />&nbsp;<select name="embedtype">
+				<input type="text" name="embed" placeholder="{t}Embed{/t}" size="28" maxlength="75" accesskey="e" />&nbsp;<select name="embedtype">
 				{foreach name=embed from=$embeds item=embed}
 					{if in_array($embed.filetype,explode(',' $board.embeds_allowed))}
 						<option value="{$embed.name|lower}">{$embed.name}</option>

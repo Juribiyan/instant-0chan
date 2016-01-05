@@ -261,3 +261,9 @@ a:hover {
   width: 98%;
   table-layout: fixed;
 }
+
+@media only screen and (max-width: 768px) {
+  blockquote {
+    margin: 2px 4px;
+  }
+}

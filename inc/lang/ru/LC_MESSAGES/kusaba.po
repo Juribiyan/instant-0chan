@@ -2019,3 +2019,6 @@ msgstr "Информация"
 
 msgid "Catalog"
 msgstr "Каталог"
+
+msgid "Enter"
+msgstr "В тред"
