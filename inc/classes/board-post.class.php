@@ -168,6 +168,12 @@ class Board {
 					$this->RegenerateThreads($thread['id']);
 					$this->dwoo_data->assign('replythread', 0);
 				}
+				// If the thread is back on safe page, unmark it
+				if ($thread['deleted_timestamp'] != 0 && $this->board['markpage'] > 0 && $i < $this->board['markpage']) {
+					$tc_db->Execute("UPDATE `".KU_DBPREFIX."posts` SET `deleted_timestamp` = '0' WHERE `boardid` = " . $tc_db->qstr($this->board['id'])." AND `id` = '" . $thread['id'] . "'");
+					$thread['deleted_timestamp'] = 0;
+				}
+
 				$thread = $this->BuildPost($thread, true);
 				
 				if ($this->board['type'] != 3) {
