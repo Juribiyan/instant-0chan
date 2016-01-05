@@ -122,7 +122,7 @@ CREATE TABLE `PREFIX_boards` (
   `maximagesize` int(20) NOT NULL DEFAULT '4096000',
   `maxpages` int(20) NOT NULL DEFAULT '11',
   `maxage` int(20) NOT NULL DEFAULT '0',
-  `markpage` tinyint(4) NOT NULL DEFAULT '99',
+  `markpage` tinyint(4) NOT NULL DEFAULT '0',
   `maxreplies` int(5) NOT NULL DEFAULT '500',
   `messagelength` int(10) NOT NULL DEFAULT '8192',
   `createdon` int(20) NOT NULL,
