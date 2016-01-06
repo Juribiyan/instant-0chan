@@ -272,7 +272,7 @@ class Board {
 			_gettext('Catalog Mode').'<div id="catalog-controls"></div></div>' . "\n".
 			'<div id="catalog-contents"></div>'.
 			$this->Footer(false, (microtime_float()-$executiontime_start_catalog));
-			$results = $tc_db->GetAll("SELECT `id` , `subject` , `message`, `file` , `file_type`, `image_w`, `image_h`, `thumb_w`, `thumb_h`, `timestamp`, `stickied`, `locked`, `bumped`, `name`, `tripcode`, `posterauthority` FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $this->board['id'] . " AND `IS_DELETED` = 0 AND `parentid` = 0 ORDER BY `stickied` DESC, `bumped` DESC");
+			$results = $tc_db->GetAll("SELECT `id` , `subject` , `message`, `file` , `file_type`, `image_w`, `image_h`, `thumb_w`, `thumb_h`, `timestamp`, `stickied`, `locked`, `bumped`, `name`, `tripcode`, `posterauthority`, `deleted_timestamp` FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $this->board['id'] . " AND `IS_DELETED` = 0 AND `parentid` = 0 ORDER BY `stickied` DESC, `bumped` DESC");
 			// count replies and images
 			if (count($results) > 0) {
 				$c_page = 0; $c_thread_count = 0;
