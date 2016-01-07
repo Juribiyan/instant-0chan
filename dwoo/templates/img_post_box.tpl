@@ -45,12 +45,12 @@
 		<td class="postblock">
 			{t}Subject{/t}
 		</td>
-		<td>
-			{strip}<input type="text" name="subject" placeholder="{t}Subject{/t}" size="35" maxlength="{%KU_MAXSUBJLENGTH}" accesskey="s" />&nbsp;<input type="submit" value="
+		<td class="subject-submit">
+			{strip}<input type="text" name="subject" placeholder="{t}Subject{/t}" size="35" maxlength="{%KU_MAXSUBJLENGTH}" accesskey="s" />&nbsp;<br class="onsmall-show"><input type="submit" value="
 			{if %KU_QUICKREPLY && $replythread eq 0}
-				{t}Submit{/t}" accesskey="z" />&nbsp;<small id="posttypeindicator">({t}new thread{/t})</small>
+				{t}Submit{/t}" accesskey="z" />&nbsp;<small class="posttypeindicator">({t}new thread{/t})</small>
 			{elseif %KU_QUICKREPLY && $replythread neq 0}
-				{t}Reply{/t}" accesskey="z" />&nbsp;<small id="posttypeindicator">({t}reply to{/t} <!sm_threadid>)</small>
+				{t}Reply{/t}" accesskey="z" />&nbsp;<small class="posttypeindicator">({t}reply to{/t} <!sm_threadid>)</small>
 			{else}
 				{t}Submit{/t}" accesskey="z" />
 			{/if}{/strip}
@@ -205,12 +205,12 @@
 		<td class="postblock">
 			{t}Subject{/t}
 		</td>
-		<td>
-			{strip}<input type="text" name="subject" placeholder="{t}Subject{/t}" size="35" maxlength="{%KU_MAXSUBJLENGTH}" accesskey="s" />&nbsp;<input type="submit" value="
+		<td class="subject-submit">
+			{strip}<input type="text" name="subject" placeholder="{t}Subject{/t}" size="35" maxlength="{%KU_MAXSUBJLENGTH}" accesskey="s" />&nbsp;<br class="onsmall-show"><input type="submit" value="
 			{if %KU_QUICKREPLY && $replythread eq 0}
-				{t}Submit{/t}" accesskey="z" />&nbsp;<small id="posttypeindicator">({t}new thread{/t})</small>
+				{t}Submit{/t}" accesskey="z" />&nbsp;<small class="posttypeindicator">({t}new thread{/t})</small>
 			{elseif %KU_QUICKREPLY && $replythread neq 0}
-				{t}Reply{/t}" accesskey="z" />&nbsp;<small id="posttypeindicator">({t}reply to{/t} <!sm_threadid>)</small>
+				{t}Reply{/t}" accesskey="z" />&nbsp;<small class="posttypeindicator">({t}reply to{/t} <!sm_threadid>)</small>
 			{else}
 				{t}Submit{/t}" accesskey="z" />
 			{/if}{/strip}

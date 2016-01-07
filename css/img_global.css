@@ -1166,46 +1166,122 @@ border: none;
 input::-webkit-input-placeholder {opacity: 0; } 
 input:-moz-placeholder {opacity: 0; }
 
+.onsmall-show {
+	display: none;
+}
+
 @media only screen and (max-width: 768px) {
-	body {
-		font-size: 0.8em!important;
+	.onsmall-show {
+		display: initial;
 	}
-	.postnode, .postnode tbody, .postnode tr, .postnode .reply, .postnode .highlight {
-		display: inline-block;
+  html,body,.content-background {
+    margin:0;
+    padding:0!important;
+  }
+  body {
+      font-size: 0.8em!important;
+  }
+  .postnode, .postnode tbody, .postnode tr, .postnode .reply, .postnode .highlight {
+    display: inline-block;
     clear: both;
     width: 100%;
-	}
-	.postnode {
-		margin-bottom: 3px;
-	}
-	.postnode label, .reflink {
-		font-size: 11px!important;
-	}
-	.content-background {
-		padding: 3px!important;
-	}
-	.border-left, .border-right, .topbar-left, .topbar-right {
-		display: none;
-	}
-	.thumb {
-		margin: 2px 4px 2px 0;
-	}
-	.uibutton {
-		padding: 3px 8px;
-		margin: 0 2px;
-		line-height: 24px;;;
-	}
-	textarea {
-		max-width: 319px;
-	}
-	#overlay_menu {
-		left: 0;
-	}
-	.postblock {
-		display: none;
-	}
-	input::-webkit-input-placeholder {opacity: 1; } 
-	input:-moz-placeholder {opacity: 1; }
+  }
+  .postnode {
+    margin-bottom: 3px;
+  }
+  .postnode label, .reflink {
+    font-size: 11px!important;
+  }
+  .border-left, .border-right, .topbar-left, .topbar-right {
+    display: none;
+  }
+  .filesize {
+    margin-left:20px;
+  }
+  .thumb {
+    margin: 2px 8px 2px 0.5em;
+  }
+  blockquote {
+    margin:0.5em;
+  }
+  code,blockquote pre {
+    white-space:pre-wrap;
+  }
+  .uibutton {
+    padding: 3px 8px;
+    margin: 0 2px;
+    line-height: 24px;
+  }
+  textarea {
+    width:calc(100% - 4px)!important;
+    max-width:100%;
+  }
+  .omittedposts {
+    display:inline-block;
+    margin:0 0.5em 3px;
+  }
+  .postarea table,.postarea input[name="name"],.postarea input[name="captcha"],.postarea input[name="subject"],.postarea input[name="imagefile"] {
+    width:100%;
+  }
+  input[name="captcha"]~*:not([style*="display: none"]):not(:empty) {
+    display:block!important;
+  }
+  .captcha_status:empty {
+    display:none!important;
+  }
+  .postarea input[type=submit] {
+    width:calc(100% + 2px);
+    margin-top:4px;
+  }
+  .postarea table tr:nth-child(4) {
+    font-size:0;
+  }
+  .maintable {
+    width:100%;
+  }
+  .captchawrap {
+    margin-top:4px;
+  }
+  .bottom-left,.bottom-right,.bottom-center {
+    display:none;
+  }
+  #overlay_menu {
+    left: 0;
+  }
+  .postblock {
+    display: none!important;
+  }
+  .maintable hr {
+      margin:0;
+  }
+  input::-webkit-input-placeholder {opacity: 1; } 
+  input:-moz-placeholder {opacity: 1; }
+  hr {
+  	margin: 0!important;
+  }
+  .subject-submit {
+  	font-size: 0;
+  }
+  .posttypeindicator {
+  	font-size: 11px;
+  	display: block;
+  	text-align: center;
+  }
+  .touch-mode #postclone, .touch-mode #postclone tbody, .touch-mode #postclone tr {
+  	width:100%;
+  	display: block;
+  }
+  .touch-mode #postclone td {
+  	width: calc(100% - 4px);
+  	display: block;
+  }
+  .touch-mode #postclone textarea, .touch-mode #postclone input[name="name"],.touch-mode #postclone input[type="submit"],.touch-mode #postclone input[name="captcha"],.touch-mode #postclone input[name="subject"],.touch-mode #postclone input[name="imagefile"] {
+    width:calc(100% - 5px)!important;
+
+  }
+}
+ol,ul {
+  list-style-position:inside;
 }
 .touch-mode .b-icon {
 	width: 24px;
@@ -1217,4 +1293,7 @@ input:-moz-placeholder {opacity: 0; }
 	background: red;
 	color: white;
 	border-radius: 2px;
+}
+hr {
+  clear:both;
 }
