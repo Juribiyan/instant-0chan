@@ -1171,6 +1171,9 @@ input:-moz-placeholder {opacity: 0; }
 }
 
 @media only screen and (max-width: 768px) {
+	#delform {
+		margin: 0 2px;
+	}
 	.onsmall-show {
 		display: initial;
 	}
@@ -1275,9 +1278,11 @@ input:-moz-placeholder {opacity: 0; }
   	width: calc(100% - 4px);
   	display: block;
   }
-  .touch-mode #postclone textarea, .touch-mode #postclone input[name="name"],.touch-mode #postclone input[type="submit"],.touch-mode #postclone input[name="captcha"],.touch-mode #postclone input[name="subject"],.touch-mode #postclone input[name="imagefile"] {
+  .touch-mode #postclone textarea, .touch-mode #postclone input[name="name"],.touch-mode #postclone input[type="submit"],.touch-mode #postclone input[name="captcha"],.touch-mode #postclone input[name="subject"] {
     width:calc(100% - 5px)!important;
-
+  }
+  label[for=nofile_clone] {
+  	font-size: 12px;
   }
 }
 ol,ul {
