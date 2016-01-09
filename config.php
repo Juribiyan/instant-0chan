@@ -257,6 +257,8 @@ if (!isset($tc_db) && !isset($preconfig_db_unnecessary)) {
 		$tc_db->Connect(KU_DBHOST, KU_DBUSERNAME, KU_DBPASSWORD, KU_DBDATABASE) or die('SQL database connection error: ' . $tc_db->ErrorMsg());
 	}
 
+	$tc_db->EXECUTE("set names 'utf8'"); 
+
 	// SQL debug
 	if (KU_DEBUG) {
 		$tc_db->debug = true;
