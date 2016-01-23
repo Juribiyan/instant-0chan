@@ -1302,3 +1302,17 @@ ol,ul {
 hr {
   clear:both;
 }
+.userdelete {
+	text-align: center;
+	white-space: nowrap;
+	position: fixed;
+	right: 6px;
+	bottom: -100px;
+	padding: 4px;
+	-webkit-transition: bottom 0.3s;
+	-o-transition: bottom 0.3s;
+	transition: bottom 0.3s;
+}
+.ud-active.userdelete {
+	bottom: 6px;
+}
