@@ -2618,6 +2618,7 @@ class Manage {
 		$menu_class->Generate();
 		$tpl_page .=  _gettext('Regenerated menu pages') .'<br />';
 		$tpl_page .= sprintf(_gettext('Rebuild complete. Took <strong>%d</strong> seconds.'), time() - $time_start);
+		$this->rebuild20json();
 		management_addlogentry(_gettext('Rebuilt all boards and threads'), 2);
 		unset($board_class);
 	}
