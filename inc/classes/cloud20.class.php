@@ -2,10 +2,9 @@
 class Cloud20 {
 	function rebuild() {
 	  global $tc_db;
-
 	  $sections = $tc_db->GetAll('SELECT * FROM `'. KU_DBPREFIX .'sections` ORDER BY `order`');
 
-	  $allboards = $tc_db->GetAll('SELECT `id`, `name`, `desc`, `section` FROM `'. KU_DBPREFIX .'boards` ORDER BY `name` ASC');
+	  $allboards = $tc_db->GetAll('SELECT `id`, `name`, `desc`, `section`, `order` FROM `'. KU_DBPREFIX .'boards`');
 	  $section20 = $tc_db->GetOne('SELECT `id` FROM `'. KU_DBPREFIX .'sections` WHERE `abbreviation`="20"');
 	  foreach($sections as &$sect) {
 	    $sect_map[$sect['id']] = $sect['name'];
@@ -19,7 +18,7 @@ class Cloud20 {
 	      $boards20 []= array('name'=>$board['name'], 'desc'=>$board['desc'], 'postcount'=>$postcount);
 	    }
 	    elseif(isset($sect_map[$board['section']])) {
-	      $boards10_wrap[$board['section']]['boards'] []= array('dir'=>$board['name'], 'desc'=>$board['desc']);
+	      $boards10_wrap[$board['section']]['boards'] []= array('dir'=>$board['name'], 'desc'=>$board['desc'], 'order'=>$board['order']);
 	    }
 	  }unset($board);
 
