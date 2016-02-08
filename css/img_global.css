@@ -1316,3 +1316,6 @@ hr {
 .ud-active.userdelete {
 	bottom: 6px;
 }
+svg {
+  -moz-transform: scale(1);
+}
