@@ -2,13 +2,14 @@
 /*
 * This file is part of kusaba.
 *
-* hurr-durr
 */
+
 class Parse {
 	var $boardtype;
 	var $parentid;
 	var $id;
 	var $boardid;
+
 	
 	function urlcallback($matches) {
 		return '<a target="_new" href="'.$matches[1].$matches[2].'">'.$matches[1].urldecode($matches[2]).'</a>'; 
@@ -23,13 +24,11 @@ class Parse {
 		$txt = preg_replace_callback('#«([^«»]*)»:(http://|https://|ftp://)([^(\s<|\[)]+(?:\([\w\d]+\)|([^[:punct:]«»\s]|/)))#u',array(&$this, 'exturlcallback'),$txt);
 		$txt = preg_replace_callback('#(?<!href=")((?:http:|https:|ftp:)\/\/)([^(\s<|\[)]+(?:\([\w\d]+\)|([^[:punct:]«»\s]|\/)))#',array(&$this, 'urlcallback'),$txt);
 		return $txt;
-	}  
-	
-
+	}
 
 	function BBCode($string){
-	
-	$string = preg_replace_callback('`\[code\](.+?)\[/code\]`is', array(&$this, 'code_callback'), $string);
+	if(!KU_USE_GESHI)
+		$string = preg_replace_callback('`\[code\](.+?)\[/code\]`is', array(&$this, 'code_callback'), $string);
 	$string = preg_replace_callback('#`(.+?)`#is', array(&$this, 'inline_code_callback'), $string);
 	$string = preg_replace_callback('`\[tex\](.+?)\[/tex\]`is', array(&$this, 'latex_callback'), $string);
 	$string = preg_replace_callback('`((?:(?:(?:^[\-\*] )(?:[^\r\n]+))[\r\n]*)+)`m', array(&$this, 'bullet_list'), $string);
@@ -118,6 +117,20 @@ class Parse {
 		$tr = array( "["=>"&#91;", "]"=>"&#93;", "*"=>"&#42;", "%"=>"&#37;", "/"=>"&#47;", "&quot;"=>"&#34;", "-"=>"&#45;", ":"=>"&#58;", " "=>"&nbsp;", "#"=>"&#35;", "~"=>"&#126;",  "&#039;"=>"'", "&apos;"=>"'", "&gt;"=>"&#62;", "&lt;"=>"&#60;" );
 		$return = '<pre class="inline-pp prettyprint">' . strtr($matches[1],$tr) . '</pre>'; 
 		return $return;
+	}
+
+	function Process_geshi($string) {
+		$geshi_langs = array("text", "actionscript", "actionscript3", "ada", "applescript", "asm", "asp", "avisynth", "bash", "bf", "blitzbasic", "c", "cobol", "cpp", "csharp", "css", "d", "delphi", "diff", "dos", "fortran", "haskell", "html4strict", "ini", "java", "javascript", "latex", "lisp", "lua", "make", "matlab", "mirc", "mpasm", "mxml", "mysql", "objc", "ocaml", "pascal", "perl", "php", "pic16", "powershell", "prolog", "python", "qbasic", "rails", "ruby", "scala", "smalltalk", "smarty", "sql", "tcl", "tsql", "vb", "vbnet", "xml"); //straight outta 0chan.ru
+		
+		return preg_replace_callback('`\[code=('.implode('|', $geshi_langs).')\](.+?)\[/code\]`is', array(&$this, 'geshi_callback'), $string);
+	}
+
+	function geshi_callback($matches) {
+		include_once '/lib/geshi.php';
+		$geshi = new GeSHi(html_entity_decode($matches[2], ENT_QUOTES), $matches[1]);
+		$geshi->set_header_type(GESHI_HEADER_PRE);
+		$tr = array("["=>"&#91;", "]"=>"&#93;", "*"=>"&#42;", "%"=>"&#37;", "&quot;"=>"&#34;", "-"=>"&#45;", ":"=>"&#58;", "# "=>"&#35; ", "~"=>"&#126;",  "&#039;"=>"'", "&apos;"=>"'", "&gt;"=>"&#62;", "&lt;"=>"&#60;", "`"=>'&#96;');
+		return '<div class="code_part">'.strtr($geshi->parse_code(), $tr).'</div>';
 	}
 
 	function latex_callback($matches) {
@@ -435,9 +448,14 @@ class Parse {
 		$message = trim($message);
 		$message = $this->CutWord($message, (KU_LINELENGTH / 15));
 		$message = htmlspecialchars($message, ENT_QUOTES);
+		
+		if(KU_USE_GESHI) {
+			$message = $this->Process_geshi($message);
+		}
+		$message = $this->BBCode($message);
 		$message = $this->ClickableQuote($message, $board, $boardtype, $parentid, $boardid, $ispage);
 		$message = $this->ColoredQuote($message, $boardtype);
-		$message = $this->BBCode($message);
+
 		$message = str_replace("\n", '<br />', $message);
 		$message = preg_replace('#(<br(?: \/)?>\s*){3,}#i', '<br /><br />', $message);
 

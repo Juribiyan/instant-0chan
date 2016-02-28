@@ -1341,3 +1341,40 @@ svg {
 	font-family: sans-serif;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.09);
 }
+.code_part {
+  border: #DFDFDF dashed 1px;
+  background: #EFEFEF;
+  width: auto;
+  max-height: 400px;
+  overflow: auto;
+  padding: 0px;
+  margin: 0px;
+  padding-right: 40px;
+  color: #333333;
+  text-shadow: none;
+}
+#code_markup {
+	position: absolute;
+	display: inline-block;
+	top: 0;
+	padding-top: 16px; /* to prevent mouseleave */
+	left: 0;
+}
+.expandee {
+	z-index: 2;
+	max-height: 0;
+	-webkit-transition: max-height .3s;
+	-o-transition: max-height .3s;
+	transition: max-height .3s;
+	overflow: hidden;
+}
+.expandee select {
+	height: 150px;
+}
+.expanded.expandee {
+	max-height: 200px;
+}
+textarea {
+	z-index: 1;
+	position: relative;
+}
