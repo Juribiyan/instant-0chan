@@ -747,7 +747,7 @@ border: none;
 
 #postclone {
 	max-width: 100%;
-	overflow: auto;
+	overflow: visible;
 }
 #postclone table {
 	display: block;
@@ -1353,7 +1353,7 @@ svg {
   color: #333333;
   text-shadow: none;
 }
-#code_markup {
+.code_markup {
 	position: absolute;
 	display: inline-block;
 	top: 0;
