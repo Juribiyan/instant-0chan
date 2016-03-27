@@ -1233,33 +1233,35 @@ class Manage {
 
 	function sregister() {
 		global $tc_db, $tpl_page;
-
-		$ayah = new AYAH();
+		mb_internal_encoding("UTF-8");
 		if(isset($_POST['username']) && isset($_POST['pass1']) && isset($_POST['pass2']) && $_POST['pass1'] == $_POST['pass2'])  {
 			if(ctype_alnum($_POST['username']) && ctype_alnum($_POST['pass1'])) {
-				if(strlen($_POST['username']) <= 10 && strlen($_POST['pass1']) <= 10) {
-					$score = $ayah->scoreResult();
-					if($score) {
-						$existing = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" .KU_DBPREFIX. "staff` WHERE `username` = " .$tc_db->qstr($_POST['username']));
-						if(count($existing) == 0) {
-							
-							$salt = $this->CreateSalt();
-							$tc_db->Execute("INSERT HIGH_PRIORITY INTO `" .KU_DBPREFIX. "staff` ( `username` , `password` , `salt` , `type` , `addedon` ) VALUES (" .$tc_db->qstr($_POST['username']). " , '" .md5($_POST['pass1'] . $salt). "' , '" .$salt. "' , '3' , '" .time(). "' )");
-							management_addlogentry('New user '.$_POST['username'].' has joined 2.0chan', 6, '2.0 service');
-							$tpl_page = _gettext('Successfully registered new user. Now you can log in.');
-							$this->LoginForm();
-							
+				if(strlen($_POST['username']) <= KU_20MAXLOGINPASS && strlen($_POST['pass1']) <= KU_20MAXLOGINPASS) {
+					$submit_time = time();
+					if($submit_time - $_SESSION['captchatime'] <= KU_CAPTCHALIFE) {
+						if(!empty($_SESSION['security_code']) && $_SESSION['security_code'] == mb_strtoupper($_POST['captcha'])) {
+							$existing = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" .KU_DBPREFIX. "staff` WHERE `username` = " .$tc_db->qstr($_POST['username']));
+							if(count($existing) == 0) {
+								$salt = $this->CreateSalt();
+								$tc_db->Execute("INSERT HIGH_PRIORITY INTO `" .KU_DBPREFIX. "staff` ( `username` , `password` , `salt` , `type` , `addedon` ) VALUES (" .$tc_db->qstr($_POST['username']). " , '" .md5($_POST['pass1'] . $salt). "' , '" .$salt. "' , '3' , '" .time(). "' )");
+								management_addlogentry('New user '.$_POST['username'].' has joined 2.0chan', 6, '2.0 service');
+								$tpl_page = _gettext('Successfully registered new user. Now you can log in.');
+								$this->LoginForm();
+							}
+							else {
+								$tpl_page .= _gettext('A staff member with that ID already exists.');
+							}
 						}
 						else {
-							$tpl_page .= _gettext('A staff member with that ID already exists.');
+							$tpl_page .= _gettext('Sorry, but you are not a human.');
 						}
 					}
 					else {
-						$tpl_page .= _gettext('Sorry, but you are not a human.');
+						$tpl_page .=  _gettext('Captcha has expired.');
 					}
 				}
 				else {
-					$tpl_page .= _gettext('Maximum username and password length is 10 characters.');
+					$tpl_page .= sprintf(_gettext('Maximum username and password length is %d characters.'), KU_20MAXLOGINPASS);
 				}
 			}
 			else {

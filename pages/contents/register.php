@@ -17,6 +17,7 @@ input:not([type='submit'])  {
 }
 form {text-align: center;}
 input[type=submit] {
+  margin-top: 5px;
 	font-size: 30px;
 }
 </style>
@@ -37,33 +38,14 @@ input[type=submit] {
 		Пароль:<br>
 		<input type="password" name="pass1" id="pass1"><br/>
 		<input type="password" name="pass2" id="pass2" placeholder="Еще раз"><br>
-		<input id="wryyy" type="submit" value="WRYYY!!" disabled title="Пройдите игру --&gt;"/>
 	</div>
-	<div class="hf"><? echo $ayah->getPublisherHTML(); ?></div>
+	<div class="hf">
+    <img src="" alt="Капча" onclick="this.src='/captcha.php?color=204,204,204&'+Math.random()" id="captcha"><br/>
+    <input type="text" name="captcha" id="captcha"><br/>
+    <input id="wryyy" type="submit" value="WRYYY!!" />
+  </div>
 </form>
-
     </td></tr>
     </tbody></table>
 </div>
-<script>
-	$(document).ready(function() {
-		if (!AYAH.isIframeCommSupported()) {
-			alert('Ваш браузер не поддерживает iframe и вы не сможете ввести капчу.');
-		}
-		var gameCompleted = false;
-		$('#sregister').on('submit', function() {
-			if($('#pass1').val() !== $('#pass2').val()) {
-				alert('Пароли не совпадают.');
-				return false;
-			}
-			if(!gameCompleted) {
-				alert('Пройдите игру.');
-				return false;
-			}
-		});
-		AYAH.addGameCompleteHandler(function() {
-			$('#wryyy').removeAttr('disabled title');
-			gameCompleted = true;
-		});
-	});
-</script>
+<script>document.querySelector('#captcha').onclick()</script>

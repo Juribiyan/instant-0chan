@@ -68,6 +68,7 @@ if (!$cache_loaded) {
 		$cf['KU_CAPTCHALIFE'] = 150;		// Captcha time-to-live in seconds
 		$cf['KU_20_BOARDSLIMIT'] = 5;	// How many 2.0 boards a user can create
 		$cf['KU_20_CLOUDTIME'] = "-24 hours";
+		$cf['KU_20MAXLOGINPASS'] = 50; // Maximum login and password size for 2.0
 		$cf['KU_SUPPORTED_LOCALES'] = 'ru|en';	// 
 		$cf['KU_FFMPEGPATH'] = '/usr/local/bin/ffmpeg'; //path to FFMPEG, for example 'C:\ffmpeg\bin'
 

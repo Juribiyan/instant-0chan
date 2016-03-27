@@ -1861,8 +1861,8 @@ msgstr "Участник зарегистрирован. Теперь вы мо�
 msgid "Sorry, but you are not a human."
 msgstr "Простите, но вы не человек."
 
-msgid "Maximum username and password length is 10 characters."
-msgstr "Длина логина и пароля не должна превышать 10 символов."
+msgid "Maximum username and password length is %d characters."
+msgstr "Длина логина и пароля не должна превышать %d символов."
 
 msgid "Login and password must be alphanumeric."
 msgstr "Логин и пароль должны содержать только латинские буквы и цифры."
