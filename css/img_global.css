@@ -1380,6 +1380,8 @@ textarea {
 }
 #delform .postertrip {
 	cursor: pointer;
+}
+#delform .postertrip:hover {
 	border-bottom-style: dotted;
 	border-bottom-width: 1px;
 }
