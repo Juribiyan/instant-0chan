@@ -7,7 +7,8 @@ $trip = $_GET['trip'];
 require 'config.php';
 $tc_db->SetFetchMode(ADODB_FETCH_ASSOC);
 
-$posts = $tc_db->GetAll('SELECT MIN(`timestamp`) first, MAX(`TIMESTAMP`) last, COUNT(1) posts FROM `'.KU_DBPREFIX.'posts` WHERE LEFT(`tripcode`, 10)=?', array($trip))[0];
+$posts = $tc_db->GetAll('SELECT MIN(`timestamp`) first, MAX(`TIMESTAMP`) last, COUNT(1) posts FROM `'.KU_DBPREFIX.'posts` WHERE LEFT(`tripcode`, 10)=?', array($trip));
+$posts = $posts[0];
 
 $ops = $tc_db->GetOne('SELECT COUNT(1) ops FROM `'.KU_DBPREFIX.'posts` WHERE LEFT(`tripcode`, 10)=? AND `parentid`=0', array($trip));
 
