@@ -1378,3 +1378,12 @@ textarea {
 	z-index: 1;
 	position: relative;
 }
+#delform .postertrip {
+	cursor: pointer;
+	border-bottom-style: dotted;
+	border-bottom-width: 1px;
+}
+.trip-info-line {
+	font-size: 12px;
+	font-style: italic;
+}
