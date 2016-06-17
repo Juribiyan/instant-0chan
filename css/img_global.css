@@ -1389,3 +1389,6 @@ textarea {
 	font-size: 12px;
 	font-style: italic;
 }
+input[readonly] {
+  cursor: text;
+}

@@ -116,8 +116,7 @@
 				{t}Password{/t}
 			</td>
 			<td>
-				<input style="display:none" type="text" name="fakeandgay"/>
-				<input type="password" name="postpassword" size="8" accesskey="p" autocomplete="on"/>&nbsp;{t}(for post and file deletion){/t}
+				<input readonly onfocus="this.removeAttribute('readonly');" type="password" name="postpassword" size="8" accesskey="p" />&nbsp;{t}(for post and file deletion){/t}
 			</td>
 		</tr>
 		<tr>
@@ -276,8 +275,7 @@
 				{t}Password{/t}
 			</td>
 			<td>
-				<input style="display:none" type="text" name="fakeandgay"/>
-				<input type="password" name="postpassword" size="8" accesskey="p" autocomplete="on"/>&nbsp;{t}(for post and file deletion){/t}
+				<input readonly onfocus="this.removeAttribute('readonly');" type="password" name="postpassword" size="8" accesskey="p" />&nbsp;{t}(for post and file deletion){/t}
 			</td>
 		</tr>
 		<tr>
@@ -306,7 +304,7 @@
 	<hr />
 {/if}
 </div>
-<script type="text/javascript"><!--
+<script type="text/javascript">
 set_inputs("postform");
 set_inputs("postclone");
-//--></script>
+</script>
