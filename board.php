@@ -172,7 +172,7 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 		}
 
 		if (isset($_POST['rememberformatting'])) {
-			setcookie('kuformatting', urldecode($_POST['formatting']), time() + 31556926, '/', KU_DOMAIN);
+			setcookie('kuformatting', $_POST['formatting'], time() + 31556926, '/', KU_DOMAIN);
 		}
 	}
 
@@ -366,14 +366,14 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 			}
 
 			if ($post['name_save'] && isset($_POST['name'])) {
-				setcookie('name', urldecode($_POST['name']), time() + 31556926, '/', KU_DOMAIN);
+				setcookie('name', $_POST['name'], time() + 31556926, '/', KU_DOMAIN);
 			}
 
 			if ($post['email_save']) {
-				setcookie('email', urldecode($post['email']), time() + 31556926, '/', KU_DOMAIN);
+				setcookie('email', $post['email'], time() + 31556926, '/', KU_DOMAIN);
 			}
 
-			setcookie('postpassword', urldecode($_POST['postpassword']), time() + 31556926, '/');
+			setcookie('postpassword', $_POST['postpassword'], time() + 31556926, '/');
 		} else {
 			exitWithErrorPage(_gettext('Could not copy uploaded image.'));
 		}
