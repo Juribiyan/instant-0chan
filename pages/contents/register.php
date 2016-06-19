@@ -1,7 +1,3 @@
-<? 
-require_once('inc/AYAH/ayah.php');
-$ayah = new AYAH();
-?>
 <style>
 .hf {display: inline-block;}
 .fl {float: left;}
