@@ -2767,7 +2767,7 @@ class Manage {
 				if(isset($_FILES['newstylefile']) && filesize($_FILES['newstylefile']['tmp_name'])) {
 				  if($_FILES["newstylefile"]["type"] == 'text/css' && end(explode(".", $_FILES["newstylefile"]["name"])) == 'css') {
 				    if(filesize($_FILES['newstylefile']['tmp_name']) < KU_MAX_CSS_SIZE) {
-				      $edit_successful = 'file';
+				      $upload_successful = 'file';
 				    }
 				    else $err .= _gettext('Uploaded CSS is too big');
 				  }
@@ -2784,7 +2784,7 @@ class Manage {
 				}
 			}
 			if($upload_successful) {
-				if($edit_successful == 'file') {
+				if($upload_successful == 'file') {
 				  $css = file_get_contents($_FILES['newstylefile']['tmp_name']);
 				}
 				else {
@@ -2792,7 +2792,7 @@ class Manage {
 				}
 				$css_error = check_css($css);
 				if(!$css_error) {
-				  if($edit_successful == 'file') {
+				  if($upload_successful == 'file') {
 				    move_uploaded_file($_FILES["newstylefile"]["tmp_name"], KU_ROOTDIR.'css/custom/' . $tempname . '.css');
 				  }
 				  else {
