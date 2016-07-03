@@ -2021,7 +2021,9 @@ msgid "Catalog"
 msgstr "Каталог"
 
 msgid "Enter"
-msgstr "В тред"msgid "expression()'s are not allowed in stylesheets"
+msgstr "В тред"
+
+msgid "expression()'s are not allowed in stylesheets"
 msgstr "Использование CSS-выражений (expression()) запрещено"
 
 msgid "Off-site link %s is not allowed in stylesheets"
