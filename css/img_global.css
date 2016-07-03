@@ -1402,3 +1402,12 @@ input[readonly] {
   box-shadow: rgb(102, 102, 102) 0px 0px 10px;
   display: none;
 }
+.pmsg-form {
+  margin-top: 16px;
+  padding: 0 10px;
+}
+.pmsg-form button {
+  width: 40%; 
+  margin: 0 5%; 
+  max-width: 150px;
+}

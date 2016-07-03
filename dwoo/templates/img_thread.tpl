@@ -93,6 +93,7 @@ boardid = '{$board.id}';
 					<a
 					{if $post.file_type eq 'webm'} class="movie" data-id="{$post.id}" data-thumb="{$post.nonstandard_file}" data-width="{$post.image_w}" data-height="{$post.image_h}"{/if}
 					{if $post.file_type eq 'mp3' or $post.file_type eq 'ogg'} class="audiowrap" {/if}
+					{if $post.file_type eq 'css'} class="csswrap" {/if}
 					{if %KU_NEWWINDOW}
 						target="_blank" 
 					{/if}								
@@ -313,6 +314,7 @@ boardid = '{$board.id}';
 								<a
 					{if $post.file_type eq 'webm'} class="movie" data-id="{$post.id}" data-thumb="{$post.nonstandard_file}" data-width="{$post.image_w}" data-height="{$post.image_h}"{/if}
 					{if $post.file_type eq 'mp3' or $post.file_type eq 'ogg'} class="audiowrap" {/if}
+					{if $post.file_type eq 'css'} class="csswrap" {/if}
 					{if %KU_NEWWINDOW}
 						target="_blank" 
 					{/if}								

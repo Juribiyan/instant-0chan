@@ -99,6 +99,23 @@ class Upload {
 						exitWithErrorPage(_gettext('File transfer failure. Please go back and try again.'));
 					}
 
+					if($this->file_type == '.css') {
+						$finfo = finfo_open(FILEINFO_MIME_TYPE);
+						$mime = finfo_file($finfo, $_FILES['imagefile']['tmp_name']);
+						if(!$mime)
+							exitWithErrorPage("Unable to get MIME type of CSS");
+						if(!preg_match("/^text/i", $mime)) {
+							exitWithErrorPage(sprintf(_gettext("Uploaded CSS is non-text (\"%s\")"), $mime));
+						}
+						finfo_close($finfo);
+						if(filesize($_FILES['imagefile']['tmp_name']) >= KU_MAX_CSS_SIZE)
+							exitWithErrorPage(sprintf(_gettext("Uploaded CSS is too big"), KU_MAX_CSS_SIZE));
+						$css = file_get_contents($_FILES['imagefile']['tmp_name']);
+						$css_error = check_css($css);
+						if($css_error)
+							exitWithErrorPage($css_error);
+					}
+
 					$this->file_name = substr(htmlspecialchars(preg_replace('/(.*)\..+/','\1',$_FILES['imagefile']['name']), ENT_QUOTES), 0, 50);
 					$this->file_name = str_replace('.','_',$this->file_name);
 					$this->original_file_name = $this->file_name;
