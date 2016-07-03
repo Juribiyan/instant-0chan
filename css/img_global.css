@@ -1392,3 +1392,13 @@ textarea {
 input[readonly] {
   cursor: text;
 }
+#popupMessage {
+  position: fixed;
+  top: 50px;
+  padding: 20px;
+  width: 40%;
+  left: 30%;
+  text-align: center;
+  box-shadow: rgb(102, 102, 102) 0px 0px 10px;
+  display: none;
+}
