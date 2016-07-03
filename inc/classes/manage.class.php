@@ -2653,24 +2653,49 @@ class Manage {
 							if(isset($_POST['newstyletxt'])) {
 								$txt_failed = false;
 								$newstyle = trim($_POST['newstyletxt']);
-								if(strlen($newstyle)) {
-									file_put_contents($location, $newstyle);
-									$edit_successful = true;
+								$style_size = strlen($newstyle);
+								if($style_size) {
+									if($style_size < KU_MAX_CSS_SIZE) {
+										$edit_successful = 'text';
+									}
+									else $txt_failed = sprintf(_gettext("Uploaded CSS is too big"), KU_MAX_CSS_SIZE);
 								}
-								else {
-									$tpl_page .= _gettext('Style must not be empty');
-									$txt_failed = true;
-								}
+								else $txt_failed = _gettext('Style must not be empty');
 							}
-							if($txt_failed && isset($_FILES['newstylefile']) && $_FILES["newstylefile"]["type"] == 'text/css' && end(explode(".", $_FILES["newstylefile"]["name"])) == 'css') {
-								move_uploaded_file($_FILES["newstylefile"]["tmp_name"], $location);
-								$edit_successful = true;
+							if($txt_failed) {
+								if(isset($_FILES['newstylefile']) && filesize($_FILES['newstylefile']['tmp_name'])) {
+									if($_FILES["newstylefile"]["type"] == 'text/css' && end(explode(".", $_FILES["newstylefile"]["name"])) == 'css') {
+										if(filesize($_FILES['newstylefile']['tmp_name']) < KU_MAX_CSS_SIZE) {
+											$edit_successful = 'file';
+										}
+										else $tpl_page .= _gettext('Uploaded CSS is too big');
+									}
+									else $tpl_page .= _gettext('Wrong file type');
+								}
+								else $tpl_page .= $txt_failed;
 							}
 							if($edit_successful) {
-								$interrupt_return = false;
-								//update version to force recache
-								$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "customstyles` SET `version`=`version`+1 WHERE `name` = '". $_POST['stylename'] ."'");
-								$tpl_page .= _gettext('Style successfully updated.');
+								if($edit_successful == 'file') {
+									$css = file_get_contents($_FILES['newstylefile']['tmp_name']);
+								}
+								else {
+									$css = $newstyle;
+								}
+								$css_error = check_css($css);
+								if(!$css_error) {
+									if($edit_successful == 'file') {
+										move_uploaded_file($_FILES["newstylefile"]["tmp_name"], $location);
+									}
+									else {
+										file_put_contents($location, $newstyle);
+									}
+									$interrupt_return = false;
+									//update version to force recache
+									$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "customstyles` SET `version`=`version`+1 WHERE `name` = '". $_POST['stylename'] ."'");
+									$tpl_page .= _gettext('Style successfully updated.');
+								}
+								else 
+									$tpl_page .= $css_error;
 							}
 						}
 						elseif(isset($_GET['setname'])) {
@@ -2729,16 +2754,27 @@ class Manage {
 			if(isset($_POST['newstyletxt'])) {
 				$txt_failed = false;
 				$newstyle = trim($_POST['newstyletxt']);
-				if(strlen($newstyle)) {
-					file_put_contents(KU_ROOTDIR.'css/custom/'.$tempname.'.css', $newstyle);
-					$upload_successful = true;
+				$style_size = strlen($newstyle);
+				if($style_size) {
+				  if($style_size < KU_MAX_CSS_SIZE) {
+				    $upload_successful = 'text';
+				  }
+				  else $txt_failed = sprintf(_gettext("Uploaded CSS is too big"), KU_MAX_CSS_SIZE);
 				}
-				else {
-					$txt_failed = true;
-					$err .= _gettext('New style must not be empty.');
-				}
+				else $txt_failed = _gettext('Style must not be empty');
 			}
-			if($txt_failed && isset($_FILES['newstylefile'])) {
+			if($txt_failed) {
+				if(isset($_FILES['newstylefile']) && filesize($_FILES['newstylefile']['tmp_name'])) {
+				  if($_FILES["newstylefile"]["type"] == 'text/css' && end(explode(".", $_FILES["newstylefile"]["name"])) == 'css') {
+				    if(filesize($_FILES['newstylefile']['tmp_name']) < KU_MAX_CSS_SIZE) {
+				      $edit_successful = 'file';
+				    }
+				    else $err .= _gettext('Uploaded CSS is too big');
+				  }
+				  else $err .= _gettext('Wrong file type');
+				}
+				else $err .= $txt_failed;
+				
 				if($_FILES["newstylefile"]["type"] == 'text/css' && end(explode(".", $_FILES["newstylefile"]["name"])) == 'css'){
 					move_uploaded_file($_FILES["newstylefile"]["tmp_name"], KU_ROOTDIR.'css/custom/' . $tempname . '.css');
 					$upload_successful = true;
@@ -2748,13 +2784,30 @@ class Manage {
 				}
 			}
 			if($upload_successful) {
-				$tc_db->Execute("INSERT INTO `" . KU_DBPREFIX . "customstyles` (`name`, `owner`, `version`) VALUES ('".$tempname."', '".$_SESSION['manageusername']."', '0')");
-				//now display style renaming form
-				$tpl_page .= _gettext('Set a unique name for your new style').'<br />
-					<form method="post" action="?action=styles&setname">'.$tokeninput.
-					'<input type="hidden" name="stylename" value="'.$tempname.'" />
-					<input type="text" name="newstylename" />.css
-					<br><input type="submit"></form>';
+				if($edit_successful == 'file') {
+				  $css = file_get_contents($_FILES['newstylefile']['tmp_name']);
+				}
+				else {
+				  $css = $newstyle;
+				}
+				$css_error = check_css($css);
+				if(!$css_error) {
+				  if($edit_successful == 'file') {
+				    move_uploaded_file($_FILES["newstylefile"]["tmp_name"], KU_ROOTDIR.'css/custom/' . $tempname . '.css');
+				  }
+				  else {
+				    file_put_contents(KU_ROOTDIR.'css/custom/'.$tempname.'.css', $newstyle);
+				  }
+				  $tc_db->Execute("INSERT INTO `" . KU_DBPREFIX . "customstyles` (`name`, `owner`, `version`) VALUES ('".$tempname."', '".$_SESSION['manageusername']."', '0')");
+				  //now display style renaming form
+				  $tpl_page .= _gettext('Set a unique name for your new style').'<br />
+				  	<form method="post" action="?action=styles&setname">'.$tokeninput.
+				  	'<input type="hidden" name="stylename" value="'.$tempname.'" />
+				  	<input type="text" name="newstylename" />.css
+				  	<br><input type="submit"></form>';
+				}
+				else 
+				  $tpl_page .= $css_error;
 			}
 			else $tpl_page .= $err;
 		}

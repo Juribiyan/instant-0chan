@@ -94,3 +94,29 @@ function do_redirect($url, $ispost = false, $file = '') {
 		die('<meta http-equiv="refresh" content="1;url=' . $url . '">');
 	}
 }
+
+function check_css($css) {
+  if(preg_match('/expression\s*\(/', $css))
+    return _gettext("expression()'s are not allowed in stylesheets");
+
+  $matched = array();
+  preg_match_all("/((?:(?:https?:)?\\/\\/|ftp:\\/\\/|irc:\\/\\/)[^\\s<>()\"]+?(?:\\([^\\s<>()\"]*?\\)[^\\s<>()\"]*?)*)((?:\\s|<|>|\"|\\.|\\]|!|\\?|,|&\\#44;|&quot;)*(?:[\\s<>()\"]|$))/im", $css, $matched);
+
+  $allowed_offsite_urls = explode(" ", KU_ALLOWED_OFFSITE_URLS);
+
+  if (isset($matched[0])) {
+    foreach ($matched[0] as $match) {
+      $match_okay = false;
+      foreach ($allowed_offsite_urls as $allowed_url) {
+        if (strpos($match, $allowed_url) === 0) {
+          $match_okay = true;
+        }
+      }
+      if ($match_okay !== true) {
+        return sprintf(_gettext("Off-site link %s is not allowed in stylesheets"), $match);
+      }
+    }
+  }
+
+  return false;
+}
