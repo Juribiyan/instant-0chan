@@ -166,7 +166,7 @@ if (!$cache_loaded) {
 	// Post display
 		$cf['KU_THREADS']         = 10; // Number of threads to display on a board page
 		$cf['KU_THREADSTXT']      = 15; // Number of threads to display on a text board front page
-		$cf['KU_REPLIES']         = 3; // Number of replies to display on a board page
+		$cf['KU_REPLIES']         = 5; // Number of replies to display on a board page
 		$cf['KU_REPLIESSTICKY']   = 1; // Number of replies to display on a board page when a thread is stickied
 		$cf['KU_THUMBMSG']        = false; // Whether or not to display the "Thumbnail displayed, click image for full size." message on posts with images
 		$cf['KU_BANMSG']          = '<br /><font color="#FF0000"><b>(USER WAS BANNED FOR THIS POST)</b></font>'; // The text to add at the end of a post if a ban is placed and "Add ban message" is checked
