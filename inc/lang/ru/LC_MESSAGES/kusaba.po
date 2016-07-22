@@ -2031,3 +2031,6 @@ msgstr "В CSS обнаружена внешняя ссылка (%s), отсут
 
 msgid "Uploaded CSS is too big"
 msgstr "Загруженный CSS превышает допустимый размер"
+
+msgid "Anonymously"
+msgstr "Анонимно"

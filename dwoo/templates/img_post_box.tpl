@@ -19,6 +19,9 @@
 				{t}Name{/t}</td>
 			<td>
 				<input type="text" name="name" placeholder="{t}Name{/t}#{t}tripcode{/t}" size="28" maxlength="{%KU_MAXNAMELENGTH}" accesskey="n"/>
+				<label for="disable_name">
+          <input id="disable_name" type="checkbox" name="disable_name" value="1" style="vertical-align: -2px;">&nbsp;{t}Anonymously{/t}
+        </label>
 			</td>
 		</tr>
 	{/if}
@@ -178,6 +181,9 @@
 				{t}Name{/t}</td>
 			<td>
 				<input type="text" name="name" placeholder="{t}Name{/t}#{t}tripcode{/t}" size="28" maxlength="{%KU_MAXNAMELENGTH}" accesskey="n"/>
+				<label for="disable_name_clone">
+          <input id="disable_name_clone" type="checkbox" name="disable_name" value="1" style="vertical-align: -2px;">&nbsp;{t}Anonymously{/t}
+        </label>
 			</td>
 		</tr>
 	{/if}

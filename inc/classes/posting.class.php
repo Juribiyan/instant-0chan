@@ -238,7 +238,7 @@ class Posting {
 
 	function GetFields() {
 		/* Fetch and process the name, email, and subject fields from the post data */
-		$post_name = isset($_POST['name']) ? htmlspecialchars($_POST['name'], ENT_QUOTES) : '';
+		$post_name = isset($_POST['name']) && $_POST['disable_name'] != 1 ? htmlspecialchars($_POST['name'], ENT_QUOTES) : '';
 		$post_email = isset($_POST['em']) ? str_replace('"', '', strip_tags($_POST['em'])) : '';
 		/* If the user used a software function, don't store it in the database */
 		if ($post_email == 'return' || $post_email == 'noko') $post_email = '';

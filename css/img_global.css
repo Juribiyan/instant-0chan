@@ -1411,3 +1411,6 @@ input[readonly] {
   margin: 0 5%; 
   max-width: 150px;
 }
+input:disabled {
+  opacity: 0.5
+}
