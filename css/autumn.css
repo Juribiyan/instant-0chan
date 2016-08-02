@@ -273,7 +273,8 @@ table td {
 }
 .cat-entry:hover .cat-card {
   background: #ECECEC;
-  box-shadow: 0 4px 7px rgba(0, 0, 0, 0.18);
+  -webkit-box-shadow: 0 4px 7px rgba(0, 0, 0, 0.18);
+          box-shadow: 0 4px 7px rgba(0, 0, 0, 0.18);
 }
 .nofile-removed {
 	border: 2px dashed #A6A7A9;
@@ -290,6 +291,8 @@ table td {
   color: #FF6600;
 }
 .cat-entry:after {
+	background: -webkit-gradient(linear, left top, left bottom, from(rgba(135,224,253,0)),to(rgb(221, 221, 221)));
+	background: -webkit-linear-gradient(top, rgba(135,224,253,0) 0%,rgb(221, 221, 221) 100%);
 	background: linear-gradient(to bottom, rgba(135,224,253,0) 0%,rgb(221, 221, 221) 100%);
 	border-radius: 0 0 4px 4px;
 }
@@ -299,10 +302,12 @@ table td {
 }
 .button-group {
 	background: rgba(255, 255, 255, 0.3);
-	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+	        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 .button-group:hover {
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
   background: rgba(255, 255, 255, 0.43);
   color: #fff;
 }

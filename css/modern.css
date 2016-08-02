@@ -188,7 +188,8 @@ table td {
 }
 .b-icon:hover {
 	background-color: rgba(255, 255, 255, 0.67);
-	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
+	-webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
+	        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
 	fill: rgb(23, 53, 85);
 }
 
@@ -211,15 +212,20 @@ table td {
 }
 #overlay_menu {
 	-webkit-transition: box-shadow 0.2s, background-color 0.2s;
+	-webkit-transition: background-color 0.2s, -webkit-box-shadow 0.2s;
+	transition: background-color 0.2s, -webkit-box-shadow 0.2s;
 	transition: box-shadow 0.2s, background-color 0.2s;
+	transition: box-shadow 0.2s, background-color 0.2s, -webkit-box-shadow 0.2s;
 	-o-transition: box-shadow 0.2s, background-color 0.2s;
 	-moz-transition: box-shadow 0.2s, background-color 0.2s;
-	box-shadow: none;
+	-webkit-box-shadow: none;
+	        box-shadow: none;
 	border-radius: 0;
 }
 
 #overlay_menu:hover {
-	box-shadow: 0 0 20px #ccc;
+	-webkit-box-shadow: 0 0 20px #ccc;
+	        box-shadow: 0 0 20px #ccc;
 	background: rgb(247, 247, 247);
 }
 
@@ -250,7 +256,6 @@ margin-right: -9px;
 	border: 1px #CCC solid;
 	border-radius: none;
 	-webkit-box-shadow: 0 0 20px #ccc;
-	-moz-box-shadow: 0 0 20px #ccc;
 	box-shadow: 0 0 20px #ccc;
 	border-radius: 0;
 }
@@ -261,7 +266,6 @@ input[type="text"], textarea {
 
 .reflinkpreview .reply {
 	-webkit-box-shadow: none;
-	-moz-box-shadow: none;
 	box-shadow: none;
 	/*margin: 0px;*/
 	border: none;
@@ -313,7 +317,8 @@ color: #000;
 }
 .cat-entry:hover .cat-card {
   background: #FFFFFF;
-  box-shadow: 0 4px 8px #CCCCCC;
+  -webkit-box-shadow: 0 4px 8px #CCCCCC;
+          box-shadow: 0 4px 8px #CCCCCC;
 }
 .nofile-removed {
 	border: 2px dashed #A6A7A9;
@@ -330,6 +335,8 @@ color: #000;
   color: rgb(72, 106, 142);
 }
 .cat-entry:after {
+	background: -webkit-gradient(linear, left top, left bottom, from(rgba(135,224,253,0)),to(rgb(248, 248, 248)));
+	background: -webkit-linear-gradient(top, rgba(135,224,253,0) 0%,rgb(248, 248, 248) 100%);
 	background: linear-gradient(to bottom, rgba(135,224,253,0) 0%,rgb(248, 248, 248) 100%);
 }
 .thumbExpanded .bigThumb {
@@ -337,10 +344,12 @@ color: #000;
 }
 .button-group {
 	background: rgba(255, 255, 255, 0.6);
-	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+	        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 .button-group:hover {
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
   background: rgba(255, 255, 255, 0.75);
 }
 .bg-button:hover {
@@ -349,7 +358,8 @@ color: #000;
 }
 .bgb-selected, .bgb-selected:hover {
   background: #BDD4EC;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+          box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 .ce-gallery .namedate-overlay:hover {
   background: white;

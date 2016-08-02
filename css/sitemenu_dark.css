@@ -17,8 +17,6 @@ h1, h2 {
 	border-radius: 3px 3px 0 0;
 	border-top: 1px solid rgba(92, 92, 92, 1);
 	background: -webkit-linear-gradient(#4b4b4b 0px, #353535 88px);
-	background: -moz-linear-gradient(#4b4b4b 0px, #353535 88px);
-	background: -o-linear-gradient(#4b4b4b 0px, #353535 88px);
 	background: linear-gradient(#4b4b4b 0px, #353535 88px);
 }
 
@@ -59,9 +57,7 @@ ul {
 	margin: 0px;
 	background: #353535;
 	background: -webkit-linear-gradient(#464646 0px, #353535 88px);
-	background: -moz-linear-gradient(#464646 0px, #353535 88px);
-	background: -o-linear-gradient(#464646 0px, #353535 88px);
-	background: linear-gradient(#464646 0px, #353535 88px);  box-shadow: 0 2px 2px rgb(29, 29, 29);  
+	background: linear-gradient(#464646 0px, #353535 88px);  -webkit-box-shadow: 0 2px 2px rgb(29, 29, 29);  box-shadow: 0 2px 2px rgb(29, 29, 29);  
 	border-radius: 0 0 3px 3px;  
 }
 

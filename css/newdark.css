@@ -159,7 +159,8 @@ hr {
 	border-style: solid none none none;
 	border-width: 1px;
 	border-color: rgba(255, 255, 255, 0.1);
-	box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.55);
+	-webkit-box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.55);
+	        box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.55);
 }
 table {
 	border-style: none;
@@ -178,7 +179,8 @@ table td {
 }
 .highlight {
 	border: 1px solid rgba(85, 224, 156, 0.28);
-	box-shadow: inset 0 0 59px rgba(85, 224, 156, 0.28);
+	-webkit-box-shadow: inset 0 0 59px rgba(85, 224, 156, 0.28);
+	        box-shadow: inset 0 0 59px rgba(85, 224, 156, 0.28);
 }
 
 #watchedthreads {
@@ -224,14 +226,19 @@ table td {
 	-o-transition-duration: 0.4s;
 	-moz-transition-property: background-color, color, box-shadow;
 	-moz-transition-duration: 0.4s;
+	-webkit-transition-property: background-color, color, -webkit-box-shadow;
+	transition-property: background-color, color, -webkit-box-shadow;
 	transition-property: background-color, color, box-shadow;
+	transition-property: background-color, color, box-shadow, -webkit-box-shadow;
 	transition-duration: 0.4s;
-	box-shadow: none;
+	-webkit-box-shadow: none;
+	        box-shadow: none;
 	border-color: rgb(31, 37, 44);
 }
 
 #overlay_menu:hover {
-	box-shadow: 0 0 20px rgba(0, 0, 0, 1);
+	-webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 1);
+	        box-shadow: 0 0 20px rgba(0, 0, 0, 1);
 	background: rgb(29, 34, 40);
 }
 
@@ -252,7 +259,8 @@ margin-right: -9px;
 .reflinkpreview {
 	border: none;
 	border-radius: 0;
-	box-shadow: 0 4px 20px rgb(19, 23, 27);
+	-webkit-box-shadow: 0 4px 20px rgb(19, 23, 27);
+	        box-shadow: 0 4px 20px rgb(19, 23, 27);
 }
 
 input[type="text"], input[type="password"], textarea {
@@ -260,7 +268,10 @@ input[type="text"], input[type="password"], textarea {
 	background: rgb(42, 48, 55);
 	-webkit-transition-property: background-color, border-color, box-shadow;
 	-webkit-transition-duration: 0.4s;
+	-webkit-transition-property: background-color, border-color, -webkit-box-shadow;
+	transition-property: background-color, border-color, -webkit-box-shadow;
 	transition-property: background-color, border-color, box-shadow;
+	transition-property: background-color, border-color, box-shadow, -webkit-box-shadow;
 	-o-transition-duration: 0.4s;
 	-o-transition-property: background-color, border-color, box-shadow;
 	-moz-transition-duration: 0.4s;
@@ -277,13 +288,13 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
 	border: 1px solid rgba(55, 201, 153, 0.62);
 	background: rgb(29, 34, 40);
 	outline: none;
-	box-shadow: inset 0 0 40px rgba(55, 201, 153, 0.32);
+	-webkit-box-shadow: inset 0 0 40px rgba(55, 201, 153, 0.32);
+	        box-shadow: inset 0 0 40px rgba(55, 201, 153, 0.32);
 	color: rgb(216, 216, 216);
 }
 
 .reflinkpreview .reply {
 	-webkit-box-shadow: none;
-	-moz-box-shadow: none;
 	box-shadow: none;
 }
 
@@ -338,7 +349,8 @@ color: rgb(55, 201, 153);
 }
 .cat-entry:hover .cat-card {
   background: #2D343E;
-  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.53);
+  -webkit-box-shadow: 0 5px 16px rgba(0, 0, 0, 0.53);
+          box-shadow: 0 5px 16px rgba(0, 0, 0, 0.53);
 }
 .nofile-removed {
 	border: 2px dashed #A6A7A9;
@@ -355,6 +367,8 @@ color: rgb(55, 201, 153);
   color: rgb(54, 171, 133);
 }
 .cat-entry:after {
+	background: -webkit-gradient(linear, left top, left bottom, from(rgba(135,224,253,0)),to(rgb(37, 42, 51)));
+	background: -webkit-linear-gradient(top, rgba(135,224,253,0) 0%,rgb(37, 42, 51) 100%);
 	background: linear-gradient(to bottom, rgba(135,224,253,0) 0%,rgb(37, 42, 51) 100%);
 }
 .thumbExpanded .bigThumb {
@@ -362,10 +376,12 @@ color: rgb(55, 201, 153);
 }
 .button-group {
 	background: rgba(255, 255, 255, 0.15);
-	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+	        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 .button-group:hover {
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
   background: rgba(255, 255, 255, 0.25);
 }
 .bg-button:hover {
@@ -374,5 +390,6 @@ color: rgb(55, 201, 153);
 }
 .bgb-selected, .bgb-selected:hover {
   background: #167355;
-  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.5);
+          box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.5);
 }

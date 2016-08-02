@@ -124,9 +124,9 @@ a:visited {
 .reply, .highlight {
 	background: #4b4b4b;
 background: -webkit-linear-gradient(#4b4b4b 0px, #353535 88px);
-background: -o-linear-gradient(#4b4b4b 0px, #353535 88px);
 background: linear-gradient(#4b4b4b 0px, #353535 88px);
-	box-shadow: 0 2px 2px rgb(29, 29, 29);: 2px;
+	-webkit-box-shadow: 0 2px 2px rgb(29, 29, 29);
+	        box-shadow: 0 2px 2px rgb(29, 29, 29);: 2px;
 	border-radius: 3px;
 	/* border-bottom: 1px solid rgba(65, 65, 65, 1); */
 	border-top: 1px solid rgba(92, 92, 92, 1);
@@ -167,7 +167,8 @@ hr {
 	border-style: solid none none none;
 	border-width: 1px;
 	border-color: #3A3A3A;
-	box-shadow: 0 -1px 0 black;
+	-webkit-box-shadow: 0 -1px 0 black;
+	        box-shadow: 0 -1px 0 black;
 }
 table {
 	border-style: none;
@@ -203,7 +204,8 @@ table td {
 }
 .b-icon:active {
 	background-color: rgba(0, 0, 0, 0.14);
-	box-shadow: inset 0 1px 0 black, 0 1px 0 rgba(255, 255, 255, 0.17);
+	-webkit-box-shadow: inset 0 1px 0 black, 0 1px 0 rgba(255, 255, 255, 0.17);
+	        box-shadow: inset 0 1px 0 black, 0 1px 0 rgba(255, 255, 255, 0.17);
 }
 
 .topbar-left {
@@ -234,14 +236,19 @@ table td {
 	-o-transition-duration: 0.4s;
 	-moz-transition-property: background-color, color, box-shadow;
 	-moz-transition-duration: 0.4s;
+	-webkit-transition-property: background-color, color, -webkit-box-shadow;
+	transition-property: background-color, color, -webkit-box-shadow;
 	transition-property: background-color, color, box-shadow;
+	transition-property: background-color, color, box-shadow, -webkit-box-shadow;
 	transition-duration: 0.4s;
-	box-shadow: none;
+	-webkit-box-shadow: none;
+	        box-shadow: none;
 	border: none;
 }
 
 #overlay_menu:hover {
-	box-shadow: 0 0 20px rgba(0, 0, 0, 1);
+	-webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 1);
+	        box-shadow: 0 0 20px rgba(0, 0, 0, 1);
 	background: rgb(27, 27, 27);
 }
 
@@ -262,7 +269,8 @@ margin-right: -9px;
 .reflinkpreview {
 	border: none;
 	border-radius: none;
-	box-shadow: 0 4px 20px rgb(0, 0, 0), 0 1px 5px #000;
+	-webkit-box-shadow: 0 4px 20px rgb(0, 0, 0), 0 1px 5px #000;
+	        box-shadow: 0 4px 20px rgb(0, 0, 0), 0 1px 5px #000;
 }
 
 input[type="text"], input[type="password"], textarea {
@@ -270,7 +278,10 @@ input[type="text"], input[type="password"], textarea {
 	background: rgb(70, 70, 70);
 	-webkit-transition-property: background-color, border-color, box-shadow;
 	-webkit-transition-duration: 0.4s;
+	-webkit-transition-property: background-color, border-color, -webkit-box-shadow;
+	transition-property: background-color, border-color, -webkit-box-shadow;
 	transition-property: background-color, border-color, box-shadow;
+	transition-property: background-color, border-color, box-shadow, -webkit-box-shadow;
 	-o-transition-duration: 0.4s;
 	-o-transition-property: background-color, border-color, box-shadow;
 	-moz-transition-duration: 0.4s;
@@ -287,13 +298,13 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
 	border: 1px solid rgba(60, 204, 211, 0.64);
 	background: rgb(22, 22, 22);
 	outline: none;
-	box-shadow: 0 0 2px rgb(60, 204, 211);
+	-webkit-box-shadow: 0 0 2px rgb(60, 204, 211);
+	        box-shadow: 0 0 2px rgb(60, 204, 211);
 	color: rgb(216, 216, 216);
 }
 
 .reflinkpreview .reply {
 	-webkit-box-shadow: none;
-	-moz-box-shadow: none;
 	box-shadow: none;
 }
 
@@ -345,11 +356,13 @@ color: rgb(36, 218, 226);
 .cat-card {
 	border-radius: 3px;
 	background: #353535;
-	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.17), 0 3px 5px rgba(0, 0, 0, 0.48), inset 0 77px 60px -32px rgba(255, 255, 255, 0.08);
+	-webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.17), 0 3px 5px rgba(0, 0, 0, 0.48), inset 0 77px 60px -32px rgba(255, 255, 255, 0.08);
+	        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.17), 0 3px 5px rgba(0, 0, 0, 0.48), inset 0 77px 60px -32px rgba(255, 255, 255, 0.08);
 }
 .cat-entry:hover .cat-card {
   background: #444444;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.17), 0 5px 10px rgba(0, 0, 0, 0.75), inset 0 77px 60px -32px rgba(255, 255, 255, 0);
+  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.17), 0 5px 10px rgba(0, 0, 0, 0.75), inset 0 77px 60px -32px rgba(255, 255, 255, 0);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.17), 0 5px 10px rgba(0, 0, 0, 0.75), inset 0 77px 60px -32px rgba(255, 255, 255, 0);
 }
 .nofile-removed {
 	border: 2px dashed #A6A7A9;
@@ -366,6 +379,8 @@ color: rgb(36, 218, 226);
   color: rgb(36, 218, 226);
 }
 .cat-entry:after {
+	background: -webkit-gradient(linear, left top, left bottom, from(rgba(135,224,253,0)),to(rgb(43, 43, 43)));
+	background: -webkit-linear-gradient(top, rgba(135,224,253,0) 0%,rgb(43, 43, 43) 100%);
 	background: linear-gradient(to bottom, rgba(135,224,253,0) 0%,rgb(43, 43, 43) 100%);
 	bottom: 0;
 	width: 208px;
@@ -377,20 +392,24 @@ color: rgb(36, 218, 226);
 }
 .button-group {
 	background: rgba(255, 255, 255, 0.15);
-	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), inset 0 1px rgba(255, 255, 255, 0.29);
+	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), inset 0 1px rgba(255, 255, 255, 0.29);
+	        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), inset 0 1px rgba(255, 255, 255, 0.29);
 }
 .button-group:hover {
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5), inset 0 1px rgba(255, 255, 255, 0.29);
+  -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5), inset 0 1px rgba(255, 255, 255, 0.29);
+          box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5), inset 0 1px rgba(255, 255, 255, 0.29);
   background: rgba(255, 255, 255, 0.25);
 }
 .bg-button:hover {
 	color: #fff;
-	box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.32);
+	-webkit-box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.32);
+	        box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.32);
 	background: rgba(255, 255, 255, 0.12); 
 }
 .bgb-selected, .bgb-selected:hover {
   background: #0C6D71;
-  box-shadow: inset 0 1px 3px black, inset 0 -1px rgba(255, 255, 255, 0.22);
+  -webkit-box-shadow: inset 0 1px 3px black, inset 0 -1px rgba(255, 255, 255, 0.22);
+          box-shadow: inset 0 1px 3px black, inset 0 -1px rgba(255, 255, 255, 0.22);
 }
 .ce-gallery .namedate-overlay:hover {
   background: #444444;
@@ -399,5 +418,6 @@ color: rgb(36, 218, 226);
 	-webkit-filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.6));
 }
 #popupMessage {
-	box-shadow: 0 3px 20px #000000;
+	-webkit-box-shadow: 0 3px 20px #000000;
+	        box-shadow: 0 3px 20px #000000;
 }
