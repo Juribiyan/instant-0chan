@@ -941,7 +941,7 @@ msgid "Refresh watched threads"
 msgstr "Обновить отслеживаемые треды"
 
 msgid "Regenerated %s"
-msgstr "Перегенерированно %s"
+msgstr "Перегенерировано %s"
 
 msgid "Regular expression"
 msgstr "Регулярное выражение"
