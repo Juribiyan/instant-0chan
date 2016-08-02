@@ -364,3 +364,13 @@ color: #000;
 .ce-gallery .namedate-overlay:hover {
   background: white;
 }
+::-moz-selection {
+	background: rgb(97, 138, 182);
+  text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+  color: white;
+}
+::selection {
+	background: rgb(97, 138, 182);
+  text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+  color: white;
+}

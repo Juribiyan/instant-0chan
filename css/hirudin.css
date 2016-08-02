@@ -42,9 +42,6 @@ a:visited {
 	margin-bottom: .5em;
 }
 
-.postarea {
-}
-
 .postblock {
 	background:transparent;
 	color:rgba(255, 255, 255, 0.44);
@@ -392,4 +389,14 @@ color: #FF1B1B;
   color: #2C333D;
   -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.46);
           box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.46);
+}
+::-moz-selection {
+	background: rgb(187, 19, 19);
+  text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+  color: white;
+}
+::selection {
+	background: rgb(187, 19, 19);
+  text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+  color: white;
 }

@@ -421,3 +421,13 @@ color: rgb(36, 218, 226);
 	-webkit-box-shadow: 0 3px 20px #000000;
 	        box-shadow: 0 3px 20px #000000;
 }
+::-moz-selection {
+	background: rgb(32, 157, 162);
+	text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+	color: white;
+}
+::selection {
+	background: rgb(32, 157, 162);
+	text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+	color: white;
+}
