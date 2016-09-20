@@ -13,24 +13,9 @@ elseif($_COOKIE['captchalang'] == 'num') {
 else $captcha = generate_code($ltrs);
 session_start();
 function img_code($code) {
-	if(isset($_GET['color'])) {
-		$scolor = explode(',', $_GET['color']);
-	}
-	elseif(isset($_COOKIE['kustyle'])) 
-    switch ($_COOKIE['kustyle']) { 
-   		case "Summer":
-   		    $scolor=array(17, 119, 67);
-   		    break;
-   		case "Winter":
-   		    $scolor=array(33, 0, 127);
-   		    break;
-   		case "Modern":
-   		    $scolor=array(95,95,95);
-   		    break;
-   		case "Dark": case "Newdark": case "Hirudin":
-   		    $scolor=array(200,200,200);
-   		    break;
-   		}
+  if(isset($_GET['color'])) {
+    $scolor = explode(',', $_GET['color']);
+  }
 	else {
 		$scolor=array(85,85,85);
 	}	
