@@ -127,7 +127,7 @@ if (!$cache_loaded) {
 		$cf['KU_CACHEDTEMPLATEDIR'] = $cf['KU_ROOTDIR'] . 'dwoo/templates_c'; // Dwoo compiled templates directory.  This folder MUST be writable (you may need to chmod it to 755).  Set to '' to disable template caching
 
 	// CSS styles
-		$cf['KU_STYLES']        = 'summer:winter:autumn:photon:modern'; // Styles which are available to be used for the boards, separated by colons, in lower case.  These will be displayed next to [Home] [Manage] if KU_STYLESWIKUHER is set to true
+		$cf['KU_STYLES']        = 'summer:winter:autumn:photon:modern:dark:newdark'; // Styles which are available to be used for the boards, separated by colons, in lower case.  These will be displayed next to [Home] [Manage] if KU_STYLESWIKUHER is set to true
 		$cf['KU_DEFAULTSTYLE']  = 'autumn'; // If Default is selected in the style list in board options, it will use this style.  Should be lower case
 		$cf['KU_STYLESWITCHER'] = true; // Whether or not to display the different styles in a clickable switcher at the top of the board
 		$cf['KU_DROPSWITCHER']	= false; // Whether or not to use a dropdown style switcher. False is use plaintext switcher, true is dropdown.
@@ -137,7 +137,7 @@ if (!$cache_loaded) {
 		$cf['KU_TXTSTYLESWITCHER'] = true; // Whether or not to display the different styles in a clickable switcher at the top of the board
 
 		$cf['KU_MENUTYPE']          = 'normal'; // Type of display for the menu.  normal will add the menu styles and such as it normally would, plain will not use the styles, and will look rather boring
-		$cf['KU_MENUSTYLES']        = 'summer:winter:autumn:photon'; // Menu styles
+		$cf['KU_MENUSTYLES']        = 'summer:winter:autumn:photon:modern:dark:newdark'; // Menu styles
 		$cf['KU_DEFAULTMENUSTYLE']  = 'autumn'; // Default menu style
 		$cf['KU_MENUSTYLESWITCHER'] = true; // Whether or not to display the different styles in a clickable switcher in the menu
 
