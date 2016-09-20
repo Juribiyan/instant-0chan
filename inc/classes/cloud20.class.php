@@ -2,12 +2,13 @@
 class Cloud20 {
 	function rebuild() {
 	  global $tc_db;
-	  $sections = $tc_db->GetAll('SELECT * FROM `'. KU_DBPREFIX .'sections` ORDER BY `order`');
 
+	  $sections = $tc_db->GetAll('SELECT * FROM `'. KU_DBPREFIX .'sections` ORDER BY `order`');
 	  $allboards = $tc_db->GetAll('SELECT `id`, `name`, `desc`, `section`, `order` FROM `'. KU_DBPREFIX .'boards`');
 	  $section20 = $tc_db->GetOne('SELECT `id` FROM `'. KU_DBPREFIX .'sections` WHERE `abbreviation`="20"');
+
 	  foreach($sections as &$sect) {
-	    $sect_map[$sect['id']] = $sect['name'];
+	    $sect_map[$sect['id']] = $sect['abbreviation'];
 	    if($sect['abbreviation'] !== '20')
 	    	$boards10_wrap[$sect['id']] = array(order=>$sect['order'], name=>$sect['name']);
 	  }unset($sect);

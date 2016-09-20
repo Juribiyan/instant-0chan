@@ -53,10 +53,9 @@ $parse_class = new Parse();
 $posting_class = new Posting();
 
 function notify($id="???", $newthreadid = '') {
-	if($id[0] == '_') {
-		$cl20 = new Cloud20();
-		$cl20->rebuild();
-	}
+	$cl20 = new Cloud20();
+	$cl20->rebuild();
+	
 	if(KU_REACT_ENA) {
 		$data_string = json_encode(array('srvtoken' => KU_REACT_SRVTOKEN, 'room' => $id, 'clitoken' => $_POST['token'], 'timestamp' => time(), 'newthreadid' => $newthreadid ));                                                                            
 		$suckTo = KU_REACT_SITENAME ? KU_LOCAL_REACT_API.'/qr/'.KU_REACT_SITENAME : KU_LOCAL_REACT_API;
