@@ -15,13 +15,12 @@ function formatDate($timestamp, $type = 'post', $locale = 'en', $email = '') {
 		// }
 
 	if ($type == 'post') {
-		/*by Snivy*/
 		if ($locale == 'ru') {
-			$days = array('Пнд', 'Втр', 'Срд', 'Чтв', 'Птн', 'Сбт', 'Вск');
-			$months = array('Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек');
-			$nowdate = getdate($timestamp);
-			$fulldate = $days[$nowdate['wday']-1].' '.$nowdate['year'].' '.$months[$nowdate['mon']-1].' '.$nowdate['mday'].' '.sprintf("%02u", $nowdate['hours']).':'.sprintf("%02u", $nowdate['minutes']).':'.sprintf("%02u", $nowdate['seconds']);
-			return $output.$fulldate.(($email != '') ? ('</a>') : (""));
+			$days = array('Вск','Пнд', 'Втр', 'Срд', 'Чтв', 'Птн', 'Сбт');
+      $months = array('Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек');
+      $nowdate = getdate($timestamp);
+      $fulldate = $days[$nowdate['wday']].' '.$nowdate['year'].' '.$months[$nowdate['mon']-1].' '.$nowdate['mday'].' '.sprintf("%02u", $nowdate['hours']).':'.sprintf("%02u", $nowdate['minutes']).':'.sprintf("%02u", $nowdate['seconds']);
+      return $output.$fulldate.(($email != '') ? ('</a>') : (""));
 		}
 		if ($locale == 'ja') {
 			/* Format the timestamp japanese style */
