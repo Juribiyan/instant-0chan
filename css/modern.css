@@ -288,8 +288,7 @@ input[type="text"], textarea {
 	border-bottom: 1px dashed rgb(133, 133, 133);
 }
 
-.postnode label,
-.reply label {
+.postinfo {
 font-size: .9em;
 color: rgb(109, 109, 109);
 }

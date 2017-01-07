@@ -114,7 +114,7 @@ boardid = '{$board.id}';
 				{/if}
 			{/if}
 			<a name="{$post.id}"></a>
-			<label>
+			<label class="postinfo">
 			<input type="checkbox" name="post[]" value="{$post.id}" />
 			{if $post.subject neq ''}
 				<span class="filetitle">
@@ -195,7 +195,7 @@ boardid = '{$board.id}';
 					</td>
 					<td class="reply" id="reply{$post.id}">
 						<a name="{$post.id}"></a>
-						<label>
+						<label class="postinfo">
 						<input type="checkbox" name="post[]" value="{$post.id}" />
 						
 						
