@@ -114,77 +114,79 @@ boardid = '{$board.id}';
 				{/if}
 			{/if}
 			<a name="{$post.id}"></a>
-			<label>
-			<input type="checkbox" name="post[]" value="{$post.id}" />
-			{if $post.subject neq ''}
-				<span class="filetitle">
-					{$post.subject}
-				</span>
-			{/if}
-			{strip}
-				<span class="postername">
-				
-				{if $post.name eq '' && $post.tripcode eq ''}
-					{$board.anonymous}
-				{elseif $post.name eq '' && $post.tripcode neq ''}
-				{else}
-					{$post.name}
+			<div class="post-head">
+				<label class="postinfo">
+				<input type="checkbox" name="post[]" value="{$post.id}" />
+				{if $post.subject neq ''}
+					<span class="filetitle">
+						{$post.subject}
+					</span>
 				{/if}
+				{strip}
+					<span class="postername">
+					
+					{if $post.name eq '' && $post.tripcode eq ''}
+						{$board.anonymous}
+					{elseif $post.name eq '' && $post.tripcode neq ''}
+					{else}
+						{$post.name}
+					{/if}
 
-				</span>
+					</span>
 
-				{if $post.tripcode neq ''}
-					<span class="postertrip">!{$post.tripcode}</span>
+					{if $post.tripcode neq ''}
+						<span class="postertrip">!{$post.tripcode}</span>
+					{/if}
+				{/strip}
+				{if $post.posterauthority eq 1}
+					<span class="admin">
+						&#35;&#35;&nbsp;{t}Admin{/t}&nbsp;&#35;&#35;
+					</span>
+				{elseif $post.posterauthority eq 4}
+					<span class="mod">
+						&#35;&#35;&nbsp;{t}Super Mod{/t}&nbsp;&#35;&#35;
+					</span>
+				{elseif $post.posterauthority eq 2}
+					<span class="mod">
+						&#35;&#35;&nbsp;{t}Mod{/t}&nbsp;&#35;&#35;
+					</span>
 				{/if}
-			{/strip}
-			{if $post.posterauthority eq 1}
-				<span class="admin">
-					&#35;&#35;&nbsp;{t}Admin{/t}&nbsp;&#35;&#35;
+				{$post.timestamp_formatted}
+				</label>
+				<span class="reflink">
+					{$post.reflink}
 				</span>
-			{elseif $post.posterauthority eq 4}
-				<span class="mod">
-					&#35;&#35;&nbsp;{t}Super Mod{/t}&nbsp;&#35;&#35;
-				</span>
-			{elseif $post.posterauthority eq 2}
-				<span class="mod">
-					&#35;&#35;&nbsp;{t}Mod{/t}&nbsp;&#35;&#35;
-				</span>
-			{/if}
-			{$post.timestamp_formatted}
-			</label>
-			<span class="reflink">
-				{$post.reflink}
-			</span>
-			{if $board.showid}<img src="data:image/png;base64,{rainbow($post.ipmd5, $post.id);}" />{/if}
-			<span class="extrabtns">
-			{if $post.locked eq 1}
-				<svg class="icon i-icon i-lock"><use xlink:href="#i-lock"></use></svg>
-			{/if}
-			{if $post.stickied eq 1}
-				<svg class="icon i-icon i-pin"><use xlink:href="#i-pin"></use></svg>
-			{/if}
-			<span id="hide{$post.id}">
-			<a href="#" onclick="javascript:togglethread('{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}');return false;" title="Hide Thread">
-			<svg class="icon b-icon"><use xlink:href="#i-hide"></use></svg>
-			</a>
-			</span>
-			{if %KU_QUICKREPLY}
-				<a href="#" data-parent="{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}" class="qrl" title="{t}Quick Reply{/t}">
-				<svg class="icon b-icon"><use xlink:href="#i-qr"></use></svg>
+				{if $board.showid}<img src="data:image/png;base64,{rainbow($post.ipmd5, $post.id);}" />{/if}
+				<span class="extrabtns">
+				{if $post.locked eq 1}
+					<svg class="icon i-icon i-lock"><use xlink:href="#i-lock"></use></svg>
+				{/if}
+				{if $post.stickied eq 1}
+					<svg class="icon i-icon i-pin"><use xlink:href="#i-pin"></use></svg>
+				{/if}
+				<span id="hide{$post.id}">
+				<a href="#" onclick="javascript:togglethread('{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}');return false;" title="Hide Thread">
+				<svg class="icon b-icon"><use xlink:href="#i-hide"></use></svg>
 				</a>
-			{/if}
-			{if $board.balls}
-			<img class="_country_" src="{%KU_WEBPATH}/images/flags/{$post.country}.png">
-			{/if}
-			</span>
-			<span id="dnb-{$board.name}-{$post.id}-y"></span>
-			[<a href="{%KU_BOARDSFOLDER}{$board.name}/res/{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}.html">{if $post.locked eq 1}{t}Enter{/t}{else}{t}Reply{/t}{/if}</a>]
-			{if %KU_FIRSTLAST && (($post.stickied eq 1 && $post.replies + %KU_REPLIESSTICKY > 50) || ($post.stickied eq 0 && $post.replies + %KU_REPLIES > 50))}
-				{if (($post.stickied eq 1 && $post.replies + %KU_REPLIESSTICKY > 100) || ($post.stickied eq 0 && $post.replies + %KU_REPLIES > 100))}
-					[<a href="{%KU_BOARDSFOLDER}{$board.name}/res/{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}-100.html">{t}First 100 posts{/t}</a>]
+				</span>
+				{if %KU_QUICKREPLY}
+					<a href="#" data-parent="{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}" class="qrl" title="{t}Quick Reply{/t}">
+					<svg class="icon b-icon"><use xlink:href="#i-qr"></use></svg>
+					</a>
 				{/if}
-				[<a href="{%KU_BOARDSFOLDER}{$board.name}/res/{$post.id}+50.html">{t}Last 50 posts{/t}</a>]
-			{/if}
+				{if $board.balls}
+				<img class="_country_" src="{%KU_WEBPATH}/images/flags/{$post.country}.png">
+				{/if}
+				</span>
+				<span id="dnb-{$board.name}-{$post.id}-y"></span>
+				[<a href="{%KU_BOARDSFOLDER}{$board.name}/res/{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}.html">{if $post.locked eq 1}{t}Enter{/t}{else}{t}Reply{/t}{/if}</a>]
+				{if %KU_FIRSTLAST && (($post.stickied eq 1 && $post.replies + %KU_REPLIESSTICKY > 50) || ($post.stickied eq 0 && $post.replies + %KU_REPLIES > 50))}
+					{if (($post.stickied eq 1 && $post.replies + %KU_REPLIESSTICKY > 100) || ($post.stickied eq 0 && $post.replies + %KU_REPLIES > 100))}
+						[<a href="{%KU_BOARDSFOLDER}{$board.name}/res/{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}-100.html">{t}First 100 posts{/t}</a>]
+					{/if}
+					[<a href="{%KU_BOARDSFOLDER}{$board.name}/res/{$post.id}+50.html">{t}Last 50 posts{/t}</a>]
+				{/if}
+			</div>
 			<br />
 		{else}
 			<table class="postnode">
@@ -195,7 +197,7 @@ boardid = '{$board.id}';
 					</td>
 					<td class="reply" id="reply{$post.id}">
 						<a name="{$post.id}"></a>
-						<label>
+						<label class="postinfo">
 						<input type="checkbox" name="post[]" value="{$post.id}" />
 						
 						
@@ -342,7 +344,6 @@ boardid = '{$board.id}';
 					</a>
 							{/if}
 						{/if}
-
 		{/if}
 		<blockquote class="postmessage">
 		{if $post.videobox}
