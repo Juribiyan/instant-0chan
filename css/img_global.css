@@ -1191,7 +1191,7 @@ input:-moz-placeholder {opacity: 0; }
   .postnode {
     margin-bottom: 3px;
   }
-  .postnode label, .reflink {
+  .postnode label, .reply .label, .reflink {
     font-size: 11px!important;
   }
   .border-left, .border-right, .topbar-left, .topbar-right {

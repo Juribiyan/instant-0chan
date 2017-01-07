@@ -304,7 +304,7 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
 	border-bottom: 1px dashed rgb(133, 133, 133);
 }
 
-.postnode label {
+.postnode label,
 font-size: .9em;
 color: rgba(255, 255, 255, 0.38);
 }
