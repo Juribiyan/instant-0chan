@@ -4,6 +4,10 @@ body {
 	margin-bottom: auto;
 }
 
+* {
+  backface-visibility: hidden;
+}
+
 blockquote blockquote {
 	margin-left: 0em;
 }
