@@ -330,6 +330,7 @@ boardid = '{$board.id}';
 			{$post.videobox}
 		{/if}
 		{$post.message}
+		<div class="replieslist"></div>
 		</blockquote>
 		{if not $post.stickied && $post.parentid eq 0 && (($board.maxage > 0 && ($post.timestamp + ($board.maxage * 3600)) < (time() + 7200 ) ) || ($post.deleted_timestamp > 0 && $post.deleted_timestamp <= (time() + 7200)))}
 			<span class="oldpost">
