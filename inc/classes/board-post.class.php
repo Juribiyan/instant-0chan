@@ -900,8 +900,8 @@ class Post extends Board {
 		} else {
 			$this->DeleteFile(false);
 			$tc_db->Execute("UPDATE `".KU_DBPREFIX."posts` SET `IS_DELETED` = 1 , `deleted_timestamp` = '" . time() . "' WHERE `boardid` = '" . $this->board['id'] . "' AND `id` = ".$tc_db->qstr($this->post['id']));
+			$tc_db->Execute('UPDATE `'.KU_DBPREFIX.'posts` AS t1, (SELECT `timestamp` FROM `'.KU_DBPREFIX.'posts` WHERE (`id`=? OR (`parentid`=? AND `email`!="sage")) AND `IS_DELETED`="0" AND `boardid`=?  ORDER BY TIMESTAMP DESC LIMIT 1) AS t2 SET t1.`bumped` = t2.`timestamp` WHERE t1.`id`=? AND `boardid`=?', array($this->post['parentid'], $this->post['parentid'], $this->board['id'], $this->post['parentid'], $this->board['id']));
 			clearPostCache($this->post['id'], $this->board['name']);
-
 			return true;
 		}
 	}
