@@ -1,4 +1,6 @@
 <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+{if $replythread > 0}<meta property="i0:thrno" content="{$replythread}" />{/if}
+<meta property="i0:buildtime" content="{time();}"/>
 <script type="text/javascript">
 		var captchaTimeout = ( {%KU_CAPTCHALIFE} * 1000 ) - 500;
 		var react_api = '{%KU_CLI_REACT_API}';
@@ -6,11 +8,13 @@
 		var react_sitename = {if %KU_REACT_SITENAME}'{%KU_REACT_SITENAME}:'{else}''{/if};
 		var this_board_dir = '{$board.name}';
 		var ku_boardspath = '{%KU_BOARDSPATH}';
+		var ku_boardsfolder = '{%KU_BOARDSFOLDER}';
 		var ku_cgipath = '{%KU_CGIPATH}';
 		var style_cookie = "kustyle";
 		var locale = '{$locale}';
 		var this_board_defaultName = '{$board.anonymous}';
 		var ku_youtube_apikey = '{%KU_YOUTUBE_APIKEY}';
+		var boardid = '{$board.id}';
 {if $replythread > 0}
 		var ispage = false;
 {else}

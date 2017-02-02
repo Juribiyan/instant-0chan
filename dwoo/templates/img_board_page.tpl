@@ -1,15 +1,3 @@
-<script type="text/javascript"><!--
-boardid = '{$board.id}';
-(function() {
-	var built = {time();};
-	var lastvisits = localStorage['lastvisits'] ? (JSON.parse(localStorage['lastvisits']) || { }) : { };
-	var last_ts = lastvisits.hasOwnProperty(boardid) ? parseInt(lastvisits[boardid]) : 0;
-	if(last_ts < built) {
-		lastvisits[boardid] = built;
-		localStorage.setItem('lastvisits', JSON.stringify(lastvisits));
-	}
-})();//-->
-</script>
 <form id="delform" action="{%KU_CGIPATH}/board.php" method="post">
 <input type="hidden" name="board" value="{$board.name}" />
 {foreach name=thread item=postsa from=$posts}
@@ -362,7 +350,7 @@ boardid = '{$board.id}';
 			<div id="replies{$post.id}{$board.name}" class="replies">
 			{if $post.replies}
 				<span class="omittedposts">
-				{if %KU_EXPAND}<a href="{%KU_BOARDSFOLDER}{$board.name}/res/{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}.html" onclick="javascript:expandthread('{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}','{$board.name}');return false;" title="{t}Expand Thread{/t}">{/if}
+				{if %KU_EXPAND}<a href="{%KU_BOARDSFOLDER}{$board.name}/res/{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}.html" onclick="return expandthread('{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}','{$board.name}', event)" title="{t}Expand Thread{/t}">{/if}
 					{if $locale == 'ru'}
 					{omitted_syntax($post.replies, $post.images)}
 					{else}

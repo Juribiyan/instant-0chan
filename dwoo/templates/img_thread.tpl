@@ -1,15 +1,3 @@
-<script type="text/javascript"><!--
-boardid = '{$board.id}';
-(function() {
-	var built = {time();};
-	var lastvisits = localStorage['lastvisits'] ? (JSON.parse(localStorage['lastvisits']) || { }) : { };
-	var last_ts = lastvisits.hasOwnProperty(boardid) ? parseInt(lastvisits[boardid]) : 0;
-	if(last_ts < built) {
-		lastvisits[boardid] = built;
-		localStorage.setItem('lastvisits', JSON.stringify(lastvisits));
-	}
-})();//-->
-</script>
 {if not $isexpand and not $isread}
 	<form id="delform" action="{%KU_CGIPATH}/board.php" method="post">
 	<input type="hidden" name="board" value="{$board.name}" />

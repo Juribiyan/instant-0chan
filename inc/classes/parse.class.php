@@ -199,16 +199,16 @@ class Parse {
 		$thread_board_id = $boardid;
 		
 		/* Add html for links to posts in the board the post was made */
-		$buffer = preg_replace_callback('/&gt;&gt;([r]?[l]?[f]?[q]?[0-9,\-,\,]+)/', array(&$this, 'InterthreadQuoteCheck'), $buffer);
+		$buffer = preg_replace_callback('/&gt;&gt;([0-9]+)/', array(&$this, 'InterthreadQuoteCheck'), $buffer);
 		
 		/* Add html for links to posts made in a different board */
-		$buffer = preg_replace_callback('/&gt;&gt;\/([a-z]+)\/([0-9]+)/', array(&$this, 'InterboardQuoteCheck'), $buffer);
+		$buffer = preg_replace_callback('/&gt;&gt;\/(\S+)\/([0-9]+)/', array(&$this, 'InterboardQuoteCheck'), $buffer);
 
 		/* Add html for links to posts in the board the post was made */
 		$buffer = preg_replace_callback('/##([0-9]+|op|оп)##/i', array(&$this, 'InterthreadProofLabel'), $buffer);
 		
 		/* Add html for links to posts made in a different board */
-		$buffer = preg_replace_callback('/##\/([a-z]+)\/([0-9]+)##/', array(&$this, 'InterboardProofLabel'), $buffer);
+		$buffer = preg_replace_callback('/##\/(\S+)\/([0-9]+)##/', array(&$this, 'InterboardProofLabel'), $buffer);
 		
 		return $buffer;
 	}
@@ -262,78 +262,33 @@ class Parse {
 	}
 	
 	function InterthreadQuoteCheck($matches) {
-		global $tc_db, $ispage, $thread_board_return, $thread_board_id;
+		global $tc_db;
 
-		$lastchar = '';
-		// If the quote ends with a , or -, cut it off.
-		if(substr($matches[0], -1) == "," || substr($matches[0], -1) == "-") {
-			$lastchar = substr($matches[0], -1);     
-			$matches[1] = substr($matches[1], 0, -1);
-			$matches[0] = substr($matches[0], 0, -1);
+		$result = $tc_db->GetOne("SELECT `parentid` FROM `".KU_DBPREFIX."posts` WHERE `id`=? AND `boardid`=?", array($matches[1], $this->boardid));
+		if (!!$result || $result === '0') {
+			$realid = ($result === '0') ? $matches[1] : $result;
+			$path = $this->boardname.'/res/'.$realid.'.html#'.$matches[1];
 		}
-		if ($this->boardtype != 1 && is_numeric($matches[1])) {
-			$query = "SELECT `parentid` FROM `".KU_DBPREFIX."posts` WHERE `boardid` = " . $this->boardid . " AND `id` = ".$tc_db->qstr($matches[1]);
-			$result = $tc_db->GetOne($query);
-			if ($result !== '') {
-				if ($result == 0) {
-					$realid = $matches[1];
-				} else {
-					$realid = $result;
-				}
-			} else {
-				return $matches[0];
-			}
-			$return = '<a href="'.KU_BOARDSFOLDER.$thread_board_return.'/res/'.$realid.'.html#'.$matches[1].'" onclick="return highlight(\'' . $matches[1] . '\', true);" class="ref|' . $thread_board_return . '|' .$realid . '|' . $matches[1] . '">'.$matches[0].'</a>'.$lastchar;
-		} else {
-			$return = $matches[0];
-			
-			$postids = getQuoteIds($matches[1]);
-			if (count($postids) > 0) {
-				$realid = $this->parentid;
-				if ($realid === 0) {
-					if ($this->id > 0) {
-						$realid = $this->id;
-					}
-				}
-				if ($realid !== '') {
-					$return = '<a href="' . KU_BOARDSFOLDER . 'read.php';
-					if (KU_TRADITIONALREAD) {
-						$return .= '/' . $thread_board_return . '/' . $realid.'/' . $matches[1];
-					} else {
-						$return .= '?b=' . $thread_board_return . '&t=' . $realid.'&p=' . $matches[1];
-					}
-					$return .= '">' . $matches[0] . '</a>';
-				}
-			}
+		else {
+			$realid = $matches[1];
+			$path = 'postbynumber.php?b='.$this->boardname.'&p='.$matches[1];
 		}
-		
-		return $return;
+		return '<a href="'.KU_BOARDSFOLDER.$path.'" class="ref|' . $this->boardname . '|' . $realid . '|' . $matches[1] . '">'.$matches[0].'</a>';
 	}
-	
+
 	function InterboardQuoteCheck($matches) {
 		global $tc_db;
 
-		$result = $tc_db->GetAll("SELECT `id`, `type` FROM `".KU_DBPREFIX."boards` WHERE `name` = ".$tc_db->qstr($matches[1])."");
-		if ($result[0]["type"] != '') {
-			$result2 = $tc_db->GetOne("SELECT `parentid` FROM `".KU_DBPREFIX."posts` WHERE `boardid` = " . $result[0]['id'] . " AND `id` = ".$tc_db->qstr($matches[2])."");
-			if ($result2 != '') {
-				if ($result2 == 0) {
-					$realid = $matches[2];
-				} else {
-					if ($result[0]['type'] != 1) {
-						$realid = $result2;
-					}
-				}
-				
-				if ($result[0]["type"] != 1) {
-					return '<a href="'.KU_BOARDSFOLDER.$matches[1].'/res/'.$realid.'.html#'.$matches[2].'" class="ref|' . $matches[1] . '|' . $realid . '|' . $matches[2] . '">'.$matches[0].'</a>';
-				} else {
-					return '<a href="'.KU_BOARDSFOLDER.$matches[1].'/res/'.$realid.'.html" class="ref|' . $matches[1] . '|' . $realid . '|' . $realid . '">'.$matches[0].'</a>';
-				}
-			}
+		$result = $tc_db->GetOne("SELECT `parentid` FROM `".KU_DBPREFIX."posts` WHERE `id`=? AND `boardid`=(SELECT `id` FROM `boards` WHERE `name`=?)", array($matches[2], $matches[1]));
+		if (!!$result || $result === '0') {
+			$realid = ($result == 0) ? $matches[2] : $result;
+			$path = $matches[1].'/res/'.$realid.'.html#'.$matches[2];
 		}
-		
-		return $matches[0];
+		else {
+			$realid = $matches[2];
+			$path = 'postbynumber.php?b='.$matches[1].'&p='.$matches[2];
+		}
+		return '<a href="'.KU_BOARDSFOLDER.$path.'" class="ref|' . $matches[1] . '|' . $realid . '|' . $matches[2] . '">'.$matches[0].'</a>';
 	}
 	
 	function Wordfilter($buffer, $board) {
@@ -444,6 +399,7 @@ class Parse {
 		$this->boardtype = $boardtype;
 		$this->parentid = $parentid;
 		$this->boardid = $boardid;	
+		$this->boardname = $board;
 		$this->ipmd5 = $ipmd5;	
 		$message = trim($message);
 		$message = $this->CutWord($message, (KU_LINELENGTH / 15));
