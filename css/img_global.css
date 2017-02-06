@@ -1340,8 +1340,8 @@ input:-moz-placeholder {opacity: 0; }
 	    -ms-transform: scale(1,0);
 	     -o-transform: scale(1,0);
 	        transform: scale(1,0);
-	-webkit-transform: scale3d(1,0,1);
-	        transform: scale3d(1,0,1);
+	/* -webkit-transform: scale3d(1,0,1);
+	        transform: scale3d(1,0,1); */
   }
 }
 ol,ul {
