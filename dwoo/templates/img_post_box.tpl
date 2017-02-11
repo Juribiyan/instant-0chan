@@ -39,8 +39,9 @@
 		<td class="postblock"></td>
 		<td><nobr>
 			<input type="text" onclick="javascript:captcha_show();return false;" name="captcha" placeholder="{t}Captcha{/t}" size="28" accesskey="c">
-			<span class="captcha_status">({t}captcha will be shown on click{/t})</span>
+			<script>document.write('<span class="captcha_status">({t}captcha will be shown on click{/t})</span>')</script>
 			<div class="captchawrap" style="display: none"><img class="captchaimage content-background" onclick="javascript:refreshCaptcha();" valign="middle" border="0" alt="Captcha image"></div>
+			<noscript><iframe src="{%KU_BOARDSFOLDER}nojscaptcha.php" frameborder="0" width="150" height="32" style="vertical-align: middle;"></iframe></noscript>
 		</nobr></td>
 	</tr>
 	{/if}

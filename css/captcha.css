@@ -1,0 +1,94 @@
+html {
+	height: 32px;
+	width: 150px;
+	background: rgb(238, 238, 238);
+	-webkit-user-select: none;
+}
+body {
+	font-size: 0;
+	margin: 0;
+}
+button {
+	background: transparent;
+	border: none;
+	margin: 0;
+	padding: 0;
+	font-size: 0;
+	cursor: pointer;
+	height: 32px;
+	width: 150px;
+	position: relative;
+}
+.rotting-indicator {
+	height: 2px;
+	width: 100%;
+	background: -webkit-linear-gradient(left, rgb(242, 16, 20) 0px, rgb(255, 133, 0) 22px, rgb(231, 208, 35) 56px, rgb(154, 223, 52) 99px, rgb(58, 196, 65) 150px);
+	background: -o-linear-gradient(left, rgb(242, 16, 20) 0px, rgb(255, 133, 0) 22px, rgb(231, 208, 35) 56px, rgb(154, 223, 52) 99px, rgb(58, 196, 65) 150px);
+	background: linear-gradient(to right, rgb(242, 16, 20) 0px, rgb(255, 133, 0) 22px, rgb(231, 208, 35) 56px, rgb(154, 223, 52) 99px, rgb(58, 196, 65) 150px);
+	-webkit-animation: rot-countdown 2s linear normal forwards;
+	     -o-animation: rot-countdown 2s linear normal forwards;
+	        animation: rot-countdown 2s linear normal forwards;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+img {
+	-webkit-animation: rot 0.4s ease 2s 1 normal forwards;
+	     -o-animation: rot 0.4s ease 2s 1 normal forwards;
+	        animation: rot 0.4s ease 2s 1 normal forwards;
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+.msg {
+	display: inline-block;
+	font-family: sans-serif;
+	font-size: 14px;
+	color: #616161;
+}
+button:hover .msg {
+	border-bottom: 1px dashed currentColor;
+}
+.rotten-msg {
+	color: #232323;
+	opacity: 0;
+	-webkit-animation: rot-msg 0.4s ease 2s 1 normal forwards;
+	     -o-animation: rot-msg 0.4s ease 2s 1 normal forwards;
+	        animation: rot-msg 0.4s ease 2s 1 normal forwards;
+}
+@-webkit-keyframes rot-countdown {
+  from {width: 150px;}
+  to {width: 0px; display: none;}
+}
+@-o-keyframes rot-countdown {
+  from {width: 150px;}
+  to {width: 0px; display: none;}
+}
+@keyframes rot-countdown {
+  from {width: 150px;}
+  to {width: 0px; display: none;}
+}
+@-webkit-keyframes rot {
+	from {opacity: 1}
+	to {opacity: 0.1}
+}
+@-o-keyframes rot {
+	from {opacity: 1}
+	to {opacity: 0.1}
+}
+@keyframes rot {
+	from {opacity: 1}
+	to {opacity: 0.1}
+}
+@-webkit-keyframes rot-msg {
+	from {opacity: 0}
+	to {opacity: 1}
+}
+@-o-keyframes rot-msg {
+	from {opacity: 0}
+	to {opacity: 1}
+}
+@keyframes rot-msg {
+	from {opacity: 0}
+	to {opacity: 1}
+}
