@@ -402,9 +402,10 @@ class Parse {
 		$this->boardname = $board;
 		$this->ipmd5 = $ipmd5;	
 		$message = trim($message);
-		$message = $this->CutWord($message, (KU_LINELENGTH / 15));
+		if(KU_CUTPOSTS) {
+			$message = $this->CutWord($message, (KU_LINELENGTH / 15));
+		}
 		$message = htmlspecialchars($message, ENT_QUOTES);
-		
 		if(KU_USE_GESHI) {
 			$message = $this->Process_geshi($message);
 		}
