@@ -137,12 +137,12 @@ pre {
 
 .pre-hidden {
 	opacity: 0;
-	-webkit-transform: scale(1.1);
-	    -ms-transform: scale(1.1);
-	     -o-transform: scale(1.1);
-	        transform: scale(1.1);
-	/* -webkit-transform: scale3d(1.1,1.1,1);
-	        transform: scale3d(1.1,1.1,1); */
+	-webkit-transform: scale(0.8);
+	    -ms-transform: scale(0.8);
+	     -o-transform: scale(0.8);
+	        transform: scale(0.8);
+/* 	-webkit-transform: scale3d(1.1,1.1,1);
+        transform: scale3d(1.1,1.1,1); */
 }
 
 .reflinkpreview .postnode {
