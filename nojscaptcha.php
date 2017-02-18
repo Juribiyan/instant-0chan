@@ -1,6 +1,7 @@
 <?php
 require 'config.php';
 $initial = !$_GET['show'];
+$shorten_life = KU_CAPTCHALIFE - 0.5;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,14 +11,14 @@ $initial = !$_GET['show'];
   <link rel="stylesheet" href="/css/captcha.css">
   <style>
     .rotting-indicator {
-      -webkit-animation-duration: <?php echo KU_CAPTCHALIFE?>s;
-           -o-animation-duration: <?php echo KU_CAPTCHALIFE?>s;
-              animation-duration: <?php echo KU_CAPTCHALIFE?>s;
+      -webkit-animation-duration: <?php echo $shorten_life?>s;
+           -o-animation-duration: <?php echo $shorten_life?>s;
+              animation-duration: <?php echo $shorten_life?>s;
     }
     img, .rotten-msg {
-      -webkit-animation-delay: <?php echo KU_CAPTCHALIFE?>s;
-           -o-animation-delay: <?php echo KU_CAPTCHALIFE?>s;
-              animation-delay: <?php echo KU_CAPTCHALIFE?>s;
+      -webkit-animation-delay: <?php echo $shorten_life?>s;
+           -o-animation-delay: <?php echo $shorten_life?>s;
+              animation-delay: <?php echo $shorten_life?>s;
     }
   </style>
 </head>
@@ -33,7 +34,7 @@ $initial = !$_GET['show'];
       echo 
       '<img alt="Captcha image" src="'.KU_WEBFOLDER.'captcha.php?'.(float)rand()/(float)getrandmax().'&color=77,77,77">
       <div class="rotting-indicator"></div>
-      <div class="rotten-msg msg">'.(KU_LOCALE=='ru' ? 'Капча-протухла' : 'Captcha has rotten').'</div> ';
+      <div class="rotten-msg msg">'.(KU_LOCALE=='ru' ? 'Капча-протухла' : 'Captcha has expired').'</div> ';
     ?>
     </button>
   </form>

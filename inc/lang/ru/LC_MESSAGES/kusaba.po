@@ -2011,8 +2011,11 @@ msgstr "У вас нет досок."
 msgid "Manage banners"
 msgstr "Менеджер баннеров"
 
-msgid "captcha will be shown on click"
-msgstr "капча появится по клику"
+msgid "Refresh captcha"
+msgstr "Обновить капчу"
+
+msgid "Show captcha"
+msgstr "Показать капчу"
 
 msgid "Info"
 msgstr "Информация"

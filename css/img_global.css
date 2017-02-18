@@ -25,21 +25,111 @@ textarea {
 	width: 397px;
 }
 
+/* ---------- captcha ----------*/
 .captchawrap {
+	text-align: center;
 	display: inline-block;
 	vertical-align: middle;
 	width: 150px;
 	height: 32px;
-	background: -webkit-linear-gradient(left, #f21014 0px, #FF8500 22px, #E7D023 56px, #9ADF34 99px, #3AC441 150px);
-	background: -o-linear-gradient(left, #f21014 0px, #FF8500 22px, #E7D023 56px, #9ADF34 99px, #3AC441 150px);
-	background: linear-gradient(left, #f21014 0px, #FF8500 22px, #E7D023 56px, #9ADF34 99px, #3AC441 150px);
-}
-.captcha_status {
+	cursor: pointer;
 	line-height: 32px;
-	display: inline-block;
-	height: 32px;
-	vertical-align: middle;
+	font-size: 0;
+	position: relative;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
 }
+.captchaimage {
+	width: 150px;
+	height: 30px;
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+.msg {
+	display: inline-block;
+	font-size: 14px;
+	line-height: normal;
+	vertical-align: middle;
+	pointer-events: none;
+}
+.captchawrap:hover .msg {
+	border-bottom: 1px dashed currentColor;
+	margin-bottom: -1px;
+}
+.rotting-indicator {
+	height: 2px;
+	width: 100%;
+	background: -webkit-linear-gradient(left, rgb(242, 16, 20) 0px, rgb(255, 133, 0) 22px, rgb(231, 208, 35) 56px, rgb(154, 223, 52) 99px, rgb(58, 196, 65) 150px);
+	background: -o-linear-gradient(left, rgb(242, 16, 20) 0px, rgb(255, 133, 0) 22px, rgb(231, 208, 35) 56px, rgb(154, 223, 52) 99px, rgb(58, 196, 65) 150px);
+	background: linear-gradient(to right, rgb(242, 16, 20) 0px, rgb(255, 133, 0) 22px, rgb(231, 208, 35) 56px, rgb(154, 223, 52) 99px, rgb(58, 196, 65) 150px);
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+.cw-running .captchaimage {
+	-webkit-animation: rot 0.4s ease 2s 1 normal forwards;
+	     -o-animation: rot 0.4s ease 2s 1 normal forwards;
+	        animation: rot 0.4s ease 2s 1 normal forwards;
+}
+.rotten-msg {
+	opacity: 0;
+}
+.cw-running .rotten-msg {
+	-webkit-animation: rot-msg 0.4s ease 2s 1 normal forwards;
+	     -o-animation: rot-msg 0.4s ease 2s 1 normal forwards;
+	        animation: rot-msg 0.4s ease 2s 1 normal forwards;
+}
+.cw-running .rotting-indicator {
+	-webkit-animation: rot-countdown 2s linear normal forwards;
+	     -o-animation: rot-countdown 2s linear normal forwards;
+	        animation: rot-countdown 2s linear normal forwards;
+}
+.captchawrap:not(.cw-initial) .captcha-show,
+.cw-initial .captchaimage,
+.cw-initial .rotten-msg,
+.cw-initial .rotting-indicator {
+	display: none;
+}
+@-webkit-keyframes rot-countdown {
+  from {width: 150px;}
+  to {width: 0px; display: none;}
+}
+@-o-keyframes rot-countdown {
+  from {width: 150px;}
+  to {width: 0px; display: none;}
+}
+@keyframes rot-countdown {
+  from {width: 150px;}
+  to {width: 0px; display: none;}
+}
+@-webkit-keyframes rot {
+	from {opacity: 1}
+	to {opacity: 0.1}
+}
+@-o-keyframes rot {
+	from {opacity: 1}
+	to {opacity: 0.1}
+}
+@keyframes rot {
+	from {opacity: 1}
+	to {opacity: 0.1}
+}
+@-webkit-keyframes rot-msg {
+	from {opacity: 0}
+	to {opacity: 1}
+}
+@-o-keyframes rot-msg {
+	from {opacity: 0}
+	to {opacity: 1}
+}
+@keyframes rot-msg {
+	from {opacity: 0}
+	to {opacity: 1}
+}
+/* ---------- /captcha ---------- */
 
 form .trap {
 	display:none;
@@ -47,13 +137,6 @@ form .trap {
 
 .postarea {
 	text-align: center;
-}
-
-.captchaimage {
-	display: inline!important;
-	box-shadow: none!important;
-	width: 150px;
-	height: 30px;
 }
 
 .postarea table {
@@ -1261,9 +1344,6 @@ input:-moz-placeholder {opacity: 0; }
   .postarea table,.postarea input[name="name"],.postarea input[name="captcha"],.postarea input[name="subject"],.postarea input[name="imagefile"] {
     width:100%;
   }
-  input[name="captcha"]~*:not([style*="display: none"]):not(:empty) {
-    display:block!important;
-  }
   .captcha_status:empty {
     display:none!important;
   }
@@ -1278,7 +1358,9 @@ input:-moz-placeholder {opacity: 0; }
     width:100%;
   }
   .captchawrap {
-    margin-top:4px;
+  	display:block;
+  	margin: 0px auto;
+  	margin-top:4px;
   }
   .bottom-left,.bottom-right,.bottom-center {
     display:none;

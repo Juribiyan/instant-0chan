@@ -2,7 +2,7 @@
 {if $replythread > 0}<meta property="i0:thrno" content="{$replythread}" />{/if}
 <meta property="i0:buildtime" content="{time();}"/>
 <script type="text/javascript">
-		var captchaTimeout = ( {%KU_CAPTCHALIFE} * 1000 ) - 500;
+		var captchaTimeout = {%KU_CAPTCHALIFE} - 0.5;
 		var react_api = '{%KU_CLI_REACT_API}';
 		var react_ena = '{%KU_REACT_ENA}';
 		var react_sitename = {if %KU_REACT_SITENAME}'{%KU_REACT_SITENAME}:'{else}''{/if};

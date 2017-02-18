@@ -38,10 +38,9 @@
 	<tr>
 		<td class="postblock"></td>
 		<td><nobr>
-			<input type="text" onclick="javascript:captcha_show();return false;" name="captcha" placeholder="{t}Captcha{/t}" size="28" accesskey="c">
-			<script>document.write('<span class="captcha_status">({t}captcha will be shown on click{/t})</span>')</script>
-			<div class="captchawrap" style="display: none"><img class="captchaimage content-background" onclick="javascript:refreshCaptcha();" valign="middle" border="0" alt="Captcha image"></div>
-			<noscript><iframe src="{%KU_BOARDSFOLDER}nojscaptcha.php" frameborder="0" width="150" height="32" style="vertical-align: middle;"></iframe></noscript>
+			<input type="text" onfocus="return Captcha.refreshOnce()" name="captcha" placeholder="{t}Captcha{/t}" size="28" accesskey="c" style="vertical-align: middle">
+			<script>document.write('<div class="captchawrap cw-initial" title="{t}Refresh captcha{/t}"><div class="captcha-show msg">{t}Show captcha{/t}</div><img class="captchaimage" valign="middle" border="0" alt="Captcha image"><div class="rotting-indicator"></div><div class="rotten-msg msg">{t}Captcha has expired{t}.</div></div>')</script>
+			<noscript><iframe class="captchawrap" src="{%KU_BOARDSFOLDER}nojscaptcha.php" frameborder="0" width="150" height="32" style="vertical-align: middle;"></iframe></noscript>
 		</nobr></td>
 	</tr>
 	{/if}
@@ -201,9 +200,8 @@
 	<tr>
 		<td class="postblock"></td>
 		<td><nobr>
-			<input type="text" onclick="javascript:captcha_show();return false;" name="captcha" placeholder="{t}Captcha{/t}" size="28" accesskey="c">
-			<span class="captcha_status">({t}captcha will be shown on click{/t})</span>
-			<div class="captchawrap" style="display: none"><img class="captchaimage content-background" onclick="javascript:refreshCaptcha();" valign="middle" border="0" alt="Captcha image"></div>
+			<input type="text" onfocus="return Captcha.refreshOnce()" name="captcha" placeholder="{t}Captcha{/t}" size="28" accesskey="c" style="vertical-align: middle">
+			<script>document.write('<div class="captchawrap cw-initial" title="{t}Refresh captcha{/t}"><div class="captcha-show msg">{t}Show captcha{/t}</div><img class="captchaimage" valign="middle" border="0" alt="Captcha image"><div class="rotting-indicator"></div><div class="rotten-msg msg">{t}Captcha has expired{t}.</div></div>')</script>
 		</nobr></td>
 	</tr>
 	{/if}
