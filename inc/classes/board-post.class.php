@@ -128,197 +128,237 @@ class Board {
 	/**
 	 * Regenerate all pages
 	 */
-	function RegeneratePages() {
-		global $tc_db, $CURRENTLOCALE;
-		
-		$this->InitializeDwoo();
-		$results = $tc_db->GetAll("SELECT `filetype` FROM `" . KU_DBPREFIX . "embeds`");
-		foreach ($results as $line) {
-			$this->board['filetypes'][] .= $line['filetype'];
-		}
-		$this->dwoo_data->assign('filetypes', $this->board['filetypes']);
-		$maxpages = $this->board['maxpages'];
-		$numposts = $tc_db->GetOne("SELECT COUNT(*) FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $this->board['id'] . " AND `parentid` = 0 AND `IS_DELETED` = 0");
+	function RegeneratePages($startpage=-1, $direction="all") {
+    global $tc_db, $CURRENTLOCALE;
+    $tc_db->SetFetchMode(ADODB_FETCH_ASSOC); 
+    $this->InitializeDwoo();
+    $do_all = ($startpage==-1 || $direction=="all");
 
-		if ($this->board['type'] == 1) {
-			$postsperpage = KU_THREADSTXT;
-		} elseif ($this->board['type'] == 3) {
-			$postsperpage = 30;
-		} else {
-			$postsperpage = KU_THREADS;
-		}
-		$i = 0;
-		$liststooutput = 0;
-		$totalpages = calculatenumpages($this->board['type'], ($numposts-1));
-		if ($totalpages == '-1') {
-			$totalpages = 0;
-		}
-		$this->dwoo_data->assign('numpages', $totalpages);
-		while ($i <= $totalpages) {
-			$newposts = Array();
-			$this->dwoo_data->assign('thispage', $i);
-			$threads = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $this->board['id'] . " AND `parentid` = 0 AND `IS_DELETED` = 0 ORDER BY `stickied` DESC, `bumped` DESC LIMIT ". ($postsperpage)." OFFSET ". $postsperpage * $i);
+    $ftypes = $tc_db->GetAll("SELECT `filetype` FROM `" . KU_DBPREFIX . "embeds`");
+    foreach ($ftypes as $ftype) {
+      $this->board['filetypes'] []= $ftype;
+    }
+    $this->dwoo_data->assign('filetypes', $this->board['filetypes']);
 
-			$executiontime_start_page = microtime_float();
-			foreach ($threads as $k=>$thread) {
-				// If the thread is on the page set to mark, && hasn't been marked yet, mark it
-				if ($thread['deleted_timestamp'] == 0 && $this->board['markpage'] > 0 && $i >= $this->board['markpage']) {
-					$tc_db->Execute("UPDATE `".KU_DBPREFIX."posts` SET `deleted_timestamp` = '" . (time() + 7200) . "' WHERE `boardid` = " . $tc_db->qstr($this->board['id'])." AND `id` = '" . $thread['id'] . "'");
-					clearPostCache($thread['id'], $this->board['name']);
-					$this->RegenerateThreads($thread['id']);
-					$this->dwoo_data->assign('replythread', 0);
-				}
-				// If the thread is back on safe page, unmark it
-				if ($this->board['markpage'] == 0 || $thread['deleted_timestamp'] != 0 && $i < $this->board['markpage']) {
-					$tc_db->Execute("UPDATE `".KU_DBPREFIX."posts` SET `deleted_timestamp` = '0' WHERE `boardid` = " . $tc_db->qstr($this->board['id'])." AND `id` = '" . $thread['id'] . "'");
-					$thread['deleted_timestamp'] = 0;
-				}
+    $maxpages = $this->board['maxpages'];
 
-				$thread = $this->BuildPost($thread, true);
-				
-				if ($this->board['type'] != 3) {
-					$omitids = '';
-					$posts = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $this->board['id']." AND `parentid` = ".$thread['id']." " . (($this->board['type'] != 1) ? ("AND `IS_DELETED` = 0") : ("")) . " ORDER BY `id` DESC LIMIT ".(($thread['stickied'] == 1) ? (KU_REPLIESSTICKY) : (KU_REPLIES)));
-					foreach ($posts as $key=>$post) {
-						$omitids .= $post['id'].",";
-						$posts[$key] = $this->BuildPost($post, true);
-					}
+    $threads = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $this->board['id'] . " AND `parentid` = 0 AND `IS_DELETED` = 0 ORDER BY `stickied` DESC, `bumped` DESC");
+    
+    $total_threads = count($threads);
 
-					$posts = array_reverse($posts);
-					$omitids = substr($omitids, 0, -1);
-					array_unshift($posts, $thread);
-					$newposts[] = $posts;
-				} else {
-					if (!$thread['tag']) $thread['tag'] = '*';
-					$newposts[] = $thread;
-				}
-				$replycount = Array();
-				if ($this->board['type'] == 1 || $this->board['type'] == 3 ) {
-					$replycount = $tc_db->GetAll("SELECT COUNT(`id`) FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $tc_db->qstr($this->board['id'])." AND `parentid` = " . $thread['id']);
-				} else {
-					$replycount = $tc_db->GetAll("SELECT COUNT(`id`) AS replies, SUM(CASE WHEN `file_md5` = '' THEN 0 ELSE 1 END) AS files FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $this->board['id']."  AND `parentid` = ".$thread['id']." AND `is_deleted` = 0 AND `id` NOT IN (" . $omitids . ")");
-				}
-				// Workaround for upload boards
-				if ($this->board['type'] == 3) {
-					$newposts[$k]['replies'] = $replycount[0][0];
-				} else {
-					$newposts[$k][0]['replies'] = $replycount[0][0];
-					$newposts[$k][0]['images'] = (isset($replycount[0][1]) ? $replycount[0][1] : '');
-				}
-			}
-			if ($this->board['type'] == 0 && !isset($embeds)) {
-				$embeds = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "embeds`");
-				$this->dwoo_data->assign('embeds', $embeds);
-			}
-			if (!isset($header)){
-				$header = $this->PageHeader();
-				$header = str_replace("<!sm_threadid>", 0, $header);
-			}
-			if (!isset($postbox)) {
-				$postbox = $this->Postbox();
-				$postbox = str_replace("<!sm_threadid>", 0, $postbox);
-			}
-			$this->dwoo_data->assign('posts', $newposts);
-			$this->dwoo_data->assign('file_path', getCLBoardPath($this->board['name'], $this->board['loadbalanceurl_formatted'], ''));
+    $tsq = 0;
+    // split threads into pages →
+    for ($i=0; $i < $total_threads; $i++) { 
+      $current_page = floor($i / KU_THREADS);
 
-			$content = $this->dwoo->get(KU_TEMPLATEDIR . '/' . $this->board['text_readable'] . '_board_page.tpl', $this->dwoo_data);
-			$footer = $this->Footer(false, (microtime_float() - $executiontime_start_page), (($this->board['type'] == 1) ? (true) : (false)));
-			$content = $header.$postbox.$content.$footer;
+      // fill thread stats →
+      $threads[$i]['page'] = $current_page;
+      $stats = $tc_db->GetAll("SELECT 
+        COUNT(*) `reply_count`, 
+        MAX(`timestamp`) `replied`, 
+        MAX(`id`) `last_reply`,
+        SUM(CASE WHEN `file_md5` != '' THEN 1 ELSE 0 END) `images` 
+      FROM `".KU_DBPREFIX."posts` 
+      WHERE `boardid` = '". $this->board['id'] ." '
+        AND `IS_DELETED` = 0 
+        AND `parentid` = '". $threads[$i]['id'] ."'");
+      $stats = $stats[0];
+      $threads[$i]['reply_count'] = $stats['reply_count'];
+      $threads[$i]['replied'] = $stats['replied'];
+      $threads[$i]['last_reply'] = $stats['last_reply'];
+      $threads[$i]['images'] = $stats['images'];
+      if ($threads[$i]['file_md5'] != '') {
+        $threads[$i]['images']++;
+      }
+      // ← fill thread stats
 
-			$content = str_replace("\t", '',$content);
-			$content = str_replace("&nbsp;\r\n", '&nbsp;',$content);
+      $pages[$current_page] []= $threads[$i];
+    } // ← split thread into pages
 
-			if ($i == 0) {
-				$page = KU_BOARDSDIR.$this->board['name'].'/'.KU_FIRSTPAGE;
-				$this->PrintPage($page, $content, $this->board['name']);
-			} else {
-				$page = KU_BOARDSDIR.$this->board['name'].'/'.$i.'.html';
-				$this->PrintPage($page, $content, $this->board['name']);
-			}
-			$i++;
-		}
-		// If text board, rebuild thread list html files 
-		if ($this->board['type'] == 1) {
-			$numpostsleft = $tc_db->GetOne("SELECT COUNT(*) FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $this->board['id'] . " AND `IS_DELETED` = 0 AND `parentid` = 0");
-			$liststooutput = floor(($numpostsleft-1) / 40);
-			$this->dwoo_data->assign('numpages', $liststooutput+1);
-			$listpage = 0;
-			$currentpostwave = 0;
-			while ($numpostsleft>0) {
-				$this->dwoo_data->assign('thispage', $listpage+1);
-				$executiontime_start_list = microtime_float();
-				$page = $this->PageHeader(0, $currentpostwave, $liststooutput);
-				$this->Footer(false, (microtime_float()-$executiontime_start_list), true);
-				if ($listpage==0) {
-					$this->PrintPage(KU_BOARDSDIR.$this->board['name'].'/list.html', $page, $this->board['name']);
-				} else {
-					$this->PrintPage(KU_BOARDSDIR.$this->board['name'].'/list'.($listpage+1).'.html', $page, $this->board['name']);
-				}
-				$currentpostwave += 40;
-				$numpostsleft -= 40;
-				$listpage++;
-			}
-		}
-		// !! NEW CATALOG !! --START
-		if ($this->board['enablecatalog'] == 1 && ($this->board['type'] == 0 || $this->board['type'] == 2)) {
-			$tc_db->SetFetchMode(ADODB_FETCH_ASSOC); 
-			$executiontime_start_catalog = microtime_float();
-			$catalog_html = $this->PageHeader().
-			'<script src="'.KU_BOARDSFOLDER.'lib/javascript/lodash.min.js"></script>'.
-			'<script> is_catalog=true; </script>'.
-			'&#91;<a href="' . KU_BOARDSFOLDER . $this->board['name'] . '/">'._gettext('Return').'</a>&#93; '.
-			'&#91;<a href="#" id="refresh_catalog">'._gettext('Refresh').'</a>&#93;'.
-			'<div class="catalogmode">'.
-			_gettext('Catalog Mode').'<div id="catalog-controls"></div></div>' . "\n".
-			'<div id="catalog-contents"></div>'.
-			$this->Footer(false, (microtime_float()-$executiontime_start_catalog));
-			$results = $tc_db->GetAll("SELECT `id` , `subject` , `message`, `file` , `file_type`, `image_w`, `image_h`, `thumb_w`, `thumb_h`, `timestamp`, `stickied`, `locked`, `bumped`, `name`, `tripcode`, `posterauthority`, `deleted_timestamp` FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $this->board['id'] . " AND `IS_DELETED` = 0 AND `parentid` = 0 ORDER BY `stickied` DESC, `bumped` DESC");
-			// count replies and images
-			if (count($results) > 0) {
-				$c_page = 0; $c_thread_count = 0;
-				foreach($results as &$thread) {
-					$c_thread_count++;
-					if($c_thread_count > KU_THREADS) {
-						$c_page++;
-						$c_thread_count = 1;
-					}
-					$thread['page'] = $c_page;
-					$replies = $tc_db->GetAll("SELECT COUNT(*), MAX(`timestamp`), MAX(`id`) FROM `".KU_DBPREFIX."posts` WHERE `boardid` = " . $this->board['id'] . " AND `IS_DELETED` = 0 AND `parentid` = " . $thread['id']);
-					$thread['reply_count'] = $replies[0]['COUNT(*)'];
-					$thread['replied'] = $replies[0]['MAX(`timestamp`)'];
-					$thread['last_reply'] = $replies[0]['MAX(`id`)'];
-					$thread['images'] = $tc_db->GetOne("SELECT COUNT(*) FROM `".KU_DBPREFIX."posts` WHERE `boardid` = " . $this->board['id'] . " AND `IS_DELETED` = 0 AND `parentid` = " . $thread['id'] . " AND `file` != '' AND `file` != 'removed' AND `file_type` IN ('jpg', 'gif', 'png', 'webm')");
-				} unset($thread);
-			}
-			$catalog_json = json_encode($results);
-			$this->PrintPage(KU_BOARDSDIR . $this->board['name'] . '/catalog.html', $catalog_html, $this->board['name']);
-			$this->PrintPage(KU_BOARDSDIR . $this->board['name'] . '/catalog.json', $catalog_json, $this->board['name']);
-		}
-		// !! NEW CATALOG !! --END
-		
-		// Delete old pages 
-		$dir = KU_BOARDSDIR.$this->board['name'];
-		$files = glob ("$dir/*.html");
-		if (is_array($files)) {
-			foreach ($files as $htmlfile) {
-				if (preg_match("/[0-9+].html/", $htmlfile)) {
-					if (substr(basename($htmlfile), 0, strpos(basename($htmlfile), '.html'))>$totalpages) {
-						unlink($htmlfile);
-					}
-				}
-				if (preg_match("/list[0-9+].html/", $htmlfile)) {
-					if (substr(basename($htmlfile), 4, strpos(basename($htmlfile), '.html'))>($liststooutput+1)) {
-						unlink($htmlfile);
-					}
-				}
-				if (preg_match("/catalog.json/", $htmlfile)) {
-					if (!($this->board['enablecatalog'] == 1 && ($this->board['type'] == 0 || $this->board['type'] == 2))) {
-						unlink($htmlfile);
-					}
-				}
-			}
-		}
-	}
+    // rebuild pages needing to be rebuilt
+    $page = 0; 
+    $starter_page_passed = false;
+    $totalpages = count($pages);
+    $this->dwoo_data->assign('numpages', $totalpages-1);
+    foreach ($pages as $pagethreads) {
+      $is_starter_page = ($page == $startpage);
+      if ($is_starter_page) {
+        $starter_page_passed = true;
+      }
+      if ($do_all || $is_starter_page || ($direction=="down" && $starter_page_passed) || ($direction=="up" && !$starter_page_passed)) {
+        // page must be rebuilt
+        $executiontime_start_page = microtime_float();
+        $newposts = Array();
+        $this->dwoo_data->assign('thispage', $page);
+        foreach ($pagethreads as $thread) {
+
+          // If the thread is on the page set to mark, && hasn't been marked yet, mark it →
+          if ($thread['deleted_timestamp'] == 0 && $this->board['markpage'] > 0 && $page >= $this->board['markpage']) {
+            $tc_db->Execute("UPDATE `".KU_DBPREFIX."posts` SET `deleted_timestamp` = '" . (time() + 7200) . "' WHERE `boardid` = " . $tc_db->qstr($this->board['id'])." AND `id` = '" . $thread['id'] . "'");
+            clearPostCache($thread['id'], $this->board['name']);
+            $this->RegenerateThreads($thread['id']);
+            $this->dwoo_data->assign('replythread', 0);
+          } // ← If the thread is on the page set to mark, && hasn't been marked yet, mark it
+
+          // If the thread is back on safe page, unmark it →
+          if ($this->board['markpage'] == 0 || $thread['deleted_timestamp'] != 0 && $page < $this->board['markpage']) {
+            $tc_db->Execute("UPDATE `".KU_DBPREFIX."posts` SET `deleted_timestamp` = '0' WHERE `boardid` = " . $tc_db->qstr($this->board['id'])." AND `id` = '" . $thread['id'] . "'");
+            $thread['deleted_timestamp'] = 0;
+          } // ← If the thread is back on safe page, unmark it
+          
+          // Get last posts to render →
+          $posts = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "posts` 
+            WHERE `boardid` = " . $this->board['id']." 
+              AND `parentid` = ".$thread['id']." ". 
+              "AND `IS_DELETED` = 0
+            ORDER BY `id` DESC 
+            LIMIT ".(($thread['stickied'] == 1) ? (KU_REPLIESSTICKY) : (KU_REPLIES)));
+
+          $images_shown = 0;
+          foreach ($posts as &$post) {
+            if ($post['file_md5'] != '') {
+              $images_shown++;
+            }
+            $post = $this->BuildPost($post, true);
+          }
+          $posts = array_reverse($posts);
+          // ← Get last posts to render
+
+          // Calculate omitted posts and images →
+          $omitted_replies = $thread['reply_count'] - count($posts);
+          if ($omitted_replies < 0) $omitted_replies = 0;
+          
+          if ($thread['file_md5'] != '') {
+            $images_shown++;
+          }
+          $omitted_images = $thread['images'] - $images_shown;
+          if ($omitted_images < 0) $omitted_images = 0;
+          // ← Calculate omitted posts and images
+
+          $thread = $this->BuildPost($thread, true);
+          $thread['replies'] = $omitted_replies;
+          $thread['images'] = $omitted_images;
+
+          $this->dwoo_data->assign('debug_timestring', $timestr);
+
+          array_unshift($posts, $thread);
+          $newposts[] = $posts;
+        }
+        if ($this->board['type'] == 0 && !isset($embeds)) {
+          $embeds = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "embeds`");
+          $this->dwoo_data->assign('embeds', $embeds);
+        }
+        if (!isset($header)){
+          $header = $this->PageHeader();
+          $header = str_replace("<!sm_threadid>", 0, $header);
+        }
+        if (!isset($postbox)) {
+          $postbox = $this->Postbox();
+          $postbox = str_replace("<!sm_threadid>", 0, $postbox);
+        }
+        $this->dwoo_data->assign('posts', $newposts);
+        $this->dwoo_data->assign('file_path', getCLBoardPath($this->board['name'], $this->board['loadbalanceurl_formatted'], ''));
+
+        $content = $this->dwoo->get(KU_TEMPLATEDIR . '/' . $this->board['text_readable'] . '_board_page.tpl', $this->dwoo_data);
+        $footer = $this->Footer(false, (microtime_float() - $executiontime_start_page), (($this->board['type'] == 1) ? (true) : (false)));
+        $content = $header.$postbox.$content.$footer;
+
+        $content = str_replace("\t", '',$content);
+        $content = str_replace("&nbsp;\r\n", '&nbsp;',$content);
+
+        $filename = KU_BOARDSDIR.$this->board['name'].'/'.($page==0 ? KU_FIRSTPAGE : '/'.$page.'.html');
+        $this->PrintPage($filename, $content, $this->board['name']);
+      }
+      $page++;
+    } // ← rebuild pages needing to be rebuilt
+
+    // build catalog →
+    if ($this->board['enablecatalog'] == 1 && ($this->board['type'] == 0 || $this->board['type'] == 2)) {
+      $executiontime_start_catalog = microtime_float();
+      $catalog_head = $this->PageHeader().
+      '<script src="'.KU_BOARDSFOLDER.'lib/javascript/lodash.min.js"></script>'.
+      '<script> is_catalog=true; </script>'.
+      '&#91;<a href="' . KU_BOARDSFOLDER . $this->board['name'] . '/">'._gettext('Return').'</a>&#93; '.
+      '&#91;<a href="#" id="refresh_catalog">'._gettext('Refresh').'</a>&#93;'.
+      '<div class="catalogmode">'.
+      _gettext('Catalog Mode').'<div id="catalog-controls"></div></div>' . "\n".
+      '<div id="catalog-contents"></div>';
+
+      $catalog_nojs = '<table border="1" align="center">' . "\n" . '<tr>' . "\n";
+
+      // Fields to go into JSON file
+      $json_fields = array('id' , 'subject' , 'message', 'file' , 'file_type', 'image_w', 'image_h', 'thumb_w', 'thumb_h', 'timestamp', 'stickied', 'locked', 'bumped', 'name', 'tripcode', 'posterauthority', 'deleted_timestamp', 'page', 'reply_count', 'replied', 'last_reply', 'images');
+      $catalog_json = array();
+
+      if ($total_threads > 0) {
+        $celnum = 0;
+        $trbreak = 0;
+        $row = 1;
+        // Calculate the number of rows we will actually output
+        $maxrows = max(1, (($total_threads - ($total_threads % 12)) / 12));
+        foreach ($threads as $thread) {
+          // populate JSON object along the way →
+          unset($thread_json);
+          foreach ($json_fields as $field) {
+            $thread_json[$field] = $thread[$field];
+          }
+          $catalog_json []= $thread_json;
+          // ← populate JSON object along the way
+
+          $celnum++;
+          $trbreak++;
+          if ($trbreak == 13 && $celnum != $total_threads) {
+            $catalog_nojs .= '</tr>' . "\n" . '<tr>' . "\n";
+            $row++;
+            $trbreak = 1;
+          }
+          if ($row <= $maxrows) {
+            $catalog_nojs .= '<td valign="middle">' . "\n" .
+            '<a class="catalog-entry" href="' . KU_BOARDSFOLDER . $this->board['name'] . '/res/' . $thread['id'] . '.html"';
+            if ($thread['subject'] != '') {
+              $catalog_nojs .= ' title="' . $thread['subject'] . '"';
+            }
+            $catalog_nojs .= '>';
+            if ($thread['file'] != '' && $thread['file'] != 'removed') {
+              if($thread['file_type'] == 'webm') $thread['file_type'] = 'jpg';
+              if ($thread['file_type'] == 'jpg' || $thread['file_type'] == 'png' || $thread['file_type'] == 'gif') {
+                $file_path = getCLBoardPath($this->board['name'], $this->board['loadbalanceurl_formatted'], $this->archive_dir);
+                $catalog_nojs .= '<img src="' . $file_path . '/thumb/' . $thread['file'] . 'c.' . $thread['file_type'] . '" alt="' . $thread['id'] . '" border="0" />';
+              } else {
+                $catalog_nojs .= _gettext('File');
+              }
+            } elseif ($thread['file'] == 'removed') {
+              $catalog_nojs .= 'Rem.';
+            } else {
+              $catalog_nojs .= _gettext('None');
+            }
+            $catalog_nojs .= '</a><br />' . "\n" . '<small>' . $thread['reply_count'] . '</small>' . "\n" . '</td>' . "\n";
+          }
+        }
+      }
+      else {
+        $catalog_nojs .= '<td>' . "\n" . _gettext('No threads.') . "\n" . '</td>' . "\n";
+      }
+      $catalog_nojs .= '</tr>' . "\n" . '</table><br /><hr />';
+      $catalog_foot = $this->Footer(false, (microtime_float()-$executiontime_start_catalog));
+      $catalog_html = $catalog_head . '<noscript>'.$catalog_nojs.'</noscript>' . $catalog_foot;
+      $this->PrintPage(KU_BOARDSDIR . $this->board['name'] . '/catalog.html', $catalog_html, $this->board['name']);
+      $this->PrintPage(KU_BOARDSDIR . $this->board['name'] . '/catalog.json', json_encode($catalog_json), $this->board['name']);
+    } // ← build catalog
+
+    // Delete old pages  →
+    $dir = KU_BOARDSDIR.$this->board['name'];
+    $files = glob ("$dir/*.html");
+    if (is_array($files)) {
+      foreach ($files as $htmlfile) {
+        if (preg_match("/[0-9+].html/", $htmlfile)) {
+          if (substr(basename($htmlfile), 0, strpos(basename($htmlfile), '.html')) > $totalpages) {
+            unlink($htmlfile);
+          }
+        }
+      }
+    } // ← Delete old pages
+  }
 
 	/**
 	 * Regenerate each thread's corresponding html file, starting with the most recently bumped

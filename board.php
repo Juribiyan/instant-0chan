@@ -377,13 +377,22 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 			exitWithErrorPage(_gettext('Could not copy uploaded image.'));
 		}
 
-		// If the user replied to a thread, and they weren't sage-ing it...
-		if ($thread_replyto != '0' && strtolower($_POST['em']) != 'sage' && unistr_to_ords($_POST['em']) != array(19979, 12370)) {
-			// And if the number of replies already in the thread are less than the maximum thread replies before perma-sage...
-			if ($thread_replies <= $board_class->board['maxreplies']) {
-				// Bump the thread
-				$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "posts` SET `bumped` = '" . time() . "' WHERE `boardid` = " . $board_class->board['id'] . " AND `id` = '" . $thread_replyto . "'");
+		// Determine the page from which post is getting bumbed →
+		$startpage = -1;
+		if ($thread_replyto != '0') {
+			$threads = $tc_db->GetAll("SELECT `id` FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $board_class->board['id'] . " AND `parentid` = 0 AND `IS_DELETED` = 0 ORDER BY `stickied` DESC, `bumped` DESC");
+			$total_threads = count($threads);
+			for ($i=0; $i < $total_threads; $i++) { 
+				$current_page = floor($i / KU_THREADS);
+				if ($threads[$i]['id'] == $thread_replyto) {
+					$startpage = $current_page;
+				}
 			}
+		} // ← Determine the page from which post is getting bumbed
+
+		// If the user replied to a thread, and they weren't sage-ing it and if the number of replies already in the thread are less than the maximum thread replies before perma-sage, Bump the thread
+		if ($thread_replyto != '0' && strtolower($_POST['em']) != 'sage' && unistr_to_ords($_POST['em']) != array(19979, 12370) && $thread_replies <= $board_class->board['maxreplies']) {
+			$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "posts` SET `bumped` = '" . time() . "' WHERE `boardid` = " . $board_class->board['id'] . " AND `id` = '" . $thread_replyto . "'");
 		}
 
 		// If the user replied to a thread he is watching, update it so it doesn't count his reply as unread
@@ -402,7 +411,8 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 		TrimToPageLimit($board_class->board);
 
 		// Regenerate board pages
-		$board_class->RegeneratePages();
+		$board_class->RegeneratePages($startpage, strtolower($_POST['em']) != 'sage' ? 'up' : 'single');
+		
 		if ($thread_replyto == '0') {
 			// Regenerate the thread
 			$board_class->RegenerateThreads($post_id);
