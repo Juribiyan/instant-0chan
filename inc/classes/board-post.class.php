@@ -126,7 +126,7 @@ class Board {
 	}
 
 	/**
-	 * Regenerate all pages
+	 * Regenerate pages
 	 */
 	function RegeneratePages($startpage=-1, $direction="all") {
     global $tc_db, $CURRENTLOCALE;
@@ -139,14 +139,13 @@ class Board {
       $this->board['filetypes'] []= $ftype;
     }
     $this->dwoo_data->assign('filetypes', $this->board['filetypes']);
-
     $maxpages = $this->board['maxpages'];
 
     $threads = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $this->board['id'] . " AND `parentid` = 0 AND `IS_DELETED` = 0 ORDER BY `stickied` DESC, `bumped` DESC");
-    
     $total_threads = count($threads);
 
-    $tsq = 0;
+    $pages = array();
+
     // split threads into pages →
     for ($i=0; $i < $total_threads; $i++) { 
       $current_page = floor($i / KU_THREADS);
@@ -180,6 +179,7 @@ class Board {
     $starter_page_passed = false;
     $totalpages = count($pages);
     $this->dwoo_data->assign('numpages', $totalpages-1);
+    
     foreach ($pages as $pagethreads) {
       $is_starter_page = ($page == $startpage);
       if ($is_starter_page) {
@@ -188,7 +188,7 @@ class Board {
       if ($do_all || $is_starter_page || ($direction=="down" && $starter_page_passed) || ($direction=="up" && !$starter_page_passed)) {
         // page must be rebuilt
         $executiontime_start_page = microtime_float();
-        $newposts = Array();
+        $newposts = array();
         $this->dwoo_data->assign('thispage', $page);
         foreach ($pagethreads as $thread) {
 
