@@ -175,10 +175,13 @@ class Board {
       $pages[$current_page] []= $threads[$i];
     } // ← split thread into pages
 
-    // rebuild pages needing to be rebuilt
+    // rebuild pages needing to be rebuilt →
     $page = 0; 
     $starter_page_passed = false;
     $totalpages = count($pages);
+    if (!$totalpages) {
+      $pages []= array();
+    }
     $this->dwoo_data->assign('numpages', $totalpages-1);
     
     foreach ($pages as $pagethreads) {
@@ -237,6 +240,7 @@ class Board {
           // ← Calculate omitted posts and images
 
           $thread = $this->BuildPost($thread, true);
+
           $thread['replies'] = $omitted_replies;
           $thread['images'] = $omitted_images;
 
