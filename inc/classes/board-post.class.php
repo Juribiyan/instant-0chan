@@ -135,10 +135,11 @@ class Board {
     $do_all = ($startpage==-1 || $direction=="all");
 
     $ftypes = $tc_db->GetAll("SELECT `filetype` FROM `" . KU_DBPREFIX . "embeds`");
-    foreach ($ftypes as $ftype) {
-      $this->board['filetypes'] []= $ftype;
+    foreach ($ftypes as $line) {
+      $this->board['filetypes'][] .= $line['filetype'];
     }
     $this->dwoo_data->assign('filetypes', $this->board['filetypes']);
+    
     $maxpages = $this->board['maxpages'];
 
     $threads = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $this->board['id'] . " AND `parentid` = 0 AND `IS_DELETED` = 0 ORDER BY `stickied` DESC, `bumped` DESC");
