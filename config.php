@@ -103,7 +103,7 @@ if (!$cache_loaded) {
 		// Main installation directory
 			$cf['KU_ROOTDIR']   = realpath(dirname(__FILE__))."/"; // Full system path of the folder containing kusaba.php, with trailing slash. The default value set here should be OK.. If you need to change it, you should already know what the full path is anyway.
 			$cf['KU_WEBFOLDER'] = '/'; // The path from the domain of the board to the folder which kusaba is in, including the trailing slash.  Example: "http://www.yoursite.com/misc/kusaba/" would have a $cf['KU_WEBFOLDER'] of "/misc/kusaba/"
-			$cf['KU_WEBPATH']   = 'http://example.com'; // The path to the index folder of kusaba, without trailing slash. Example: http://www.yoursite.com
+			$cf['KU_WEBPATH']   = '//example.com'; // The path to the index folder of kusaba, without trailing slash. (http://yoursite.com or https://yoursite.com or just //yoursite.com for protocol-agnostic (flexible) behavior)
 			$cf['KU_DOMAIN']    = '.example.com'; // Used in cookies for the domain parameter.  Should be a period and then the top level domain, which will allow the cookies to be set for all subdomains.  For http://www.randomchan.org, the domain would be .randomchan.org; http://zachchan.freehost.com would be zach.freehost.com
 
 		// Board subdomain/alternate directory (optional, change to enable)
@@ -224,9 +224,9 @@ if (!$cache_loaded) {
 		if (substr($cf['KU_BOARDSFOLDER'], -2) == '//') { $cf['KU_BOARDSFOLDER'] = substr($cf['KU_BOARDSFOLDER'], 0, -1); }
 		if (substr($cf['KU_CGIFOLDER'], -2) == '//') { $cf['KU_CGIFOLDER'] = substr($cf['KU_CGIFOLDER'], 0, -1); }
 
-		$cf['KU_WEBPATH'] = trim($cf['KU_WEBPATH'], '/');
-		$cf['KU_BOARDSPATH'] = trim($cf['KU_BOARDSPATH'], '/');
-		$cf['KU_CGIPATH'] = trim($cf['KU_CGIPATH'], '/');
+		$cf['KU_WEBPATH'] = rtrim($cf['KU_WEBPATH'], '/');
+		$cf['KU_BOARDSPATH'] = rtrim($cf['KU_BOARDSPATH'], '/');
+		$cf['KU_CGIPATH'] = rtrim($cf['KU_CGIPATH'], '/');
 
 		if ($cf['KU_APC']) {
 			apc_define_constants('config', $cf);
