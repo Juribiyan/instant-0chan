@@ -1,4 +1,4 @@
-<?
+<?php
 class Cloud20 {
 	function rebuild() {
 	  global $tc_db;

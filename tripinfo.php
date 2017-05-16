@@ -1,4 +1,4 @@
-<?
+<?php
 if(!isset($_GET['trip']) || strlen($_GET['trip']) != 10)
 	exit(json_encode(array(error=>"wrong_code")));
 
