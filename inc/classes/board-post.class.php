@@ -71,7 +71,7 @@ class Board {
 	 * @param boolean $extra grab additional data for page generation purposes. Only false if all that's needed is the board info.
 	 * @return class
 	 */
-	function Board($board, $extra = true) {
+	function __construct($board, $extra = true) {
 		global $tc_db, $CURRENTLOCALE;
 
 		// If the instance was created with the board argument present, get all of the board info and configuration values and save it inside of the class
@@ -880,14 +880,14 @@ class Post extends Board {
 	// Declare the public variables
 	var $post = Array();
 
-	function Post($postid, $board, $boardid, $is_inserting = false) {
+	function __construct($postid, $board, $boardid, $is_inserting = false) {
 		global $tc_db;
 
 		$results = $tc_db->GetAll("SELECT * FROM `".KU_DBPREFIX."posts` WHERE `boardid` = '" . $boardid . "' AND `id` = ".$tc_db->qstr($postid)." LIMIT 1");
 		if (count($results)==0&&!$is_inserting) {
 			exitWithErrorPage('Invalid post ID.');
 		} elseif ($is_inserting) {
-			$this->Board($board, false);
+			parent::__construct($board, false);
 		} else {
 			foreach ($results[0] as $key=>$line) {
 				if (!is_numeric($key)) $this->post[$key] = $line;

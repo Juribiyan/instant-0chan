@@ -31,7 +31,7 @@ class Svg {
 	var $output_extension = '';
 
 
-	function Svg($svg){
+	function __construct($svg){
 		$xml = new SimpleXMLElement($svg,1,1);
 		$this->width = (string) $xml['width'];
 		$this->height = (string) $xml['height'];
