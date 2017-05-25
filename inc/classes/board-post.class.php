@@ -902,7 +902,7 @@ class Post extends Board {
 			}
 			$this->post['isthread'] = ($this->post['parentid'] == 0) ? true : false;
 			if (empty($this->board) || $this->board['name'] != $board) {
-				$this->Board($board, false);
+				parent::__construct($board, false);
 			}
 		}
 	}
