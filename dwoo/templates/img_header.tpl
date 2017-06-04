@@ -3,9 +3,9 @@
 <meta property="i0:buildtime" content="{time();}"/>
 <script type="text/javascript">
 		var captchaTimeout = {%KU_CAPTCHALIFE} - 0.5;
-		var react_api = '{%KU_CLI_REACT_API}';
-		var react_ena = '{%KU_REACT_ENA}';
-		var react_sitename = {if %KU_REACT_SITENAME}'{%KU_REACT_SITENAME}:'{else}''{/if};
+		var liveupd_api = '{%KU_CLI_LIVEUPD_API}';
+		var liveupd_ena = '{%KU_LIVEUPD_ENA}';
+		var liveupd_sitename = {if %KU_LIVEUPD_SITENAME}'{%KU_LIVEUPD_SITENAME}:'{else}''{/if};
 		var this_board_dir = '{$board.name}';
 		var ku_boardspath = '{%KU_BOARDSPATH}';
 		var ku_boardsfolder = '{%KU_BOARDSFOLDER}';
@@ -47,8 +47,8 @@
 <script src="{$cwebpath}lib/javascript/prettify/prettify.js"></script>
 <script src="{%KU_WEBPATH}/lib/javascript/kusaba.new.js?v={%KU_JSVER}"></script>
 <script>var hiddenthreads = getCookie('hiddenthreads').split('!');</script>
-{if %KU_REACT_ENA}
-<script src="{%KU_CLI_REACT_API}/socket.io/socket.io.js"></script>
+{if %KU_LIVEUPD_ENA}
+<script src="{%KU_CLI_LIVEUPD_API}/socket.io/socket.io.js"></script>
 {/if}
 </head>
 <body>

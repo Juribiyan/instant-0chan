@@ -56,9 +56,9 @@ function notify($id="???", $newthreadid = '') {
 	$cl20 = new Cloud20();
 	$cl20->rebuild();
 	
-	if(KU_REACT_ENA) {
-		$data_string = json_encode(array('srvtoken' => KU_REACT_SRVTOKEN, 'room' => $id, 'clitoken' => $_POST['token'], 'timestamp' => time(), 'newthreadid' => $newthreadid ));                                                                            
-		$suckTo = KU_REACT_SITENAME ? KU_LOCAL_REACT_API.'/qr/'.KU_REACT_SITENAME : KU_LOCAL_REACT_API;
+	if(KU_LIVEUPD_ENA) {
+		$data_string = json_encode(array('srvtoken' => KU_LIVEUPD_SRVTOKEN, 'room' => $id, 'clitoken' => $_POST['token'], 'timestamp' => time(), 'newthreadid' => $newthreadid ));                                                                            
+		$suckTo = KU_LIVEUPD_SITENAME ? KU_LOCAL_LIVEUPD_API.'/qr/'.KU_LIVEUPD_SITENAME : KU_LOCAL_LIVEUPD_API;
 		$ch = curl_init($suckTo);                                                                      
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 		curl_setopt($ch, CURLOPT_PROXY, "");    
