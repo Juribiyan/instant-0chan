@@ -40,17 +40,11 @@ class Bans {
 				if(($line['type'] == 1 && strpos($ip, md5_decrypt($line['ip'], KU_RANDOMSEED)) === 0) || $line['type'] == 0) {
 					if ($line['until'] != 0 && $line['until'] < time()){
 						$tc_db->Execute("UPDATE `".KU_DBPREFIX."banlist` SET `expired` = 1 WHERE `id` = ".$line['id']);
-						$line['expired'] = 1;
 						$this->UpdateHtaccess();
 					}
-					if ($line['globalban']!=1) {
-						if ((in_array($board, explode('|', $line['boards'])) || $board == '')) {
-							$line['appealin'] = substr(timeDiff($line['appealat'], true, 2), 0, -1);
-							$bans[] = $line;
-						}
-					} else {
-							$line['appealin'] = substr(timeDiff($line['appealat'], true, 2), 0, -1);
-							$bans[] = $line;
+					elseif ($line['globalban']==1 || in_array($board, explode('|', $line['boards'])) || $board == '') {
+						$line['appealin'] = substr(timeDiff($line['appealat'], true, 2), 0, -1);
+						$bans[] = $line;
 					}
 				}
 			}
