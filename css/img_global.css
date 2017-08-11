@@ -466,7 +466,8 @@ img.latex, object.latex  {
 }
 
 .inline-pp {
-	display: inline;
+	display: inline-block;
+	max-width: 100%;
 }
 
 .dice {
