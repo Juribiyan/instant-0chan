@@ -1,6 +1,7 @@
 <p align="center">
-  <img src="https://dl.dropboxusercontent.com/u/43313258/instant_0chan.png" alt="Instant 0chan"/>
+  <img src="http://i.imgur.com/SJwMUsY.png" alt="Instant 0chan"/>
 </p>
+
 # Instant 0chan
 
 Набор для быстрого развертывания нульчана на движке, использовавшемся на Nullch.org (форк Kusaba X).
@@ -114,7 +115,7 @@
 * При изменении CSS или JS файлов рекомендуется инкрементировать `KU_CSSVER` и `KU_JSVER` в файле `config.php` после чего пересобирать все файлы.
 * При изменении других файлов, если вы используете Cloudflare, необходимо [вручную удалить файл из кэша](http://blog.cloudflare.com/introducing-single-file-purge). Если вы не уверены, что пользователям отдается свежая версия ресурсов или если что-то пошло не так, очищайте кэш Cloudflare полностью.
 
-##TODO
+## TODO
 
 * Дописать README (лол)
 * Удостовериться в правильности работы мгновенных обновлений
