@@ -466,7 +466,8 @@ img.latex, object.latex  {
 }
 
 .inline-pp {
-	display: inline;
+	display: inline-block;
+	max-width: 100%;
 }
 
 .dice {
@@ -776,7 +777,6 @@ height: 100px;
 	text-align: center;
 }
 .movie img { cursor: pointer;}
-.markupbtns {margin-left: 2px;}
 .sending-loading {
 	vertical-align: middle;
 	display: none;
