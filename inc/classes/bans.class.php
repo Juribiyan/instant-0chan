@@ -51,7 +51,12 @@ class Bans {
 		}
 		if(count($bans) > 0){
 			$tc_db->Execute("END TRANSACTION");
-			echo $this->DisplayBannedMessage($bans);
+			if ($_POST['AJAX']) {
+				return $bans;
+			}
+			else {
+				echo $this->DisplayBannedMessage($bans);
+			}
 			die();
 		}
 

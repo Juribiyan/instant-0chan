@@ -74,6 +74,51 @@ function notify($id="???", $newthreadid = '') {
 	}
 }
 
+class PostAction {
+  function __construct($id, $is_ajax) {
+    $this->id = $id;
+    $this->is_ajax = $is_ajax;
+  }
+
+  function fail($msg="") {
+    if ($this->is_ajax) {
+      $this->success = false;
+      $this->message = $msg;
+    }
+    else
+      echo '#' . $this->id . ': ' . $msg . '<br />';
+  }
+
+  function succ($msg="") {
+    if ($this->is_ajax) {
+      $this->success = true;
+      $this->message = $msg;
+    }
+    else
+      echo '#' . $this->id . ': ' . $msg . '<br />';
+  }
+
+  function report() {
+    return array(
+      id => $this->id,
+      action => $this->action,
+      success => $this->success,
+      message => $this->message
+    );
+  }
+}
+
+function error_redirect($url, $message) {
+	if ($_POST['AJAX']) {
+		exit(json_encode(array(
+		  error => $message
+		)));
+	}
+	else {
+		do_redirect($url);
+	}
+}
+
 // {{{ Module loading
 
 modules_load_all();
@@ -96,16 +141,22 @@ if (isset($_POST['board'])) {
 			changeLocale($board_class->board['locale']);
 		}
 	} else {
-		do_redirect(KU_WEBPATH);
+		error_redirect(KU_WEBPATH, _gettext('No board provided'));
 	}
 } else {
 	// A board being supplied is required for this script to function
-	do_redirect(KU_WEBPATH);
+	error_redirect(KU_WEBPATH, _gettext('No board provided'));
 }
 
 // {{{ Expired ban removal, and then existing ban check on the current user
 
-$bans_class->BanCheck($_SERVER['REMOTE_ADDR'], $board_class->board['name']);
+$ban_result = $bans_class->BanCheck($_SERVER['REMOTE_ADDR'], $board_class->board['name']);
+if ($ban_result && is_array($ban_result) && $_POST['AJAX']) {
+	exit(json_encode(array(
+	  error => _gettext('YOU ARE BANNED'),
+	  error_type => 'ban'
+	)));
+}
 
 // }}}
 
@@ -427,43 +478,52 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 	}
 } elseif ((isset($_POST['deletepost']) || isset($_POST['reportpost']) || isset($_POST['moddelete'])) && isset($_POST['post'])) {
 	$ismod = false;
+
+	if ($_POST['AJAX']) 
+		$posts_affected = array();
+	
 	// Initialize the post class
 	foreach ($_POST['post'] as $val) {
 		$post_class = new Post($val, $board_class->board['name'], $board_class->board['id']);
 
+		$post_action = new PostAction($val, (boolean)$_POST['AJAX']);
+
 		if (isset($_POST['reportpost'])) {
 			// They clicked the Report button
+			$post_action->action = 'report';
+
 			if ($board_class->board['enablereporting'] == 1) {
 				$post_reported = $post_class->post['isreported'];
-
 				if ($post_reported === 'cleared') {
-					echo _gettext('That post has been cleared as not requiring any deletion.') . '<br />';
+					$post_action->fail(_gettext('That post has been cleared as not requiring any deletion.'));
 				} elseif ($post_reported) {
-					echo _gettext('That post is already in the report list.') . '<br />';
+					$post_action->fail(_gettext('That post is already in the report list.'));
 				} else {
 					if ($post_class->Report()) {
-						echo _gettext('Post successfully reported.') . '<br />';
+						$post_action->succ(_gettext('Post successfully reported'));
 					} else {
-						echo _gettext('Unable to report post. Please go back and try again.') . '<br />';
+						$post_action->fail(_gettext('Unable to report post. Please go back and try again.'));
 					}
 				}
 			} else {
-				echo _gettext('This board does not allow post reporting.') . '<br />';
+				$post_action->fail(_gettext('This board does not allow post reporting.'));
 			}
 		} elseif (isset($_POST['postpassword']) || ( isset($_POST['moddelete']) && (require_once KU_ROOTDIR . 'inc/classes/manage.class.php') && Manage::CurrentUserIsModeratorOfBoard($board_class->board['name'], $_SESSION['manageusername']) && $ismod = true)) {
 			// They clicked the Delete button
+			$post_action->action = 'delete';
 			if ($_POST['postpassword'] != '' || $ismod) {
 				if (md5($_POST['postpassword']) == $post_class->post['password'] || $ismod) {
 					if (isset($_POST['fileonly'])) {
+						$post_action->action .= '_file';
 						if ($post_class->post['file'] != '' && $post_class->post['file'] != 'removed') {
 							$post_class->DeleteFile();
 							$board_class->RegeneratePages();
 							if ($post_class->post['parentid'] != 0) {
 								$board_class->RegenerateThreads($post_class->post['parentid']);
 							}
-							echo _gettext('Image successfully deleted from your post.') . '<br />';
+							$post_action->succ(_gettext('Image successfully deleted from your post.'));
 						} else {
-							echo _gettext('Your post already doesn\'t have an image!') . '<br />';
+							$post_action->fail(_gettext('Your post already doesn\'t have an image!'));
 						}
 					} else {
 						if ($post_class->Delete()) {
@@ -471,26 +531,34 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 								$board_class->RegenerateThreads($post_class->post['parentid']);
 							}
 							$board_class->RegeneratePages();
-							echo _gettext('Post successfully deleted.') . '<br />';
+							$post_action->succ(_gettext('Post successfully deleted.'));
 						} else {
-							echo _gettext('There was an error in trying to delete your post') . '<br />';
+							$post_action->fail(_gettext('There was an error in trying to delete your post'));
 						}
 					}
 				} else {
-					echo _gettext('Incorrect password.') . '<br />';
+					$post_action->fail(_gettext('Incorrect password.'));
 				}
 			} else {
-				do_redirect(KU_BOARDSPATH . '/' . $board_class->board['name'] . '/');
+				$post_action->fail(_gettext('Incorrect password.'));
 			}
 		}
+
+		$posts_affected []= $post_action->report();
 	}
-	do_redirect(KU_BOARDSPATH . '/' . $board_class->board['name'] . '/');
+	if ($_POST['AJAX'])
+		exit(json_encode(array(
+		  action => 'multi_post_action',
+		  data => $posts_affected
+		)));
+	else
+		do_redirect(KU_BOARDSPATH . '/' . $board_class->board['name'] . '/');
 	die();
 } elseif (isset($_GET['postoek'])) {
 	$board_class->OekakiHeader($_GET['replyto'], $_GET['postoek']);
 	die();
 } else {
-	do_redirect(KU_BOARDSPATH . '/' . $board_class->board['name'] . '/');
+	error_redirect(KU_BOARDSPATH . '/' . $board_class->board['name'] . '/', _gettext('Unspecified action'));
 }
 
 if (KU_RSS) {
@@ -502,12 +570,25 @@ if (KU_RSS) {
 
 if( $_POST['redirecttothread'] == 1 || $_POST['em'] == 'return' || $_POST['em'] == 'noko') {
 	setcookie('tothread', 'on', time() + 31556926, '/');
-	if ($thread_replyto == "0") {
-		do_redirect(KU_BOARDSPATH . '/' . $board_class->board['name'] . '/res/' . $post_id . '.html', true, $imagefile_name);
-	} else {
-		do_redirect(KU_BOARDSPATH . '/' . $board_class->board['name'] . '/res/' . $thread_replyto . '.html', true, $imagefile_name);
+	if (! $_POST['AJAX']) {
+		if ($thread_replyto == "0") {
+			do_redirect(KU_BOARDSPATH . '/' . $board_class->board['name'] . '/res/' . $post_id . '.html', true);
+		} else {
+			do_redirect(KU_BOARDSPATH . '/' . $board_class->board['name'] . '/res/' . $thread_replyto . '.html', true);
+		}
 	}
 } else {
 	setcookie('tothread', 'off', time() + 31556926, '/');
-	do_redirect(KU_BOARDSPATH . '/' . $board_class->board['name'] . '/', true, $imagefile_name);
+	if (! $_POST['AJAX'])
+		do_redirect(KU_BOARDSPATH . '/' . $board_class->board['name'] . '/', true);
+}
+
+if ($_POST['AJAX']) {
+	exit(json_encode(array(
+	  error => false,
+	  action => 'post',
+	  thread_replyto => $thread_replyto,
+	  post_id => $post_id,
+	  board => $board_class->board['name']
+	)));
 }

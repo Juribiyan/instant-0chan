@@ -15,29 +15,46 @@ function array_in_array($some, $all) {
 	else return false;
 }
 
-function exitWithErrorPage($errormsg, $extended = '') {
+function exitWithErrorPage($errormsg, $extended = '', $error_type=null, $error_data=null) {
 	global $dwoo, $dwoo_data, $board_class;
-	if (!isset($dwoo)) {
-		require_once KU_ROOTDIR . 'lib/dwoo.php';
-	}
-	if (!isset($board_class)) {
-		require_once KU_ROOTDIR . 'inc/classes/board-post.class.php';
-		$board_class = new Board('');
-	}
 
-	$dwoo_data->assign('styles', explode(':', KU_MENUSTYLES));
-	$dwoo_data->assign('errormsg', $errormsg);
+  if ($_POST['AJAX']) {
+    $resp = array(
+      error => $errormsg,
+      error_verbose => $extended
+    );
+    if ($error_type) {
+      $resp['error_type'] = $error_type;
+      if ($error_data) {
+        $resp['error_data'] = $error_data;
+      }
+    }
+    exit(json_encode($resp));
+  }
 
-	if ($extended != '') {
-		$dwoo_data->assign('errormsgext', '<br /><div style="text-align: center;font-size: 1.25em;">' . $extended . '</div>');
-	} else {
-		$dwoo_data->assign('errormsgext', $extended);
-	}
+  else {
+    if (!isset($dwoo)) {
+      require_once KU_ROOTDIR . 'lib/dwoo.php';
+    }
+    if (!isset($board_class)) {
+      require_once KU_ROOTDIR . 'inc/classes/board-post.class.php';
+      $board_class = new Board('');
+    }
+
+    $dwoo_data->assign('styles', explode(':', KU_MENUSTYLES));
+    $dwoo_data->assign('errormsg', $errormsg);
+
+    if ($extended != '') {
+      $dwoo_data->assign('errormsgext', '<br /><div style="text-align: center;font-size: 1.25em;">' . $extended . '</div>');
+    } else {
+      $dwoo_data->assign('errormsgext', $extended);
+    }
 
 
-	echo $dwoo->get(KU_TEMPLATEDIR . '/error.tpl', $dwoo_data);
+    echo $dwoo->get(KU_TEMPLATEDIR . '/error.tpl', $dwoo_data);
 
-	die();
+    die();
+  }
 }
 
 /**
@@ -72,27 +89,25 @@ function sendStaffMail($subject, $message) {
 }
 
 /* Depending on the configuration, use either a meta refresh or a direct header */
-function do_redirect($url, $ispost = false, $file = '') {
-	global $board_class;
-	$headermethod = true;
+function do_redirect($url, $useheader=false) {
+  if ($useheader) {
+    header('Location: ' . $url);
+  } else {
+    die('<meta http-equiv="refresh" content="1;url=' . $url . '">');
+  }
+}
 
-	if ($headermethod) {
-		setcookie('tothread', $gtt, 0, '/', KU_DOMAIN);
-		if ($ispost) {
-			header('Location: ' . $url);
-		} else {
-			die('<meta http-equiv="refresh" content="1;url=' . $url . '">');
-		}
-	} else {
-		if ($ispost && $file != '') {
-			echo sprintf(_gettext('%s uploaded.'), $file) . ' ' . _gettext('Updating pages.');
-		} elseif ($ispost) {
-			echo _gettext('Post added.') . ' ' . _gettext('Updating pages.'); # TEE COME BACK
-		} else {
-			echo '---> ---> --->';
-		}
-		die('<meta http-equiv="refresh" content="1;url=' . $url . '">');
-	}
+function ajax_error($errmsg) {
+  exit(json_encode(array(
+    error => $errmsg
+  )));
+}
+
+function ajax_success($data) {
+  exit(json_encode(array(
+    error => false,
+    data => $data
+  )));
 }
 
 function check_css($css) {
