@@ -62,7 +62,7 @@ class Parse {
       '<strike>\\1</strike>', 
       '<span style="font-family: Mona,\'MS PGothic\' !important;">\\1</span>', 
       '<span class="spoiler">\\1</span>', 
-      '<table class="lination"><tr><td><img src="/images/lina.png"/></td><td><div class="bubble">\\1</div></td></tr></table>',
+      '<table class="lination"><tr><td><img src="/images/lina.png"></td><td><div class="bubble">\\1</div></td></tr></table>',
       '<span style="text-transform: uppercase;">\\1</span>',
       '«\\1»',
       '<span class="inline-code">\\1</span>',
@@ -82,7 +82,7 @@ class Parse {
 	  $sayer = strtolower($matches[1]);
 	  $thought_bubble = strtolower($matches[3])=='thinks' ? ' thought-bubble' : '';
 	  $sayer_exists = ($sayer && file_exists(KU_ROOTDIR.'images/sayers/'.$sayer.'.png'));
-	  return ($sayer_exists ? '<table class="caption"><tr><td><img src="/images/sayers/'.$sayer.'.png"/></td><td>' : '') .
+	  return ($sayer_exists ? '<table class="caption"><tr><td><img src="/images/sayers/'.$sayer.'.png"></td><td>' : '') .
 	  '<div class="bubble'.$thought_bubble.'">'.$matches[2].'</div>' . ($sayer_exists ? '</td></tr></table>' : '');
 	}
 
@@ -384,7 +384,7 @@ class Parse {
 				break; 
 			}
 		}
-		$return = ($src) ? '<img title="&colon;'.$matches[1].'&colon;" class="emoji" src="'.$src.'" />': ':'.$matches[1].':';
+		$return = ($src) ? '<img title="&colon;'.$matches[1].'&colon;" class="emoji" src="'.$src.'">': ':'.$matches[1].':';
 		return $return; 
 	}
 
