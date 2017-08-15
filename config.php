@@ -82,6 +82,10 @@ if (!$cache_loaded) {
 		$cf['KU_MAX_CSS_SIZE'] = 102400; // msximum user submitted CSS size (in bytes)
 		
 		$cf['I0_SAYERS_ENABLED'] = false;
+		// Emoji configuration
+		$cf['I0_SMILES_ENABLED'] = true;
+		$cf['I0_USERSMILES_ENABLED'] = true;
+		$cf['I0_SMILEDIR'] = 'images/smileys/'; // Make sure to set proper write rights to this directory
 
 	// Database
 		$cf['KU_DBTYPE']          = 'mysqli';	// Database type. Valid values are mysql and mysqli (reccomended for mysql). 

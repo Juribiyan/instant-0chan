@@ -372,14 +372,19 @@ class Parse {
 	}
 	
 	function Smileys($string){
-	$string = preg_replace_callback('`:(.+?):`is', array(&$this, 'smiley_callback'), $string);
-	return $string;
+		$string = preg_replace_callback('`:(.+?):`is', array(&$this, 'smiley_callback'), $string);
+		return $string;
 	}
 
 	function smiley_callback($matches) {
-		$realfilename = KU_ROOTDIR.'images/smileys/'.md5($matches[1]).'.gif';
-		$filename = KU_WEBPATH.'/images/smileys/'.md5($matches[1]).'.gif';
-		$return = (file_exists($realfilename)) ? '<img style="vertical-align: middle;" src="'.$filename.'" />': ':'.$matches[1].':';
+		$src = FALSE;
+		foreach(array('.gif','.png') as $extension) {
+			if(file_exists(KU_ROOTDIR.I0_SMILEDIR.$matches[1].$extension))	 {
+				$src = KU_WEBPATH.'/'.I0_SMILEDIR.$matches[1].$extension;
+				break; 
+			}
+		}
+		$return = ($src) ? '<img title="&colon;'.$matches[1].'&colon;" class="emoji" src="'.$src.'" />': ':'.$matches[1].':';
 		return $return; 
 	}
 
