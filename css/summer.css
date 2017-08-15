@@ -270,3 +270,29 @@ a:hover {
 .captchawrap {
   color: rgb(17, 119, 67);
 }
+
+.bubble, .thought-bubble:after, .thought-bubble:before {
+  background: -webkit-linear-gradient(top, #f6ffec 0%, #e7ffce 100%);
+  background: -o-linear-gradient(top, #f6ffec 0%, #e7ffce 100%);
+  background: linear-gradient(to bottom, #f6ffec 0%, #e7ffce 100%);
+  color: black;
+}
+.bubble:after {
+  border-color: transparent rgb(238, 255, 221);
+}
+.bubble:not(.thought-bubble):before {
+  content: "";
+  position: absolute;
+  top: 13px;
+  left: -13px;
+  display: block;
+  width: 0;
+  z-index: 0;
+  border-width: 7px 13px 7px 0;
+}
+.bubble, .thought-bubble:after, .bubble:before {
+  border-color: transparent #669966;
+}
+.bubble, .thought-bubble:after, .thought-bubble:before {
+  border: 1px solid #669966;
+}

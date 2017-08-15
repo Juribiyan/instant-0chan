@@ -431,3 +431,16 @@ color: rgb(36, 218, 226);
 	text-shadow: 0 1px 0 rgba(0,0,0,0.5);
 	color: white;
 }
+
+.bubble {
+  color: rgba(255, 255, 255, 0.83);
+}
+.bubble, .thought-bubble:after, .thought-bubble:before {
+  background: -webkit-linear-gradient(top, #6b6b6b 0%, #444444 100%);
+  background: -o-linear-gradient(top, #6b6b6b 0%, #444444 100%);
+  background: linear-gradient(to bottom, #6b6b6b 0%, #444444 100%);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.19);
+}
+.bubble:after {
+  border-color: transparent rgb(89, 89, 89);
+}

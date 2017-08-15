@@ -322,3 +322,11 @@ table td {
   background: #FF6600;
   color: white!important;
 }
+
+.bubble, .thought-bubble:after, .thought-bubble:before {
+	background: #cccccc;
+	box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+}
+.bubble:after {
+	border-color: transparent #cccccc;
+}

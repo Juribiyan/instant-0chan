@@ -81,6 +81,8 @@ if (!$cache_loaded) {
 		$cf['KU_ALLOWED_OFFSITE_URLS'] = 'http://i.imgur.com/ https://i.imgur.com/ https://fonts.googleapis.com/ https://fonts.gstatic.com/';
 		$cf['KU_MAX_CSS_SIZE'] = 102400; // msximum user submitted CSS size (in bytes)
 		
+		$cf['I0_SAYERS_ENABLED'] = false;
+
 	// Database
 		$cf['KU_DBTYPE']          = 'mysqli';	// Database type. Valid values are mysql and mysqli (reccomended for mysql). 
 							// PostgreSQL is also supported. Supported values are postgres64, postgres7 and postgres8. Only postgres8 is tested.

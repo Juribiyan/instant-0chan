@@ -72,6 +72,20 @@ class Parse {
 		return $string;
 	}
 
+	function SaysThinks($string) {
+		$string = preg_replace_callback('/\[says(?:=(.+?))?\](.+?)\[\/(says)\]/is', array(&$this, 'caption_callback'), $string);
+		$string = preg_replace_callback('/\[thinks(?:=(.+?))?\](.+?)\[\/(thinks)\]/is', array(&$this, 'caption_callback'), $string);
+		return $string;
+	}
+
+	function caption_callback($matches) {
+	  $sayer = strtolower($matches[1]);
+	  $thought_bubble = strtolower($matches[3])=='thinks' ? ' thought-bubble' : '';
+	  $sayer_exists = ($sayer && file_exists(KU_ROOTDIR.'images/sayers/'.$sayer.'.png'));
+	  return ($sayer_exists ? '<table class="caption"><tr><td><img src="/images/sayers/'.$sayer.'.png"/></td><td>' : '') .
+	  '<div class="bubble'.$thought_bubble.'">'.$matches[2].'</div>' . ($sayer_exists ? '</td></tr></table>' : '');
+	}
+
 	function bullet_list($matches) {
 		$output = '<ul>';
 		$lines = explode(PHP_EOL,$matches[1]);
@@ -410,6 +424,11 @@ class Parse {
 			$message = $this->Process_geshi($message);
 		}
 		$message = $this->BBCode($message);
+
+		if (I0_SAYERS_ENABLED) {
+			$message = $this->SaysThinks($message);
+		}
+
 		$message = $this->ClickableQuote($message, $board, $boardtype, $parentid, $boardid, $ispage);
 		$message = $this->ColoredQuote($message, $boardtype);
 
