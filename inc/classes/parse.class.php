@@ -62,7 +62,7 @@ class Parse {
       '<strike>\\1</strike>', 
       '<span style="font-family: Mona,\'MS PGothic\' !important;">\\1</span>', 
       '<span class="spoiler">\\1</span>', 
-      '<table class="lination"><tr><td><img src="/images/lina.png"/></td><td><div class="bubble">\\1</div></td></tr></table>',
+      '<table class="lination"><tr><td><img src="/images/lina.png"></td><td><div class="bubble">\\1</div></td></tr></table>',
       '<span style="text-transform: uppercase;">\\1</span>',
       '«\\1»',
       '<span class="inline-code">\\1</span>',
@@ -70,6 +70,20 @@ class Parse {
       );
 		$string = preg_replace($patterns, $replaces , $string);
 		return $string;
+	}
+
+	function SaysThinks($string) {
+		$string = preg_replace_callback('/\[says(?:=(.+?))?\](.+?)\[\/(says)\]/is', array(&$this, 'caption_callback'), $string);
+		$string = preg_replace_callback('/\[thinks(?:=(.+?))?\](.+?)\[\/(thinks)\]/is', array(&$this, 'caption_callback'), $string);
+		return $string;
+	}
+
+	function caption_callback($matches) {
+	  $sayer = strtolower($matches[1]);
+	  $thought_bubble = strtolower($matches[3])=='thinks' ? ' thought-bubble' : '';
+	  $sayer_exists = ($sayer && file_exists(KU_ROOTDIR.'images/sayers/'.$sayer.'.png'));
+	  return ($sayer_exists ? '<table class="caption"><tr><td><img src="/images/sayers/'.$sayer.'.png"></td><td>' : '') .
+	  '<div class="bubble'.$thought_bubble.'">'.$matches[2].'</div>' . ($sayer_exists ? '</td></tr></table>' : '');
 	}
 
 	function bullet_list($matches) {
@@ -358,14 +372,19 @@ class Parse {
 	}
 	
 	function Smileys($string){
-	$string = preg_replace_callback('`:(.+?):`is', array(&$this, 'smiley_callback'), $string);
-	return $string;
+		$string = preg_replace_callback('`:(.+?):`is', array(&$this, 'smiley_callback'), $string);
+		return $string;
 	}
 
 	function smiley_callback($matches) {
-		$realfilename = KU_ROOTDIR.'images/smileys/'.md5($matches[1]).'.gif';
-		$filename = KU_WEBPATH.'/images/smileys/'.md5($matches[1]).'.gif';
-		$return = (file_exists($realfilename)) ? '<img style="vertical-align: middle;" src="'.$filename.'" />': ':'.$matches[1].':';
+		$src = FALSE;
+		foreach(array('.gif','.png') as $extension) {
+			if(file_exists(KU_ROOTDIR.I0_SMILEDIR.$matches[1].$extension))	 {
+				$src = KU_WEBPATH.'/'.I0_SMILEDIR.$matches[1].$extension;
+				break; 
+			}
+		}
+		$return = ($src) ? '<img title="&colon;'.$matches[1].'&colon;" class="emoji" src="'.$src.'">': ':'.$matches[1].':';
 		return $return; 
 	}
 
@@ -410,6 +429,11 @@ class Parse {
 			$message = $this->Process_geshi($message);
 		}
 		$message = $this->BBCode($message);
+
+		if (I0_SAYERS_ENABLED) {
+			$message = $this->SaysThinks($message);
+		}
+
 		$message = $this->ClickableQuote($message, $board, $boardtype, $parentid, $boardid, $ispage);
 		$message = $this->ColoredQuote($message, $boardtype);
 

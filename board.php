@@ -340,6 +340,37 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 				}
 			}
 
+			// Emoji registration →
+			if (I0_USERSMILES_ENABLED) {
+				preg_match('/\/reg(?:emoji|smiley?) :?([0-9a-z]{3,20}):?/i', $post['message'], $re_match);
+				if (
+					($upload_class->file_type==".png" || $upload_class->file_type==".gif") 
+					&& count($re_match)
+				) {
+					$emoji_name = strtolower($re_match[1]);
+					// Check if emoji exists
+					$exists = false;
+					foreach(array('.gif','.png') as $extension) {
+						if(file_exists(KU_ROOTDIR.I0_SMILEDIR.$matches[1].$extension))	 {
+							$exists = true;
+							break; 
+						}
+					}
+					if (!$exists) {
+						$src = KU_BOARDSDIR . $board_class->board['name'] . 
+						(($upload_class->imgWidth <= 50 && $upload_class->imgHeight <= 50) 
+							? ('/src/' . $upload_class->file_name)
+							: ('/thumb/' . $upload_class->file_name . 'c')
+						) . $upload_class->file_type;
+						copy($src, KU_ROOTDIR.I0_SMILEDIR.$emoji_name.$upload_class->file_type);
+						// Reparse post
+						if (I0_SMILES_ENABLED)
+							$post['message'] = $parse_class->Smileys($post['message']);
+					}
+				}
+			}
+			// ← Emoji registration
+
 			if ($thread_replyto != '0') {
 				if ($post['message'] == '' && KU_NOMESSAGEREPLY != '') {
 					$post['message'] = KU_NOMESSAGEREPLY;

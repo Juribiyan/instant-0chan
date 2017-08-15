@@ -403,3 +403,15 @@ color: rgb(55, 201, 153);
 	text-shadow: 0 1px 0 rgba(0,0,0,0.5);
 	color: white;
 }
+
+.bubble {
+	color: rgba(255, 255, 255, 0.83);
+	border: none;
+}
+.bubble, .thought-bubble:after, .thought-bubble:before {
+	background: rgba(255, 255, 255, 0.2);
+	box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.19);
+}
+.bubble:after {
+	border-color: transparent rgba(255, 255, 255, 0.2);
+}
