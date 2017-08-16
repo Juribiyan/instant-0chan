@@ -330,3 +330,11 @@ table td {
 .bubble:after {
 	border-color: transparent #cccccc;
 }
+
+.reply::-webkit-scrollbar-track,
+.reply::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+}
+.reply::-webkit-scrollbar-corner {
+	background: #dddddd;
+}

@@ -301,3 +301,11 @@ table td {
 .bubble, .thought-bubble:after, .thought-bubble:before {
 	border: 1px solid #969696;
 }
+
+.reply::-webkit-scrollbar-track,
+.reply::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+}
+.reply::-webkit-scrollbar-corner {
+	background: #dddddd;
+}

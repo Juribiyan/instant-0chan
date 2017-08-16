@@ -372,3 +372,8 @@ color: #000;
 .bubble:after {
 	border-color: transparent rgb(206, 223, 241);
 }
+
+.reply::-webkit-scrollbar-corner {
+  background: #f8f8f8;
+  border-radius: 0 0 6px 0;
+}

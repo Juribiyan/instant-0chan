@@ -1596,3 +1596,28 @@ i .emoji {
        -o-transform: skewX(-20deg);
           transform: skewX(-20deg);
 }
+
+.reply::-webkit-scrollbar, .prettyprint::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-corner,
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.03);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.13);
+  transition: background-color 0.3s;
+}
+.reply:hover::-webkit-scrollbar-track,
+.reply:hover *::-webkit-scrollbar-track,
+.reply:hover .prettyprint::-webkit-scrollbar-corner {
+	background: rgba(0, 0, 0, 0.06);
+}
+.reply:hover::-webkit-scrollbar-thumb,
+.reply:hover *::-webkit-scrollbar-thumb {
+	background: rgba(0, 0, 0, 0.2);
+}
+::-webkit-scrollbar-thumb:active {
+	background: rgba(0, 0, 0, 0.5) !important;
+}
