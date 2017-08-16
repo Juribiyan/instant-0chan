@@ -299,18 +299,8 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
 }
 
 .prettyprint {
-	overflow: auto;
-	max-height: 500px;
-	text-shadow: none;
 	color: black;
 	background: rgba(255, 255, 255, 0.72);
-}
-
-.prettyprint-container {
-	display: inline-block; 
-    margin-left: 2px;
-    margin-bottom: 4px;
-    margin-top: 4px;
 }
 
 .omittedposts a, .xlink {

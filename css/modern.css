@@ -271,18 +271,6 @@ input[type="text"], textarea {
 	border: none;
 }
 
-.prettyprint {
-	overflow: auto;
-	max-height: 500px;
-}
-
-.prettyprint-container {
-	/*display: inline-block; */
-    margin-left: 2px;
-    margin-bottom: 4px;
-    margin-top: 4px;
-}
-
 .omittedposts a, .xlink {
 	text-decoration: inherit;
 	border-bottom: 1px dashed rgb(133, 133, 133);

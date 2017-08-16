@@ -446,12 +446,16 @@ img.latex, object.latex  {
 	display: none;
 }
 
-.reply {
-	max-width: 100%;
-}
-
 .reply, .highlight {
 	box-sizing: border-box;
+	display: inline-block;
+	margin-left: 2px;
+	margin-bottom: 4px;
+	margin-top: 4px;
+	max-height: 500px;
+	max-height: 50vh;
+	overflow: auto;
+	max-width: 100%;
 }
 
 .reflinkpreview .reply {
@@ -461,8 +465,10 @@ img.latex, object.latex  {
 
 .prettyprint {
 	overflow: auto;
-	max-height: 500px;
+	max-height: 330px;
+	max-height: 33vh;
 	background: rgba(255, 255, 255, 0.62);
+	text-shadow: none;
 }
 
 .inline-pp {
@@ -484,11 +490,8 @@ border-radius: 5px;
 	display: block;
 }
 
-.prettyprint-container {
-	display: inline-block; 
-	margin-left: 0px;
-	margin-bottom: 2px;
-	margin-top: 2px;
+.replies table tbody tr {
+	display: block;
 }
 
 .qreplyform {
@@ -1260,6 +1263,7 @@ input:-moz-placeholder {opacity: 0; }
     display: inline-block;
     clear: both;
     width: 100%;
+    margin: 0;
   }
   .postnode {
     margin-bottom: 3px;
