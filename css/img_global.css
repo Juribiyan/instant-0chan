@@ -458,6 +458,11 @@ img.latex, object.latex  {
 	max-width: 100%;
 }
 
+.reply-expanded {
+	max-height: none;
+	overflow: visible;
+}
+
 .reflinkpreview .reply {
 	box-shadow: none;
 	margin: 0px;
