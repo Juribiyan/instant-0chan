@@ -296,3 +296,15 @@ a:hover {
 .bubble, .thought-bubble:after, .thought-bubble:before {
   border: 1px solid #669966;
 }
+
+.reply::-webkit-scrollbar-track,
+.reply::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+}
+.reply::-webkit-scrollbar-corner {
+  background: #fafff4;
+  border-radius: 0 0 6px 0;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #669966 !important;
+}

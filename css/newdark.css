@@ -299,18 +299,8 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
 }
 
 .prettyprint {
-	overflow: auto;
-	max-height: 500px;
-	text-shadow: none;
 	color: black;
 	background: rgba(255, 255, 255, 0.72);
-}
-
-.prettyprint-container {
-	display: inline-block; 
-    margin-left: 2px;
-    margin-bottom: 4px;
-    margin-top: 4px;
 }
 
 .omittedposts a, .xlink {
@@ -414,4 +404,25 @@ color: rgb(55, 201, 153);
 }
 .bubble:after {
 	border-color: transparent rgba(255, 255, 255, 0.2);
+}
+
+.reply::-webkit-scrollbar-corner,
+.reply::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.11);
+}
+.reply::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.13);
+}
+.reply:hover::-webkit-scrollbar-track,
+.reply:hover .prettyprint::-webkit-scrollbar-corner {
+	background: rgba(0, 0, 0, 0.21);
+}
+.reply:hover::-webkit-scrollbar-thumb {
+	background: rgba(255, 255, 255, 0.2);
+}
+.reply::-webkit-scrollbar-thumb:active {
+	background: rgba(255, 255, 255, 0.4) !important;
+}
+.reply::-webkit-scrollbar-corner {
+	background: #363f4c;
 }

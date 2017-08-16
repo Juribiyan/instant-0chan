@@ -446,12 +446,21 @@ img.latex, object.latex  {
 	display: none;
 }
 
-.reply {
+.reply, .highlight {
+	box-sizing: border-box;
+	display: inline-block;
+	margin-left: 2px;
+	margin-bottom: 4px;
+	margin-top: 4px;
+	max-height: 500px;
+	max-height: 50vh;
+	overflow: auto;
 	max-width: 100%;
 }
 
-.reply, .highlight {
-	box-sizing: border-box;
+.reply-expanded {
+	max-height: none;
+	overflow: visible;
 }
 
 .reflinkpreview .reply {
@@ -461,8 +470,10 @@ img.latex, object.latex  {
 
 .prettyprint {
 	overflow: auto;
-	max-height: 500px;
+	max-height: 330px;
+	max-height: 33vh;
 	background: rgba(255, 255, 255, 0.62);
+	text-shadow: none;
 }
 
 .inline-pp {
@@ -484,11 +495,8 @@ border-radius: 5px;
 	display: block;
 }
 
-.prettyprint-container {
-	display: inline-block; 
-	margin-left: 0px;
-	margin-bottom: 2px;
-	margin-top: 2px;
+.replies table tbody tr {
+	display: block;
 }
 
 .qreplyform {
@@ -1260,6 +1268,7 @@ input:-moz-placeholder {opacity: 0; }
     display: inline-block;
     clear: both;
     width: 100%;
+    margin: 0;
   }
   .postnode {
     margin-bottom: 3px;
@@ -1586,4 +1595,29 @@ i .emoji {
       -ms-transform: skewX(-20deg);
        -o-transform: skewX(-20deg);
           transform: skewX(-20deg);
+}
+
+.reply::-webkit-scrollbar, .prettyprint::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-corner,
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.03);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.13);
+  transition: background-color 0.3s;
+}
+.reply:hover::-webkit-scrollbar-track,
+.reply:hover *::-webkit-scrollbar-track,
+.reply:hover .prettyprint::-webkit-scrollbar-corner {
+	background: rgba(0, 0, 0, 0.06);
+}
+.reply:hover::-webkit-scrollbar-thumb,
+.reply:hover *::-webkit-scrollbar-thumb {
+	background: rgba(0, 0, 0, 0.2);
+}
+::-webkit-scrollbar-thumb:active {
+	background: rgba(0, 0, 0, 0.5) !important;
 }
