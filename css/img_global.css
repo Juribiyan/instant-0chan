@@ -1577,3 +1577,13 @@ td > .bubble {
 .bubble:not(.thought-bubble):before {
   content: none;
 } 
+
+.emoji {
+  vertical-align: middle;
+}
+i .emoji {
+  -webkit-transform: skewX(-20deg);
+      -ms-transform: skewX(-20deg);
+       -o-transform: skewX(-20deg);
+          transform: skewX(-20deg);
+}
