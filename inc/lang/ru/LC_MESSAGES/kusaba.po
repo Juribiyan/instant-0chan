@@ -1757,7 +1757,7 @@ msgid "c"
 msgstr "к"
 
 msgid "Get new posts"
-msgstr "Обновить"
+msgstr "Получить новые посты (если есть)"
 
 msgid "Loading"
 msgstr "Загрузка"
