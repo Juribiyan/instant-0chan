@@ -120,7 +120,7 @@ a:visited {
 .omittedposts, .omittedposts a, .xlink {
 	color: rgba(255, 255, 255, 0.47) !important;
 }
-.reply, .highlight {
+.reply {
 	background: #363F4C;
 	padding-right: 3px; 
 	padding: 1px 3px 1px 1px;

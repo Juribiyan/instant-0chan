@@ -446,7 +446,7 @@ img.latex, object.latex  {
 	display: none;
 }
 
-.reply, .highlight {
+.reply {
 	box-sizing: border-box;
 	display: inline-block;
 	margin-left: 2px;

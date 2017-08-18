@@ -121,7 +121,7 @@ a:visited {
 .omittedposts, .omittedposts a, .xlink {
 	color: rgb(143, 143, 143) !important;
 }
-.reply, .highlight {
+.reply {
 	background: #4b4b4b;
 background: -webkit-linear-gradient(#4b4b4b 0px, #353535 88px);
 background: linear-gradient(#4b4b4b 0px, #353535 88px);
