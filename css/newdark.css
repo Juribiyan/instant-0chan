@@ -120,7 +120,7 @@ a:visited {
 .omittedposts, .omittedposts a, .xlink {
 	color: rgba(255, 255, 255, 0.47) !important;
 }
-.reply, .highlight {
+.reply {
 	background: #363F4C;
 	padding-right: 3px; 
 	padding: 1px 3px 1px 1px;
@@ -299,18 +299,8 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
 }
 
 .prettyprint {
-	overflow: auto;
-	max-height: 500px;
-	text-shadow: none;
 	color: black;
 	background: rgba(255, 255, 255, 0.72);
-}
-
-.prettyprint-container {
-	display: inline-block; 
-    margin-left: 2px;
-    margin-bottom: 4px;
-    margin-top: 4px;
 }
 
 .omittedposts a, .xlink {
@@ -402,4 +392,37 @@ color: rgb(55, 201, 153);
 	background: rgb(54, 171, 133);
 	text-shadow: 0 1px 0 rgba(0,0,0,0.5);
 	color: white;
+}
+
+.bubble {
+	color: rgba(255, 255, 255, 0.83);
+	border: none;
+}
+.bubble, .thought-bubble:after, .thought-bubble:before {
+	background: rgba(255, 255, 255, 0.2);
+	box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.19);
+}
+.bubble:after {
+	border-color: transparent rgba(255, 255, 255, 0.2);
+}
+
+.reply::-webkit-scrollbar-corner,
+.reply::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.11);
+}
+.reply::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.13);
+}
+.reply:hover::-webkit-scrollbar-track,
+.reply:hover .prettyprint::-webkit-scrollbar-corner {
+	background: rgba(0, 0, 0, 0.21);
+}
+.reply:hover::-webkit-scrollbar-thumb {
+	background: rgba(255, 255, 255, 0.2);
+}
+.reply::-webkit-scrollbar-thumb:active {
+	background: rgba(255, 255, 255, 0.4) !important;
+}
+.reply::-webkit-scrollbar-corner {
+	background: #363f4c;
 }

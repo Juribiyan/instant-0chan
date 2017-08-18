@@ -115,7 +115,7 @@ a:visited {
 .omittedposts, .omittedposts a, .xlink {
 	color:#CCCCCC !important;
 }
-.reply, .highlight {
+.reply {
 	background: rgba(0, 0, 0, 0.14);
 	padding: 0;
 	padding-right: 2px;
@@ -288,15 +288,7 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
 }
 
 .prettyprint {
-	overflow: auto;
-	max-height: 500px;
-  background: rgba(0, 0, 0, 0.23);
-}
-
-.prettyprint-container {
-    margin-left: 2px;
-    margin-bottom: 4px;
-    margin-top: 4px;
+	background: rgba(0, 0, 0, 0.23);
 }
 
 .omittedposts a, .xlink {
@@ -399,4 +391,30 @@ color: #FF1B1B;
 	background: rgb(187, 19, 19);
   text-shadow: 0 1px 0 rgba(0,0,0,0.5);
   color: white;
+}
+
+.reply::-webkit-scrollbar-corner,
+.reply::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.11);
+}
+.reply::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.13);
+  box-shadow: inset -1px -2px 1px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.29);
+}
+.reply:hover::-webkit-scrollbar-track,
+.reply:hover .prettyprint::-webkit-scrollbar-corner {
+	background: rgba(0, 0, 0, 0.21);
+}
+.reply:hover::-webkit-scrollbar-thumb {
+	background: rgba(255, 255, 255, 0.2);
+}
+.reply::-webkit-scrollbar-thumb:active {
+	background: rgb(255, 27, 27) !important;
+}
+.reply::-webkit-scrollbar-track,
+.reply::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+}
+.reply::-webkit-scrollbar-corner {
+	background: #31321a;
 }

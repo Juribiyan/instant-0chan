@@ -277,3 +277,41 @@ a:hover {
 .captchawrap {
   color: rgb(33, 0, 127);
 }
+
+.bubble, .thought-bubble:after, .thought-bubble:before {
+  background: -webkit-linear-gradient(top, #ecf1ff 0%, #cedbff 100%);
+  background: -o-linear-gradient(top, #ecf1ff 0%, #cedbff 100%);
+  background: linear-gradient(to bottom, #ecf1ff 0%, #cedbff 100%);
+  color: black;
+}
+.bubble:after {
+  border-color: transparent rgb(219, 229, 255);
+}
+.bubble:not(.thought-bubble):before {
+  content: "";
+  position: absolute;
+  top: 13px;
+  left: -13px;
+  display: block;
+  width: 0;
+  z-index: 0;
+  border-width: 7px 13px 7px 0;
+}
+.bubble, .thought-bubble:after, .bubble:before {
+  border-color: transparent #666699;
+}
+.bubble, .thought-bubble:after, .thought-bubble:before {
+  border: 1px solid #666699;
+}
+
+.reply::-webkit-scrollbar-track,
+.reply::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+}
+.reply::-webkit-scrollbar-corner {
+  background: #f7f8ff;
+  border-radius: 0 0 6px 0;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #666699 !important;
+}

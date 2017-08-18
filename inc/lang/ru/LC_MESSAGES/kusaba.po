@@ -1058,7 +1058,10 @@ msgid "Sorry, this thread is locked and can not be replied to."
 msgstr "Этот тред закрыт, в него нельзя отправлять сообщения."
 
 msgid "Sorry, your message is too long.  Message length: %d, maxmimum allowed length: %d"
-msgstr "Сообщение слишком длинное."
+msgstr "Сообщение слишком длинное (%d / %d)"
+
+msgid "Sorry, the resulting HTML of your message is too long. HTML length: %d, maximum allowed length: %d"
+msgstr "HTML-строка не помещается в базу данных (%d / %d)"
 
 msgid "Sorry, your search returned zero results."
 msgstr "Ничего не найдено."
@@ -1754,7 +1757,7 @@ msgid "c"
 msgstr "к"
 
 msgid "Get new posts"
-msgstr "Обновить"
+msgstr "Получить новые посты (если есть)"
 
 msgid "Loading"
 msgstr "Загрузка"

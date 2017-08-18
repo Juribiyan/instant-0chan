@@ -121,7 +121,7 @@ a:visited {
 .omittedposts, .omittedposts a, .xlink {
 	color: rgb(143, 143, 143) !important;
 }
-.reply, .highlight {
+.reply {
 	background: #4b4b4b;
 background: -webkit-linear-gradient(#4b4b4b 0px, #353535 88px);
 background: linear-gradient(#4b4b4b 0px, #353535 88px);
@@ -309,18 +309,8 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
 }
 
 .prettyprint {
-	overflow: auto;
-	max-height: 500px;
-	text-shadow: none;
 	color: black;
 	background: rgba(255, 255, 255, 0.72);
-}
-
-.prettyprint-container {
-	display: inline-block; 
-    margin-left: 2px;
-    margin-bottom: 4px;
-    margin-top: 4px;
 }
 
 .omittedposts a, .xlink {
@@ -430,4 +420,43 @@ color: rgb(36, 218, 226);
 	background: rgb(32, 157, 162);
 	text-shadow: 0 1px 0 rgba(0,0,0,0.5);
 	color: white;
+}
+
+.bubble {
+  color: rgba(255, 255, 255, 0.83);
+}
+.bubble, .thought-bubble:after, .thought-bubble:before {
+  background: -webkit-linear-gradient(top, #6b6b6b 0%, #444444 100%);
+  background: -o-linear-gradient(top, #6b6b6b 0%, #444444 100%);
+  background: linear-gradient(to bottom, #6b6b6b 0%, #444444 100%);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.19);
+}
+.bubble:after {
+  border-color: transparent rgb(89, 89, 89);
+}
+
+.reply::-webkit-scrollbar-corner,
+.reply::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.11);
+}
+.reply::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.13);
+  box-shadow: inset -1px -2px 1px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.29);
+}
+.reply:hover::-webkit-scrollbar-track,
+.reply:hover .prettyprint::-webkit-scrollbar-corner {
+	background: rgba(0, 0, 0, 0.21);
+}
+.reply:hover::-webkit-scrollbar-thumb {
+	background: rgba(255, 255, 255, 0.2);
+}
+.reply::-webkit-scrollbar-thumb:active {
+	background: rgba(255, 255, 255, 0.4) !important;
+}
+.reply::-webkit-scrollbar-track,
+.reply::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+}
+.reply::-webkit-scrollbar-corner {
+	background: #353535;
 }

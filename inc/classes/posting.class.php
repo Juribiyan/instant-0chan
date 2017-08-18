@@ -360,6 +360,16 @@ class Posting {
 	function postParseCheckText($msg, $board, $boardid) {
 		global $bans_class, $tc_db;
 
+		// Check if message html does not exceed field value
+		$maxlength = (int)($tc_db->GetOne("SELECT character_maximum_length 
+			FROM   information_schema.columns 
+			WHERE  table_name = 'posts' AND	column_name = 'message'"));
+		$msglength = strlen($msg);
+		if ($msglength > $maxlength) {
+			/* Kill the script, stopping the posting process */
+			exitWithErrorPage(sprintf(_gettext('Sorry, the resulting HTML of your message is too long. HTML length: %d, maximum allowed length: %d'), $msglength, $maxlength));
+		}
+
 		$cyr = array('А', 'а', 'В', 'Е', 'е', 'К', 'М', 'Н', 'О', 'о', 'Р', 'р', 'С', 'с', 'Т', 'Х', 'х');
 		$lat = array('A', 'a', 'B', 'E', 'e', 'K', 'M', 'H', 'O', 'o', 'P', 'p', 'C', 'c', 'T', 'X', 'x');
 		

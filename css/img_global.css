@@ -447,11 +447,20 @@ img.latex, object.latex  {
 }
 
 .reply {
+	box-sizing: border-box;
+	display: inline-block;
+	margin-left: 2px;
+	margin-bottom: 4px;
+	margin-top: 4px;
+	max-height: 500px;
+	max-height: 50vh;
+	overflow: auto;
 	max-width: 100%;
 }
 
-.reply, .highlight {
-	box-sizing: border-box;
+.reply-expanded {
+	max-height: none;
+	overflow: visible;
 }
 
 .reflinkpreview .reply {
@@ -461,8 +470,10 @@ img.latex, object.latex  {
 
 .prettyprint {
 	overflow: auto;
-	max-height: 500px;
+	max-height: 330px;
+	max-height: 33vh;
 	background: rgba(255, 255, 255, 0.62);
+	text-shadow: none;
 }
 
 .inline-pp {
@@ -484,11 +495,8 @@ border-radius: 5px;
 	display: block;
 }
 
-.prettyprint-container {
-	display: inline-block; 
-	margin-left: 0px;
-	margin-bottom: 2px;
-	margin-top: 2px;
+.replies table tbody tr {
+	display: block;
 }
 
 .qreplyform {
@@ -798,51 +806,6 @@ proven.prooflabel {
 	display: block;
 text-align: center;
 border: none;
-}
-.bubble {
-	position: relative;
-	background: #ADB400;
-	border: #000 solid 2px;
-	border-radius: 5px;
-	display: inline-block;
-	vertical-align: top;
-	margin-left: 20px;
-	padding: 11px 10px;
-	color: #000;
-	text-shadow: none;
-}
-
-.bubble:after {
-	content: "";
-	position: absolute;
-	top: 14px;
-	left: -11px;
-	border-style: solid;
-	border-width: 6px 11px 6px 0;
-	border-color: transparent #ADB400;
-	display: block;
-	width: 0;
-	z-index: 1;
-}
-
-.bubble:before {
-	content: "";
-	position: absolute;
-	top: 13px;
-	left: -14px;
-	border-style: solid;
-	border-width: 7px 12px 7px 0;
-	border-color: transparent #000000;
-	display: block;
-	width: 0;
-	z-index: 0;
-}
-.lination {
-	display: inline-block!important;
-	vertical-align: middle;
-}
-.lination td {
-	vertical-align: top;
 }
 
 #postclone {
@@ -1305,6 +1268,7 @@ input:-moz-placeholder {opacity: 0; }
     display: inline-block;
     clear: both;
     width: 100%;
+    margin: 0;
   }
   .postnode {
     margin-bottom: 3px;
@@ -1553,4 +1517,107 @@ input[readonly] {
 }
 input:disabled {
   opacity: 0.5
+}
+
+/* SAYERS */
+.bubble {
+  position: relative;
+  border-radius: 5px;
+  display: table-cell;
+  vertical-align: top;
+  margin-left: 20px;
+  padding: 11px 10px;
+  text-shadow: none;
+}
+td > .bubble {
+  display: inline-block;
+}
+.bubble:after {
+  content: "";
+  position: absolute;
+  top: 14px;
+  left: -11px;
+  display: block;
+  width: 0;
+  z-index: 1;
+  border-width: 6px 11px 6px 0;
+}
+.bubble:before {
+  content: "";
+  position: absolute;
+  top: 13px;
+  left: -14px;
+  display: block;
+  width: 0;
+  z-index: 0;
+  border-width: 7px 12px 7px 0;
+} 
+.bubble:not(.thought-bubble):after, .bubble:not(.thought-bubble):before {
+  border-style: solid;
+}
+.thought-bubble {
+  left: 10px;
+}
+.thought-bubble:after {
+  height: 14px;
+  width: 14px;
+  left: -17px;
+  top: 4px;
+}
+.thought-bubble:before {
+  height: 9px;
+  width: 9px;
+  left: -29px;
+  top: 5px;
+}
+.thought-bubble, .thought-bubble:after, .thought-bubble:before {
+  border-radius: 80px;
+}
+.thought-bubble:after, .thought-bubble:before {
+  box-sizing: border-box;
+}
+.lination, .caption {
+  display: inline-block!important;
+  vertical-align: middle;
+}
+.lination td, .caption td {
+  vertical-align: top;
+}
+.bubble:not(.thought-bubble):before {
+  content: none;
+} 
+
+.emoji {
+  vertical-align: middle;
+}
+i .emoji {
+  -webkit-transform: skewX(-20deg);
+      -ms-transform: skewX(-20deg);
+       -o-transform: skewX(-20deg);
+          transform: skewX(-20deg);
+}
+
+.reply::-webkit-scrollbar, .prettyprint::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-corner,
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.03);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.13);
+  transition: background-color 0.3s;
+}
+.reply:hover::-webkit-scrollbar-track,
+.reply:hover *::-webkit-scrollbar-track,
+.reply:hover .prettyprint::-webkit-scrollbar-corner {
+	background: rgba(0, 0, 0, 0.06);
+}
+.reply:hover::-webkit-scrollbar-thumb,
+.reply:hover *::-webkit-scrollbar-thumb {
+	background: rgba(0, 0, 0, 0.2);
+}
+::-webkit-scrollbar-thumb:active {
+	background: rgba(0, 0, 0, 0.5) !important;
 }

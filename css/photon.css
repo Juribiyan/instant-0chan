@@ -278,3 +278,34 @@ table td {
   background: #FF6600;
   color: white!important;
 }
+
+.bubble, .thought-bubble:after, .thought-bubble:before {
+	background: #E6E6E6;
+}
+.bubble:after {
+	border-color: transparent #E6E6E6;
+}
+.bubble:not(.thought-bubble):before {
+  content: "";
+  position: absolute;
+  top: 13px;
+  left: -13px;
+  display: block;
+  width: 0;
+  z-index: 0;
+  border-width: 7px 13px 7px 0;
+}
+.bubble, .thought-bubble:after, .bubble:before {
+	border-color: transparent #969696;
+}
+.bubble, .thought-bubble:after, .thought-bubble:before {
+	border: 1px solid #969696;
+}
+
+.reply::-webkit-scrollbar-track,
+.reply::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+}
+.reply::-webkit-scrollbar-corner {
+	background: #dddddd;
+}
