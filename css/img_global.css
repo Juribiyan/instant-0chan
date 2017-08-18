@@ -1621,3 +1621,64 @@ i .emoji {
 ::-webkit-scrollbar-thumb:active {
 	background: rgba(0, 0, 0, 0.5) !important;
 }
+
+@keyframes circle-timer {
+	from { stroke-dashoffset: 0; }
+	to { stroke-dashoffset: 55; }
+}
+@keyframes spin {
+    from {transform:rotate(0deg);}
+    to {transform:rotate(360deg);}
+}
+svg.refresher {
+	background-color: transparent !important;
+	box-shadow: none !important;
+	fill: currentColor!important;
+	overflow: visible;
+	vertical-align: middle;
+	margin-right: 5px;
+}
+.timer-circle {
+  fill: transparent;
+  stroke: currentColor;
+  stroke-width: 2px;
+  stroke-dasharray: 0,55;
+  transition: stroke-dasharray 0.2s;
+}
+.upd-counting .timer-circle {
+	stroke-dasharray: 55;
+	animation: circle-timer 5s linear forwards;
+}
+.upd-updating .timer-circle {
+	stroke-dashoffset: 0;
+	stroke-dasharray: 9;
+	animation: spin 1s infinite linear;
+	transform-origin: 50%;
+}
+.tc-wrapper {
+	transition: transform 0.3s;
+	transform-origin: 50%;
+}
+a:hover .tc-wrapper {
+	transform: scale(1.2);
+}
+#newposts_get svg,
+#newposts_get span {
+	vertical-align: middle;
+}
+.upd-updating .upd-action,
+.upd-msg {
+	display: none;
+}
+.upd-updating .upd-msg {
+	display: inline-block!important;
+}
+@keyframes ellipsis {
+	0%, 100%  {content: '.. '}
+	33% 			{content: ' ..'}
+	66% 			{content: '. .'}
+}
+.upd-msg::after {
+	content: '...';
+	animation: ellipsis 0.4s linear infinite;
+}

@@ -383,11 +383,16 @@
 	</div>
 	{if not $isexpand}
 		<br clear="left" />
-		<div id="newposts_get"><a href="#" onclick="return getnewposts()">
-      <svg class="icon b-icon"><use xlink:href="#i-refresh"></use></svg> Получить новые посты (если есть)</a>
-		</div>
-		<div id="newposts_load" style="display:none;">
-			<img src="{%KU_WEBPATH}/images/loading.gif"> Загрузка...
+		<div id="newposts_get"><!-- 
+	 --><a href="#" onclick="return getnewposts()" title="А если нет, то не получать новые посты"><!-- 
+	   --><svg class="icon b-icon refresher">
+      		<use xlink:href="#i-refresh"></use>
+	      	<g class="tc-wrapper">
+	      		<circle cx="50%" cy="50%" r="55%" style="" class="timer-circle"></circle>
+	      	</g>
+      	</svg><!-- 
+	 --><span class="upd-action">{t}Get new posts{/t}</span><!-- 
+	 --></a><span class="upd-msg">{t}Loading{/t}</span>
 		</div>
 		<hr />
 	{/if}
