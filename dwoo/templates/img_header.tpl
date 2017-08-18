@@ -1,5 +1,5 @@
 <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
-{if $replythread > 0}<meta property="i0:thrno" content="{$replythread}" />{/if}
+{if $replythread > 0}<!-- i0:thrno={$replythread} -->{/if}
 <meta property="i0:buildtime" content="{time();}"/>
 <script type="text/javascript">
 		var captchaTimeout = {%KU_CAPTCHALIFE} - 0.5;

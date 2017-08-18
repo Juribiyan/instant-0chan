@@ -6,7 +6,7 @@
 	
 		{if $post.parentid eq 0}
 		<div id="thread{$post.id}{$board.name}" class="replies">
-		<div class="postnode op">
+		<!--{$post.id}--><div class="postnode op">
 			<a name="s{$.foreach.thread.iteration}"></a>
 			
 			{if ($post.file neq '' || $post.file_type neq '' ) && (( $post.videobox eq '' && $post.file neq '') && $post.file neq 'removed')}
@@ -157,8 +157,7 @@
 				{/foreach}
 				return false;">{t}Expand all images{/t}</a>
 			{/if *}
-
-			<table class="postnode">
+			<!--{$post.id}--><table class="postnode">
 				<tbody>
 				<tr>
 					<td class="doubledash">
@@ -355,7 +354,7 @@
 			</tr>
 		</tbody>
 		</table>
-		{/if}
+		{/if}<!--/-->
 	{/foreach}
 	{if $modifier eq 'first100'}
 		<span class="omittedposts" style="float: left">
