@@ -550,7 +550,9 @@ border-radius: 5px;
 	-moz-animation-name: nodeInserted;
 	-webkit-animation-name: nodeInserted;
 }
-
+.embed {
+	position: relative;
+}
 .youtube.embed {
 	width: 368px;
 	height: 237px;
