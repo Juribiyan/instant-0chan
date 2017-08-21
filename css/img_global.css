@@ -1634,9 +1634,13 @@ td > .bubble {
 .lination, .caption {
   display: inline-block!important;
   vertical-align: middle;
+  border-spacing: 0;
 }
 .lination td, .caption td {
   vertical-align: top;
+}
+.caption td:first-child {
+	font-size: 0;
 }
 .bubble:not(.thought-bubble):before {
   content: none;
@@ -1736,4 +1740,12 @@ a:hover .tc-wrapper {
 .upd-msg::after {
 	content: '...';
 	animation: ellipsis 0.4s linear infinite;
+}
+
+.code_part + br,
+.prettyprint + br {
+	display: none;
+}
+.prettyprint, .caption, .lination {
+	margin: 8px 0;
 }

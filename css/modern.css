@@ -229,10 +229,6 @@ table td {
 	background: rgb(247, 247, 247);
 }
 
-.replies table {
-	border-spacing: 2px 4px;
-}
-
 .menu-item {
 	margin: 0 -3px 0 -3px;
 	padding: 2px 5px;
