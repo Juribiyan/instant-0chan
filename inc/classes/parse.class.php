@@ -372,7 +372,7 @@ class Parse {
 	}
 	
 	function Smileys($string){
-		$string = preg_replace_callback('`:(.+?):`is', array(&$this, 'smiley_callback'), $string);
+		$string = preg_replace_callback('`:([0-9a-z]+?):`is', array(&$this, 'smiley_callback'), $string);
 		return $string;
 	}
 
