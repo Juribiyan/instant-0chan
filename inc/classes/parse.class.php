@@ -140,7 +140,7 @@ class Parse {
 	}
 
 	function geshi_callback($matches) {
-		include_once '/lib/geshi.php';
+		include_once KU_ROOTDIR . '/lib/geshi.php';
 		$geshi = new GeSHi(html_entity_decode($matches[2], ENT_QUOTES), $matches[1]);
 		$geshi->set_header_type(GESHI_HEADER_PRE);
 		$tr = array("["=>"&#91;", "]"=>"&#93;", "*"=>"&#42;", "%"=>"&#37;", "&quot;"=>"&#34;", "-"=>"&#45;", ":"=>"&#58;", "# "=>"&#35; ", "~"=>"&#126;",  "&#039;"=>"'", "&apos;"=>"'", "&gt;"=>"&#62;", "&lt;"=>"&#60;", "`"=>'&#96;');
@@ -452,7 +452,7 @@ class Parse {
 
 		if($dice) $message = preg_replace_callback('`##(\d{1})d(\d{1,3})([+-]\d{1,3})?##`m', array(&$this, 'dice'), $message);
 
-		// $message = $this->Smileys($message); 
+		if (I0_SMILES_ENABLED) $message = $this->Smileys($message); 
 
 		return $message;
 	}
