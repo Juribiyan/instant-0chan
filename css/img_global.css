@@ -1743,9 +1743,25 @@ a:hover .tc-wrapper {
 }
 
 .code_part + br,
-.prettyprint + br {
+.prettyprint + br,
+.bubble + br,
+blockquote ul + br,
+blockquote ol + br {
 	display: none;
 }
-.prettyprint, .caption, .lination {
+
+.prettyprint, .caption, .lination, .code_part, .bubble,
+blockquote ul,
+blockquote ol {
 	margin: 8px 0;
+	display: block;
+}
+blockquote ul,
+blockquote ol {
+	padding-left: 20px;
+}
+td > .bubble {
+	display: inline-block;
+	margin: 0;
+	margin-left: 20px;
 }
