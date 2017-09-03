@@ -527,10 +527,6 @@ img.latex, object.latex  {
 	color: #333333;
 }
 
-.inline-pp {
-	display: inline;
-}
-
 .dice {
 	color: white;
 background: rgb(135, 106, 172);
@@ -1753,4 +1749,9 @@ td > .bubble {
 	display: inline-block;
 	margin: 0;
 	margin-left: 20px;
+}
+
+.inline-pp {
+  display: inline;
+  padding: 2px !important;
 }
