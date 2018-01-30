@@ -237,7 +237,7 @@ if (!$cache_loaded) {
 		if ($cf['KU_APC']) {
 			apc_define_constants('config', $cf);
 		}
-		while (list($key, $value) = each($cf)) {
+		foreach ($cf as $key => $value) {
 			define($key, $value);
 		}
 		unset($cf);
