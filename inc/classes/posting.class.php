@@ -363,7 +363,7 @@ class Posting {
 		// Check if message html does not exceed field value
 		$maxlength = (int)($tc_db->GetOne("SELECT character_maximum_length 
 			FROM   information_schema.columns 
-			WHERE  table_name = 'posts' AND	column_name = 'message'"));
+			WHERE  table_name = '".KU_DBPREFIX."posts' AND	column_name = 'message'"));
 		$msglength = strlen($msg);
 		if ($msglength > $maxlength) {
 			/* Kill the script, stopping the posting process */
