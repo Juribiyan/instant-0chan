@@ -10,7 +10,7 @@ class Cloud20 {
 	  foreach($sections as &$sect) {
 	    $sect_map[$sect['id']] = $sect['abbreviation'];
 	    if($sect['abbreviation'] !== '20')
-	    	$boards10_wrap[$sect['id']] = array(order=>$sect['order'], name=>$sect['name']);
+	    	$boards10_wrap[$sect['id']] = array('order'=>$sect['order'], 'name'=>$sect['name']);
 	  }unset($sect);
 
 	  foreach($allboards as &$board) {

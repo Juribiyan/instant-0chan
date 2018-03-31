@@ -20,8 +20,8 @@ function exitWithErrorPage($errormsg, $extended = '', $error_type=null, $error_d
 
   if ($_POST['AJAX']) {
     $resp = array(
-      error => $errormsg,
-      error_verbose => $extended
+      'error' => $errormsg,
+      'error_verbose' => $extended
     );
     if ($error_type) {
       $resp['error_type'] = $error_type;
@@ -99,14 +99,14 @@ function do_redirect($url, $useheader=false) {
 
 function ajax_error($errmsg) {
   exit(json_encode(array(
-    error => $errmsg
+    'error' => $errmsg
   )));
 }
 
 function ajax_success($data) {
   exit(json_encode(array(
-    error => false,
-    data => $data
+    'error' => false,
+    'data' => $data
   )));
 }
 

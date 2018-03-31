@@ -100,10 +100,10 @@ class PostAction {
 
   function report() {
     return array(
-      id => $this->id,
-      action => $this->action,
-      success => $this->success,
-      message => $this->message
+      'id' => $this->id,
+      'action' => $this->action,
+      'success' => $this->success,
+      'message' => $this->message
     );
   }
 }
@@ -111,7 +111,7 @@ class PostAction {
 function error_redirect($url, $message) {
 	if ($_POST['AJAX']) {
 		exit(json_encode(array(
-		  error => $message
+		  'error' => $message
 		)));
 	}
 	else {
@@ -153,8 +153,8 @@ if (isset($_POST['board'])) {
 $ban_result = $bans_class->BanCheck($_SERVER['REMOTE_ADDR'], $board_class->board['name']);
 if ($ban_result && is_array($ban_result) && $_POST['AJAX']) {
 	exit(json_encode(array(
-	  error => _gettext('YOU ARE BANNED'),
-	  error_type => 'ban'
+	  'error' => _gettext('YOU ARE BANNED'),
+	  'error_type' => 'ban'
 	)));
 }
 
@@ -579,8 +579,8 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 	}
 	if ($_POST['AJAX'])
 		exit(json_encode(array(
-		  action => 'multi_post_action',
-		  data => $posts_affected
+		  'action' => 'multi_post_action',
+		  'data' => $posts_affected
 		)));
 	else
 		do_redirect(KU_BOARDSPATH . '/' . $board_class->board['name'] . '/');
@@ -616,10 +616,10 @@ if( $_POST['redirecttothread'] == 1 || $_POST['em'] == 'return' || $_POST['em'] 
 
 if ($_POST['AJAX']) {
 	exit(json_encode(array(
-	  error => false,
-	  action => 'post',
-	  thread_replyto => $thread_replyto,
-	  post_id => $post_id,
-	  board => $board_class->board['name']
+	  'error' => false,
+	  'action' => 'post',
+	  'thread_replyto' => $thread_replyto,
+	  'post_id' => $post_id,
+	  'board' => $board_class->board['name']
 	)));
 }

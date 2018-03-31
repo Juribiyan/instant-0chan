@@ -2750,7 +2750,7 @@ class Dwoo_Compiler implements Dwoo_ICompiler
 
 		$paramlist = array();
 
-		// transforms the parameter array from (x=>array('paramname'=>array(values))) to (paramname=>array(values))
+		// transforms the parameter array from ('x'=>array('paramname'=>array(values))) to ('paramname'=>array(values))
 		$ps = array();
 		foreach ($params as $p) {
 			if (is_array($p[1])) {

@@ -3804,7 +3804,7 @@ class Manage {
 			//table header
 			if(count($boards) > 0) {
 				$tpl_page .= '<h1>'._gettext('Banners of boards').'</h1><br />';
-				//transform board_banners into key=>value array "$bb_kv"
+				//transform board_banners into 'key'=>value array "$bb_kv"
 				foreach($board_banners as $banner) {	
 					$bb_kv[$banner['link']]= array('path'=>$banner['path'], 'version'=>$banner['version']);
 				}

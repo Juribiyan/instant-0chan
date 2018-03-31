@@ -1168,7 +1168,7 @@ class getID3
 
 	public function HandleAllTags() {
 
-		// key name => array (tag name, character encoding)
+		// key 'name' => array (tag name, character encoding)
 		static $tags;
 		if (empty($tags)) {
 			$tags = array(

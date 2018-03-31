@@ -747,7 +747,7 @@ class GeSHi {
     }
 
     /**
-     * Get supported langs or an associative array lang=>full_name.
+     * Get supported langs or an associative array 'lang'=>full_name.
      * @param boolean $longnames
      * @return array
      */
@@ -2799,7 +2799,7 @@ class GeSHi {
                                             --$escape_char_pos;
                                         }
                                         if (($close_pos - $escape_char_pos) & 1) {
-                                            // uneven number of escape chars => this quote is escaped
+                                            // uneven number of escape 'chars' => this quote is escaped
                                             continue 2;
                                         }
                                     }

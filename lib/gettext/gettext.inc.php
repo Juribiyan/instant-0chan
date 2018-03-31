@@ -119,7 +119,7 @@ function _bindtextdomain($domain, $directory, $faketext_lang = KU_LOCALE) {
 	// Parse strings
 	preg_match_all('/msgid\s+"([^"]+)"\s*(msgid_plural\s+"([^"]+)"\s*)?((msgstr(\[\d+\])?\s+?"([^"]+)"\s*)+)/is', $contents, $localeMatches, PREG_SET_ORDER);
 
-	// Make pretty key => value array
+	// Make pretty 'key' => value array
 	foreach ($localeMatches as $localeMatch) {
 		// Determine if this is a plural entry
 		if (strpos($localeMatch[2], 'msgid_plural') !== false) {
