@@ -23,7 +23,7 @@ class getid3_write_lyrics3
 	public $warnings        = array(); // any non-critical errors will be stored here
 	public $errors          = array(); // any critical errors will be stored here
 
-	public function getid3_write_lyrics3() {
+	public function __construct() {
 		return true;
 	}
 
@@ -36,7 +36,7 @@ class getid3_write_lyrics3
 		$getID3 = new getID3;
 		$ThisFileInfo = $getID3->analyze($this->filename);
 		if (isset($ThisFileInfo['lyrics3']['tag_offset_start']) && isset($ThisFileInfo['lyrics3']['tag_offset_end'])) {
-			if (is_readable($this->filename) && is_writable($this->filename) && is_file($this->filename) && ($fp = fopen($this->filename, 'a+b'))) {
+			if (is_readable($this->filename) && getID3::is_writable($this->filename) && is_file($this->filename) && ($fp = fopen($this->filename, 'a+b'))) {
 
 				flock($fp, LOCK_EX);
 				$oldignoreuserabort = ignore_user_abort(true);

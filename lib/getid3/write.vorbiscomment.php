@@ -23,7 +23,7 @@ class getid3_write_vorbiscomment
 	public $warnings = array(); // any non-critical errors will be stored here
 	public $errors   = array(); // any critical errors will be stored here
 
-	public function getid3_write_vorbiscomment() {
+	public function __construct() {
 		return true;
 	}
 
@@ -36,7 +36,7 @@ class getid3_write_vorbiscomment
 
 		// Create file with new comments
 		$tempcommentsfilename = tempnam(GETID3_TEMP_DIR, 'getID3');
-		if (is_writable($tempcommentsfilename) && is_file($tempcommentsfilename) && ($fpcomments = fopen($tempcommentsfilename, 'wb'))) {
+		if (getID3::is_writable($tempcommentsfilename) && is_file($tempcommentsfilename) && ($fpcomments = fopen($tempcommentsfilename, 'wb'))) {
 
 			foreach ($this->tag_data as $key => $value) {
 				foreach ($value as $commentdata) {
