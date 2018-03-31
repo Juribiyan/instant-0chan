@@ -113,7 +113,6 @@ CREATE TABLE `PREFIX_boards` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `order` tinyint(5) NOT NULL DEFAULT '0',
   `name` varchar(75) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `type` tinyint(1) NOT NULL DEFAULT '0',
   `start` int(10) unsigned NOT NULL DEFAULT '1',
   `uploadtype` tinyint(1) NOT NULL DEFAULT '1',
   `desc` varchar(75) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',

@@ -154,7 +154,7 @@ class Manage {
 			}
 		}
 	}
-  
+
   function CheckToken($posttoken) {
     if ($posttoken != $_SESSION['token']) {
       // Something is strange
@@ -1289,7 +1289,7 @@ class Manage {
 				}
 			}
 		}
-		
+
 		$tpl_page .= '<h2>'. _gettext('Add board') . '</h2><br />
 		<form action="manage_page.php?action=adddelboard_mod" method="post">
     	<input type="hidden" name="token" value="' . $_SESSION['token'] . '" />
@@ -1442,7 +1442,7 @@ class Manage {
 						$tc_db->Execute("DELETE FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = '" . $board_id . "'");
 						$tc_db->Execute("DELETE FROM `" . KU_DBPREFIX . "boards` WHERE `id` = '" . $board_id . "'");
 						$tc_db->Execute("DELETE FROM `" . KU_DBPREFIX . "board_filetypes` WHERE `boardid` = '" . $board_id . "'");
-						
+
 						/*     Remove rights for all mods     */
 						$staffresults = $tc_db->GetAll("SELECT `id`, `boards` FROM `" .KU_DBPREFIX. "staff` WHERE `boards` != 'allboards'");
 						foreach($staffresults as $moder) {
@@ -1465,7 +1465,7 @@ class Manage {
 						$tc_db->Execute("DELETE FROM `" . KU_DBPREFIX . "banners` WHERE `custom`='0' AND `link`='".$dir."'");
 						$this->updateBannersJSON();
 						$this->rebuild20json();
-					
+
 						require_once KU_ROOTDIR . 'inc/classes/menu.class.php';
 						$menu_class = new Menu();
 						$menu_class->Generate();
@@ -1518,7 +1518,7 @@ class Manage {
 						$tc_db->Execute("DELETE FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = '" . $board_id . "'");
 						$tc_db->Execute("DELETE FROM `" . KU_DBPREFIX . "boards` WHERE `id` = '" . $board_id . "'");
 						$tc_db->Execute("DELETE FROM `" . KU_DBPREFIX . "board_filetypes` WHERE `boardid` = '" . $board_id . "'");
-						
+
 						/*     Remove rights for all mods     */
 						$staffresults = $tc_db->GetAll("SELECT `id`, `boards` FROM `" .KU_DBPREFIX. "staff` WHERE `boards` != 'allboards'");
 						foreach($staffresults as $moder) {
@@ -1573,7 +1573,7 @@ class Manage {
 
 		return $output;
 	}
-	
+
 	/* Replace words in posts with something else */
 	function wordfilter() {
 		global $tc_db, $tpl_page;
@@ -1631,9 +1631,9 @@ class Manage {
 						management_addlogentry(_gettext('Removed word from wordfilter') . ': '. $del_word, 11);
 					}
 					else {
-						
+
 					}
-					
+
 				} else {
 					$tpl_page .= _gettext('That ID does not exist.');
 				}
@@ -1675,7 +1675,7 @@ class Manage {
 								$tpl_page .= ' /><br />';
 							}
 							$tpl_page .= '<br />
-							
+
 							<input type="submit" value="'. _gettext('Edit word') .'" />
 
 							</form>';
@@ -1741,7 +1741,7 @@ class Manage {
 
 		$results = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "wordfilter`");
 		if ($results > 0 && count($boardlist) > 0) {
-			
+
 			$tpl_page .= '<table border="1" width="100%"><tr><th>'. _gettext('Word') . '</th><th>'. _gettext('Replacement') . '</th><th>'. _gettext('Boards') . '</th><th>&nbsp;</th></tr>'. "\n";
 			foreach($results as $line) {
 				$belong = true;
@@ -2393,7 +2393,7 @@ class Manage {
 	function editfiletypes() {
 		global $tc_db, $tpl_page;
 		$this->AdministratorsOnly();
-		
+
 		$tpl_page .= '<h2>'. _gettext('Edit filetypes') . '</h2><br />';
 		if (isset($_GET['do'])) {
 			if ($_GET['do'] == 'addfiletype') {
@@ -2694,7 +2694,7 @@ class Manage {
 									$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "customstyles` SET `version`=`version`+1 WHERE `name` = '". $_POST['stylename'] ."'");
 									$tpl_page .= _gettext('Style successfully updated.');
 								}
-								else 
+								else
 									$tpl_page .= $css_error;
 							}
 						}
@@ -2774,7 +2774,7 @@ class Manage {
 				  else $err .= _gettext('Wrong file type');
 				}
 				else $err .= $txt_failed;
-				
+
 				if($_FILES["newstylefile"]["type"] == 'text/css' && end(explode(".", $_FILES["newstylefile"]["name"])) == 'css'){
 					move_uploaded_file($_FILES["newstylefile"]["tmp_name"], KU_ROOTDIR.'css/custom/' . $tempname . '.css');
 					$upload_successful = true;
@@ -2806,7 +2806,7 @@ class Manage {
 				  	<input type="text" name="newstylename" />.css
 				  	<br><input type="submit"></form>';
 				}
-				else 
+				else
 				  $tpl_page .= $css_error;
 			}
 			else $tpl_page .= $err;
@@ -2976,7 +2976,7 @@ class Manage {
 								management_addlogentry(_gettext('Updated board configuration') . " - /" . $_GET['updateboard'] . "/", 4);
 							}
 							else $tpl_page .= _gettext('Sorry, a generic error has occurred.');
-							
+
 						} else {
 							$tpl_page .= _gettext('Sorry, embed may only be enabled on normal imageboards.');
 						}
@@ -3008,22 +3008,6 @@ class Manage {
 					$tpl_page .= '<label for="desc">'. _gettext('Description') .':</label>
 					<input type="text" name="desc" value="'.$lineboard['desc'].'" />
 					<div class="desc">'. _gettext('The name of the board.') .'</div><br />';
-
-					/* Board type */
-					$tpl_page .= '<label for="type">'. _gettext('Board type') .':</label>
-					<select name="type">
-					<option value="0"';
-					if ($lineboard['type'] == '0') { $tpl_page .= ' selected="selected"'; }
-					$tpl_page .= '>'. _gettext('Normal imageboard') .'</option>
-					<option value="1"';
-					if ($lineboard['type'] == '1') { $tpl_page .= ' selected="selected"'; }
-					$tpl_page .= '>'. _gettext('Text board') .'</option><option value="2"';
-					if ($lineboard['type'] == '2') { $tpl_page .= ' selected="selected"'; }
-					$tpl_page .= '>'. _gettext('Oekaki imageboard') .'</option><option value="3"';
-					if ($lineboard['type'] == '3') { $tpl_page .= ' selected="selected"'; }
-					$tpl_page .= '>'. _gettext('Upload imageboard') .'</option>
-					</select>
-					<div class="desc">'. _gettext('The type of posts which will be accepted on this board. A normal imageboard will feature image and extended format posts, a text board will have no images, an Oekaki board will allow users to draw images and use them in their posts, and an Upload imageboard will be styled more towards file uploads.') .' '. _gettext('Default') .': <strong>Normal Imageboard</strong></div><br />';
 
 					/* Upload type */
 					$tpl_page .= '<label for="uploadtype">'. _gettext('Upload type') .':</label>
@@ -3234,7 +3218,7 @@ class Manage {
 						$tpl_page .= ' checked';
 					}
 					$tpl_page .= ' />
-					<div class="desc">'. _gettext('If set to yes, a catalog.html file will be built with the other files, displaying the original picture of every thread in a box. This will only work on normal/oekaki imageboards.') .' '. _gettext('Default') .': <strong>'. _gettext('Yes') .'</strong></div><br />';
+					<div class="desc">'. _gettext('If set to yes, a catalog.html file will be built with the other files, displaying the original picture of every thread in a box. This will only work on normal imageboards.') .' '. _gettext('Default') .': <strong>'. _gettext('Yes') .'</strong></div><br />';
 
 					/* Enable "no file" posting */
 					$tpl_page .= '<label for="enablenofile">'. _gettext('Enable \'no file\' posting') .':</label>
@@ -3397,17 +3381,17 @@ class Manage {
 							management_addlogentry(_gettext('Updated board configuration') . " - /" . $_GET['updateboard'] . "/", 4);
 						}
 						else $tpl_page .= _gettext('Sorry, a generic error has occurred.');
-					} 
+					}
 					else {
 						$tpl_page .= _gettext('Sorry, a generic error has occurred.');
-					} 
+					}
 				}
 				else {
 					$tpl_page .= _gettext('Integer values must be entered correctly.');
 				}
-				
 
-			} 
+
+			}
 			else {
 				$tpl_page .= _gettext('Unable to locate a board named') . ' <strong>'. $_GET['updateboard'] . '</strong>.';
 			}
@@ -3755,7 +3739,7 @@ class Manage {
 									$moved = move_uploaded_file($file['tmp_name'], $internal_pathprefix.$path);
 									if($moved) $filequery = "`path`='".$path."', ";
 									else $err = array('type'=>'error', 'msg'=>_gettext('File transfer failure.'));
-								}								
+								}
 								if(!isset($err)) {
 									$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "banners` SET ".$filequery."`version`=`version`+1, `link`='".$link."' WHERE `custom`='1' AND `id`='".$custom."'");
 									$msg = array('type'=>'success', 'msg'=>_gettext('Updated custom banner').' #'.$custom);
@@ -3776,7 +3760,7 @@ class Manage {
 			else $msg = array('type'=>'error', 'msg'=>_gettext('Wrong request.'));
 		}
 		elseif($valid_error != 'noerror') $msg = array('type'=>'error','msg'=> _gettext('Validation error(s)').': '.$valid_error);
-		
+
 		// ------------------------------------------- DISPLAYING AFTERMSG -------------------------------------------
 		if(isset($msg)) {
 			if($msg['type'] == 'success') {
@@ -3791,7 +3775,7 @@ class Manage {
 		$boards = $this->BoardList($_SESSION['manageusername']);
 		//Fetch board banners
 		$board_banners = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "banners` WHERE `custom`='0'");
-		//Fetch cistom banners 
+		//Fetch cistom banners
 		if($this->CurrentUserIsAdministrator()) {
 			$custom_banners = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "banners` WHERE `custom`='1'");
 			$l_b = _gettext('Link');
@@ -3805,7 +3789,7 @@ class Manage {
 			if(count($boards) > 0) {
 				$tpl_page .= '<h1>'._gettext('Banners of boards').'</h1><br />';
 				//transform board_banners into 'key'=>value array "$bb_kv"
-				foreach($board_banners as $banner) {	
+				foreach($board_banners as $banner) {
 					$bb_kv[$banner['link']]= array('path'=>$banner['path'], 'version'=>$banner['version']);
 				}
 				//Now display the board banners subtable.
@@ -3870,7 +3854,7 @@ class Manage {
 						<input type="button" value="'._gettext('Cancel').'" class="unedit" /><br />
 						<input type="submit" name="edit"/></div></div></div></form></div>';
 				}
-			}					
+			}
 		}
 		else {
 			$tpl_page .= _gettext('You have no boards.');
@@ -4346,7 +4330,7 @@ class Manage {
 	/* Addition, modification, deletion, and viewing of bans */
 	function bans() {
 		global $tc_db, $tpl_page, $bans_class;
-		
+
 		$this->ModeratorsOnly();
 		$reason = KU_BANREASON;
 		$ban_ip = ''; $ban_hash = ''; $ban_parentid = 0; $multiban = Array();
@@ -4442,7 +4426,7 @@ class Manage {
 				}
 				$ban_ip = ($instantban) ? $ban_ip : $_POST['ip'];
 				$ban_duration = ($_POST['seconds'] == 0 || $instantban) ? 0 : $_POST['seconds'];
-				
+
 				$ban_reason = ($instantban) ? $ban_reason : $_POST['reason'];
 				$ban_note = ($instantban) ? '' : $_POST['staffnote'];
 				$ban_appealat = 0;
@@ -4452,7 +4436,7 @@ class Manage {
 				}
 				if (isset($_POST['multiban']))
 					$ban_ips = unserialize($_POST['multiban']);
-				else 
+				else
 					$ban_ips = Array($ban_ip);
 				$i = 0;
 				foreach ($ban_ips as $ban_ip) {
@@ -4470,7 +4454,7 @@ class Manage {
 							else
 								$postids = unserialize($_POST['quickmultibanpostid']);
 							$results = $tc_db->GetAll("SELECT HIGH_PRIORITY `parentid`, `message` FROM `".KU_DBPREFIX."posts` WHERE `boardid` = " . $tc_db->qstr($ban_board_id) . " AND `id` = ".$tc_db->qstr($postids[$i])." LIMIT 1");
-								
+
 							foreach($results AS $line) {
 								$tc_db->Execute("UPDATE `".KU_DBPREFIX."posts` SET `message` = ".$tc_db->qstr($line['message'] . $ban_msg)." WHERE `boardid` = " . $tc_db->qstr($ban_board_id) . " AND `id` = ".$tc_db->qstr($postids[$i]));
 								clearPostCache($postids[$i], $ban_board_id);
@@ -4602,7 +4586,7 @@ class Manage {
 			<select name="type" id="type"><option value="0">'. _gettext('Single IP') . '</option><option value="1">'. _gettext('IP Range') . '</option><option value="2">'. _gettext('Whitelist') . '</option></select>
 			<div class="desc">'. _gettext('The type of ban. A single IP can be banned by providing the full address. A whitelist ban prevents that IP from being banned. An IP range can be banned by providing the IP range you would like to ban, in this format: 123.123.12') . '</div><br />';
 		}
-		
+
 		if ($isquickban && KU_BANMSG != '') {
 			$tpl_page .= '<label for="addbanmsg">'. _gettext('Add ban message') . ':</label>
 			<input type="checkbox" name="addbanmsg" id="addbanmsg" checked="checked" />
@@ -4886,7 +4870,7 @@ class Manage {
 				else
 					$ips = Array($_POST['ip']);
 				foreach  ($ips as $ip) {
-					$i = 0;				
+					$i = 0;
 					$post_list = $tc_db->GetAll("SELECT `id`, `boardid` FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` IN (" . $board_ids . ") AND `IS_DELETED` = '0' AND `ipmd5` = '" . md5($ip) . "'");
 					if (count($post_list) > 0) {
 						foreach ($post_list as $post) {
@@ -5279,7 +5263,7 @@ class Manage {
 				file_put_contents(KU_ROOTDIR . $_GET['updateboard']. '/spam.txt', $_POST['spam']);
 				management_addlogentry(_gettext('Updated spam list') . " - /" . $_GET['updateboard'] . "/", 4);
 				$tpl_page .= '<hr />'. _gettext('Spam.txt successfully edited.') .'<hr />';
-			} 
+			}
 			else {
 				$tpl_page .= _gettext('Unable to locate a board named') . ' <strong>'. $_GET['updateboard'] . '</strong>.';
 			}
@@ -5295,8 +5279,8 @@ class Manage {
 				$tpl_page .= '<p>Доска: '. $_POST['board'] . '</p>' . "\n" .
 					'<p><b>PROTIP: </b>'._gettext("You don't have to include all variations of the word since it's done autamatically.").'</p>'.
 					'<form action="?action=spam&updateboard=' . $_POST['board'] . '" method="post">'. "\n" .
-          			'<input type="hidden" name="token" value="' . $_SESSION['token'] . '" />' . "\n" . 
-          			'<input type="hidden" name="updateboard" value="' . $_POST['board'] . '" />' . "\n" . 
+          			'<input type="hidden" name="token" value="' . $_SESSION['token'] . '" />' . "\n" .
+          			'<input type="hidden" name="updateboard" value="' . $_POST['board'] . '" />' . "\n" .
 					'<textarea name="spam" rows="25" cols="80">' . $content . '</textarea><br />' . "\n" .
 					'<input type="submit" value="'. _gettext('Submit') .'" />'. "\n" .
 					'</form>'. "\n";

@@ -120,17 +120,10 @@ function boardid_to_dir($boardid) {
 /**
  * Calculate the number of pages which will be needed for the supplied number of posts
  *
- * @param integer $boardtype Board type
  * @param integer $numposts Number of posts
  * @return integer Number of pages required
  */
-function calculatenumpages($boardtype, $numposts) {
-	if ($boardtype==1) {
-		return (floor($numposts/KU_THREADSTXT));
-	} elseif ($boardtype==3) {
-		return (floor($numposts/30));
-	}
-
+function calculatenumpages($numposts) {
 	return (floor($numposts/KU_THREADS));
 }
 ?>

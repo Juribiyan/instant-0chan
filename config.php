@@ -138,10 +138,6 @@ if (!$cache_loaded) {
 		$cf['KU_STYLESWITCHER'] = true; // Whether or not to display the different styles in a clickable switcher at the top of the board
 		$cf['KU_DROPSWITCHER']	= false; // Whether or not to use a dropdown style switcher. False is use plaintext switcher, true is dropdown.
 
-		$cf['KU_TXTSTYLES']        = 'futatxt:buritxt'; // Styles which are available to be used for the boards, separated by colons, in lower case
-		$cf['KU_DEFAULTTXTSTYLE']  = 'futatxt'; // If Default is selected in the style list in board options, it will use this style.  Should be lower case
-		$cf['KU_TXTSTYLESWITCHER'] = true; // Whether or not to display the different styles in a clickable switcher at the top of the board
-
 		$cf['KU_MENUTYPE']          = 'normal'; // Type of display for the menu.  normal will add the menu styles and such as it normally would, plain will not use the styles, and will look rather boring
 		$cf['KU_MENUSTYLES']        = 'summer:winter:autumn:photon:modern:dark:newdark'; // Menu styles
 		$cf['KU_DEFAULTMENUSTYLE']  = 'autumn'; // Default menu style
@@ -171,7 +167,6 @@ if (!$cache_loaded) {
 
 	// Post display
 		$cf['KU_THREADS']         = 10; // Number of threads to display on a board page
-		$cf['KU_THREADSTXT']      = 15; // Number of threads to display on a text board front page
 		$cf['KU_REPLIES']         = 5; // Number of replies to display on a board page
 		$cf['KU_REPLIESSTICKY']   = 1; // Number of replies to display on a board page when a thread is stickied
 		$cf['KU_THUMBMSG']        = false; // Whether or not to display the "Thumbnail displayed, click image for full size." message on posts with images

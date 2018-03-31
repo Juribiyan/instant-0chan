@@ -37,10 +37,7 @@ class Upload {
 	var $isreply			= false;
 
 	function HandleUpload() {
-		global $tc_db, $board_class, $is_oekaki, $oekaki;
-
-		if (!$is_oekaki) {
-			if ($board_class->board['type'] == 0 || $board_class->board['type'] == 2 || $board_class->board['type'] == 3) {
+		global $tc_db, $board_class;
 				$imagefile_name = isset($_FILES['imagefile']) ? $_FILES['imagefile']['name'] : '';
 				if ($imagefile_name != '') {
 					if (strpos($_FILES['imagefile']['name'], ',') != false) {
@@ -124,7 +121,7 @@ class Upload {
 					$exists_thread = checkMd5($this->file_md5, $board_class->board['name'], $board_class->board['id']);
 					if (is_array($exists_thread)) {
 						$exists_url = KU_BOARDSPATH . '/' . $board_class->board['name'] . '/res/' . $exists_thread[0] . '.html#' . $exists_thread[1];
-						exitWithErrorPage(_gettext('Duplicate file entry detected.'), 
+						exitWithErrorPage(_gettext('Duplicate file entry detected.'),
 							sprintf(_gettext('Already posted %shere%s.'),'<a target="_blank" href="' . $exists_url . '">','</a>'), 'duplicate_file');
 					}
 
@@ -133,7 +130,7 @@ class Upload {
 						$svg = new Svg($_FILES['imagefile']['tmp_name']);
 						$this->imgWidth = $svg->width;
 						$this->imgHeight = $svg->height;
-					} 
+					}
 					elseif($this->file_type == '.webm') {
 						$webminfo = $pass;
 						$this->imgWidth = $webminfo['width'];
@@ -144,7 +141,7 @@ class Upload {
 						$this->imgWidth = $imageDim[0];
 						$this->imgHeight = $imageDim[1];
 					}
-					
+
 					$this->file_size = $_FILES['imagefile']['size'];
 
 					$filetype_forcethumb = $tc_db->GetOne("SELECT " . KU_DBPREFIX . "filetypes.force_thumb FROM " . KU_DBPREFIX . "boards, " . KU_DBPREFIX . "filetypes, " . KU_DBPREFIX . "board_filetypes WHERE " . KU_DBPREFIX . "boards.id = " . KU_DBPREFIX . "board_filetypes.boardid AND " . KU_DBPREFIX . "filetypes.id = " . KU_DBPREFIX . "board_filetypes.typeid AND " . KU_DBPREFIX . "boards.name = '" . $board_class->board['name'] . "' and " . KU_DBPREFIX . "filetypes.filetype = '" . substr($this->file_type, 1) . "';");
@@ -234,7 +231,7 @@ class Upload {
               if($this->file_type == '.css') {
 								$this->file_name = htmlspecialchars_decode($this->file_name, ENT_QUOTES);
 								$this->file_name = stripslashes($this->file_name);
-								$this->file_name = str_replace("\x80", " ", $this->file_name);					
+								$this->file_name = str_replace("\x80", " ", $this->file_name);
 								$this->file_name = str_replace(' ', '_', $this->file_name);
 								$this->file_name = str_replace('#', '(number)', $this->file_name);
 								$this->file_name = str_replace('@', '(at)', $this->file_name);
@@ -263,12 +260,12 @@ class Upload {
 							/* Otherwise, use this script alone */
 							} else {
 								$this->file_location = KU_BOARDSDIR . $board_class->board['name'] . '/src/' . $this->file_name . $this->file_type;
-								
+
 								if (file_exists($this->file_location)) {
 									exitWithErrorPage(_gettext('A file by that name already exists'));
 									die();
 								}
-								
+
 								if($this->file_type == '.mp3' || $this->file_type == '.ogg') {
 									require_once(KU_ROOTDIR . 'lib/getid3/getid3.php');
 
@@ -403,59 +400,7 @@ class Upload {
 						}
 					}
 				}
-			}
-		} else {
-			$this->file_name = time() . mt_rand(1, 99);
-			$this->original_file_name = $this->file_name;
-			$this->file_md5 = md5_file($oekaki);
-			$this->file_type = '.png';
-			$this->file_size = filesize($oekaki);
-			$imageDim = getimagesize($oekaki);
-			$this->imgWidth = $imageDim[0];
-			$this->imgHeight = $imageDim[1];
-
-			if (!copy($oekaki, KU_BOARDSDIR . $board_class->board['name'] . '/src/' . $this->file_name . $this->file_type)) {
-				exitWithErrorPage(_gettext('Could not copy uploaded image.'));
-			}
-
-			$oekaki_animation = substr($oekaki, 0, -4) . '.pch';
-			if (file_exists($oekaki_animation)) {
-				if (!copy($oekaki_animation, KU_BOARDSDIR . $board_class->board['name'] . '/src/' . $this->file_name . '.pch')) {
-					exitWithErrorPage(_gettext('Could not copy animation.'));
-				}
-				unlink($oekaki_animation);
-			}
-
-			$thumbpath = KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $this->file_name . 's' . $this->file_type;
-			$thumbpath_cat = KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $this->file_name . 'c' . $this->file_type;
-			if (
-				(!$this->isreply && ($this->imgWidth > KU_THUMBWIDTH || $this->imgHeight > KU_THUMBHEIGHT)) ||
-				($this->isreply && ($this->imgWidth > KU_REPLYTHUMBWIDTH || $this->imgHeight > KU_REPLYTHUMBHEIGHT))
-			) {
-				if (!$this->isreply) {
-					if (!createThumbnail($oekaki, $thumbpath, KU_THUMBWIDTH, KU_THUMBHEIGHT)) {
-						exitWithErrorPage(_gettext('Could not create thumbnail.'));
-					}
-				} else {
-					if (!createThumbnail($oekaki, $thumbpath, KU_REPLYTHUMBWIDTH, KU_REPLYTHUMBHEIGHT)) {
-						exitWithErrorPage(_gettext('Could not create thumbnail.'));
-					}
-				}
-			} else {
-				if (!createThumbnail($oekaki, $thumbpath, $this->imgWidth, $this->imgHeight)) {
-					exitWithErrorPage(_gettext('Could not create thumbnail.'));
-				}
-			}
-			if (!createThumbnail($oekaki, $thumbpath_cat, KU_CATTHUMBWIDTH, KU_CATTHUMBHEIGHT)) {
-				exitWithErrorPage(_gettext('Could not create thumbnail.'));
-			}
-
-			$imgDim_thumb = getimagesize($thumbpath);
-			$this->imgWidth_thumb = $imgDim_thumb[0];
-			$this->imgHeight_thumb = $imgDim_thumb[1];
-			unlink($oekaki);
 		}
-	}
 
 	function webmCheck($filepath) {
     if(KU_FFMPEGPATH) putenv('PATH=' . KU_FFMPEGPATH . PATH_SEPARATOR . getenv('PATH'));
@@ -485,13 +430,12 @@ class Upload {
     if($x !== 0) return false;
 		preg_match('/Output[\s\S]+?(\d+)x(\d+)[\s\S]+?(\d+)x(\d+)/m', implode('<br>', $result), $ths);
 		if(count($ths) == 5) return array(
-			'thumbwidth' => $ths[1], 
-			'thumbheight' => $ths[2], 
-			'catthumbwidth' => $ths[3], 
+			'thumbwidth' => $ths[1],
+			'thumbheight' => $ths[2],
+			'catthumbwidth' => $ths[3],
 			'catthumbheight' => $ths[4]
 		);
 		else return false;
 	}
-
 }
 ?>

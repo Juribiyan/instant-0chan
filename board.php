@@ -55,20 +55,20 @@ $posting_class = new Posting();
 function notify($id="???", $newthreadid = '') {
 	$cl20 = new Cloud20();
 	$cl20->rebuild();
-	
+
 	if(KU_LIVEUPD_ENA) {
-		$data_string = json_encode(array('srvtoken' => KU_LIVEUPD_SRVTOKEN, 'room' => $id, 'clitoken' => $_POST['token'], 'timestamp' => time(), 'newthreadid' => $newthreadid ));                                                                            
+		$data_string = json_encode(array('srvtoken' => KU_LIVEUPD_SRVTOKEN, 'room' => $id, 'clitoken' => $_POST['token'], 'timestamp' => time(), 'newthreadid' => $newthreadid ));
 		$suckTo = KU_LIVEUPD_SITENAME ? KU_LOCAL_LIVEUPD_API.'/qr/'.KU_LIVEUPD_SITENAME : KU_LOCAL_LIVEUPD_API;
-		$ch = curl_init($suckTo);                                                                      
+		$ch = curl_init($suckTo);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-		curl_setopt($ch, CURLOPT_PROXY, "");    
-		curl_setopt($ch, CURLOPT_TIMEOUT, 0.5);                                                                      
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);                                                                  
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                      
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array(                                                                          
-		    'Content-Type: application/json',                                                                                
-		    'Content-Length: ' . strlen($data_string))                                                                       
-		);  
+		curl_setopt($ch, CURLOPT_PROXY, "");
+		curl_setopt($ch, CURLOPT_TIMEOUT, 0.5);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		    'Content-Type: application/json',
+		    'Content-Length: ' . strlen($data_string))
+		);
 		curl_exec($ch);
 		if(curl_errno($ch)) error_log('Curl error during Notify: ' . curl_error($ch).' (Error code: '.curl_errno($ch).')');
 	}
@@ -159,14 +159,11 @@ if ($ban_result && is_array($ban_result) && $_POST['AJAX']) {
 }
 
 // }}}
-
-$oekaki = $posting_class->CheckOekaki();
-$is_oekaki = empty($oekaki) ? false : true;
 /* Ensure that UTF-8 is used on some of the post variables */
 $posting_class->UTF8Strings();
 
 /* Check if the user sent a valid post (image for thread, image/message for reply, etc) */
-if ($posting_class->CheckValidPost($is_oekaki)) {
+if ($posting_class->CheckValidPost()) {
 	$tc_db->Execute("START TRANSACTION");
 	$posting_class->CheckReplyTime();
 	if($_POST['replythread'] == 0) $posting_class->CheckNewThreadTime();
@@ -180,7 +177,7 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 	if ($post_isreply) {
 		list($thread_replies, $thread_locked, $thread_replyto) = $posting_class->GetThreadInfo($_POST['replythread']);
 	} else {
-		if ($board_class->board['type'] != 1 && (($board_class->board['uploadtype'] == '1' || $board_class->board['uploadtype'] == '2') && $board_class->board['embeds_allowed'] != '')) {
+		if ((($board_class->board['uploadtype'] == '1' || $board_class->board['uploadtype'] == '2') && $board_class->board['embeds_allowed'] != '')) {
 			if (isset($_POST['embed'])) {
 				if ($_POST['embed'] == '') {
 					if (($board_class->board['uploadtype'] == '1' && $imagefile_name == '') || $board_class->board['uploadtype'] == '2') {
@@ -200,13 +197,7 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 	list($post_name, $post_email, $post_subject, $post_tag) = $posting_class->GetFields();
 	$post_password = isset($_POST['postpassword']) ? $_POST['postpassword'] : '';
 
-	if ($board_class->board['type'] == 1) {
-		if ($post_isreply) {
-			$post_subject = '';
-		} else {
-			$posting_class->CheckNotDuplicateSubject($post_subject);
-		}
-	}
+//	$posting_class->CheckNotDuplicateSubject($post_subject);
 
 	list($user_authority, $flags) = $posting_class->GetUserAuthority();
 
@@ -242,8 +233,8 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 			// Don't let the user post
 			exitWithErrorPage(_gettext('Sorry, this thread is locked and can not be replied to.'));
 		}
-		
-		$post_message = $parse_class->ParsePost($_POST['message'], $board_class->board['name'], $board_class->board['type'], $thread_replyto, $board_class->board['id'], false, $ua, $dice, $ipmd5);
+
+		$post_message = $parse_class->ParsePost($_POST['message'], $board_class->board['name'], $thread_replyto, $board_class->board['id'], false, $ua, $dice, $ipmd5);
 	// Or, if they are a moderator/administrator...
 	} else {
 		// If they checked the D checkbox, set the variable to tell the script to display their staff status (Admin/Mod) on the post during insertion
@@ -256,7 +247,7 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 			$post_message = $_POST['message'];
 		// Otherwise, parse it as usual...
 		} else {
-			$post_message = $parse_class->ParsePost($_POST['message'], $board_class->board['name'], $board_class->board['type'], $thread_replyto, $board_class->board['id'], false, $ua, $dice, $ipmd5);
+			$post_message = $parse_class->ParsePost($_POST['message'], $board_class->board['name'], $thread_replyto, $board_class->board['id'], false, $ua, $dice, $ipmd5);
 			// (Moved) check against blacklist and detect flood
 		}
 
@@ -282,11 +273,11 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 	$post_tag = $posting_class->GetPostTag();
 
 	if ($post_isreply) {
-		if ($imagefile_name == '' && !$is_oekaki && $post_message == '' && $_POST['embed'] == '') {
+		if ($imagefile_name == '' && $post_message == '' && $_POST['embed'] == '') {
 			exitWithErrorPage(_gettext('An image, video, or message, is required for a reply.'));
 		}
 	} else {
-		if ($imagefile_name == '' && !$is_oekaki && ((!isset($_POST['nofile'])&&$board_class->board['enablenofile']==1) || $board_class->board['enablenofile']==0) && ($board_class->board['type'] == 0 || $board_class->board['type'] == 2 || $board_class->board['type'] == 3)) {
+		if ($imagefile_name == '' && ((!isset($_POST['nofile'])&&$board_class->board['enablenofile']==1) || $board_class->board['enablenofile']==0)) {
 			if (!isset($_POST['embed']) && $board_class->board['uploadtype'] != 1) {
 				exitWithErrorPage(_gettext('A file is required for a new thread. If embedding is allowed, either a file or embed ID is required.'));
 			}
@@ -299,10 +290,6 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 		}
 	}
 
-	if ($board_class->board['type'] == 1 && !$post_isreply && $post_subject == '') {
-		exitWithErrorPage('A subject is required to make a new thread.');
-	}
-
 	if ($board_class->board['locked'] == 0 || ($user_authority > 0 && $user_authority != 3)) {
 		require_once KU_ROOTDIR . 'inc/classes/upload.class.php';
 		$upload_class = new Upload();
@@ -311,7 +298,9 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 		}
 
 		if ((!isset($_POST['nofile']) && $board_class->board['enablenofile'] == 1) || $board_class->board['enablenofile'] == 0) {
-			$upload_class->HandleUpload();
+			if (isset($_FILES['imagefile'])) {
+				$upload_class->HandleUpload();
+			}
 		}
 
 		if ($board_class->board['forcedanon'] == '1') {
@@ -385,17 +374,11 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 
 			$post = hook_process('posting', $post);
 
-			if ($is_oekaki) {
-				if (file_exists(KU_BOARDSDIR . $board_class->board['name'] . '/src/' . $upload_class->file_name . '.pch')) {
-					$post['message'] .= '<br /><small><a href="' . KU_CGIPATH . '/animation.php?board=' . $board_class->board['name'] . '&amp;id=' . $upload_class->file_name . '">' . _gettext('View animation') . '</a></small>';
-				}
-			}
-
 			// Emoji registration →
 			if (I0_USERSMILES_ENABLED) {
 				preg_match('/\/reg(?:emoji|smiley?) :?([0-9a-z]{3,20}):?/i', $post['message'], $re_match);
 				if (
-					($upload_class->file_type==".png" || $upload_class->file_type==".gif") 
+					($upload_class->file_type==".png" || $upload_class->file_type==".gif")
 					&& count($re_match)
 				) {
 					$emoji_name = strtolower($re_match[1]);
@@ -404,12 +387,12 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 					foreach(array('.gif','.png') as $extension) {
 						if(file_exists(KU_ROOTDIR.I0_SMILEDIR.$matches[1].$extension))	 {
 							$exists = true;
-							break; 
+							break;
 						}
 					}
 					if (!$exists) {
-						$src = KU_BOARDSDIR . $board_class->board['name'] . 
-						(($upload_class->imgWidth <= 50 && $upload_class->imgHeight <= 50) 
+						$src = KU_BOARDSDIR . $board_class->board['name'] .
+						(($upload_class->imgWidth <= 50 && $upload_class->imgHeight <= 50)
 							? ('/src/' . $upload_class->file_name)
 							: ('/thumb/' . $upload_class->file_name . 'c')
 						) . $upload_class->file_type;
@@ -464,7 +447,7 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 		if ($thread_replyto != '0') {
 			$threads = $tc_db->GetAll("SELECT `id` FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $board_class->board['id'] . " AND `parentid` = 0 AND `IS_DELETED` = 0 ORDER BY `stickied` DESC, `bumped` DESC");
 			$total_threads = count($threads);
-			for ($i=0; $i < $total_threads; $i++) { 
+			for ($i=0; $i < $total_threads; $i++) {
 				$current_page = floor($i / KU_THREADS);
 				if ($threads[$i]['id'] == $thread_replyto) {
 					$startpage = $current_page;
@@ -494,7 +477,7 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 
 		// Regenerate board pages
 		$board_class->RegeneratePages($startpage, strtolower($_POST['em']) != 'sage' ? 'up' : 'single');
-		
+
 		if ($thread_replyto == '0') {
 			// Regenerate the thread
 			$board_class->RegenerateThreads($post_id);
@@ -510,9 +493,9 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 } elseif ((isset($_POST['deletepost']) || isset($_POST['reportpost']) || isset($_POST['moddelete'])) && isset($_POST['post'])) {
 	$ismod = false;
 
-	if ($_POST['AJAX']) 
+	if ($_POST['AJAX'])
 		$posts_affected = array();
-	
+
 	// Initialize the post class
 	foreach ($_POST['post'] as $val) {
 		$post_class = new Post($val, $board_class->board['name'], $board_class->board['id']);
@@ -584,9 +567,6 @@ if ($posting_class->CheckValidPost($is_oekaki)) {
 		)));
 	else
 		do_redirect(KU_BOARDSPATH . '/' . $board_class->board['name'] . '/');
-	die();
-} elseif (isset($_GET['postoek'])) {
-	$board_class->OekakiHeader($_GET['replyto'], $_GET['postoek']);
 	die();
 } else {
 	error_redirect(KU_BOARDSPATH . '/' . $board_class->board['name'] . '/', _gettext('Unspecified action'));

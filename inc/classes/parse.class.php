@@ -5,21 +5,20 @@
 */
 
 class Parse {
-	var $boardtype;
 	var $parentid;
 	var $id;
 	var $boardid;
 
-	
+
 	function urlcallback($matches) {
-		return '<a target="_blank" rel="nofollow" href="'.$matches[1].$matches[2].'">'.$matches[1].urldecode($matches[2]).'</a>'; 
+		return '<a target="_blank" rel="nofollow" href="'.$matches[1].$matches[2].'">'.$matches[1].urldecode($matches[2]).'</a>';
 	}
 
 	function exturlcallback($matches) {
 		$text = strtr(urldecode($matches[1]), array('/' => '&#47;'));
-		return '<a target="_blank" rel="nofollow" href="'.$matches[2].$matches[3].'">'.$text.'</a>'; 
+		return '<a target="_blank" rel="nofollow" href="'.$matches[2].$matches[3].'">'.$text.'</a>';
 	}
-	
+
 	function MakeClickable($txt) {
 		$txt = preg_replace_callback('#«([^«»]*)»:(http://|https://|ftp://)([^(\s<|\[)]+(?:\([\w\d]+\)|([^[:punct:]«»\s]|/)))#u',array(&$this, 'exturlcallback'),$txt);
 		$txt = preg_replace_callback('#(?<!href=")((?:http:|https:|ftp:)\/\/)([^(\s<|\[)]+(?:\([\w\d]+\)|([^[:punct:]«»\s]|\/)))#',array(&$this, 'urlcallback'),$txt);
@@ -35,33 +34,33 @@ class Parse {
 	$string = preg_replace_callback('`((?:(?:(?:[+\#] )(?:[^\r\n]+))[\r\n]*)?(?:(?:(?:^[+\#] )(?:[^\r\n]+))[\r\n]*)+)`m', array(&$this, 'number_list'), $string);
 
 		$patterns = array(
-      '`\*\*(.+?)\*\*`is', 
-      '`\*(.+?)\*`is', 
-      '`%%(.+?)%%`is', 
-      '`\[b\](.+?)\[/b\]`is', 
-      '`\[i\](.+?)\[/i\]`is', 
-      '`\[u\](.+?)\[/u\]`is', 
-      '`\[s\](.+?)\[/s\]`is', 
+      '`\*\*(.+?)\*\*`is',
+      '`\*(.+?)\*`is',
+      '`%%(.+?)%%`is',
+      '`\[b\](.+?)\[/b\]`is',
+      '`\[i\](.+?)\[/i\]`is',
+      '`\[u\](.+?)\[/u\]`is',
+      '`\[s\](.+?)\[/s\]`is',
       '`~~(.+?)~~`is',
-      '`\[aa\](.+?)\[/aa\]`is', 
-      '`\[spoiler\](.+?)\[/spoiler\]`is', 
-      '`\[lination\](.+?)\[/lination\]`is', 
+      '`\[aa\](.+?)\[/aa\]`is',
+      '`\[spoiler\](.+?)\[/spoiler\]`is',
+      '`\[lination\](.+?)\[/lination\]`is',
       '`\[caps\](.+?)\[/caps\]`is',
       '`&quot;(.+?)&quot;`is',
       '#`(.+?)`#',
       '`&gt;(.+?)&lt;`'
       );
     $replaces =  array(
-      '<b>\\1</b>', 
+      '<b>\\1</b>',
       '<i>\\1</i>',
-      '<span class="spoiler">\\1</span>', 
-      '<b>\\1</b>', 
-      '<i>\\1</i>', 
-      '<span style="border-bottom: 1px solid">\\1</span>', 
-      '<strike>\\1</strike>', 
-      '<strike>\\1</strike>', 
-      '<span style="font-family: Mona,\'MS PGothic\' !important;">\\1</span>', 
-      '<span class="spoiler">\\1</span>', 
+      '<span class="spoiler">\\1</span>',
+      '<b>\\1</b>',
+      '<i>\\1</i>',
+      '<span style="border-bottom: 1px solid">\\1</span>',
+      '<strike>\\1</strike>',
+      '<strike>\\1</strike>',
+      '<span style="font-family: Mona,\'MS PGothic\' !important;">\\1</span>',
+      '<span class="spoiler">\\1</span>',
       '<table class="lination"><tr><td><img src="/images/lina.png"></td><td><div class="bubble">\\1</div></td></tr></table>',
       '<span style="text-transform: uppercase;">\\1</span>',
       '«\\1»',
@@ -114,28 +113,28 @@ class Parse {
 		. $rn1 . ',' . $rn2 . ',' . $rn3 . '); color:rgb('
 		. (255 - $rn1) . ',' . (255 - $rn2) . ',' . (255 - $rn3) . ');">'
 		. $matches[1] .
-		'</span>'; 
-		
+		'</span>';
+
 		return $return;
 	}
-	
+
 	function code_callback($matches) {
 		$matches[1]=str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $matches[1]);
 		$tr = array( "["=>"&#91;", "]"=>"&#93;", "*"=>"&#42;", "%"=>"&#37;", "/"=>"&#47;", "&quot;"=>"&#34;", "-"=>"&#45;", ":"=>"&#58;", " "=>"&nbsp;", "#"=>"&#35;", "~"=>"&#126;",  "&#039;"=>"'", "&apos;"=>"'", "`"=>'&#96;', "&gt;"=>"&#62;", "&lt;"=>"&#60;" );
-		$return = '<pre class="prettyprint">'.  strtr($matches[1],$tr) . '</pre>'; 
+		$return = '<pre class="prettyprint">'.  strtr($matches[1],$tr) . '</pre>';
 		return $return;
 	}
 
 	function inline_code_callback($matches) {
 		$matches[1]=str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $matches[1]);
 		$tr = array( "["=>"&#91;", "]"=>"&#93;", "*"=>"&#42;", "%"=>"&#37;", "/"=>"&#47;", "&quot;"=>"&#34;", "-"=>"&#45;", ":"=>"&#58;", " "=>"&nbsp;", "#"=>"&#35;", "~"=>"&#126;",  "&#039;"=>"'", "&apos;"=>"'", "&gt;"=>"&#62;", "&lt;"=>"&#60;" );
-		$return = '<pre class="inline-pp prettyprint">' . strtr($matches[1],$tr) . '</pre>'; 
+		$return = '<pre class="inline-pp prettyprint">' . strtr($matches[1],$tr) . '</pre>';
 		return $return;
 	}
 
 	function Process_geshi($string) {
 		$geshi_langs = array("text", "abap", "actionscript", "actionscript3", "ada", "apache", "applescript", "apt_sources", "asm", "asp", "avisynth", "bash", "basic4gl", "bf", "blitzbasic", "bnf", "boo", "c", "c_mac", "caddcl", "cadlisp", "cfdg", "cfm", "cil", "cobol", "cpp-qt", "cpp", "csharp", "css", "d", "delphi", "diff", "div", "dos", "dot", "eiffel", "email", "fortran", "freebasic", "genero", "gettext", "glsl", "gml", "gnuplot", "groovy", "haskell", "hq9plus", "html4strict", "idl, ini", "inno", "intercal", "io", "java", "java5", "javascript", "kixtart", "klonec", "klonecpp", "latex", "lisp", "lolcode", "lotusformulas", "lotusscript", "lscript", "lua", "m68k", "make", "matlab", "mirc", "mpasm", "mxml", "mysql", "objc", "ocaml", "oobas", "oracle11", "oracle8", "pascal", "per", "perl", "php-brief", "php", "pic16", "pixelbender", "plsql", "povray", "powershell", "progress", "prolog", "python", "qbasic", "rails", "reg", "robots", "ruby", "sas", "scala", "scheme", "scilab", "sdlbasic", "smalltalk", "smarty", "sql", "tcl", "teraterm", "thinbasic", "tsql", "typoscript", "vb", "vbnet", "verilog", "vhdl", "vim", "visualfoxpro", "visualprolog", "whitespace", "winbatch", "xml", "xorg_conf", "xpp", "z80"); //all supported languages
-		
+
 		return preg_replace_callback('`\[code=('.implode('|', $geshi_langs).')\](.+?)\[/code\]`is', array(&$this, 'geshi_callback'), $string);
 	}
 
@@ -151,7 +150,7 @@ class Parse {
 	$tr = array( "["=>"&#91;", "]"=>"&#93;", "*"=>"&#42;", "%"=>"&#37;", "/"=>"&#47;", "&quot;"=>"&#34;", "-"=>"&#45;", ":"=>"&#58;");
 		$return = '<span lang="latex">'
 		. strtr($matches[1],$tr) .
-		'</span>'; 
+		'</span>';
 		return $return;
 	}
 
@@ -175,55 +174,45 @@ class Parse {
         "ц"=>"ts","ч"=>"ch","ш"=>"sh","щ"=>"sch","ъ"=>"y",
         "ы"=>"i", "ый"=>"i", "ь"=>"&#39;","э"=>"e","ю"=>"yu","я"=>"ya"
     );
-	
+
 	$return = '<span style="text-transform: uppercase; font-weight: bold;">'
 		. strtr($matches[1],$tr) .
 		'</span>';
 
-		return $return; 
+		return $return;
 	}
-	
-	function ColoredQuote($buffer, $boardtype) {
+
+	function ColoredQuote($buffer) {
 		/* Add a \n to keep regular expressions happy */
 		if (substr($buffer, -1, 1)!="\n") {
 			$buffer .= "\n";
 		}
-	
-		if ($boardtype==1) {
-			/* The css for text boards use 'quote' as the class for quotes */
-			$class = 'quote';
-			$linechar = '';
-		} else {
-			/* The css for imageboards use 'unkfunc' (???) as the class for quotes */
-			$class = 'unkfunc';
-			$linechar = "\n";
-		}
+
+		$class = 'unkfunc';
+		$linechar = "\n";
+
 		$buffer = preg_replace('/^(&gt;[^>](.*))\n/m', '<span class="'.$class.'">\\1</span>' . $linechar, $buffer);
-		/* Remove the > from the quoted line if it is a text board */
-		if ($boardtype==1) {
-			$buffer = str_replace('<span class="'.$class.'">&gt;', '<span class="'.$class.'">', $buffer);
-		}
-	
+
 		return $buffer;
 	}
-	
-	function ClickableQuote($buffer, $board, $boardtype, $parentid, $boardid, $ispage = false) {
+
+	function ClickableQuote($buffer, $board, $parentid, $boardid, $ispage = false) {
 		global $thread_board_return;
 		$thread_board_return = $board;
 		$thread_board_id = $boardid;
-		
+
 		/* Add html for links to posts in the board the post was made */
 		$buffer = preg_replace_callback('/&gt;&gt;([0-9]+)/', array(&$this, 'InterthreadQuoteCheck'), $buffer);
-		
+
 		/* Add html for links to posts made in a different board */
 		$buffer = preg_replace_callback('/&gt;&gt;\/(\S+)\/([0-9]+)/', array(&$this, 'InterboardQuoteCheck'), $buffer);
 
 		/* Add html for links to posts in the board the post was made */
 		$buffer = preg_replace_callback('/##([0-9]+|op|оп)##/i', array(&$this, 'InterthreadProofLabel'), $buffer);
-		
+
 		/* Add html for links to posts made in a different board */
 		$buffer = preg_replace_callback('/##\/(\S+)\/([0-9]+)##/', array(&$this, 'InterboardProofLabel'), $buffer);
-		
+
 		return $buffer;
 	}
 
@@ -231,7 +220,7 @@ class Parse {
 		global $tc_db, $ispage, $thread_board_return, $thread_board_id;
 
 		if(in_array(strtoupper($matches[1]), array('OP', 'ОП'))) $matches[1] = $this->parentid;
-		if ($this->boardtype != 1 && is_numeric($matches[1])) {
+		if (is_numeric($matches[1])) {
 			$result = $tc_db->GetAll("SELECT `parentid`, `ipmd5` FROM `".KU_DBPREFIX."posts` WHERE `boardid` = " . $this->boardid . " AND `id` = ".$tc_db->qstr($matches[1]));
 			if(count($result) > 0) {
 				$result = $result[0];
@@ -260,9 +249,9 @@ class Parse {
 
 				if ($result2['parentid'] == 0) {
 					$realid = $matches[2];
-				} 
+				}
 				else $realid = $result2['parentid'];
-				
+
 				if ($result[0]["type"] != 1) {
 					return '<a href="'.KU_BOARDSFOLDER.$matches[1].'/res/'.$realid.'.html#'.$matches[2].'" class="ref|' . $matches[1] . '|' . $realid . '|' . $matches[2] . ' prooflabel '.$proven.'">'.$matches[0].'</a>';
 				} else {
@@ -270,11 +259,11 @@ class Parse {
 				}
 			}
 			else return $matches[0];
-			
+
 		}
 		return $matches[0];
 	}
-	
+
 	function InterthreadQuoteCheck($matches) {
 		global $tc_db;
 
@@ -304,10 +293,10 @@ class Parse {
 		}
 		return '<a href="'.KU_BOARDSFOLDER.$path.'" class="ref|' . $matches[1] . '|' . $realid . '|' . $matches[2] . '">'.$matches[0].'</a>';
 	}
-	
+
 	function Wordfilter($buffer, $board) {
 		global $tc_db;
-		
+
 		$query = "SELECT * FROM `".KU_DBPREFIX."wordfilter`";
 		$results = $tc_db->GetAll($query);
 		foreach($results AS $line) {
@@ -315,11 +304,11 @@ class Parse {
 			if (in_array($board, $array_boards)) {
 				$replace_word = $line['word'];
 				$replace_replacedby = $line['replacedby'];
-				
+
 				$buffer = ($line['regex'] == 1) ? preg_replace($replace_word, $replace_replacedby, $buffer) : str_ireplace($replace_word, $replace_replacedby, $buffer);
 			}
 		}
-		
+
 		return $buffer;
 	}
 
@@ -330,7 +319,7 @@ class Parse {
 		$buffer_temp = str_replace("<br />", "", $buffer_temp);
 
 		$buffer_temp = str_replace(" ", "", $buffer_temp);
-		
+
 		if ($buffer_temp=="") {
 			return "";
 		} else {
@@ -341,36 +330,36 @@ class Parse {
 		$txt_split_primary = preg_split('/\n/', $txt);
 		$txt_processed = '';
 		$usemb = (function_exists('mb_substr') && function_exists('mb_strlen')) ? true : false;
-		
+
 		foreach ($txt_split_primary as $txt_split) {
 			$txt_split_secondary = preg_split('/ /', $txt_split);
-			
+
 			foreach ($txt_split_secondary as $txt_segment) {
 				$segment_length = ($usemb) ? mb_strlen($txt_segment) : strlen($txt_segment);
 				while ($segment_length > $where) {
 					if ($usemb) {
 						$txt_processed .= mb_substr($txt_segment, 0, $where) . "\n";
 						$txt_segment = mb_substr($txt_segment, $where);
-						
+
 						$segment_length = mb_strlen($txt_segment);
 					} else {
 						$txt_processed .= substr($txt_segment, 0, $where) . "\n";
 						$txt_segment = substr($txt_segment, $where);
-						
+
 						$segment_length = strlen($txt_segment);
 					}
 				}
-				
+
 				$txt_processed .= $txt_segment . ' ';
 			}
-			
+
 			$txt_processed = ($usemb) ? mb_substr($txt_processed, 0, -1) : substr($txt_processed, 0, -1);
 			$txt_processed .= "\n";
 		}
-		
+
 		return $txt_processed;
 	}
-	
+
 	function Smileys($string){
 		$string = preg_replace_callback('`:([0-9a-z]+?):`is', array(&$this, 'smiley_callback'), $string);
 		return $string;
@@ -381,11 +370,11 @@ class Parse {
 		foreach(array('.gif','.png') as $extension) {
 			if(file_exists(KU_ROOTDIR.I0_SMILEDIR.$matches[1].$extension))	 {
 				$src = KU_WEBPATH.'/'.I0_SMILEDIR.$matches[1].$extension;
-				break; 
+				break;
 			}
 		}
 		$return = ($src) ? '<img title="&colon;'.$matches[1].'&colon;" class="emoji" src="'.$src.'">': ':'.$matches[1].':';
-		return $return; 
+		return $return;
 	}
 
 	function dice($matches) {
@@ -414,12 +403,11 @@ class Parse {
 		return $ret;
 	}
 
-	function ParsePost($message, $board, $boardtype, $parentid, $boardid, $ispage = false, $useragent, $dice, $ipmd5) {
-		$this->boardtype = $boardtype;
+	function ParsePost($message, $board, $parentid, $boardid, $ispage = false, $useragent, $dice, $ipmd5) {
 		$this->parentid = $parentid;
-		$this->boardid = $boardid;	
+		$this->boardid = $boardid;
 		$this->boardname = $board;
-		$this->ipmd5 = $ipmd5;	
+		$this->ipmd5 = $ipmd5;
 		$message = trim($message);
 		if(KU_CUTPOSTS) {
 			$message = $this->CutWord($message, (KU_LINELENGTH / 15));
@@ -434,8 +422,8 @@ class Parse {
 			$message = $this->SaysThinks($message);
 		}
 
-		$message = $this->ClickableQuote($message, $board, $boardtype, $parentid, $boardid, $ispage);
-		$message = $this->ColoredQuote($message, $boardtype);
+		$message = $this->ClickableQuote($message, $board, $parentid, $boardid, $ispage);
+		$message = $this->ColoredQuote($message);
 
 		$message = str_replace("\n", '<br />', $message);
 		$message = preg_replace('#(<br(?: \/)?>\s*){3,}#i', '<br /><br />', $message);
@@ -445,14 +433,14 @@ class Parse {
 
 		if (KU_MAKELINKS) {
 			$message = $this->MakeClickable($message);
-		}		
+		}
 		$message = preg_replace('# - #is', '&nbsp;— ', $message);
 
 		if($useragent) $message = preg_replace('`##[uU]seragent##`im', '<span style="color:blue">'.$useragent.'</span>', $message);
 
 		if($dice) $message = preg_replace_callback('`##(\d{1})d(\d{1,3})([+-]\d{1,3})?##`m', array(&$this, 'dice'), $message);
 
-		if (I0_SMILES_ENABLED) $message = $this->Smileys($message); 
+		if (I0_SMILES_ENABLED) $message = $this->Smileys($message);
 
 		return $message;
 	}

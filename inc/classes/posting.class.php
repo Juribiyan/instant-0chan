@@ -20,20 +20,6 @@
  */
 class Posting {
 
-	function CheckOekaki() {
-		global $board_class;
-		/* If oekaki seems to be in the url... */
-		if (isset($_POST['oekaki'])) {
-			/* See if it checks out and is a valid oekaki id */
-			if ($_POST['oekaki'] != '' && is_file(KU_CGIDIR . 'kusabaoek/' . $_POST['oekaki'] . '.png') && $board_class->board['type'] == '2') {
-				/* Set the variable to tell the script it is handling an oekaki posting, and the oekaki file which will be posted */
-				return KU_CGIDIR . 'kusabaoek/' . $_POST['oekaki'] . '.png';
-			}
-		}
-
-		return '';
-	}
-
 	function CheckReplyTime() {
 		global $tc_db, $board_class;
 		/* Get the timestamp of the last time a reply was made by this IP address */
@@ -77,18 +63,13 @@ class Posting {
 		}
 	}
 
-	function CheckValidPost($is_oekaki) {
+	function CheckValidPost() {
 		global $tc_db, $board_class;
 
 		if (
 			( /* A message is set, or an image was provided */
 				isset($_POST['message']) ||
 				isset($_FILES['imagefile'])
-			) || /* It is a validated oekaki posting */
-			$is_oekaki ||
-			( /* It is a text board, meaning only a message is required */
-				$board_class->board['type'] == '1' &&
-				isset($_POST['message'])
 			) || (
 				( /* It has embedding allowed */
 						$board_class->board['uploadtype'] == '1' ||
@@ -133,7 +114,7 @@ class Posting {
 			if ($_SESSION['security_code'] != mb_strtoupper($_POST['captcha']) || empty($_SESSION['security_code'])) {
 				/* Kill the script, stopping the posting process */
 				exitWithErrorPage(_gettext('Incorrect captcha entered.'));
-			} 
+			}
 		}
 		unset($_SESSION['security_code']);
 	}
@@ -143,27 +124,18 @@ class Posting {
 
 		/* If the board has captcha's enabled... */
 		if ($board_class->board['enablecaptcha'] == 1) {
-			if ($board_class->board['type'] == 1 && $_POST['replythread']) {
-				/* Check if they entered the correct code. If not... */
-				if ($_SESSION['security_code'] != strtolower($_POST['captcha']) || empty($_SESSION['security_code'])) {
-					/* Kill the script, stopping the posting process */
-					exitWithErrorPage(_gettext('Incorrect captcha entered.'));
-				}
-			}
-			else {
-				require_once(KU_ROOTDIR.'recaptchalib.php');
-				$privatekey = "6LdVg8YSAAAAALayugP2r148EEQAogHPfQOSYow-";
+			require_once(KU_ROOTDIR.'recaptchalib.php');
 
-				// was there a reCAPTCHA response?
-				$resp = recaptcha_check_answer ($privatekey, 
-					$_SERVER["REMOTE_ADDR"], 
-					$_POST["recaptcha_challenge_field"], 
-					$_POST["recaptcha_response_field"]
-				); 
-				if (!$resp->is_valid) {
-					// Show error and give user opportunity to try again.
-					exitWithErrorPage(_gettext('Incorrect captcha entered.'));
-				}
+			$privatekey = "6LdVg8YSAAAAALayugP2r148EEQAogHPfQOSYow-";
+			// was there a reCAPTCHA response?
+			$resp = recaptcha_check_answer ($privatekey,
+				$_SERVER["REMOTE_ADDR"],
+				$_POST["recaptcha_challenge_field"],
+				$_POST["recaptcha_response_field"]
+			);
+			if (!$resp->is_valid) {
+				// Show error and give user opportunity to try again.
+				exitWithErrorPage(_gettext('Incorrect captcha entered.'));
 			}
 		}
 	}
@@ -206,14 +178,14 @@ class Posting {
 		return false;
 	}
 
-	function CheckNotDuplicateSubject($subject) {
+/*	function CheckNotDuplicateSubject($subject) {
 		global $tc_db, $board_class;
 
 		$result = $tc_db->GetOne("SELECT COUNT(*) FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $board_class->board['id'] . " AND `IS_DELETED` = '0' AND `subject` = " . $tc_db->qstr($subject) . " AND `parentid` = '0'");
 		if ($result > 0) {
-			exitWithErrorPage(_gettext('Duplicate thread subject'), _gettext('Text boards may have only one thread with a unique subject. Please pick another.'));
+			exitWithErrorPage(_gettext('Duplicate thread subject'), _gettext('This board may have only one thread with an unique subject. Please pick another.'));
 		}
-	}
+	} */
 
 	function GetThreadInfo($id) {
 		global $tc_db, $board_class;
@@ -321,24 +293,9 @@ class Posting {
 
 	function GetPostTag() {
 		global $board_class;
-
 		/* Check for and parse tags if one was provided, and they are enabled */
 		$post_tag = '';
 		$tags = unserialize(KU_TAGS);
-		if ($board_class->board['type'] == 3 && $tags != '' && isset($_POST['tag'])) {
-			if ($_POST['tag'] != '') {
-				$validtag = false;
-				while (list($tag, $tag_abbr) = each($tags)) {
-					if ($tag_abbr == $_POST['tag']) {
-						$validtag = true;
-					}
-				}
-				if ($validtag) {
-					$post_tag = $_POST['tag'];
-				}
-			}
-		}
-
 		return $post_tag;
 	}
 
@@ -361,8 +318,8 @@ class Posting {
 		global $bans_class, $tc_db;
 
 		// Check if message html does not exceed field value
-		$maxlength = (int)($tc_db->GetOne("SELECT character_maximum_length 
-			FROM   information_schema.columns 
+		$maxlength = (int)($tc_db->GetOne("SELECT character_maximum_length
+			FROM   information_schema.columns
 			WHERE  table_name = '".KU_DBPREFIX."posts' AND	column_name = 'message'"));
 		$msglength = strlen($msg);
 		if ($msglength > $maxlength) {
@@ -372,7 +329,7 @@ class Posting {
 
 		$cyr = array('А', 'а', 'В', 'Е', 'е', 'К', 'М', 'Н', 'О', 'о', 'Р', 'р', 'С', 'с', 'Т', 'Х', 'х');
 		$lat = array('A', 'a', 'B', 'E', 'e', 'K', 'M', 'H', 'O', 'o', 'P', 'p', 'C', 'c', 'T', 'X', 'x');
-		
+
 		$msg = mb_strtolower(strip_tags(str_replace($cyr, $lat, $msg)));
 
 		if(!strlen($msg)) return;

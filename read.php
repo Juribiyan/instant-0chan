@@ -38,20 +38,13 @@ if ($results == 0) {
 }
 $board_class = new Board($board);
 
-if ($board_class->board['type'] == 1) {
-	$replies = $tc_db->GetOne("SELECT COUNT(*) FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $board_class->board['id'] ." AND `parentid` = " . $tc_db->qstr($thread) . "");
-} else {
-	$replies = false;
-}
+$replies = false;
+
 $postids = getQuoteIds($posts, $replies);
 if (count($postids) == 0) {
 	die('No valid posts specified.');
 }
 
-if ($board_class->board['type'] == 1) {
-	$noboardlist = true;
-	$hide_extra = true;
-} else {
 	$noboardlist = false;
 	$hide_extra = false;
 	$replies = false;
@@ -113,7 +106,7 @@ $page ='';
 if (!$singlepost) {
 	$page .= $board_class->PageHeader($thread, 0, -1, -1);
 	$board_class->dwoo_data->assign('replythrad', $thread);
- 	$page .= $board_class->dwoo->get(KU_TEMPLATEDIR . '/' . $board_class->board['text_readable'] . '_reply_header.tpl', $board_class->dwoo_data);
+ 	$page .= $board_class->dwoo->get(KU_TEMPLATEDIR . '/board_reply_header.tpl', $board_class->dwoo_data);
 } else {
 	$tpl['title'] = '';
 	$tpl['head'] = '';
@@ -121,72 +114,18 @@ if (!$singlepost) {
 	// $page .= '<link rel="stylesheet" href="' . getCLBoardPath() . 'css/img_global.css" />';
 }
 
-if ($board_class->board['type'] == 1) {
-
-	$relative_id = 0;
-	$ids_found = 0;
-	if ($posts != '0') {
-
-		$postrange = Array();
-
-		foreach($postids as $key=>$postid) {
-			if((!$key || $key != "BETWEEN") && (ctype_digit($postid) || is_integer($postid))) {
-				$postrange[] =  $postid;
-			}
-		}
-		if(isset($postids['BETWEEN'])){
-			foreach($postids['BETWEEN'] AS $between) {
-				$postrange = array_merge($postrange, range($between[0], $between[1]));
-			}
-		}
-
-		$relative_to_normal = array();
-
-		$results = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $board_class->board['id'] ." AND ((`parentid` = 0 AND `id` = " . $tc_db->qstr($thread) . ") OR (`parentid` = " . $tc_db->qstr($thread) . ")) AND `IS_DELETED` = 0 ORDER BY `id` ASC LIMIT " . intval(max($postrange)));
-
-		foreach ($postrange as $range) {
-			if(isset($results[$range-1])) {
-				$ids_found++;
-				$results[$range-1]['message'] = stripslashes(formatLongMessage($results[$range-1]['message'], $board_class->board['name'], $results[$range-1][parentid], false));
-				$relative_to_normal[$range-1] = $results[$range-1];
-			}
-		}
-		if(count($relative_to_normal) > 0) {
-			$board_class->dwoo_data->assign('posts', $relative_to_normal);
-			$page .= $board_class->dwoo->get(KU_TEMPLATEDIR . '/txt_thread.tpl', $board_class->dwoo_data);
-		}
-
-	} else {
-		$results = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $board_class->board['id'] ." AND ((`parentid` = 0 AND `id` = " . $tc_db->qstr($thread) . ") OR (`parentid` = " . $tc_db->qstr($thread) . ")) AND `IS_DELETED` = 0 ORDER BY `id` ASC");
-		$ids_found = count($results);
-		if (count($results) > 0){
-			$results[0]['replies'] = (count($results)-1);
-			foreach ($results as $key=>$post) {
-				$results[$key]['message'] = stripslashes(formatLongMessage($results[$key]['message'], $board_class->board['name'], $results[$key][parentid], false));
-			}
-			$board_class->dwoo_data->assign('posts', $results);
-			$page .= $board_class->dwoo->get(KU_TEMPLATEDIR . '/txt_thread.tpl', $board_class->dwoo_data);
-		}
-	}
-
-	if ($ids_found == 0) {
-		$page .= _gettext('Unable to find records of any posts matching that quote syntax.');
-	}
-
-} else {
 	if (!$singlepost) {
 		$page .= '<br />' . "\n";
 	}
 
 	$results = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $board_class->board['id'] ." AND (" . $postidquery . ") AND `IS_DELETED` = 0 ORDER BY `id` ASC");
 
-	if ($board_class->board['type'] == 0) {
-		$embeds = $tc_db->GetAll("SELECT filetype FROM `" . KU_DBPREFIX . "embeds`");
-		foreach ($embeds as $embed) {
-			$board_class->board['filetypes'][] .= $embed['filetype'];
-		}
-		$board_class->dwoo_data->assign('filetypes', $board_class->board['filetypes']);
+	$embeds = $tc_db->GetAll("SELECT filetype FROM `" . KU_DBPREFIX . "embeds`");
+	foreach ($embeds as $embed) {
+		$board_class->board['filetypes'][] .= $embed['filetype'];
 	}
+	$board_class->dwoo_data->assign('filetypes', $board_class->board['filetypes']);
+
 	foreach ($results as $key=>$post) {
 		$results[$key] = $board_class->BuildPost($post, false);
 	}
@@ -194,12 +133,11 @@ if ($board_class->board['type'] == 1) {
 
 	$board_class->dwoo_data->assign('replink', $_GET['replink']);
 
-	$page .= $board_class->dwoo->get(KU_TEMPLATEDIR . '/' . $board_class->board['text_readable'] . '_thread.tpl', $board_class->dwoo_data);
+	$page .= $board_class->dwoo->get(KU_TEMPLATEDIR . '/board_thread.tpl', $board_class->dwoo_data);
 
 	if (!$singlepost) {
 		$page .= '<br clear="left">' . "\n";
 	}
-}
 
 if (!$singlepost) {
 	$page .= '<hr />' . "\n" .

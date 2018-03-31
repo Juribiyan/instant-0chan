@@ -47,7 +47,7 @@ if (isset($_GET['preview'])) {
     $parse_class = new Parse();
 
     if (isset($_GET['board']) && isset($_GET['parentid']) && isset($_GET['message'])) {
-        die('<strong>' . _gettext('Post preview') . ':</strong><br /><div style="border: 1px dotted;padding: 8px;background-color: white;">' . $parse_class->ParsePost($_GET['message'], $board_class->board['name'], $board_class->board['type'], $_GET['parentid'], $board_class->board['id']) . '</div>');
+        die('<strong>' . _gettext('Post preview') . ':</strong><br /><div style="border: 1px dotted;padding: 8px;background-color: white;">' . $parse_class->ParsePost($_GET['message'], $board_class->board['name'], $_GET['parentid'], $board_class->board['id']) . '</div>');
     }
 
     die('Error');
@@ -66,42 +66,27 @@ global $expandjavascript;
 $output = '';
 $expandjavascript = '';
 $numimages = 0;
-if ($board_class->board['type'] != 1) {
-    $embeds = $tc_db->GetAll("SELECT filetype FROM `" . KU_DBPREFIX . "embeds`");
-    foreach ($embeds as $embed) {
-        $board_class->board['filetypes'][] .= $embed['filetype'];
+
+$embeds = $tc_db->GetAll("SELECT filetype FROM `" . KU_DBPREFIX . "embeds`");
+
+foreach ($embeds as $embed) {
+    $board_class->board['filetypes'][] .= $embed['filetype'];
     }
-    $board_class->dwoo_data->assign('filetypes', $board_class->board['filetypes']);
-}
+$board_class->dwoo_data->assign('filetypes', $board_class->board['filetypes']);
+
 foreach ($posts as $key=>$post) {
     if ($post['file_type'] == 'jpg' || $post['file_type'] == 'gif' || $post['file_type'] == 'png') {
         $numimages++;
     }
 
     $posts[$key] = $board_class->BuildPost($post, false);
-    
+
     $newlastid = $post['id'];
 }
 $board_class->dwoo_data->assign('numimages', $numimages);
 $board_class->dwoo_data->assign('posts', $posts);
 $board_class->dwoo_data->assign('getnewposts', $getnewposts);
-switch ($board_class->board['type']) {
-    case 0:
-        $output = $board_class->dwoo->get(KU_TEMPLATEDIR . '/img_thread.tpl', $board_class->dwoo_data);
-        break;
-    case 1:
-        $output = $board_class->dwoo->get(KU_TEMPLATEDIR . '/txt_thread.tpl', $board_class->dwoo_data);
-        break;
-    case 2:
-        $output = $board_class->dwoo->get(KU_TEMPLATEDIR . '/oek_thread.tpl', $board_class->dwoo_data);
-        break;
-    case 3:
-        $output = $board_class->dwoo->get(KU_TEMPLATEDIR . '/upl_thread.tpl', $board_class->dwoo_data);
-        break;
-    default:
-        die('<font color="red">Invalid board.</font>');
-        break;
-}
+$output = $board_class->dwoo->get(KU_TEMPLATEDIR . '/board_thread.tpl', $board_class->dwoo_data);
 if ($expandjavascript != '') {
     $output = '<a href="#" onclick="javascript:' . $expandjavascript . 'return false;">' . _gettext('Expand all images') . '</a>' . $output;
 }
