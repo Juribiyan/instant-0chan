@@ -75,6 +75,31 @@ function createThumbnail($name, $filename, $new_w, $new_h) {
 		} else {
 			return false;
 		}
+	} elseif (KU_THUMBMETHOD == 'ffmpeg') {
+		$imagewidth = exec('ffprobe -v quiet -show_entries stream=width -of default=noprint_wrappers=1:nokey=1 '. escapeshellarg($name));
+		$imageheight = exec('ffprobe -v quiet -show_entries stream=height -of default=noprint_wrappers=1:nokey=1 '. escapeshellarg($name));
+		$convert = 'ffmpeg -i ' . escapeshellarg($name);
+		if (!KU_ANIMATEDTHUMBS) {
+			$convert .= ' -vframes 1';
+		}
+		if ($imagewidth > $imageheight) {
+			$convert .= ' -vf scale="' . $new_w . ':-1" -quality ';
+		} else {
+			$convert .= ' -vf scale="-1:' . $new_h . '" -quality ';
+		}	
+		if (substr($filename, 0, -3) != 'gif') {
+			$convert .= '70';
+		} else {
+			$convert .= '90';
+		}
+		$convert .= ' ' . escapeshellarg($filename);
+		exec($convert);
+
+		if (is_file($filename)) {
+			return true;
+		} else {
+			return false;
+		}
 	} elseif (KU_THUMBMETHOD == 'gd') {
 		$system=explode(".", $filename);
 		$system = array_reverse($system);
