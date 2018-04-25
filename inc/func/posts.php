@@ -62,13 +62,21 @@ function createThumbnail($name, $filename, $new_w, $new_h) {
 			$convert .= '[0] ';
 		}
 		$convert .= ' -resize ' . $new_w . 'x' . $new_h . ' -quality ';
-		if (substr($filename, 0, -3) != 'gif') {
+		if (substr(strrchr($filename,'.'),1) != 'gif') {
 			$convert .= '70';
 		} else {
 			$convert .= '90';
 		}
 		$convert .= ' ' . escapeshellarg($filename);
 		exec($convert);
+
+		if (KU_USEOPTIPNG) {
+			if (substr(strrchr($filename,'.'),1) == 'png') {
+				$opti =  'optipng -o' . escapeshellarg(KU_OPTIPNGLV);
+				$opti .= ' ' . escapeshellarg($filename);
+				exec($opti);
+			}
+		}
 
 		if (is_file($filename)) {
 			return true;
@@ -87,13 +95,21 @@ function createThumbnail($name, $filename, $new_w, $new_h) {
 		} else {
 			$convert .= ' -vf scale="-1:' . $new_h . '" -quality ';
 		}	
-		if (substr($filename, 0, -3) != 'gif') {
+		if (substr(strrchr($filename,'.'),1) != 'gif') {
 			$convert .= '70';
 		} else {
 			$convert .= '90';
 		}
 		$convert .= ' ' . escapeshellarg($filename);
 		exec($convert);
+
+		if (KU_USEOPTIPNG) {
+			if (substr(strrchr($filename,'.'),1) == 'png') {
+				$opti =  'optipng -o' . escapeshellarg(KU_OPTIPNGLV);
+				$opti .= ' ' . escapeshellarg($filename);
+				exec($opti);
+			}
+		}
 
 		if (is_file($filename)) {
 			return true;

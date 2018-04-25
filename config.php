@@ -158,6 +158,8 @@ if (!$cache_loaded) {
 		$cf['KU_CATTHUMBHEIGHT']   = 50; // Maximum thumbnail height (catalog)
 		$cf['KU_THUMBMETHOD']      = 'gd'; // Method to use when thumbnailing images in jpg, gif, or png format.  Options available: gd, imagemagick, ffmpeg
 		$cf['KU_ANIMATEDTHUMBS']   = false; // Whether or not to allow animated thumbnails (only applies if using ffmpeg or imagemagick)
+		$cf['KU_USEOPTIPNG']       = false; // Whether or not to use optipng for PNG thumbnails optimization. Suitable only when useing imagemagick or ffmpeg
+		$cf['KU_OPTIPNGLV']        = '2'; // Optipng optimization level, from 1 (fastest) to 7 (slowest)
 
 	// Post handling
 		$cf['KU_NEWWINDOW']       = true; // When a user clicks a thumbnail, whether to open the link in a new window or not
