@@ -94,9 +94,8 @@ function array_insert(&$array, $position, $insert_array) {
 	$array = array_merge($first_array, $insert_array, $array);
 }
 
-
-function cleanBoardName($board) {
-	return trim(str_replace('/', '', str_replace('|', '', str_replace(' ', '', $board))));
+function checkBoardDir($dir) {
+	return preg_match('/^[^[:punct:][:blank:][:cntrl:]]+$/', $dir);
 }
 
 /**

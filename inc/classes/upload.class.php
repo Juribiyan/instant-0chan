@@ -22,385 +22,501 @@
  */
 
 class Upload {
-	var $file_name			= '';
-	var $original_file_name	= '';
-	var $file_type			= '';
-	var $file_md5			= '';
-	var $file_location		= '';
-	var $file_thumb_location = '';
-	var $file_is_special	= false;
-	var $imgWidth			= 0;
-	var $imgHeight			= 0;
-	var $file_size			= 0;
-	var $imgWidth_thumb		= 0;
-	var $imgHeight_thumb	= 0;
-	var $isreply			= false;
+	var $isreply = false;
+
+	function exitWithUploadErrorPage($errormsg, $attype, $i, $literal_name) {
+		if ($_POST['AJAX']) {
+			exitWithErrorPage($errormsg, '', 'upload_error', array(
+				'attachmenttype' => $attype,
+				'position' => $i
+			));
+		}
+		else {
+			$verbose = '('._gettext('Error in '.$attype).' "'.$literal_name.'")';
+			exitWithErrorPage($errormsg, $verbose);
+		}
+	}
+
+	function UnifyAttachments() {
+		global $board_class;
+		
+		if ($_POST['legacy-posting']) { // no-js file input (implemented first)
+		  
+		  $attachments = array();
+		  $first_emoji_candidate = false;
+
+		  // 1) Collect uploaded files
+		  $file_hashes = array();
+		  foreach($_FILES['imagefile']['name'] as $i => $filename) {
+		  	if ($_FILES['imagefile']['error'][$i] != UPLOAD_ERR_NO_FILE) { 
+		  		switch ($_FILES['imagefile']['error'][$i]) {
+		  			case UPLOAD_ERR_OK:
+		  				break;
+		  			case UPLOAD_ERR_INI_SIZE:
+		  				$this->exitWithUploadErrorPage(sprintf(_gettext('The uploaded file exceeds the upload_max_filesize directive (%s) in php.ini.'), ini_get('upload_max_filesize')), 
+		  					$atype, $i, $filename);
+		  				break;
+		  			case UPLOAD_ERR_FORM_SIZE:
+		  				$this->exitWithUploadErrorPage(sprintf(_gettext('Please make sure your file is smaller than %dB'), $board_class->board['maximagesize']), 
+		  					$atype, $i, $filename);
+		  				break;
+		  			case UPLOAD_ERR_PARTIAL:
+		  				$this->exitWithUploadErrorPage(_gettext('The uploaded file was only partially uploaded.'), 
+		  					$atype, $i, $filename);
+		  				break;
+		  			case UPLOAD_ERR_NO_TMP_DIR:
+		  				$this->exitWithUploadErrorPage(_gettext('Missing a temporary folder.'), 
+		  					$atype, $i, $filename);
+		  				break;
+		  			case UPLOAD_ERR_CANT_WRITE:
+		  				$this->exitWithUploadErrorPage(_gettext('Failed to write file to disk'), 
+		  					$atype, $i, $filename);
+		  				break;
+		  			default:
+		  				$this->exitWithUploadErrorPage(_gettext('Unknown File Error'), 
+		  					$atype, $i, $filename);
+		  		}
+		  		$file_type = strtolower(preg_replace('/.*(\..+)/','\1', $filename));
+		  		if ($file_type == '.jpeg') {
+		  			// Fix for the rarely used 4-char format 
+		  			$file_type = '.jpg';
+		  		}
+		  		$filetype_withoutdot = substr($file_type, 1);
+		  		if (in_array($filetype_withoutdot, $board_class->board['filetypes_allowed'])) {
+		  			$file_md5 = md5_file($_FILES['imagefile']['tmp_name'][$i]);
+		  			if (in_array($file_md5, $file_hashes)) {
+		  				$this->exitWithUploadErrorPage(_gettext('Duplicate file entry detected.'), 
+		  					$atype, $i, $filename);
+		  			}
+		  			else {
+		  				$file_hashes []= $file_md5;
+		  			}
+		  			$file_entry = array(
+		  				'attachmenttype' => 'file',
+		  				'file_original' => preg_replace('/(.*)\..+/','\1', $filename),
+		  				'tmp_name' => $_FILES['imagefile']['tmp_name'][$i],
+		  				'type' => $_FILES['imagefile']['type'][$i],
+		  				'size' => $_FILES['imagefile']['size'][$i],
+		  				'file_type' => $file_type,
+		  				'filetype_withoutdot' => $filetype_withoutdot,
+		  				'file_md5' => $file_md5
+		  			);
+		  			if (in_array($file_entry['file_type'], array('.png', '.gif')) && !$first_emoji_candidate) {
+		  				$file_entry['emoji_candidate'] = true;
+		  				$first_emoji_candidate = 'taken';
+		  			}
+		  			$attachments []= $file_entry;
+		  		}
+		  		else $this->exitWithUploadErrorPage(_gettext('Sorry, that filetype is not allowed on this board.'), 
+		  					$atype, $i, $filename);
+		  	}
+		  }
+
+		  // 2) Collect embeds
+		  $embed_hashes = array();
+		  foreach($_POST['embed'] as $i => $code) {
+		  	if ($code != '') {
+		  		if (array_key_exists($_POST['embedtype'][$i], $board_class->board['embeds_allowed'])) {
+		  			$embed = $board_class->board['embeds_allowed'][$_POST['embedtype'][$i]];
+		  			$hash = md5($embed['filetype'].'/'.$code);
+		  			if (in_array($hash, $embed_hashes)) {
+		  				$this->exitWithUploadErrorPage(_gettext('Duplicate embed entry detected.'), 
+		  					$atype, $i, $_POST['embedtype'][$i] . '/' . $code);
+		  			}
+		  			else {
+		  				$embed_hashes []= $hash;
+		  			}
+		  			$attachments []= array(
+		  				'attachmenttype' => 'embed',
+		  				'embedtype' => $embed['filetype'],
+		  				'embed' => $code,
+		  				'filetype_withoutdot' => $embed['filetype'],
+		  				'file_md5' => $hash
+		  			);
+		  		}
+		  		else $this->exitWithUploadErrorPage(_gettext('Sorry, that filetype is not allowed on this board.'), 
+		  					$atype, $i, $_POST['embedtype'][$i] . '/' . $code);
+		  	}
+		  }
+		}
+
+		/*else { // Fancy embeds (not yet implemented)	}*/
+		
+		if (count($attachments) > $board_class->board['maxfiles']) {
+			exitWithErrorPage(_gettext('Attachments number limit reached.'), _gettext('Maximum number of files + embeds per post is').' '.$board_class->board['maxfiles'].'.', 'upload_error');
+		}
+		$this->attachments = $attachments;
+	}
 
 	function HandleUpload() {
 		global $tc_db, $board_class;
-				$imagefile_name = isset($_FILES['imagefile']) ? $_FILES['imagefile']['name'] : '';
-				if ($imagefile_name != '') {
-					if (strpos($_FILES['imagefile']['name'], ',') != false) {
-						exitWithErrorPage(_gettext('Please select only one image to upload.'));
-					}
 
-					if ($_FILES['imagefile']['size'] > $board_class->board['maximagesize']) {
-						exitWithErrorPage(sprintf(_gettext('Please make sure your file is smaller than %dB'), $board_class->board['maximagesize']));
-					}
+		foreach($this->attachments as $i => &$attachment) {
+			$atype = $attachment['attachmenttype'];
+			$filename = $atype == 'file' 
+				? $attachment['name'] 
+				: $attachment['embedtype'] . '/' . $attachment['embed'];
+			// Check if attachment already posted somewhere else
+			$exists_thread = checkMd5($attachment['file_md5'], $board_class->board['name'], $board_class->board['id']);
+			if (is_array($exists_thread)) {
+				$exists_url = KU_BOARDSPATH . '/' . $board_class->board['name'] . '/res/' . $exists_thread[0] . '.html#' . $exists_thread[1];
+				$this->exitWithUploadErrorPage(_gettext('Duplicate file entry detected.') . 
+					sprintf(_gettext('Already posted %shere%s.'),'<a target="_blank" href="' . $exists_url . '">','</a>'), $atype, $i, $filename);
+			}
+			// Handle File
+			if ($attachment['attachmenttype'] == 'file') {
+				$filename = $attachment['name'];
+				if ($attachment['size'] > $board_class->board['maximagesize']) {
+					$this->exitWithUploadErrorPage(sprintf(_gettext('Please make sure your file is smaller than %dB'), $board_class->board['maximagesize']), $atype, $i, $filename);
+				}
 
-					switch ($_FILES['imagefile']['error']) {
-					case UPLOAD_ERR_OK:
-						break;
-					case UPLOAD_ERR_INI_SIZE:
-						exitWithErrorPage(sprintf(_gettext('The uploaded file exceeds the upload_max_filesize directive (%s) in php.ini.')), ini_get('upload_max_filesize'));
-						break;
-					case UPLOAD_ERR_FORM_SIZE:
-						exitWithErrorPage(sprintf(_gettext('Please make sure your file is smaller than %dB'), $board_class->board['maximagesize']));
-						break;
-					case UPLOAD_ERR_PARTIAL:
-						exitWithErrorPage(_gettext('The uploaded file was only partially uploaded.'));
-						break;
-					case UPLOAD_ERR_NO_FILE:
-						exitWithErrorPage(_gettext('No file was uploaded.'));
-						break;
-					case UPLOAD_ERR_NO_TMP_DIR:
-						exitWithErrorPage(_gettext('Missing a temporary folder.'));
-						break;
-					case UPLOAD_ERR_CANT_WRITE:
-						exitWithErrorPage(_gettext('Failed to write file to disk'));
-						break;
-					default:
-						exitWithErrorPage(_gettext('Unknown File Error'));
-					}
-
-					$this->file_type = strtolower(preg_replace('/.*(\..+)/','\1',$_FILES['imagefile']['name']));
-					if ($this->file_type == '.jpeg') {
-						/* Fix for the rarely used 4-char format */
-						$this->file_type = '.jpg';
-					}
-
-					$pass = true;
-					if (!is_file($_FILES['imagefile']['tmp_name']) || !is_readable($_FILES['imagefile']['tmp_name'])) {
-						$pass = false;
-					} else {
-						if(in_array($this->file_type, array('.jpg', '.gif', '.png'))) {
-							if (!@getimagesize($_FILES['imagefile']['tmp_name'])) {
-								$pass = false;
-							}
-						}
-						elseif($this->file_type == '.webm') {
-							$pass = $this->webmCheck($_FILES['imagefile']['tmp_name']);
+				$pass = true;
+				if (!is_file($attachment['tmp_name']) || !is_readable($attachment['tmp_name'])) {
+					$pass = false;
+				} 
+				else {
+					if(in_array($attachment['file_type'], array('.jpg', '.gif', '.png'))) {
+						if (!@getimagesize($attachment['tmp_name'])) {
+							$pass = false;
 						}
 					}
-					if (!$pass) {
-						exitWithErrorPage(_gettext('File transfer failure. Please go back and try again.'));
-					}
-
-					if($this->file_type == '.css') {
-						$finfo = finfo_open(FILEINFO_MIME_TYPE);
-						$mime = finfo_file($finfo, $_FILES['imagefile']['tmp_name']);
-						if(!$mime)
-							exitWithErrorPage("Unable to get MIME type of CSS");
-						if(!preg_match("/^text/i", $mime)) {
-							exitWithErrorPage(sprintf(_gettext("Uploaded CSS is non-text (\"%s\")"), $mime));
-						}
-						finfo_close($finfo);
-						if(filesize($_FILES['imagefile']['tmp_name']) >= KU_MAX_CSS_SIZE)
-							exitWithErrorPage(sprintf(_gettext("Uploaded CSS is too big"), KU_MAX_CSS_SIZE));
-						$css = file_get_contents($_FILES['imagefile']['tmp_name']);
-						$css_error = check_css($css);
-						if($css_error)
-							exitWithErrorPage($css_error);
-					}
-
-					$this->file_name = substr(htmlspecialchars(preg_replace('/(.*)\..+/','\1',$_FILES['imagefile']['name']), ENT_QUOTES), 0, 50);
-					$this->file_name = str_replace('.','_',$this->file_name);
-					$this->original_file_name = $this->file_name;
-					$this->file_md5 = md5_file($_FILES['imagefile']['tmp_name']);
-
-					$exists_thread = checkMd5($this->file_md5, $board_class->board['name'], $board_class->board['id']);
-					if (is_array($exists_thread)) {
-						$exists_url = KU_BOARDSPATH . '/' . $board_class->board['name'] . '/res/' . $exists_thread[0] . '.html#' . $exists_thread[1];
-						exitWithErrorPage(_gettext('Duplicate file entry detected.'),
-							sprintf(_gettext('Already posted %shere%s.'),'<a target="_blank" href="' . $exists_url . '">','</a>'), 'duplicate_file');
-					}
-
-					if ($this->file_type == 'svg') {
-						require_once 'svg.class.php';
-						$svg = new Svg($_FILES['imagefile']['tmp_name']);
-						$this->imgWidth = $svg->width;
-						$this->imgHeight = $svg->height;
-					}
-					elseif($this->file_type == '.webm') {
-						$webminfo = $pass;
-						$this->imgWidth = $webminfo['width'];
-						$this->imgHeight = $webminfo['height'];
-					}
-					else {
-						$imageDim = getimagesize($_FILES['imagefile']['tmp_name']);
-						$this->imgWidth = $imageDim[0];
-						$this->imgHeight = $imageDim[1];
-					}
-
-					$this->file_size = $_FILES['imagefile']['size'];
-
-					$filetype_forcethumb = $tc_db->GetOne("SELECT " . KU_DBPREFIX . "filetypes.force_thumb FROM " . KU_DBPREFIX . "boards, " . KU_DBPREFIX . "filetypes, " . KU_DBPREFIX . "board_filetypes WHERE " . KU_DBPREFIX . "boards.id = " . KU_DBPREFIX . "board_filetypes.boardid AND " . KU_DBPREFIX . "filetypes.id = " . KU_DBPREFIX . "board_filetypes.typeid AND " . KU_DBPREFIX . "boards.name = '" . $board_class->board['name'] . "' and " . KU_DBPREFIX . "filetypes.filetype = '" . substr($this->file_type, 1) . "';");
-					if ($filetype_forcethumb != '') {
-						if ($filetype_forcethumb == 0) {
-							$this->file_name = time() . mt_rand(1, 99);
-
-							/* If this board has a load balance url and password configured for it, attempt to use it */
-							if ($board_class->board['loadbalanceurl'] != '' && $board_class->board['loadbalancepassword'] != '') {
-								require_once KU_ROOTDIR . 'inc/classes/loadbalancer.class.php';
-								$loadbalancer = new Load_Balancer;
-
-								$loadbalancer->url = $board_class->board['loadbalanceurl'];
-								$loadbalancer->password = $board_class->board['loadbalancepassword'];
-
-								$response = $loadbalancer->Send('thumbnail', base64_encode(file_get_contents($_FILES['imagefile']['tmp_name'])), 'src/' . $this->file_name . $this->file_type, 'thumb/' . $this->file_name . 's' . $this->file_type, 'thumb/' . $this->file_name . 'c' . $this->file_type, '', $this->isreply, true);
-
-								if ($response != 'failure' && $response != '') {
-									$response_unserialized = unserialize($response);
-
-									$this->imgWidth_thumb = $response_unserialized['imgw_thumb'];
-									$this->imgHeight_thumb = $response_unserialized['imgh_thumb'];
-
-									$imageused = true;
-								} else {
-									exitWithErrorPage(_gettext('File was not properly thumbnailed').': ' . $response);
-								}
-							/* Otherwise, use this script alone */
-							} else {
-								$this->file_location = KU_BOARDSDIR . $board_class->board['name'] . '/src/' . $this->file_name . $this->file_type;
-
-								if($this->file_type == '.webm') {
-									$thumbs = $this->webmThumb($_FILES['imagefile']['tmp_name'], KU_BOARDSDIR . $board_class->board['name'] . '/thumb/', $this->file_name, $webminfo['midtime']);
-									// var_dump($thumbs);
-									if($thumbs) {
-										$this->imgWidth_thumb = $thumbs['thumbwidth'];
-										$this->imgHeight_thumb = $thumbs['thumbheight'];
-										if (!move_uploaded_file($_FILES['imagefile']['tmp_name'], $this->file_location)) {
-											exitWithErrorPage(_gettext('Could not copy uploaded image.'));
-										}
-										chmod($this->file_location, 0644);
-										if ($_FILES['imagefile']['size'] != filesize($this->file_location)) exitWithErrorPage(_gettext('File was not fully uploaded. Please go back and try again.'));
-										$imageused = true;
-									}
-									else exitWithErrorPage(_gettext('Could not create thumbnail.'));
-								}
-								else {
-									$this->file_thumb_location = KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $this->file_name . 's' . $this->file_type;
-									$this->file_thumb_cat_location = KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $this->file_name . 'c' . $this->file_type;
-
-									if (!move_uploaded_file($_FILES['imagefile']['tmp_name'], $this->file_location)) {
-										exitWithErrorPage(_gettext('Could not copy uploaded image.'));
-									}
-									chmod($this->file_location, 0644);
-
-									if ($_FILES['imagefile']['size'] == filesize($this->file_location)) {
-										if ((!$this->isreply && ($this->imgWidth > KU_THUMBWIDTH || $this->imgHeight > KU_THUMBHEIGHT)) || ($this->isreply && ($this->imgWidth > KU_REPLYTHUMBWIDTH || $this->imgHeight > KU_REPLYTHUMBHEIGHT))) {
-											if (!$this->isreply) {
-												if (!createThumbnail($this->file_location, $this->file_thumb_location, KU_THUMBWIDTH, KU_THUMBHEIGHT)) {
-													exitWithErrorPage(_gettext('Could not create thumbnail.'));
-												}
-											} else {
-												if (!createThumbnail($this->file_location, $this->file_thumb_location, KU_REPLYTHUMBWIDTH, KU_REPLYTHUMBHEIGHT)) {
-													exitWithErrorPage(_gettext('Could not create thumbnail.'));
-												}
-											}
-										} else {
-											if (!createThumbnail($this->file_location, $this->file_thumb_location, $this->imgWidth, $this->imgHeight)) {
-												exitWithErrorPage(_gettext('Could not create thumbnail.'));
-											}
-										}
-										if (!createThumbnail($this->file_location, $this->file_thumb_cat_location, KU_CATTHUMBWIDTH, KU_CATTHUMBHEIGHT)) {
-											exitWithErrorPage(_gettext('Could not create thumbnail.'));
-										}
-										$imageDim_thumb = getimagesize($this->file_thumb_location);
-										$this->imgWidth_thumb = $imageDim_thumb[0];
-										$this->imgHeight_thumb = $imageDim_thumb[1];
-									} else {
-										exitWithErrorPage(_gettext('File was not fully uploaded. Please go back and try again.'));
-									}
-								}
-							}
-						} else {
-							/* Fetch the mime requirement for this special filetype */
-							$filetype_required_mime = $tc_db->GetOne("SELECT `mime` FROM `" . KU_DBPREFIX . "filetypes` WHERE `filetype` = " . $tc_db->qstr(substr($this->file_type, 1)));
-
-              if($this->file_type == '.css') {
-								$this->file_name = htmlspecialchars_decode($this->file_name, ENT_QUOTES);
-								$this->file_name = stripslashes($this->file_name);
-								$this->file_name = str_replace("\x80", " ", $this->file_name);
-								$this->file_name = str_replace(' ', '_', $this->file_name);
-								$this->file_name = str_replace('#', '(number)', $this->file_name);
-								$this->file_name = str_replace('@', '(at)', $this->file_name);
-								$this->file_name = str_replace('/', '(fwslash)', $this->file_name);
-								$this->file_name = str_replace('\\', '(bkslash)', $this->file_name);
-							}
-							else $this->file_name = time() . mt_rand(1, 99);
-
-							/* If this board has a load balance url and password configured for it, attempt to use it */
-							if ($board_class->board['loadbalanceurl'] != '' && $board_class->board['loadbalancepassword'] != '') {
-								require_once KU_ROOTDIR . 'inc/classes/loadbalancer.class.php';
-								$loadbalancer = new Load_Balancer;
-
-								$loadbalancer->url = $board_class->board['loadbalanceurl'];
-								$loadbalancer->password = $board_class->board['loadbalancepassword'];
-
-								if ($filetype_required_mime != '') {
-									$checkmime = $filetype_required_mime;
-								} else {
-									$checkmime = '';
-								}
-
-								$response = $loadbalancer->Send('direct', $_FILES['imagefile']['tmp_name'], 'src/' . $this->file_name . $this->file_type, '', '', $checkmime, false, true);
-
-								$this->file_is_special = true;
-							/* Otherwise, use this script alone */
-							} else {
-								$this->file_location = KU_BOARDSDIR . $board_class->board['name'] . '/src/' . $this->file_name . $this->file_type;
-
-								if (file_exists($this->file_location)) {
-									exitWithErrorPage(_gettext('A file by that name already exists'));
-									die();
-								}
-
-								if($this->file_type == '.mp3' || $this->file_type == '.ogg') {
-									require_once(KU_ROOTDIR . 'lib/getid3/getid3.php');
-
-									$getID3 = new getID3;
-									$getID3->analyze($_FILES['imagefile']['tmp_name']);
-									if (isset($getID3->info['id3v2']['APIC'][0]['data']) && isset($getID3->info['id3v2']['APIC'][0]['image_mime'])) {
-										$source_data = $getID3->info['id3v2']['APIC'][0]['data'];
-										$mime = $getID3->info['id3v2']['APIC'][0]['image_mime'];
-									}
-									elseif (isset($getID3->info['id3v2']['PIC'][0]['data']) && isset($getID3->info['id3v2']['PIC'][0]['image_mime'])) {
-										$source_data = $getID3->info['id3v2']['PIC'][0]['data'];
-										$mime = $getID3->info['id3v2']['PIC'][0]['image_mime'];
-									}
-
-									if($source_data) {
-										$im = imagecreatefromstring($source_data);
-										if (preg_match("/png/", $mime)) {
-											$ext = ".png";
-											imagepng($im,$this->file_location.".tmp",0,PNG_ALL_FILTERS);
-										} else if (preg_match("/jpg|jpeg/", $mime)) {
-											$ext = ".jpg";
-											imagejpeg($im, $this->file_location.".tmp");
-										} else if (preg_match("/gif/", $mime)) {
-											$ext = ".gif";
-											imagegif($im, $this->file_location.".tmp");
-										}
-										$this->file_thumb_location = KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $this->file_name .'s'. $ext;
-										if (!$this->isreply) {
-											if (!createThumbnail($this->file_location.".tmp", $this->file_thumb_location, KU_THUMBWIDTH, KU_THUMBHEIGHT)) {
-												exitWithErrorPage(_gettext('Could not create thumbnail.'));
-											}
-										} else {
-											if (!createThumbnail($this->file_location.".tmp", $this->file_thumb_location, KU_REPLYTHUMBWIDTH, KU_REPLYTHUMBHEIGHT)) {
-												exitWithErrorPage(_gettext('Could not create thumbnail.'));
-											}
-										}
-										$imageDim_thumb = getimagesize($this->file_thumb_location);
-										$this->imgWidth_thumb = $imageDim_thumb[0];
-										$this->imgHeight_thumb = $imageDim_thumb[1];
-										$imageused = true;
-										unlink($this->file_location.".tmp");
-									}
-
-
-								}
-
-								/* Move the file from the post data to the server */
-								if (!move_uploaded_file($_FILES['imagefile']['tmp_name'], $this->file_location)) {
-									exitWithErrorPage(_gettext('Could not copy uploaded image.'));
-								}
-
-								/* Check if the filetype provided comes with a MIME restriction */
-								if ($filetype_required_mime != '') {
-									/* Check if the MIMEs don't match up */
-									if (finfo_file( finfo_open( FILEINFO_MIME_TYPE ), $this->file_location) != $filetype_required_mime) {
-										/* Delete the file we just uploaded and kill the script */
-										unlink($this->file_location);
-										exitWithErrorPage(_gettext('Invalid MIME type for this filetype.'));
-									}
-									finfo_close($finfo);
-								}
-
-								/* Make sure the entire file was uploaded */
-								if ($_FILES['imagefile']['size'] == filesize($this->file_location)) {
-									$imageused = true;
-								} else {
-									exitWithErrorPage(_gettext('File transfer failure. Please go back and try again.'));
-								}
-
-								/* Flag that the file used isn't an internally supported type */
-								$this->file_is_special = true;
-							}
-						}
-					} else {
-						exitWithErrorPage(_gettext('Sorry, that filetype is not allowed on this board.'));
-					}
-				} elseif (isset($_POST['embed'])) {
-					if ($_POST['embed'] != '') {
-						$_POST['embed'] = strip_tags(substr($_POST['embed'], 0, 20));
-						$video_id = $_POST['embed'];
-						$this->file_name = $video_id;
-
-						if ($video_id != '' && strpos($video_id, '@') == false && strpos($video_id, '&') == false) {
-
-							$embeds = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "embeds`");
-							$worked = false;
-
-							foreach ($embeds as $line) {
-								if ((strtolower($_POST['embedtype']) == strtolower($line['name'])) && in_array($line['filetype'], explode(',', $board_class->board['embeds_allowed']))) {
-									$worked = true;
-									$videourl_start = $line['videourl'];
-									$this->file_type = '.' . strtolower($line['filetype']);
-								}
-							}
-
-							if (!$worked) {
-								exitWithErrorPage(_gettext('Invalid video type.'));
-							}
-
-							$results = $tc_db->GetOne("SELECT COUNT(*) FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $board_class->board['id'] . " AND `file` = " . $tc_db->qstr($video_id) . " AND `IS_DELETED` = 0");
-							if ($results[0] == 0) {
-								$video_check = check_link($videourl_start . $video_id);
-								switch ($video_check[1]) {
-									case 404:
-										exitWithErrorPage(_gettext('Unable to connect to') .': '. $videourl_start . $video_id);
-										break;
-									case 303:
-										exitWithErrorPage(_gettext('Invalid video ID.'));
-										break;
-									case 302:
-										// Continue
-										break;
-									case 301:
-										// Continue
-										break;
-									case 200:
-										// Continue
-										break;
-									default:
-										exitWithErrorPage(_gettext('Invalid response code ') .':'. $video_check[1]);
-										break;
-								}
-							} else {
-								$results = $tc_db->GetAll("SELECT `id`,`parentid` FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $board_class->board['id'] . " AND `file` = " . $tc_db->qstr($video_id) . " AND `IS_DELETED` = 0 LIMIT 1");
-								foreach ($results as $line) {
-									$real_threadid = ($line[1] == 0) ? $line[0] : $line[1];
-									exitWithErrorPage(sprintf(_gettext('That video ID has already been posted %shere%s.'),'<a href="' . KU_BOARDSFOLDER . '/' . $board_class->board['name'] . '/res/' . $real_threadid . '.html#' . $line[1] . '">','</a>'));
-								}
-							}
-						} else {
-							exitWithErrorPage(_gettext('Invalid ID'));
-						}
+					elseif($attachment['file_type'] == '.webm') {
+						$pass = $this->webmCheck($attachment['tmp_name']);
 					}
 				}
-		}
+				if (!$pass) {
+					$this->exitWithUploadErrorPage(_gettext('File transfer failure. Please go back and try again.'), $atype, $i, $filename);
+				}
+
+				if($attachment['file_type'] == '.css') {
+					$finfo = finfo_open(FILEINFO_MIME_TYPE);
+					$mime = finfo_file($finfo, $attachment['tmp_name']);
+					if(!$mime)
+						$this->exitWithUploadErrorPage("Unable to get MIME type of CSS", $atype, $i, $filename);
+					if(!preg_match("/^text/i", $mime)) {
+						$this->exitWithUploadErrorPage(sprintf(_gettext("Uploaded CSS is non-text (\"%s\")"), $mime), $atype, $i, $filename);
+					}
+					finfo_close($finfo);
+					if(filesize($attachment['tmp_name']) >= KU_MAX_CSS_SIZE)
+						$this->exitWithUploadErrorPage(sprintf(_gettext("Uploaded CSS is too big"), KU_MAX_CSS_SIZE), $atype, $i, $filename);
+					$css = file_get_contents($attachment['tmp_name']);
+					$css_error = check_css($css);
+					if($css_error)
+						$this->exitWithUploadErrorPage($css_error, $atype, $i, $filename);
+				}
+
+				$attachment['file_name'] = str_replace('.','_',substr(htmlspecialchars(preg_replace('/(.*)\..+/','\1',$attachment['name']), ENT_QUOTES), 0, 50));
+				$attachment['original_file_name'] = $attachment['file_name'];
+
+				if ($attachment['file_type'] == 'svg') {
+					require_once 'svg.class.php';
+					$svg = new Svg($attachment['tmp_name']);
+					$attachment['imgWidth'] = $svg->width;
+					$attachment['imgHeight'] = $svg->height;
+				} 
+				elseif($attachment['file_type'] == '.webm') {
+					$webminfo = $pass;
+					$attachment['imgWidth'] = $webminfo['width'];
+					$attachment['imgHeight'] = $webminfo['height'];
+				}
+				else {
+					$imageDim = getimagesize($attachment['tmp_name']);
+					$attachment['imgWidth'] = $imageDim[0];
+					$attachment['imgHeight'] = $imageDim[1];
+				}
+
+				$attachment['file_size'] = $attachment['size'];
+
+				$filetype_forcethumb = $tc_db->GetOne("SELECT " . KU_DBPREFIX . "filetypes.force_thumb 
+					FROM " . KU_DBPREFIX . "boards, " . KU_DBPREFIX . "filetypes, " . KU_DBPREFIX . "board_filetypes 
+					WHERE " . KU_DBPREFIX . "boards.id = " . KU_DBPREFIX . "board_filetypes.boardid 
+					AND " . KU_DBPREFIX . "filetypes.id = " . KU_DBPREFIX . "board_filetypes.typeid 
+					AND " . KU_DBPREFIX . "boards.name = '" . $board_class->board['name'] . "' 
+					AND " . KU_DBPREFIX . "filetypes.filetype = '" . $attachment['filetype_withoutdot'] . "';");
+				if ($filetype_forcethumb != '') {
+					if ($filetype_forcethumb == 0) {
+						$attachment['file_name'] = time() . mt_rand(1, 99);
+
+						/* If this board has a load balance url and password configured for it, attempt to use it */
+						if ($board_class->board['loadbalanceurl'] != '' && $board_class->board['loadbalancepassword'] != '') {
+							require_once KU_ROOTDIR . 'inc/classes/loadbalancer.class.php';
+							$loadbalancer = new Load_Balancer;
+
+							$loadbalancer->url = $board_class->board['loadbalanceurl'];
+							$loadbalancer->password = $board_class->board['loadbalancepassword'];
+
+							$response = $loadbalancer->Send('thumbnail', base64_encode(file_get_contents($attachment['tmp_name'])), 'src/' . $attachment['file_name'] . $attachment['file_type'], 'thumb/' . $attachment['file_name'] . 's' . $attachment['file_type'], 'thumb/' . $attachment['file_name'] . 'c' . $attachment['file_type'], '', $this->isreply, true);
+
+							if ($response != 'failure' && $response != '') {
+								$response_unserialized = unserialize($response);
+
+								$attachment['imgWidth_thumb'] = $response_unserialized['imgw_thumb'];
+								$attachment['imgHeight_thumb'] = $response_unserialized['imgh_thumb'];
+							} else {
+								$this->exitWithUploadErrorPage(_gettext('File was not properly thumbnailed').': ' . $response, $atype, $i, $filename);
+							}
+						/* Otherwise, use this script alone */
+						} else {
+							$attachment['file_location'] = KU_BOARDSDIR . $board_class->board['name'] . '/src/' . $attachment['file_name'] . $attachment['file_type'];
+
+							if($attachment['file_type'] == '.webm') {
+								$thumbs = $this->webmThumb($attachment['tmp_name'], KU_BOARDSDIR . $board_class->board['name'] . '/thumb/', $attachment['file_name'], $webminfo['midtime']);
+								if($thumbs) {
+									$attachment['imgWidth_thumb'] = $thumbs['thumbwidth'];
+									$attachment['imgHeight_thumb'] = $thumbs['thumbheight'];
+									$move_result = move_uploaded_file($attachment['tmp_name'], $attachment['file_location']);
+									if (!$move_result) {
+										$this->exitWithUploadErrorPage(_gettext('Could not copy uploaded image.'), $atype, $i, $filename);
+									}
+									chmod($attachment['file_location'], 0644);
+									if ($attachment['size'] != filesize($attachment['file_location'])) 
+										$this->exitWithUploadErrorPage(_gettext('File was not fully uploaded. Please go back and try again.'), $atype, $i, $filename);
+								}
+								else $this->exitWithUploadErrorPage(_gettext('Could not create thumbnail.'), $atype, $i, $filename);
+							}
+							else {
+								$attachment['file_thumb_location'] = KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $attachment['file_name'] . 's' . $attachment['file_type'];
+								$attachment['file_thumb_cat_location'] = KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $attachment['file_name'] . 'c' . $attachment['file_type'];
+
+								if (!move_uploaded_file($attachment['tmp_name'], $attachment['file_location'])) {
+									$this->exitWithUploadErrorPage(_gettext('Could not copy uploaded image.'), $atype, $i, $filename);
+								}
+								chmod($attachment['file_location'], 0644);
+
+								if ($attachment['size'] == filesize($attachment['file_location'])) {
+									if ((!$this->isreply && ($attachment['imgWidth'] > KU_THUMBWIDTH || $attachment['imgHeight'] > KU_THUMBHEIGHT)) || ($this->isreply && ($attachment['imgWidth'] > KU_REPLYTHUMBWIDTH || $attachment['imgHeight'] > KU_REPLYTHUMBHEIGHT))) {
+										if (!$this->isreply) {
+											if (!createThumbnail($attachment['file_location'], $attachment['file_thumb_location'], KU_THUMBWIDTH, KU_THUMBHEIGHT)) {
+												$this->exitWithUploadErrorPage(_gettext('Could not create thumbnail.'), $atype, $i, $filename);
+											}
+										} else {
+											if (!createThumbnail($attachment['file_location'], $attachment['file_thumb_location'], KU_REPLYTHUMBWIDTH, KU_REPLYTHUMBHEIGHT)) {
+												$this->exitWithUploadErrorPage(_gettext('Could not create thumbnail.'), $atype, $i, $filename);
+											}
+										}
+									} else {
+										if (!createThumbnail($attachment['file_location'], $attachment['file_thumb_location'], $attachment['imgWidth'], $attachment['imgHeight'])) {
+											$this->exitWithUploadErrorPage(_gettext('Could not create thumbnail.'), $atype, $i, $filename);
+										}
+									}
+									if (!createThumbnail($attachment['file_location'], $attachment['file_thumb_cat_location'], KU_CATTHUMBWIDTH, KU_CATTHUMBHEIGHT)) {
+										$this->exitWithUploadErrorPage(_gettext('Could not create thumbnail.'), $atype, $i, $filename);
+									}
+									$imageDim_thumb = getimagesize($attachment['file_thumb_location']);
+									$attachment['imgWidth_thumb'] = $imageDim_thumb[0];
+									$attachment['imgHeight_thumb'] = $imageDim_thumb[1];
+								} else {
+									$this->exitWithUploadErrorPage(_gettext('File was not fully uploaded. Please go back and try again.'), $atype, $i, $filename);
+								}
+							}
+						}
+					} else {
+						/* Fetch the mime requirement for this special filetype */
+						$filetype_required_mime = $tc_db->GetOne("SELECT `mime` 
+							FROM `" . KU_DBPREFIX . "filetypes` 
+							WHERE `filetype` = " . $tc_db->qstr($attachment['filetype_withoutdot']));
+
+						if($attachment['file_type'] == '.css') {
+							$attachment['file_name'] = htmlspecialchars_decode($attachment['file_name'], ENT_QUOTES);
+							$attachment['file_name'] = stripslashes($attachment['file_name']);
+							$attachment['file_name'] = str_replace("\x80", " ", $attachment['file_name']);					
+							$attachment['file_name'] = str_replace(' ', '_', $attachment['file_name']);
+							$attachment['file_name'] = str_replace('#', '(number)', $attachment['file_name']);
+							$attachment['file_name'] = str_replace('@', '(at)', $attachment['file_name']);
+							$attachment['file_name'] = str_replace('/', '(fwslash)', $attachment['file_name']);
+							$attachment['file_name'] = str_replace('\\', '(bkslash)', $attachment['file_name']);
+						}
+						else $attachment['file_name'] = time() . mt_rand(1, 99);
+
+						/* If this board has a load balance url and password configured for it, attempt to use it */
+						if ($board_class->board['loadbalanceurl'] != '' && $board_class->board['loadbalancepassword'] != '') {
+							require_once KU_ROOTDIR . 'inc/classes/loadbalancer.class.php';
+							$loadbalancer = new Load_Balancer;
+
+							$loadbalancer->url = $board_class->board['loadbalanceurl'];
+							$loadbalancer->password = $board_class->board['loadbalancepassword'];
+
+							if ($filetype_required_mime != '') {
+								$checkmime = $filetype_required_mime;
+							} else {
+								$checkmime = '';
+							}
+
+							$response = $loadbalancer->Send('direct', $attachment['tmp_name'], 'src/' . $attachment['file_name'] . $attachment['file_type'], '', '', $checkmime, false, true);
+
+							$attachment['file_is_special'] = true;
+						/* Otherwise, use this script alone */
+						} else {
+							$attachment['file_location'] = KU_BOARDSDIR . $board_class->board['name'] . '/src/' . $attachment['file_name'] . $attachment['file_type'];
+							
+							if (file_exists($attachment['file_location'])) {
+								$this->exitWithUploadErrorPage(_gettext('A file by that name already exists'), $atype, $i, $filename);
+								die();
+							}
+							
+							if($attachment['file_type'] == '.mp3' || $attachment['file_type'] == '.ogg') {
+								require_once(KU_ROOTDIR . 'lib/getid3/getid3.php');
+
+								$getID3 = new getID3;
+								$getID3->analyze($attachment['tmp_name']);
+								if (isset($getID3->info['id3v2']['APIC'][0]['data']) && isset($getID3->info['id3v2']['APIC'][0]['image_mime'])) {
+									$source_data = $getID3->info['id3v2']['APIC'][0]['data'];
+									$mime = $getID3->info['id3v2']['APIC'][0]['image_mime'];
+								}
+								elseif (isset($getID3->info['id3v2']['PIC'][0]['data']) && isset($getID3->info['id3v2']['PIC'][0]['image_mime'])) {
+									$source_data = $getID3->info['id3v2']['PIC'][0]['data'];
+									$mime = $getID3->info['id3v2']['PIC'][0]['image_mime'];
+								}
+
+								if($source_data) {
+									$im = imagecreatefromstring($source_data);
+									if (preg_match("/png/", $mime)) {
+										$ext = ".png";
+										imagepng($im,$attachment['file_location'].".tmp",0,PNG_ALL_FILTERS);
+									} else if (preg_match("/jpg|jpeg/", $mime)) {
+										$ext = ".jpg";
+										imagejpeg($im, $attachment['file_location'].".tmp");
+									} else if (preg_match("/gif/", $mime)) {
+										$ext = ".gif";
+										imagegif($im, $attachment['file_location'].".tmp");
+									}
+									$attachment['file_thumb_location'] = KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $attachment['file_name'] .'s'. $ext;
+									$attachment['file_thumb_cat_location'] = KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $attachment['file_name'] .'c'. $ext;
+									if (!$this->isreply) {
+										if (!createThumbnail($attachment['file_location'].".tmp", $attachment['file_thumb_location'], KU_THUMBWIDTH, KU_THUMBHEIGHT)) {
+											$this->exitWithUploadErrorPage(_gettext('Could not create thumbnail.'), $atype, $i, $filename);
+										}
+									} 
+									else {
+										if (!createThumbnail($attachment['file_location'].".tmp", $attachment['file_thumb_location'], KU_REPLYTHUMBWIDTH, KU_REPLYTHUMBHEIGHT)) {
+											$this->exitWithUploadErrorPage(_gettext('Could not create thumbnail.'), $atype, $i, $filename);
+										}
+									}
+									if (!createThumbnail($attachment['file_location'].".tmp", $attachment['file_thumb_cat_location'], KU_CATTHUMBWIDTH, KU_CATTHUMBHEIGHT)) {
+										$this->exitWithUploadErrorPage(_gettext('Could not create thumbnail.'), $atype, $i, $filename);
+									}
+									$imageDim_thumb = getimagesize($attachment['file_thumb_location']);
+									$attachment['imgWidth_thumb'] = $imageDim_thumb[0];
+									$attachment['imgHeight_thumb'] = $imageDim_thumb[1];
+									unlink($attachment['file_location'].".tmp");
+								}
+							}
+
+							/* Move the file from the post data to the server */
+							if (!move_uploaded_file($attachment['tmp_name'], $attachment['file_location'])) {
+								$this->exitWithUploadErrorPage(_gettext('Could not copy uploaded image.'), $atype, $i, $filename);
+							}
+
+							/* Check if the filetype provided comes with a MIME restriction */
+							if ($filetype_required_mime != '') {
+								/* Check if the MIMEs don't match up */
+								if (finfo_file( finfo_open( FILEINFO_MIME_TYPE ), $attachment['file_location']) != $filetype_required_mime) {
+									/* Delete the file we just uploaded and kill the script */
+									unlink($attachment['file_location']);
+									$this->exitWithUploadErrorPage(_gettext('Invalid MIME type for this filetype.'), $atype, $i, $filename);
+								}
+								finfo_close($finfo);
+							}
+
+							/* Make sure the entire file was uploaded */
+							if ($attachment['size'] != filesize($attachment['file_location'])) 
+								$this->exitWithUploadErrorPage(_gettext('File transfer failure. Please go back and try again.'), $atype, $i, $filename);
+
+							/* Flag that the file used isn't an internally supported type */
+							$attachment['file_is_special'] = true;
+						}
+					}
+				} else {
+					$this->exitWithUploadErrorPage(_gettext('Sorry, that filetype is not allowed on this board.'), $atype, $i, $filename);
+				}
+			}
+			// Handle Embed
+			else {
+				$filename = $attachment['embedtype'] . '/' . $attachment['embed'];
+				$attachment['embed'] = strip_tags(substr($attachment['embed'], 0, 20));
+				$video_id = $attachment['embed'];
+				$attachment['file_name'] = $video_id;
+
+				if (strpos($video_id, '@') == false && strpos($video_id, '&') == false) {
+					$result = $tc_db->GetOne("SELECT HIGH_PRIORITY `videourl` 
+						FROM `" . KU_DBPREFIX . "embeds`
+						WHERE `filetype`= ".$tc_db->qstr($attachment['embedtype']));
+					if ($result) {
+						$videourl_start = $result;
+					}
+					else {
+						$this->exitWithUploadErrorPage(_gettext('Invalid video type.'), $atype, $i, $filename);
+					}
+
+					$attachment['file_type'] = '.' . $attachment['embedtype'];
+
+					$results = $tc_db->GetOne("SELECT COUNT(*) 
+						FROM `" . KU_DBPREFIX . "postembeds` 
+						WHERE `boardid` = " . $board_class->board['id'] . " 
+						AND `file` = " . $tc_db->qstr($video_id) . " 
+						AND `IS_DELETED` = 0");
+					if ($results == 0) {
+						/*$thumbw = $this->isreply ? KU_REPLYTHUMBWIDTH : KU_THUMBWIDTH;
+						$thumbh = $this->isreply ? KU_REPLYTHUMBHEIGHT : KU_THUMBHEIGHT;*/
+						$thumb_tmpfile = tmpfile();
+						$video_data = fetch_video_data($attachment['embedtype'], $attachment['embed'], KU_VIDEOTHUMBWIDTH, $thumb_tmpfile);
+						if ($video_data['error'])
+							$this->exitWithUploadErrorPage($video_data['error'], $atype, $i, $filename);
+						$embed_filename = $attachment['embedtype'].'-'.$attachment['embed'].'-';
+						$attachment['file_thumb_location'] = KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $embed_filename . 's.jpg';
+						$attachment['file_thumb_cat_location'] = KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $embed_filename . 'c.jpg';
+						// Copy or create thumbnail
+						$metaData = stream_get_meta_data($thumb_tmpfile);
+						$thumbfile = $metaData['uri'];
+						if ($video_data['width'] <= KU_VIDEOTHUMBWIDTH) {
+							$thumbnailed = copy($thumbfile, $attachment['file_thumb_location']);
+						}
+						else {
+							$thumbnailed = createThumbnail($thumbfile, $attachment['file_thumb_location'], KU_VIDEOTHUMBWIDTH, KU_VIDEOTHUMBWIDTH);
+						}
+						if (!$thumbnailed) {
+							$this->exitWithUploadErrorPage(_gettext('Could not create thumbnail.'), $atype, $i, $filename);
+						}
+						// Copy or create catalog thumbnail
+						if ($video_data['width'] <= KU_CATTHUMBWIDTH) {
+							$thumbnailed = copy($thumbfile, $attachment['file_thumb_cat_location']);
+						}
+						else {
+							$thumbnailed = createThumbnail($thumbfile, $attachment['file_thumb_cat_location'], KU_CATTHUMBWIDTH, KU_CATTHUMBHEIGHT);
+						}
+						if (!$thumbnailed) {
+							$this->exitWithUploadErrorPage(_gettext('Could not create thumbnail.'), $atype, $i, $filename);
+						}
+						fclose($thumb_tmpfile);
+						// Fill the rest of the data
+						$imageDim_thumb = getimagesize($attachment['file_thumb_location']);
+						$attachment['imgWidth_thumb'] = $imageDim_thumb[0];
+						$attachment['imgHeight_thumb'] = $imageDim_thumb[1];
+						$attachment['imgWidth'] = $video_data['width'];
+						$attachment['imgHeight'] = $video_data['height'];
+						$attachment['file_original'] = $video_data['title'];
+						$attachment['file_size_formatted'] = $video_data['duration'];
+					} 
+					else {
+						$results = $tc_db->GetAll("SELECT `id`,`parentid` 
+							FROM `" . KU_DBPREFIX . "postembeds` 
+							WHERE `boardid` = " . $board_class->board['id'] . " 
+							AND `file` = " . $tc_db->qstr($video_id) . " 
+							AND `IS_DELETED` = 0 
+							LIMIT 1");
+						foreach ($results as $line) {
+							$real_threadid = ($line[1] == 0) ? $line[0] : $line[1];
+							$this->exitWithUploadErrorPage(sprintf(_gettext('That video ID has already been posted %shere%s.', $atype, $i, $filename),
+								'<a href="' . KU_BOARDSFOLDER . '/' . $board_class->board['name'] . '/res/' . $real_threadid . '.html#' . $line[1] . '">','</a>'));
+						}
+					}
+				} 
+				else {
+					$this->exitWithUploadErrorPage(_gettext('Invalid ID'), $atype, $i, $filename);
+				}
+			}
+		} unset($i);
+	}
 
 	function webmCheck($filepath) {
     if(KU_FFMPEGPATH) putenv('PATH=' . KU_FFMPEGPATH . PATH_SEPARATOR . getenv('PATH'));
@@ -430,9 +546,9 @@ class Upload {
     if($x !== 0) return false;
 		preg_match('/Output[\s\S]+?(\d+)x(\d+)[\s\S]+?(\d+)x(\d+)/m', implode('<br>', $result), $ths);
 		if(count($ths) == 5) return array(
-			'thumbwidth' => $ths[1],
-			'thumbheight' => $ths[2],
-			'catthumbwidth' => $ths[3],
+			'thumbwidth' => $ths[1], 
+			'thumbheight' => $ths[2], 
+			'catthumbwidth' => $ths[3], 
 			'catthumbheight' => $ths[4]
 		);
 		else return false;

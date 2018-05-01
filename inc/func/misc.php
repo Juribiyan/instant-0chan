@@ -57,6 +57,16 @@ function exitWithErrorPage($errormsg, $extended = '', $error_type=null, $error_d
   }
 }
 
+function exitWithSuccessJSON($data=array()) {
+  $data_type = gettype($data);
+  if ($data_type == 'string')
+    $data = array('message' => $data);
+  elseif ($data_type != 'array')
+    $data = array('data' => $data);
+  $data['error'] = false;
+  exit(json_encode($data));
+}
+
 /**
  * Add an entry to the modlog
  *
@@ -134,4 +144,12 @@ function check_css($css) {
   }
 
   return false;
+}
+
+/*
+ * For parsing ISO8601 duration codes. Use regex below:
+ * '/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/'
+ */
+function ISO8601_callback($matches) {
+  return 60*(60*($matches[1]) + $matches[2]) + $matches[3];
 }

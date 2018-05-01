@@ -71,11 +71,15 @@ class Manage {
 			$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "staff` SET `lastactive` = " . time() . " WHERE `username` = " . $tc_db->qstr($_SESSION['manageusername']));
 
 			return true;
-		} else {
+		}
+		else {
 			if (!$is_menu) {
+				if ($_POST['AJAX'])
+					exitWithErrorPage(_gettext('Invalid session.'), '<a href="manage_page.php">'. _gettext('Log in again.') . '</a>');
 				$this->LoginForm();
 				die($tpl_page);
-			} else {
+			}
+			else {
 				return false;
 			}
 		}
@@ -291,7 +295,7 @@ class Manage {
 	}
 
 	/* See if the user logged in is a moderator of a specified board */
-	function CurrentUserIsModeratorOfBoard($board, $username) {
+	public static function CurrentUserIsModeratorOfBoard($board, $username) {
 		global $tc_db, $tpl_page;
 
 		$results = $tc_db->GetAll("SELECT HIGH_PRIORITY `type`, `boards` FROM `" . KU_DBPREFIX . "staff` WHERE `username` = '" . $username . "' LIMIT 1");
@@ -1328,42 +1332,51 @@ class Manage {
 
 		$output = '';
 		$output .= '<h2>'. _gettext('Add Results') .'</h2><br />';
-		$dir = cleanBoardName($dir);
-		if ($dir != '' && $desc != '') {
-			if (strtolower($dir) != 'allboards') {
-				$results = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($dir) . "");
-				if (count($results) == 0) {
-					if (mkdir(KU_BOARDSDIR . $dir, 0777) && mkdir(KU_BOARDSDIR . $dir . '/res', 0777) && mkdir(KU_BOARDSDIR . $dir . '/src', 0777) && mkdir(KU_BOARDSDIR . $dir . '/thumb', 0777)) {
-						file_put_contents(KU_BOARDSDIR . $dir . '/.htaccess', 'DirectoryIndex '. KU_FIRSTPAGE . '');
-						file_put_contents(KU_BOARDSDIR . $dir . '/src/.htaccess', 'AddType text/plain .ASM .C .CPP .JAVA .JS .LSP .PHP .PL .PY .RAR .SCM .TXT'. "\n" . 'SetHandler default-handler');
-						if ($_POST['firstpostid'] < 1) {
-							$_POST['firstpostid'] = 1;
+		if (checkBoardDir($dir)) {
+			if ($dir != '' && $desc != '') {
+				if (strtolower($dir) != 'allboards') {
+					$results = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($dir) . "");
+					if (count($results) == 0) {
+						if (mkdir(KU_BOARDSDIR . $dir, 0777) && mkdir(KU_BOARDSDIR . $dir . '/res', 0777) && mkdir(KU_BOARDSDIR . $dir . '/src', 0777) && mkdir(KU_BOARDSDIR . $dir . '/thumb', 0777)) {
+							file_put_contents(KU_BOARDSDIR . $dir . '/.htaccess', 'DirectoryIndex '. KU_FIRSTPAGE . '');
+							file_put_contents(KU_BOARDSDIR . $dir . '/src/.htaccess', 'AddType text/plain .ASM .C .CPP .JAVA .JS .LSP .PHP .PL .PY .RAR .SCM .TXT'. "\n" . 'SetHandler default-handler');
+							if ($_POST['firstpostid'] < 1) {
+								$_POST['firstpostid'] = 1;
+							}
+							$tc_db->Execute("INSERT INTO `" . KU_DBPREFIX . "boards` ( `name` , `desc` , `createdon`, `start`, `image`, `includeheader` ) VALUES ( " . $tc_db->qstr($dir) . " , " . $tc_db->qstr($desc) . " , '" . time() . "', " . $_POST['firstpostid'] . ", '', '' )");
+							$boardid = $tc_db->Insert_Id();
+							$filetypes = $tc_db->GetAll("SELECT " . KU_DBPREFIX . "filetypes.id FROM " . KU_DBPREFIX . "filetypes WHERE " . KU_DBPREFIX . "filetypes.filetype = 'JPG' OR " . KU_DBPREFIX . "filetypes.filetype = 'GIF' OR " . KU_DBPREFIX . "filetypes.filetype = 'PNG';");
+							foreach ($filetypes AS $filetype) {
+								$tc_db->Execute("INSERT INTO `" . KU_DBPREFIX . "board_filetypes` ( `boardid` , `typeid` ) VALUES ( " . $boardid . " , " . $filetype['id'] . " );");
+							}
+							$this->rebuild20json();
+							$board_class = new Board($dir);
+							$board_class->RegenerateAll();
+							unset($board_class);
+							$output .= _gettext('Board successfully added.') . '<br /><br /><a href="'. KU_BOARDSPATH . '/'. $dir . '/">/'. $dir . '/</a>!<br />';
+							$output .= '<form action="?action=boardopts" method="post"><input type="hidden" name="board" value="'. $dir . '" /><input type="submit" style="border: 1px solid; background: none; text-align: center;" value="'. _gettext('Click to edit board options') .'" /><br /><hr /></form>';
+							management_addlogentry(_gettext('Added board') . ': /'. $dir . '/', 3);
 						}
-						$tc_db->Execute("INSERT INTO `" . KU_DBPREFIX . "boards` ( `name` , `desc` , `createdon`, `start`, `image`, `includeheader` ) VALUES ( " . $tc_db->qstr($dir) . " , " . $tc_db->qstr($desc) . " , '" . time() . "', " . $_POST['firstpostid'] . ", '', '' )");
-						$boardid = $tc_db->Insert_Id();
-						$filetypes = $tc_db->GetAll("SELECT " . KU_DBPREFIX . "filetypes.id FROM " . KU_DBPREFIX . "filetypes WHERE " . KU_DBPREFIX . "filetypes.filetype = 'JPG' OR " . KU_DBPREFIX . "filetypes.filetype = 'GIF' OR " . KU_DBPREFIX . "filetypes.filetype = 'PNG';");
-						foreach ($filetypes AS $filetype) {
-							$tc_db->Execute("INSERT INTO `" . KU_DBPREFIX . "board_filetypes` ( `boardid` , `typeid` ) VALUES ( " . $boardid . " , " . $filetype['id'] . " );");
+						else {
+							$output .= '<br />'. _gettext('Unable to create directories.');
 						}
-						$this->rebuild20json();
-						$board_class = new Board($dir);
-						$board_class->RegenerateAll();
-						unset($board_class);
-						$output .= _gettext('Board successfully added.') . '<br /><br /><a href="'. KU_BOARDSPATH . '/'. $dir . '/">/'. $dir . '/</a>!<br />';
-						$output .= '<form action="?action=boardopts" method="post"><input type="hidden" name="board" value="'. $dir . '" /><input type="submit" style="border: 1px solid; background: none; text-align: center;" value="'. _gettext('Click to edit board options') .'" /><br /><hr /></form>';
-						management_addlogentry(_gettext('Added board') . ': /'. $dir . '/', 3);
-					} else {
-						$output .= '<br />'. _gettext('Unable to create directories.');
 					}
-				} else {
-					$output .= _gettext('A board with that name already exists.');
+					else {
+						$output .= _gettext('A board with that name already exists.');
+					}
 				}
-			} else {
-				$output .= _gettext('That name is for internal use. Please pick another.');
+				else {
+					$output .= _gettext('That name is for internal use. Please pick another.');
+				}
 			}
-		} else {
-			$output .= _gettext('Please fill in all required fields.');
+			else {
+				$output .= _gettext('Please fill in all required fields.');
+			}
 		}
+		else {
+			$output .= _gettext('Invalid directory name.');
+		}
+
 		return $output;
 	}
 
@@ -1375,52 +1388,59 @@ class Manage {
 
 		$output = '';
 		$output .= '<h2>'. _gettext('Add Results') .'</h2><br />';
-		$dir = '_'.cleanBoardName($dir);
-		if ($dir != '' && $desc != '') {
-			$results = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($dir) . "");
-			if (count($results) == 0) {
-				$moderating = array_filter(explode('|', $tc_db->GetOne("SELECT HIGH_PRIORITY `boards` FROM `" . KU_DBPREFIX . "staff` WHERE `username` = '" . $_SESSION['manageusername'] . "'")));
-				$existingboards = $tc_db->GetAll("SELECT HIGH_PRIORITY `name` from `" . KU_DBPREFIX . "boards`");
-				foreach($existingboards as &$exb) {
-					$xba[] = $exb['name'];
-				}
-				$moderating = array_intersect($moderating, $xba);
-				unset($exb);
-				if(count($moderating) < KU_20_BOARDSLIMIT) {
-					if (mkdir(KU_BOARDSDIR . $dir, 0777) && mkdir(KU_BOARDSDIR . $dir . '/res', 0777) && mkdir(KU_BOARDSDIR . $dir . '/src', 0777) && mkdir(KU_BOARDSDIR . $dir . '/thumb', 0777)) {
-						/* Add mod rights */
-						$moderating[] = $dir;
-						$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "staff` SET `boards` = " . $tc_db->qstr(implode('|',$moderating)) . " WHERE `username` = '" . $_SESSION['manageusername'] . "'");
-						file_put_contents(KU_BOARDSDIR . $dir . '/.htaccess', 'DirectoryIndex '. KU_FIRSTPAGE . '');
-						file_put_contents(KU_BOARDSDIR . $dir . '/src/.htaccess', 'AddType text/plain .ASM .C .CPP .CSS .JAVA .JS .LSP .PHP .PL .PY .RAR .SCM .TXT'. "\n" . 'SetHandler default-handler');
-						$_POST['firstpostid'] = 1;
-						$sect20 = $tc_db->GetOne('SELECT `id` FROM `'. KU_DBPREFIX .'sections` WHERE `abbreviation`="20"');
-						$tc_db->Execute("INSERT INTO `" . KU_DBPREFIX . "boards` ( `name` , `desc` , `createdon`, `start`, `image`, `includeheader`,`section` ) VALUES ( " . $tc_db->qstr($dir) . " , " . $tc_db->qstr($desc) . " , '" . time() . "', " . $_POST['firstpostid'] . ", '', '', ".$sect20." )");
-						$boardid = $tc_db->Insert_Id();
-						$filetypes = $tc_db->GetAll("SELECT " . KU_DBPREFIX . "filetypes.id FROM " . KU_DBPREFIX . "filetypes WHERE " . KU_DBPREFIX . "filetypes.filetype = 'JPG' OR " . KU_DBPREFIX . "filetypes.filetype = 'GIF' OR " . KU_DBPREFIX . "filetypes.filetype = 'PNG';");
-						foreach ($filetypes AS $filetype) {
-							$tc_db->Execute("INSERT INTO `" . KU_DBPREFIX . "board_filetypes` ( `boardid` , `typeid` ) VALUES ( " . $boardid . " , " . $filetype['id'] . " );");
-						}
-						$board_class = new Board($dir);
-						$board_class->RegenerateAll();
-						unset($board_class);
-						$output .= _gettext('Board successfully added.') . '<br /><br /><a href="'. KU_BOARDSPATH . '/'. $dir . '/">/'. $dir . '/</a>!<br />';
-						$output .= '<form action="?action=boardopts_mod" method="post"><input type="hidden" name="board" value="'. $dir . '" /><input type="submit" style="border: 1px solid; background: none; text-align: center;" value="'. _gettext('Click to edit board options') .'" /><br /><hr /></form>';
-						management_addlogentry(_gettext('Added board') . ': /'. $dir . '/', 3);
-						$this->rebuild20json();
+
+		if (checkBoardDir($dir)) {
+			$dir = '_'.$dir;
+			if ($dir != '' && $desc != '') {
+				$results = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($dir) . "");
+				if (count($results) == 0) {
+					$moderating = array_filter(explode('|', $tc_db->GetOne("SELECT HIGH_PRIORITY `boards` FROM `" . KU_DBPREFIX . "staff` WHERE `username` = '" . $_SESSION['manageusername'] . "'")));
+					$existingboards = $tc_db->GetAll("SELECT HIGH_PRIORITY `name` from `" . KU_DBPREFIX . "boards`");
+					foreach($existingboards as &$exb) {
+						$xba[] = $exb['name'];
 					}
-					else {
-						$output .= '<br />'. _gettext('Unable to create directories.');
+					$moderating = array_intersect($moderating, $xba);
+					unset($exb);
+					if(count($moderating) < KU_20_BOARDSLIMIT) {
+						if (mkdir(KU_BOARDSDIR . $dir, 0777) && mkdir(KU_BOARDSDIR . $dir . '/res', 0777) && mkdir(KU_BOARDSDIR . $dir . '/src', 0777) && mkdir(KU_BOARDSDIR . $dir . '/thumb', 0777)) {
+							/* Add mod rights */
+							$moderating[] = $dir;
+							$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "staff` SET `boards` = " . $tc_db->qstr(implode('|',$moderating)) . " WHERE `username` = '" . $_SESSION['manageusername'] . "'");
+							file_put_contents(KU_BOARDSDIR . $dir . '/.htaccess', 'DirectoryIndex '. KU_FIRSTPAGE . '');
+							file_put_contents(KU_BOARDSDIR . $dir . '/src/.htaccess', 'AddType text/plain .ASM .C .CPP .CSS .JAVA .JS .LSP .PHP .PL .PY .RAR .SCM .TXT'. "\n" . 'SetHandler default-handler');
+							$_POST['firstpostid'] = 1;
+							$sect20 = $tc_db->GetOne('SELECT `id` FROM `'. KU_DBPREFIX .'sections` WHERE `abbreviation`="20"');
+							$tc_db->Execute("INSERT INTO `" . KU_DBPREFIX . "boards` ( `name` , `desc` , `createdon`, `start`, `image`, `includeheader`,`section` ) VALUES ( " . $tc_db->qstr($dir) . " , " . $tc_db->qstr($desc) . " , '" . time() . "', " . $_POST['firstpostid'] . ", '', '', ".$sect20." )");
+							$boardid = $tc_db->Insert_Id();
+							$filetypes = $tc_db->GetAll("SELECT " . KU_DBPREFIX . "filetypes.id FROM " . KU_DBPREFIX . "filetypes WHERE " . KU_DBPREFIX . "filetypes.filetype = 'JPG' OR " . KU_DBPREFIX . "filetypes.filetype = 'GIF' OR " . KU_DBPREFIX . "filetypes.filetype = 'PNG';");
+							foreach ($filetypes AS $filetype) {
+								$tc_db->Execute("INSERT INTO `" . KU_DBPREFIX . "board_filetypes` ( `boardid` , `typeid` ) VALUES ( " . $boardid . " , " . $filetype['id'] . " );");
+							}
+							$board_class = new Board($dir);
+							$board_class->RegenerateAll();
+							unset($board_class);
+							$output .= _gettext('Board successfully added.') . '<br /><br /><a href="'. KU_BOARDSPATH . '/'. $dir . '/">/'. $dir . '/</a>!<br />';
+							$output .= '<form action="?action=boardopts_mod" method="post"><input type="hidden" name="board" value="'. $dir . '" /><input type="submit" style="border: 1px solid; background: none; text-align: center;" value="'. _gettext('Click to edit board options') .'" /><br /><hr /></form>';
+							management_addlogentry(_gettext('Added board') . ': /'. $dir . '/', 3);
+							$this->rebuild20json();
+						}
+						else {
+							$output .= '<br />'. _gettext('Unable to create directories.');
+						}
+					} else {
+						$output .= '<br />'. _gettext('Board limit exceeded. Delete the unused boards.');
 					}
 				} else {
-					$output .= '<br />'. _gettext('Board limit exceeded. Delete the unused boards.');
+					$output .= _gettext('A board with that name already exists.');
 				}
 			} else {
-				$output .= _gettext('A board with that name already exists.');
+				$output .= _gettext('Please fill in all required fields.');
 			}
-		} else {
-			$output .= _gettext('Please fill in all required fields.');
 		}
+		else {
+			$output .= _gettext('Invalid directory name.');
+		}
+
 		return $output;
 	}
 
@@ -2908,7 +2928,7 @@ class Manage {
 
 		$tpl_page .= '<h2>'. _gettext('Board options') . '</h2><br />';
 		if (isset($_GET['updateboard']) && isset($_POST['order']) && isset($_POST['maxpages']) && isset($_POST['maxage']) && isset($_POST['messagelength'])) {
-      		$this->CheckToken($_POST['token']);
+      $this->CheckToken($_POST['token']);
 			if (!$this->CurrentUserIsModeratorOfBoard($_GET['updateboard'], $_SESSION['manageusername'])) {
 				exitWithErrorPage(_gettext('You are not a moderator of this board.'));
 			}
@@ -2921,11 +2941,27 @@ class Manage {
 						$available_styles[] = $stylesheet['name'];
 					}
 				}
-				if ($_POST['order'] >= 0 && $_POST['maxpages'] >= 0 && $_POST['markpage'] >= 0 && $_POST['maxage'] >= 0 && $_POST['messagelength'] >= 0 && ($_POST['defaultstyle'] == '' || in_array($_POST['defaultstyle'], $available_styles))) {
+				if (
+					$_POST['order'] >= 0
+					&&
+					$_POST['maxpages'] >= 0
+					&&
+					$_POST['markpage'] >= 0
+					&&
+					$_POST['maxage'] >= 0
+					&&
+					$_POST['messagelength'] >= 0
+					&&
+					(
+						$_POST['defaultstyle'] == ''
+						||
+						in_array($_POST['defaultstyle'], $available_styles)
+					)
+				) {
 					$filetypes = array();
-					while (list($postkey, $postvalue) = each($_POST)) {
+					foreach($_POST as $postkey => $postvalue) {
 						if (substr($postkey, 0, 9) == 'filetype_') {
-							$filetypes[] = substr($postkey, 9);
+							$filetypes []= substr($postkey, 9);
 						}
 					}
 					$updateboard_enablecatalog = isset($_POST['enablecatalog']) ? '1' : '0';
@@ -2944,52 +2980,46 @@ class Manage {
 					$updateboard_dice = isset($_POST['dice']) ? '1' : '0';
 					$updateboard_useragent = isset($_POST['useragent']) ? '1' : '0';
 
-					if (($_POST['type'] == '0' || $_POST['type'] == '1' || $_POST['type'] == '2' || $_POST['type'] == '3') && ($_POST['uploadtype'] == '0' || $_POST['uploadtype'] == '1' || $_POST['uploadtype'] == '2')) {
-						if (!($_POST['uploadtype'] != '0' && $_POST['type'] == '3')) {
-							if(in_array($_POST['locale'], explode('|', KU_SUPPORTED_LOCALES))) {
-								if(count($_POST['allowedembeds']) > 0) {
-									$updateboard_allowedembeds = '';
-									$results = $tc_db->GetAll("SELECT `filetype` FROM `" . KU_DBPREFIX . "embeds`");
-									foreach ($results as $line) {
-										if(in_array($line['filetype'], $_POST['allowedembeds'])) {
-											$updateboard_allowedembeds .= $line['filetype'].',';
-										}
-									}
-									if ($updateboard_allowedembeds != '') {
-										$updateboard_allowedembeds = substr($updateboard_allowedembeds, 0, -1);
-									}
+					if(in_array($_POST['locale'], explode('|', KU_SUPPORTED_LOCALES))) {
+						if(count($_POST['allowedembeds']) > 0) {
+							$updateboard_allowedembeds = '';
+							$results = $tc_db->GetAll("SELECT `filetype` FROM `" . KU_DBPREFIX . "embeds`");
+							foreach ($results as $line) {
+								if(in_array($line['filetype'], $_POST['allowedembeds'])) {
+									$updateboard_allowedembeds .= $line['filetype'].',';
 								}
-								$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "boards` SET `type` = " . $tc_db->qstr($_POST['type']) . " , `uploadtype` = " . $tc_db->qstr($_POST['uploadtype']) . " , `order` = " . $tc_db->qstr(intval($_POST['order'])) . " , `section` = " . $tc_db->qstr(intval($_POST['section'])) . " , `desc` = " . $tc_db->qstr($_POST['desc']) . " , `locale` = " . $tc_db->qstr($_POST['locale']) . " , `showid` = '" . $updateboard_showid . "' , `compactlist` = '" . $updateboard_compactlist . "' , `locked` = '" . $updateboard_locked . "' , `balls` = '" . $updateboard_balls . "' , `dice` = '" . $updateboard_dice . "' , `useragent` = '" . $updateboard_useragent . "' , `maximagesize` = " . $tc_db->qstr($_POST['maximagesize']) . " , `messagelength` = " . $tc_db->qstr($_POST['messagelength']) . " , `maxpages` = " . $tc_db->qstr($_POST['maxpages']) . " , `maxage` = " . $tc_db->qstr($_POST['maxage']) . " , `markpage` = " . $tc_db->qstr($_POST['markpage']) . " , `maxreplies` = " . $tc_db->qstr($_POST['maxreplies']) . " , `image` = " . $tc_db->qstr($_POST['image']) . " , `includeheader` = " . $tc_db->qstr($_POST['includeheader']) . " , `redirecttothread` = '" . $updateboard_redirecttothread . "' , `anonymous` = " . $tc_db->qstr($_POST['anonymous']) . " , `forcedanon` = '" . $updateboard_forcedanon . "' , `embeds_allowed` = " . $tc_db->qstr($updateboard_allowedembeds) . " , `trial` = '" . $updateboard_trial . "' , `popular` = '" . $updateboard_popular . "' , `defaultstyle` = " . $tc_db->qstr($_POST['defaultstyle']) . " , `enablereporting` = '" . $updateboard_enablereporting . "', `enablecaptcha` = '" . $updateboard_enablecaptcha . "' , `enablenofile` = '" . $updateboard_enablenofile . "' , `enablearchiving` = '" . $updateboard_enablearchiving . "', `enablecatalog` = '" . $updateboard_enablecatalog . "' , `loadbalanceurl` = " . $tc_db->qstr($_POST['loadbalanceurl']) . " , `loadbalancepassword` = " . $tc_db->qstr($_POST['loadbalancepassword']) . " WHERE `name` = " . $tc_db->qstr($_GET['updateboard']) . "");
-								$tc_db->Execute("DELETE FROM `" . KU_DBPREFIX . "board_filetypes` WHERE `boardid` = '" . $boardid . "'");
-								foreach ($filetypes as $filetype) {
-									$tc_db->Execute("INSERT INTO `" . KU_DBPREFIX . "board_filetypes` ( `boardid`, `typeid` ) VALUES ( '" . $boardid . "', " . $tc_db->qstr($filetype) . " )");
-								}
-								require_once KU_ROOTDIR . 'inc/classes/menu.class.php';
-								$this->rebuild20json();
-								$menu_class = new Menu();
-								$menu_class->Generate();
-								if (isset($_POST['submit_regenerate'])) {
-									$board_class = new Board($_GET['updateboard']);
-									$board_class->RegenerateAll();
-								}
-								$tpl_page .= _gettext('Update successful.');
-								management_addlogentry(_gettext('Updated board configuration') . " - /" . $_GET['updateboard'] . "/", 4);
 							}
-							else $tpl_page .= _gettext('Sorry, a generic error has occurred.');
-
-						} else {
-							$tpl_page .= _gettext('Sorry, embed may only be enabled on normal imageboards.');
+							if ($updateboard_allowedembeds != '') {
+								$updateboard_allowedembeds = substr($updateboard_allowedembeds, 0, -1);
+							}
 						}
-					} else {
-						$tpl_page .= _gettext('Sorry, a generic error has occurred.');
+						$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "boards` SET `order` = " . $tc_db->qstr(intval($_POST['order'])) . " , `section` = " . $tc_db->qstr(intval($_POST['section'])) . " , `desc` = " . $tc_db->qstr($_POST['desc']) . " , `locale` = " . $tc_db->qstr($_POST['locale']) . " , `showid` = '" . $updateboard_showid . "' , `compactlist` = '" . $updateboard_compactlist . "' , `locked` = '" . $updateboard_locked . "' , `balls` = '" . $updateboard_balls . "' , `dice` = '" . $updateboard_dice . "' , `useragent` = '" . $updateboard_useragent . "' , `maximagesize` = " . $tc_db->qstr($_POST['maximagesize']) . " , `maxfiles` = " . $tc_db->qstr($_POST['maxfiles']) . " , `messagelength` = " . $tc_db->qstr($_POST['messagelength']) . " , `maxpages` = " . $tc_db->qstr($_POST['maxpages']) . " , `maxage` = " . $tc_db->qstr($_POST['maxage']) . " , `markpage` = " . $tc_db->qstr($_POST['markpage']) . " , `maxreplies` = " . $tc_db->qstr($_POST['maxreplies']) . " , `image` = " . $tc_db->qstr($_POST['image']) . " , `includeheader` = " . $tc_db->qstr($_POST['includeheader']) . " , `redirecttothread` = '" . $updateboard_redirecttothread . "' , `anonymous` = " . $tc_db->qstr($_POST['anonymous']) . " , `forcedanon` = '" . $updateboard_forcedanon . "' , `embeds_allowed` = " . $tc_db->qstr($updateboard_allowedembeds) . " , `trial` = '" . $updateboard_trial . "' , `popular` = '" . $updateboard_popular . "' , `defaultstyle` = " . $tc_db->qstr($_POST['defaultstyle']) . " , `enablereporting` = '" . $updateboard_enablereporting . "', `enablecaptcha` = '" . $updateboard_enablecaptcha . "' , `enablenofile` = '" . $updateboard_enablenofile . "' , `enablearchiving` = '" . $updateboard_enablearchiving . "', `enablecatalog` = '" . $updateboard_enablecatalog . "' , `loadbalanceurl` = " . $tc_db->qstr($_POST['loadbalanceurl']) . " , `loadbalancepassword` = " . $tc_db->qstr($_POST['loadbalancepassword']) . " WHERE `name` = " . $tc_db->qstr($_GET['updateboard']) . "");
+						$tc_db->Execute("DELETE FROM `" . KU_DBPREFIX . "board_filetypes` WHERE `boardid` = '" . $boardid . "'");
+						foreach ($filetypes as $filetype) {
+							$tc_db->Execute("INSERT INTO `" . KU_DBPREFIX . "board_filetypes` ( `boardid`, `typeid` ) VALUES ( '" . $boardid . "', " . $tc_db->qstr($filetype) . " )");
+						}
+						require_once KU_ROOTDIR . 'inc/classes/menu.class.php';
+						$this->rebuild20json();
+						$menu_class = new Menu();
+						$menu_class->Generate();
+						if (isset($_POST['submit_regenerate'])) {
+							$board_class = new Board($_GET['updateboard']);
+							$board_class->RegenerateAll();
+						}
+						$tpl_page .= _gettext('Update successful.');
+						management_addlogentry(_gettext('Updated board configuration') . " - /" . $_GET['updateboard'] . "/", 4);
 					}
-				} else {
+					else $tpl_page .= _gettext('Sorry, a generic error has occurred.');
+				}
+				else {
 					$tpl_page .= _gettext('Integer values must be entered correctly.');
 				}
-			} else {
+			}
+			else {
 				$tpl_page .= _gettext('Unable to locate a board named') . ' <strong>'. $_GET['updateboard'] . '</strong>.';
 			}
-		} elseif (isset($_POST['board'])) {
+		}
+		elseif (isset($_POST['board'])) {
 			if (!$this->CurrentUserIsModeratorOfBoard($_POST['board'], $_SESSION['manageusername'])) {
 				exitWithErrorPage(_gettext('You are not a moderator of this board.'));
 			}
@@ -3008,27 +3038,6 @@ class Manage {
 					$tpl_page .= '<label for="desc">'. _gettext('Description') .':</label>
 					<input type="text" name="desc" value="'.$lineboard['desc'].'" />
 					<div class="desc">'. _gettext('The name of the board.') .'</div><br />';
-
-					/* Upload type */
-					$tpl_page .= '<label for="uploadtype">'. _gettext('Upload type') .':</label>
-					<select name="uploadtype">
-					<option value="0"';
-					if ($lineboard['uploadtype'] == '0') {
-						$tpl_page .= ' selected="selected"';
-					}
-					$tpl_page .= '>'. _gettext('No embedding') .'</option>
-					<option value="1"';
-					if ($lineboard['uploadtype'] == '1') {
-						$tpl_page .= ' selected="selected"';
-					}
-					$tpl_page .= '>'. _gettext('Images and embedding') .'</option>
-					<option value="2"';
-					if ($lineboard['uploadtype'] == '2') {
-						$tpl_page .= ' selected="selected"';
-					}
-					$tpl_page .= '>'. _gettext('Embedding only') .'</option>
-					</select>
-					<div class="desc">'. _gettext('Whether or not to allow embedding of videos.') .' '. _gettext('Default') .'.: <strong>'. _gettext('No Embedding') .'</strong></div><br />';
 
 					/* Order */
 					$tpl_page .= '<label for="order">'. _gettext('Order') .':</label>
@@ -3074,6 +3083,11 @@ class Manage {
 						}
 						$tpl_page .= ' /><br />';
 					}
+
+					/* Maximum file count */
+					$tpl_page .= '<label for="maxfiles">'. _gettext('Maximum file/embed count') .':</label>
+					<input type="number" name="maxfiles" value="'.$lineboard['maxfiles'].'" />
+					<div class="desc">'. _gettext('Maxmimum number or files or embeds per post.') . ' '. _gettext('Default') .': <strong>4</strong></div><br />';
 
 					/* Maximum image size */
 					$tpl_page .= '<label for="maximagesize">'. _gettext('Maximum image size') .':</label>
@@ -3305,7 +3319,8 @@ class Manage {
 			} else {
 				$tpl_page .= _gettext('Unable to locate a board named') . ' <strong>'. $_POST['board'] . '</strong>.';
 			}
-		} else {
+		}
+		else {
 			$tpl_page .= '<form action="?action=boardopts" method="post">
 			<label for="board">'. _gettext('Board') .':</label>' .
 			$this->MakeBoardListDropdown('board', $this->BoardList($_SESSION['manageusername'])) .
@@ -3415,27 +3430,6 @@ class Manage {
 					$tpl_page .= '<label for="desc">'. _gettext('Description') .':</label>
 					<input type="text" name="desc" value="'.$lineboard['desc'].'" />
 					<div class="desc">'. _gettext('The name of the board.') .'</div><br />';
-
-					/* Upload type */
-					$tpl_page .= '<label for="uploadtype">'. _gettext('Upload type') .':</label>
-					<select name="uploadtype">
-					<option value="0"';
-					if ($lineboard['uploadtype'] == '0') {
-						$tpl_page .= ' selected="selected"';
-					}
-					$tpl_page .= '>'. _gettext('No embedding') .'</option>
-					<option value="1"';
-					if ($lineboard['uploadtype'] == '1') {
-						$tpl_page .= ' selected="selected"';
-					}
-					$tpl_page .= '>'. _gettext('Images and embedding') .'</option>
-					<option value="2"';
-					if ($lineboard['uploadtype'] == '2') {
-						$tpl_page .= ' selected="selected"';
-					}
-					$tpl_page .= '>'. _gettext('Embedding only') .'</option>
-					</select>
-					<div class="desc">'. _gettext('Whether or not to allow embedding of videos.') .' '. _gettext('Default') .'.: <strong>'. _gettext('No Embedding') .'</strong></div><br />';
 
 					/* Allowed filetypes */
 					$tpl_page .= '<label>'. _gettext('Allowed filetypes') .':</label>
@@ -3866,33 +3860,53 @@ class Manage {
 		$this->ModeratorsOnly();
 
 		$tpl_page .= '<h2>'. _gettext('Manage stickies') . '</h2><br />';
-		if (isset($_GET['postid']) && isset($_GET['board'])) {
-			if ($_GET['postid'] > 0 && $_GET['board'] != '') {
-				$results = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `name` FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($_GET['board']) . "");
-				if (count($results) > 0) {
-					if (!$this->CurrentUserIsModeratorOfBoard($_GET['board'], $_SESSION['manageusername'])) {
-						exitWithErrorPage(_gettext('You are not a moderator of this board.'));
-					}
-					foreach ($results as $line) {
-						$sticky_board_name = $line['name'];
-						$sticky_board_id = $line['id'];
-					}
-					$results = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $sticky_board_id ." AND `IS_DELETED` = '0' AND `parentid` = '0' AND `id` = " . $tc_db->qstr($_GET['postid']) . "");
-					if (count($results) > 0) {
-						$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "posts` SET `stickied` = '0' WHERE `boardid` = " . $sticky_board_id ." AND `parentid` = '0' AND `id` = " . $tc_db->qstr($_GET['postid']) . "");
-						$board_class = new Board($sticky_board_name);
-						$board_class->RegenerateAll();
-						unset($board_class);
-						$tpl_page .= _gettext('Thread successfully un-stickied');
-						management_addlogentry(_gettext('Unstickied thread') . ' #' . intval($_GET['postid']) . ' - /' . $sticky_board_name . '/', 5);
-					} else {
-						$tpl_page .= _gettext('Invalid thread ID. This may have been caused by the thread recently being deleted.');
-					}
-				} else {
-					$tpl_page .= _gettext('Invalid board directory.');
+		if (
+		  isset($_GET['postid'])
+		  &&
+		  isset($_GET['board'])
+		  &&
+		  $_GET['postid'] > 0
+		  &&
+		  $_GET['board'] != ''
+		) {
+			$results = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `name` FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($_GET['board']) . "");
+			if (count($results) > 0) {
+				if (!$this->CurrentUserIsModeratorOfBoard($_GET['board'], $_SESSION['manageusername'])) {
+					exitWithErrorPage(_gettext('You are not a moderator of this board.'));
 				}
-				$tpl_page .= '<hr />';
+				foreach ($results as $line) {
+					$sticky_board_name = $line['name'];
+					$sticky_board_id = $line['id'];
+				}
+				$results = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $sticky_board_id ." AND `IS_DELETED` = '0' AND `parentid` = '0' AND `id` = " . $tc_db->qstr($_GET['postid']) . "");
+				if (count($results) > 0) {
+					$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "posts` SET `stickied` = '0' WHERE `boardid` = " . $sticky_board_id ." AND `parentid` = '0' AND `id` = " . $tc_db->qstr($_GET['postid']) . "");
+					$board_class = new Board($sticky_board_name);
+					$board_class->RegenerateAll();
+					unset($board_class);
+					$msg = _gettext('Thread successfully un-stickied');
+					if ($_POST['AJAX'])
+					  exitWithSuccessJSON($msg);
+					else
+					  $tpl_page .= $msg;
+					management_addlogentry(_gettext('Unstickied thread') . ' #' . intval($_GET['postid']) . ' - /' . $sticky_board_name . '/', 5);
+				}
+				else {
+					$msg = _gettext('Invalid thread ID. This may have been caused by the thread recently being deleted.');
+					if ($_POST['AJAX'])
+					  exitWithErrorPage($msg);
+					else
+					  $tpl_page .= $msg;
+				}
 			}
+			else {
+				$msg = _gettext('Invalid board directory.');
+				if ($_POST['AJAX'])
+				  exitWithErrorPage($msg);
+				else
+				  $tpl_page .= $msg;
+			}
+			$tpl_page .= '<hr />';
 		}
 		$tpl_page .= $this->stickyforms();
 	}
@@ -3906,33 +3920,51 @@ class Manage {
 		$this->ModeratorsOnly();
 
 		$tpl_page .= '<h2>'. _gettext('Manage stickies') . '</h2><br />';
-		if (isset($_GET['postid']) && isset($_GET['board'])) {
-			if ($_GET['postid'] > 0 && $_GET['board'] != '') {
-				$results = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `name` FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($_GET['board']) . "");
-				if (count($results) > 0) {
-					if (!$this->CurrentUserIsModeratorOfBoard($_GET['board'], $_SESSION['manageusername'])) {
-						exitWithErrorPage(_gettext('You are not a moderator of this board.'));
-					}
-					foreach ($results as $line) {
-						$sticky_board_name = $line['name'];
-						$sticky_board_id = $line['id'];
-					}
-					$result = $tc_db->GetOne("SELECT HIGH_PRIORITY COUNT(*) FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $sticky_board_id . " AND `IS_DELETED` = '0' AND `parentid` = '0' AND `id` = " . $tc_db->qstr($_GET['postid']) . "");
-					if ($result > 0) {
-						$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "posts` SET `stickied` = '1' WHERE `boardid` = " . $sticky_board_id . " AND `parentid` = '0' AND `id` = " . $tc_db->qstr($_GET['postid']) . "");
-						$board_class = new Board($sticky_board_name);
-						$board_class->RegenerateAll();
-						unset($board_class);
-						$tpl_page .= _gettext('Thread successfully stickied.');
-						management_addlogentry(_gettext('Stickied thread') . ' #' . intval($_GET['postid']) . ' - /' . $sticky_board_name . '/', 5);
-					} else {
-						$tpl_page .= _gettext('Invalid thread ID. This may have been caused by the thread recently being deleted.');
-					}
-				} else {
-					$tpl_page .= _gettext('Invalid board directory.');
+		if (
+			isset($_GET['postid'])
+			&&
+			isset($_GET['board'])
+			&&
+			$_GET['postid'] > 0
+			&&
+			$_GET['board'] != ''
+		) {
+			$results = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `name` FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($_GET['board']) . "");
+			if (count($results) > 0) {
+				if (!$this->CurrentUserIsModeratorOfBoard($_GET['board'], $_SESSION['manageusername'])) {
+					exitWithErrorPage(_gettext('You are not a moderator of this board.'));
 				}
-				$tpl_page .= '<hr />';
+				foreach ($results as $line) {
+					$sticky_board_name = $line['name'];
+					$sticky_board_id = $line['id'];
+				}
+				$result = $tc_db->GetOne("SELECT HIGH_PRIORITY COUNT(*) FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $sticky_board_id . " AND `IS_DELETED` = '0' AND `parentid` = '0' AND `id` = " . $tc_db->qstr($_GET['postid']) . "");
+				if ($result > 0) {
+					$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "posts` SET `stickied` = '1' WHERE `boardid` = " . $sticky_board_id . " AND `parentid` = '0' AND `id` = " . $tc_db->qstr($_GET['postid']) . "");
+					$board_class = new Board($sticky_board_name);
+					$board_class->RegenerateAll();
+					unset($board_class);
+					$msg = _gettext('Thread successfully stickied.');
+					if ($_POST['AJAX'])
+						exitWithSuccessJSON($msg);
+					else
+						$tpl_page .= $msg;
+					management_addlogentry(_gettext('Stickied thread') . ' #' . intval($_GET['postid']) . ' - /' . $sticky_board_name . '/', 5);
+				} else {
+					$msg = _gettext('Invalid thread ID. This may have been caused by the thread recently being deleted.');
+					if ($_POST['AJAX'])
+						exitWithErrorPage($msg);
+					else
+						$tpl_page .= $msg;
+				}
+			} else {
+				$msg .= _gettext('Invalid board directory.');
+				if ($_POST['AJAX'])
+					exitWithErrorPage($msg);
+				else
+					$tpl_page .= $msg;
 			}
+			$tpl_page .= '<hr />';
 		}
 		$tpl_page .= $this->stickyforms();
 	}
@@ -3979,33 +4011,51 @@ class Manage {
 		$this->ModeratorsOnly();
 
 		$tpl_page .= '<h2>'. _gettext('Manage locked threads') . '</h2><br />';
-		if (isset($_GET['postid']) && isset($_GET['board'])) {
-			if ($_GET['postid'] > 0 && $_GET['board'] != '') {
-				$results = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `name` FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($_GET['board']) . "");
-				if (count($results) > 0) {
-					if (!$this->CurrentUserIsModeratorOfBoard($_GET['board'], $_SESSION['manageusername'])) {
-						exitWithErrorPage(_gettext('You are not a moderator of this board.'));
-					}
-					foreach ($results as $line) {
-						$lock_board_name = $line['name'];
-						$lock_board_id = $line['id'];
-					}
-					$results = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $lock_board_id . " AND `IS_DELETED` = '0' AND `parentid` = '0' AND `id` = " . $tc_db->qstr($_GET['postid']) . "");
-					if (count($results) > 0) {
-						$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "posts` SET `locked` = '1' WHERE `boardid` = " . $lock_board_id . " AND `parentid` = '0' AND `id` = " . $tc_db->qstr($_GET['postid']) . "");
-						$board_class = new Board($lock_board_name);
-						$board_class->RegenerateAll();
-						unset($board_class);
-						$tpl_page .= _gettext('Thread successfully locked.');
-						management_addlogentry(_gettext('Locked thread') . ' #'. intval($_GET['postid']) . ' - /'. intval($_GET['board']) . '/', 5);
-					} else {
-						$tpl_page .= _gettext('Invalid thread ID. This may have been caused by the thread recently being deleted.');
-					}
-				} else {
-					$tpl_page .= _gettext('Invalid board directory.');
+		if (
+		  isset($_GET['postid'])
+		  &&
+		  isset($_GET['board'])
+		  &&
+		  $_GET['postid'] > 0
+		  &&
+		  $_GET['board'] != ''
+		) {
+			$results = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `name` FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($_GET['board']) . "");
+			if (count($results) > 0) {
+				if (!$this->CurrentUserIsModeratorOfBoard($_GET['board'], $_SESSION['manageusername'])) {
+					exitWithErrorPage(_gettext('You are not a moderator of this board.'));
 				}
-				$tpl_page .= '<hr />';
+				foreach ($results as $line) {
+					$lock_board_name = $line['name'];
+					$lock_board_id = $line['id'];
+				}
+				$results = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $lock_board_id . " AND `IS_DELETED` = '0' AND `parentid` = '0' AND `id` = " . $tc_db->qstr($_GET['postid']) . "");
+				if (count($results) > 0) {
+					$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "posts` SET `locked` = '1' WHERE `boardid` = " . $lock_board_id . " AND `parentid` = '0' AND `id` = " . $tc_db->qstr($_GET['postid']) . "");
+					$board_class = new Board($lock_board_name);
+					$board_class->RegenerateAll();
+					unset($board_class);
+					$msg = _gettext('Thread successfully locked.');
+					if ($_POST['AJAX'])
+					  exitWithSuccessJSON($msg);
+					else
+					  $tpl_page .= $msg;
+					management_addlogentry(_gettext('Locked thread') . ' #'. intval($_GET['postid']) . ' - /'. intval($_GET['board']) . '/', 5);
+				} else {
+					$msg = _gettext('Invalid thread ID. This may have been caused by the thread recently being deleted.');
+					if ($_POST['AJAX'])
+					  exitWithErrorPage($msg);
+					else
+					  $tpl_page .= $msg;
+				}
+			} else {
+				$msg = _gettext('Invalid board directory.');
+				if ($_POST['AJAX'])
+				  exitWithErrorPage($msg);
+				else
+				  $tpl_page .= $msg;
 			}
+			$tpl_page .= '<hr />';
 		}
 		$tpl_page .= $this->lockforms();
 	}
@@ -4014,7 +4064,15 @@ class Manage {
 		global $tc_db, $tpl_page, $board_class;
 
 		$tpl_page .= '<h2>'. _gettext('Manage locked threads') . '</h2><br />';
-		if ($_GET['postid'] > 0 && $_GET['board'] != '') {
+		if (
+		  isset($_GET['postid'])
+		  &&
+		  isset($_GET['board'])
+		  &&
+		  $_GET['postid'] > 0
+		  &&
+		  $_GET['board'] != ''
+		) {
 			$results = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `name` FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($_GET['board']) . "");
 			if (count($results) > 0) {
 				if (!$this->CurrentUserIsModeratorOfBoard($_GET['board'], $_SESSION['manageusername'])) {
@@ -4030,13 +4088,25 @@ class Manage {
 					$board_class = new Board($lock_board_name);
 					$board_class->RegenerateAll();
 					unset($board_class);
-					$tpl_page .= _gettext('Thread successfully unlocked.');
+					$msg = _gettext('Thread successfully unlocked.');
+					if ($_POST['AJAX'])
+					  exitWithSuccessJSON($msg);
+					else
+					  $tpl_page .= $msg;
 					management_addlogentry(_gettext('Unlocked thread') . ' #'. intval($_GET['postid']) . ' - /'. intval($_GET['board']) . '/', 5);
 				} else {
-					$tpl_page .= _gettext('Invalid thread ID. This may have been caused by the thread recently being deleted.');
+					$msg = _gettext('Invalid thread ID. This may have been caused by the thread recently being deleted.');
+					if ($_POST['AJAX'])
+					  exitWithErrorPage($msg);
+					else
+					  $tpl_page .= $msg;
 				}
 			} else {
-				$tpl_page .= _gettext('Invalid board directory.');
+				$msg = _gettext('Invalid board directory.');
+				if ($_POST['AJAX'])
+				  exitWithErrorPage($msg);
+				else
+				  $tpl_page .= $msg;
 			}
 			$tpl_page .= '<hr />';
 		}
@@ -4130,14 +4200,16 @@ class Manage {
 										$tpl_page .= '<hr />Error: That thread doesn\'t have a file associated with it.<hr />';
 									}
 								}
-							} else {
+							}
+							else {
 								foreach ($results as $line) {
 									$delthread_id = $line['id'];
 								}
 								$post_class = new Post($delthread_id, $board_dir, $board_id);
 								if (isset($_POST['archive'])) {
 									$numposts_deleted = $post_class->Delete(true);
-								} else {
+								}
+								else {
 									$numposts_deleted = $post_class->Delete();
 								}
 								$board_class = new Board($board_dir);
@@ -4148,15 +4220,18 @@ class Manage {
 								management_addlogentry(_gettext('Deleted thread') . ' #<a href="?action=viewthread&thread='. $delthread_id . '&board='. $_POST['boarddir'] . '">'. $delthread_id . '</a> ('. $numposts_deleted . ' replies) - /'. $board_dir . '/', 7);
 								if (!empty($_GET['postid'])) {
 									$tpl_page .= '<br /><br /><meta http-equiv="refresh" content="1;url='. KU_CGIPATH . '/manage_page.php?action=bans&banboard='. $_GET['boarddir'] . '&banpost='. $_GET['postid'] . $cp . '"><a href="'. KU_CGIPATH . '/manage_page.php?action=bans&banboard='. $_GET['boarddir'] . '&banpost='. $_GET['postid'] . $cp . '">'. _gettext('Redirecting') . '</a> to ban page...';
-								} elseif ($isquickdel) {
+								}
+								elseif ($isquickdel) {
 									$tpl_page .= '<br /><br /><meta http-equiv="refresh" content="1;url='. KU_BOARDSPATH . '/'. $_GET['boarddir'] . '/"><a href="'. KU_BOARDSPATH . '/'. $_GET['boarddir'] . '/">'. _gettext('Redirecting') . '</a> back to board...';
 								}
 							}
-						} else {
+						}
+						else {
 							$tpl_page .= _gettext('Invalid thread ID '.$delpost_id.'. This may have been caused by the thread recently being deleted.');
 						}
 					}
-				} elseif (isset($_POST['delpostid'])) {
+				}
+				elseif (isset($_POST['delpostid'])) {
 					if ($_POST['delpostid'] > 0) {
 						$results = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $board_id . " AND `IS_DELETED` = '0' AND `id` = " . $tc_db->qstr($_POST['delpostid']) . "");
 						if (count($results) > 0) {
@@ -4201,11 +4276,12 @@ class Manage {
 						}
 					}
 				}
-			} else {
+			}
+			else {
 				$tpl_page .= _gettext('Invalid board directory.');
 			}
 		}
-		$tpl_page .= '<h2>'. _gettext('Delete thread/post') . '</h2><br />';
+		$tpl_page .= '<h2><BLINK style="color: #b30000">CURRENTLY BROKEN. PLEASE DO NOT USE THIS FORM!</BLINK><br>'. _gettext('Delete thread/post') . '</h2><br />'; //FIXME
 		if (!$multidel) {
 			$tpl_page .= '<form action="manage_page.php?action=delposts" method="post">
       <input type="hidden" name="token" value="' . $_SESSION['token'] . '" />

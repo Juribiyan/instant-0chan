@@ -71,7 +71,7 @@ if (!$cache_loaded) {
 		$cf['KU_20MAXLOGINPASS'] = 50; // Maximum login and password size for 2.0
 		$cf['KU_SUPPORTED_LOCALES'] = 'ru|en';	// 
 		$cf['KU_FFMPEGPATH'] = '/usr/local/bin/ffmpeg'; //path to FFMPEG, for example 'C:\ffmpeg\bin'
-
+		$cf['KU_SHOW_ORIGINAL_FILENAMES'] = true;
 		$cf['KU_MAXNAMELENGTH'] = 75; 
 		$cf['KU_MAXEMAILLENGTH'] = 4; 	// do we need more?
 		$cf['KU_MAXSUBJLENGTH'] = 75; 
@@ -86,6 +86,7 @@ if (!$cache_loaded) {
 		$cf['I0_SMILES_ENABLED'] = true;
 		$cf['I0_USERSMILES_ENABLED'] = true;
 		$cf['I0_SMILEDIR'] = 'images/smileys/'; // Make sure to set proper write rights to this directory
+		$cf['I0_FORCE_HTML_NOCACHE'] = true; // When AJAX-ing HTML, force no-cache (default: off (server must handle this, recommended for local debugging only))
 
 	// Database
 		$cf['KU_DBTYPE']          = 'mysqli';	// Database type. Valid values are mysql and mysqli (reccomended for mysql). 
@@ -133,14 +134,14 @@ if (!$cache_loaded) {
 		$cf['KU_CACHEDTEMPLATEDIR'] = $cf['KU_ROOTDIR'] . 'dwoo/templates_c'; // Dwoo compiled templates directory.  This folder MUST be writable (you may need to chmod it to 755).  Set to '' to disable template caching
 
 	// CSS styles
-		$cf['KU_STYLES']        = 'summer:winter:autumn:photon:modern:dark:newdark'; // Styles which are available to be used for the boards, separated by colons, in lower case.  These will be displayed next to [Home] [Manage] if KU_STYLESWIKUHER is set to true
-		$cf['KU_DEFAULTSTYLE']  = 'autumn'; // If Default is selected in the style list in board options, it will use this style.  Should be lower case
+		$cf['KU_STYLES']        = 'modern:newdark'; // Styles which are available to be used for the boards, separated by colons, in lower case.  These will be displayed next to [Home] [Manage] if KU_STYLESWIKUHER is set to true
+		$cf['KU_DEFAULTSTYLE']  = 'newdark'; // If Default is selected in the style list in board options, it will use this style.  Should be lower case
 		$cf['KU_STYLESWITCHER'] = true; // Whether or not to display the different styles in a clickable switcher at the top of the board
 		$cf['KU_DROPSWITCHER']	= false; // Whether or not to use a dropdown style switcher. False is use plaintext switcher, true is dropdown.
 
 		$cf['KU_MENUTYPE']          = 'normal'; // Type of display for the menu.  normal will add the menu styles and such as it normally would, plain will not use the styles, and will look rather boring
-		$cf['KU_MENUSTYLES']        = 'summer:winter:autumn:photon:modern:dark:newdark'; // Menu styles
-		$cf['KU_DEFAULTMENUSTYLE']  = 'autumn'; // Default menu style
+		$cf['KU_MENUSTYLES']        = 'modern:newdark'; // Menu styles
+		$cf['KU_DEFAULTMENUSTYLE']  = 'newdark'; // Default menu style
 		$cf['KU_MENUSTYLESWITCHER'] = true; // Whether or not to display the different styles in a clickable switcher in the menu
 
 	// Limitations
@@ -154,6 +155,7 @@ if (!$cache_loaded) {
 		$cf['KU_THUMBHEIGHT']      = 200; // Maximum thumbnail height
 		$cf['KU_REPLYTHUMBWIDTH']  = 125; // Maximum thumbnail width (reply)
 		$cf['KU_REPLYTHUMBHEIGHT'] = 125; // Maximum thumbnail height (reply)
+		$cf['KU_VIDEOTHUMBWIDTH'] = 250;
 		$cf['KU_CATTHUMBWIDTH']    = 50; // Maximum thumbnail width (catalog)
 		$cf['KU_CATTHUMBHEIGHT']   = 50; // Maximum thumbnail height (catalog)
 		$cf['KU_THUMBMETHOD']      = 'gd'; // Method to use when thumbnailing images in jpg, gif, or png format.  Options available: gd, imagemagick, ffmpeg
@@ -171,7 +173,6 @@ if (!$cache_loaded) {
 		$cf['KU_THREADS']         = 10; // Number of threads to display on a board page
 		$cf['KU_REPLIES']         = 5; // Number of replies to display on a board page
 		$cf['KU_REPLIESSTICKY']   = 1; // Number of replies to display on a board page when a thread is stickied
-		$cf['KU_THUMBMSG']        = false; // Whether or not to display the "Thumbnail displayed, click image for full size." message on posts with images
 		$cf['KU_BANMSG']          = '<br /><font color="#FF0000"><b>(USER WAS BANNED FOR THIS POST)</b></font>'; // The text to add at the end of a post if a ban is placed and "Add ban message" is checked
 		$cf['KU_TRADITIONALREAD'] = false; // Whether or not to use the traditional style for multi-quote urls.  Traditional: read.php/board/thread/posts, Non-traditional: read.php?b=board&t=thread&p=posts
 		$cf['KU_YOUTUBEWIDTH']    = 200; // Width to display embedded YouTube videos
@@ -194,8 +195,6 @@ if (!$cache_loaded) {
 
 	// Extra features
 		$cf['KU_RSS']             = true; // Whether or not to enable the generation of rss for each board and modlog
-		$cf['KU_EXPAND']          = true; // Whether or not to add the expand button to threads viewed on board pages
-		$cf['KU_QUICKREPLY']      = true; // Whether or not to add quick reply links on posts
 		$cf['KU_WATCHTHREADS']    = false; // Whether or not to add thread watching capabilities
 		$cf['KU_FIRSTLAST']       = false; // Whether or not to generate extra files for the first 100 posts/last 50 posts
 		$cf['KU_BLOTTER']         = true; // Whether or not to enable the blotter feature

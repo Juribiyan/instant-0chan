@@ -330,6 +330,9 @@ msgstr "Не истек"
 msgid "Duplicate file entry detected."
 msgstr "Обнаружен дублирующий файл."
 
+msgid "Duplicate embed entry detected."
+msgstr "Обнаружено дублирующее вложение."
+
 msgid "Duplicate thread subject"
 msgstr "Дублирующая тема треда"
 
@@ -638,7 +641,10 @@ msgid "Marked for deletion (old)."
 msgstr "Отмечено к удалению (старое)."
 
 msgid "Maximum file size allowed is"
-msgstr "Максимальный размер файла"
+msgstr "Максимальный размер файла:"
+
+msgid "Maximum number of files + embeds per post is"
+msgstr "Максимальное количество файлов + вложений:"
 
 msgid "Maximum board pages"
 msgstr "Максимальное количество страниц борды"
@@ -971,7 +977,7 @@ msgid "Reply"
 msgstr "Ответ"
 
 msgid "Report"
-msgstr "Отправить"
+msgstr "Пожаловаться"
 
 msgid "Report post"
 msgstr "Настучать на пост"
@@ -1049,7 +1055,7 @@ msgid "Sorry, because of your numerous failed logins, you have been locked out f
 msgstr "Слишком много попыток захода. Обожди 20 минут. И попробуй снова."
 
 msgid "Sorry, that filetype is not allowed on this board."
-msgstr "Типа файла не разрешен к отправке на это доску."
+msgstr "Типа файла не разрешен к отправке на эту доску."
 
 msgid "Sorry, this board is locked and can not be posted in."
 msgstr "Эта доска закрыта, в неё нельзя отправлять сообщения."
@@ -2040,3 +2046,12 @@ msgstr "Загруженный CSS превышает допустимый ра�
 
 msgid "Anonymously"
 msgstr "Анонимно"
+
+msgid "No file or embed required for a new thread on this board"
+msgstr "На этой доске разрешено создание тредов без файла или видео"
+
+msgid "s"
+msgstr " с"
+
+msgid "replies deleted"
+msgstr "ответов удалено"

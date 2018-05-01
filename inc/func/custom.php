@@ -92,4 +92,36 @@ function declense($num) {
   else return 2;
 }
 
+function set_max_filename_width($thumb_w, $has_title) {
+  $width = $thumb_w - ($has_title ? 25 : 50);
+  return ($width >= 30) ? ' style="max-width:'.$width.'px"' : '';
+}
+
+function get_embed_filename($embed) {
+  if (isset($embed['id3']['comments_html'])) {
+    $r = '';
+    if ($embed['id3']['comments_html']['artist'][0])
+      $r .= $embed['id3']['comments_html']['artist'][0].' — ';
+    if ($embed['id3']['comments_html']['title'][0]) {
+      $r .= $embed['id3']['comments_html']['title'][0];
+      return $r;
+    }
+    else
+      return $embed['file_original'];
+  }
+  else if (
+    $embed['file_type'] == 'mp3'
+    ||
+    $embed['file_type'] == 'ogg'
+    ||
+    $embed['file_type'] == 'swf'
+    ||
+    KU_SHOW_ORIGINAL_FILENAMES
+  ) {
+    return $embed['file_original'];
+  }
+  else
+    return $embed['file'];
+}
+
 ?>

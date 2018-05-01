@@ -1,45 +1,18 @@
 <?php
-/**
- * Display the embedded video
- *
- * @param array $post Post data
- * @return string Embedded video
- */
-function embeddedVideoBox($post) {
-	global $tc_db;
-	$results = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "embeds`");
-
-	$output = '<span style="float: left;">' . "\n";
-
-	foreach ($results as $line) {
-		if ($post['file_type'] == $line['filetype']) {
-			$code = $line['code'];
-			/*$width = $line['width'];
-			$height = $line['height'];*/
-			$replace = array('SET_HEIGHT', 'SET_WIDTH', 'EMBED_ID');
-			$trueval = array($line['height'], $line['width'], $post['file']);
-
-			$code = str_replace($replace, $trueval, $code);
-			$output .= $code;
-		}
-
-	}
-
-	$output .= '</span>&nbsp;' . "\n";
-
-	return $output;
-}
 
 /**
  * Check if the supplied md5 file hash is currently recorded inside of the database, attached to a non-deleted post
  */
 function checkMd5($md5, $board, $boardid) {
 	global $tc_db;
-	$matches = $tc_db->GetAll("SELECT `id`, `parentid` FROM `".KU_DBPREFIX."posts` WHERE `boardid` = " . $boardid . " AND `IS_DELETED` = 0 AND `file_md5` = ".$tc_db->qstr($md5)." LIMIT 1");
+	$matches = $tc_db->GetAll("SELECT `id`, `parentid` 
+		FROM `".KU_DBPREFIX."postembeds` 
+		WHERE `boardid` = " . $boardid . " 
+		AND `IS_DELETED` = 0 
+		AND `file_md5` = ".$tc_db->qstr($md5)." LIMIT 1");
 	if (count($matches) > 0) {
-		$real_parentid = ($matches[0][1] == 0) ? $matches[0][0] : $matches[0][1];
-
-		return array($real_parentid, $matches[0][0]);
+		$real_parentid = ($matches[0]['parentid'] == 0) ? $matches[0]['id'] : $matches[0]['parentid'];
+		return array($real_parentid, $matches[0]['id']);
 	}
 
 	return false;
@@ -62,7 +35,7 @@ function createThumbnail($name, $filename, $new_w, $new_h) {
 			$convert .= '[0] ';
 		}
 		$convert .= ' -resize ' . $new_w . 'x' . $new_h . ' -quality ';
-		if (substr(strrchr($filename,'.'),1) != 'gif') {
+		if (substr($filename, 0, -3) != 'gif') {
 			$convert .= '70';
 		} else {
 			$convert .= '90';
@@ -70,53 +43,47 @@ function createThumbnail($name, $filename, $new_w, $new_h) {
 		$convert .= ' ' . escapeshellarg($filename);
 		exec($convert);
 
-		if (KU_USEOPTIPNG) {
-			if (substr(strrchr($filename,'.'),1) == 'png') {
-				$opti =  'optipng -o' . escapeshellarg(KU_OPTIPNGLV);
-				$opti .= ' ' . escapeshellarg($filename);
-				exec($opti);
-			}
-		}
+    if (KU_USEOPTIPNG) {
+      if (substr(strrchr($filename,'.'),1) == 'png') {
+        $opti =  'optipng -o' . escapeshellarg(KU_OPTIPNGLV);
+        $opti .= ' ' . escapeshellarg($filename);
+        exec($opti);
+      }
+    }
 
 		if (is_file($filename)) {
 			return true;
 		} else {
 			return false;
 		}
-	} elseif (KU_THUMBMETHOD == 'ffmpeg') {
-		$imagewidth = exec('ffprobe -v quiet -show_entries stream=width -of default=noprint_wrappers=1:nokey=1 '. escapeshellarg($name));
-		$imageheight = exec('ffprobe -v quiet -show_entries stream=height -of default=noprint_wrappers=1:nokey=1 '. escapeshellarg($name));
-		$convert = 'ffmpeg -i ' . escapeshellarg($name);
-		if (!KU_ANIMATEDTHUMBS) {
-			$convert .= ' -vframes 1';
-		}
-		if ($imagewidth > $imageheight) {
-			$convert .= ' -vf scale="' . $new_w . ':-1" -quality ';
-		} else {
-			$convert .= ' -vf scale="-1:' . $new_h . '" -quality ';
-		}	
-		if (substr(strrchr($filename,'.'),1) != 'gif') {
-			$convert .= '70';
-		} else {
-			$convert .= '90';
-		}
-		$convert .= ' ' . escapeshellarg($filename);
-		exec($convert);
+	}
+  elseif (KU_THUMBMETHOD == 'ffmpeg') {
+    $imagewidth = exec('ffprobe -v quiet -show_entries stream=width -of default=noprint_wrappers=1:nokey=1 '. escapeshellarg($name));
+    $imageheight = exec('ffprobe -v quiet -show_entries stream=height -of default=noprint_wrappers=1:nokey=1 '. escapeshellarg($name));
+    $convert = 'ffmpeg -i ' . escapeshellarg($name);
+    if (!KU_ANIMATEDTHUMBS) {
+      $convert .= ' -vframes 1';
+    }
+    if ($imagewidth > $imageheight) {
+      $convert .= ' -vf scale="' . $new_w . ':-1" -quality ';
+    } else {
+      $convert .= ' -vf scale="-1:' . $new_h . '" -quality ';
+    } 
+    if (substr($filename, 0, -3) != 'gif') {
+      $convert .= '70';
+    } else {
+      $convert .= '90';
+    }
+    $convert .= ' ' . escapeshellarg($filename);
+    exec($convert);
 
-		if (KU_USEOPTIPNG) {
-			if (substr(strrchr($filename,'.'),1) == 'png') {
-				$opti =  'optipng -o' . escapeshellarg(KU_OPTIPNGLV);
-				$opti .= ' ' . escapeshellarg($filename);
-				exec($opti);
-			}
-		}
-
-		if (is_file($filename)) {
-			return true;
-		} else {
-			return false;
-		}
-	} elseif (KU_THUMBMETHOD == 'gd') {
+    if (is_file($filename)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+	elseif (KU_THUMBMETHOD == 'gd') {
 		$system=explode(".", $filename);
 		$system = array_reverse($system);
 		if (preg_match("/jpg|jpeg/", $system[0])) {
@@ -251,6 +218,141 @@ function check_link($link) {
 	$parts = explode("n",$stuff,2);
 	$main = explode(" ",$parts[0],3);
 	return $main;
+}
+
+/**
+ * Fetch information about the video from hosting's API
+ *
+ * @param string $site Website name (you=Youtube, vim=Vimeo, cob=Coub)
+ * @param string $code Video code
+ * @param integer $maxwidth Maximum thumbnail width in pixels
+ * @return array(
+	   	string $file Temp file URL
+	   	string $title Video title
+	   	string $duration Video duration ([hh:]mm:ss)
+	   	integer $width Thumbnail width in pixels
+	   	resource $tmpfile Temp file descriptor
+ 	 )
+ */
+function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
+  if (! in_array($site, array('you', 'vim', 'cob')))
+    return array('error' => 'unsupported_site');
+  // Pre-setup
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+  curl_setopt ($ch, CURLOPT_TIMEOUT, 10);
+  // Getting a URL
+  if ($site == 'cob')
+    $url = "http://coub.com/api/v2/coubs/".$code.".json";
+  if ($site == 'vim')
+    $url = 'http://vimeo.com/api/v2/video/'.$code.'.json';
+  if ($site == 'you')
+    $url = 'https://www.googleapis.com/youtube/v3/videos?part=contentDetails%2Csnippet&id='.$code.'&key='.KU_YOUTUBE_APIKEY;
+  curl_setopt($ch, CURLOPT_URL,$url);
+  // Fetching data
+  $result=curl_exec($ch);
+  switch (curl_getinfo($ch, CURLINFO_HTTP_CODE)) {
+    case 404: return array('error' => _gettext('Unable to connect to')); break;
+    case 303: return array('error' => _gettext('Invalid video ID.')); break;
+    case 302: break;
+    case 301: break;
+    case 200: break;
+    default:  return array('error' => _gettext('Invalid response code ').' (JSON)'); break;
+  }
+  curl_close($ch);
+  $data = json_decode($result, true);
+  if ($data == NULL)
+    return array('error' => _gettext('API returned invalid data.'));
+  // Find needed thumbnail width
+  if ($site == 'cob') {
+    $widths_available = array(
+      'micro' => 70,
+      'tiny' => 112,
+      'small' => 400,
+      'med' => 640,
+      'big' => 1280
+    );
+  }
+  if ($site == 'vim') {
+    $widths_available = array(
+      'small' => 100,
+      'medium' => 200,
+      'large' => 640
+    );
+  }
+  if ($site == 'you') {
+    $widths_available = array(
+      'default' => 120,
+      'medium' => 320,
+      'high' => 480,
+      'standard' => 640,
+      'maxres' => 1280
+    );
+  }
+  $i = 0; 
+  $options_available = count($widths_available);
+  foreach ($widths_available as $preset => $width) {
+    $i++;
+    if ($width >= $maxwidth || $options_available == $i) {
+      $chosen_preset = $preset;
+      $thumbwidth = $width;
+      break;
+    }
+  }
+  // Get thumbnail URL
+  if ($site == 'cob') {
+    $thumb_url = preg_replace('/%{version}/', $chosen_preset, $data['image_versions']['template']);
+  }
+  if ($site == 'vim') {
+    $thumb_url = preg_replace('/\.webp/', '.jpg', $data[0]['thumbnail_'.$chosen_preset]);
+  }
+  if ($site == 'you') {
+    $thumb_url = $data['items'][0]['snippet']['thumbnails'][$chosen_preset]['url'];
+  }
+  // Download thumbnail to temporary directory
+  $ch = curl_init($thumb_url);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+  curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+  curl_setopt($ch, CURLOPT_FILE, $thumb_tmpfile);
+  curl_setopt($ch, CURLOPT_HEADER, 0);
+  curl_exec($ch);
+  switch (curl_getinfo($ch, CURLINFO_HTTP_CODE)) {
+    case 404: return array('error' => _gettext('Unable to retrieve thumbnail')); break;
+    case 303: return array('error' => _gettext('Unable to retrieve thumbnail')); break;
+    case 302: break;
+    case 301: break;
+    case 200: break;
+    default:  return array('error' => _gettext('Invalid response code ').' (Thumb)'); break;
+  }
+  curl_close($ch);
+  // Get the rest of the data
+  $r = array('width' => $thumbwidth);
+  if ($site == 'cob') {
+  	$r['width'] = $data['dimensions']['big'][0];
+  	$r['height'] = $data['dimensions']['big'][1];
+    $r['title'] = $data['title'];
+    $duration = $data['duration'];
+  }
+  if ($site == 'vim') {
+  	$r['width'] = $data[0]['width'];
+  	$r['height'] = $data[0]['height'];
+    $r['title'] = $data[0]['title'];
+    $duration = $data[0]['duration'];
+  }
+  if ($site == 'you') {
+  	$r['width'] = 1920;
+  	$r['height'] = 1080;
+    $r['title'] = $data['items'][0]['snippet']['title'];
+    $duration = preg_replace_callback('/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/', 'ISO8601_callback', $data['items'][0]['contentDetails']['duration']);
+  }
+  if ($r['title']===NULL || $duration===NULL)
+  	return array('error' => _gettext('API returned invalid data.'));
+  // Convert duration into readable string
+  $r['duration'] = preg_replace('/^00:/m', '', gmdate("H:i:s", round($duration, 0)));
+  $r['error'] = false;
+  return $r;
 }
 
 /**

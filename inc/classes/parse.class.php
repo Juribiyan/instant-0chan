@@ -188,6 +188,7 @@ class Parse {
 			$buffer .= "\n";
 		}
 
+		/* The css for imageboards use 'unkfunc' (???) as the class for quotes */
 		$class = 'unkfunc';
 		$linechar = "\n";
 
@@ -219,7 +220,8 @@ class Parse {
 	function InterthreadProofLabel($matches) {
 		global $tc_db, $ispage, $thread_board_return, $thread_board_id;
 
-		if(in_array(strtoupper($matches[1]), array('OP', 'ОП'))) $matches[1] = $this->parentid;
+		if (in_array(strtoupper($matches[1]), array('OP', 'ОП'))) 
+			$matches[1] = $this->parentid;
 		if (is_numeric($matches[1])) {
 			$result = $tc_db->GetAll("SELECT `parentid`, `ipmd5` FROM `".KU_DBPREFIX."posts` WHERE `boardid` = " . $this->boardid . " AND `id` = ".$tc_db->qstr($matches[1]));
 			if(count($result) > 0) {
@@ -361,7 +363,7 @@ class Parse {
 	}
 
 	function Smileys($string){
-		$string = preg_replace_callback('`:([0-9a-z]+?):`is', array(&$this, 'smiley_callback'), $string);
+		$string = preg_replace_callback('`:(.+?):`is', array(&$this, 'smiley_callback'), $string);
 		return $string;
 	}
 

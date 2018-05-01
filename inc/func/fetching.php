@@ -104,4 +104,65 @@ function getfiletypeinfo($filetype) {
 
 	return $return;
 }
+
+/**
+ * Groups multiple embeds into one post
+ *
+ * @param array $r Postembeds view fetch result
+ * @return array Posts with array Embeds[] attached
+ */
+function group_embeds($r, $group_deleted_files = false) {
+	global $tc_db;
+
+	$rg = array();
+	$i = -1;
+	$current_id = 0;
+
+	foreach($r as $pe) {
+		$id = (int)$pe['id'];
+		if ($id !== $current_id) {
+			$rg []= $pe;
+			$i++;
+			$rg[$i]['embeds'] = array();
+			unset($rg[$i]['file']);
+			unset($rg[$i]['file_id']);
+			unset($rg[$i]['file_md5']);
+			unset($rg[$i]['file_type']);
+			unset($rg[$i]['file_original']);
+			unset($rg[$i]['file_size']);
+			unset($rg[$i]['file_size_formatted']);
+			unset($rg[$i]['image_w']);
+			unset($rg[$i]['image_h']);
+			unset($rg[$i]['thumb_w']);
+			unset($rg[$i]['thumb_h']);
+			$current_id = $id;
+		}
+		if ($pe['file']) {
+			if ($group_deleted_files) {
+				if ($pe['file'] == 'removed') {
+					if ($rg[$i]['deleted_files']) {
+						$rg[$i]['deleted_files']++;
+					}
+					else {
+						$rg[$i]['deleted_files'] = 1;
+					}
+				}
+			}
+			$rg[$i]['embeds'] []= array(
+				'file' => $pe['file'],
+				'file_id' => $pe['file_id'],
+				'file_md5' => $pe['file_md5'],
+				'file_type' => $pe['file_type'],
+				'file_original' => $pe['file_original'],
+				'file_size' => $pe['file_size'],
+				'file_size_formatted' => $pe['file_size_formatted'],
+				'image_w' => $pe['image_w'],
+				'image_h' => $pe['image_h'],
+				'thumb_w' => $pe['thumb_w'],
+				'thumb_h' => $pe['thumb_h']
+			);
+		}
+	}
+	return $rg;
+}
 ?>

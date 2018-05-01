@@ -63,32 +63,22 @@ class Posting {
 		}
 	}
 
-	function CheckValidPost() {
-		global $tc_db, $board_class;
+	function CheckValidPost($post_isreply) {
+		global $tc_db, $board_class, $upload_class;
 
-		if (
-			( /* A message is set, or an image was provided */
-				isset($_POST['message']) ||
-				isset($_FILES['imagefile'])
-			) || (
-				( /* It has embedding allowed */
-						$board_class->board['uploadtype'] == '1' ||
-						$board_class->board['uploadtype'] == '2'
-				) && ( /* An embed ID was provided, or no file was checked and no ID was supplied */
-						isset($_POST['embed']) ||
-						(
-							$board_class->board['uploadtype'] == '2' &&
-							!isset($_FILES['imagefile']) &&
-							isset($_POST['nofile']) &&
-							$board_class->board['enablenofile'] == true
-						)
-				)
-			)
-		) {
-			return true;
-		} else {
-			return false;
+		if (!count($upload_class->attachments) && !preg_match('/\S/', $_POST['message'])) {
+			if ($post_isreply) {
+				exitWithErrorPage(_gettext('An image, video, or message, is required for a reply.'));
+			}
+			elseif ($board_class->board['enablenofile'] == true) {
+				exitWithErrorPage('A message is required to post without a file.');
+			}
+			else {
+				exitWithErrorPage(_gettext('A file is required for a new thread. If embedding is allowed, either a file or embed ID is required.'));
+			}
 		}
+
+		return true;
 	}
 
 	function CheckMessageLength() {
@@ -125,12 +115,12 @@ class Posting {
 		/* If the board has captcha's enabled... */
 		if ($board_class->board['enablecaptcha'] == 1) {
 			require_once(KU_ROOTDIR.'recaptchalib.php');
-
 			$privatekey = "6LdVg8YSAAAAALayugP2r148EEQAogHPfQOSYow-";
+
 			// was there a reCAPTCHA response?
-			$resp = recaptcha_check_answer ($privatekey,
-				$_SERVER["REMOTE_ADDR"],
-				$_POST["recaptcha_challenge_field"],
+			$resp = recaptcha_check_answer ($privatekey, 
+				$_SERVER["REMOTE_ADDR"], 
+				$_POST["recaptcha_challenge_field"], 
 				$_POST["recaptcha_response_field"]
 			);
 			if (!$resp->is_valid) {
@@ -140,18 +130,20 @@ class Posting {
 		}
 	}
 
+	// Check duplicate files and embeds, check banned files
 	function CheckBannedHash() {
-		global $tc_db, $board_class, $bans_class;
+		global $tc_db, $board_class, $bans_class, $upload_class;
 
-		/* Banned file hash check */
-		if (isset($_FILES['imagefile'])) {
-			if ($_FILES['imagefile']['name'] != '') {
-				$results = $tc_db->GetAll("SELECT `bantime` , `description` FROM `" . KU_DBPREFIX . "bannedhashes` WHERE `md5` = " . $tc_db->qstr(md5_file($_FILES['imagefile']['tmp_name'])) . " LIMIT 1");
-				if (count($results) > 0) {
-						$bans_class->BanUser($_SERVER['REMOTE_ADDR'], 'SERVER', '1', $results[0]['bantime'], '', 'Posting a banned file.<br />' . $results[0]['description'], 0, 0, 1);
-						$bans_class->BanCheck($_SERVER['REMOTE_ADDR'], $board_class->board['name']);
-						die();
-				}
+		foreach($upload_class->attachments as &$attachment) {
+			$results = $tc_db->GetAll("SELECT `bantime` , `description` 
+				FROM `" . KU_DBPREFIX . "bannedhashes` 
+				WHERE `md5` = " . $tc_db->qstr($attachment['file_md5']) . " 
+				LIMIT 1");
+			if (count($results) > 0) {
+				$bans_class->BanUser($_SERVER['REMOTE_ADDR'], 'SERVER', '1', $results[0]['bantime'], '', 'Posting a banned file.<br />' . $results[0]['description'], 0, 0, 1);
+				$bans_class->BanCheck($_SERVER['REMOTE_ADDR'], $board_class->board['name']);
+				die();
+				// TODO: AJAX response
 			}
 		}
 	}
@@ -183,7 +175,7 @@ class Posting {
 
 		$result = $tc_db->GetOne("SELECT COUNT(*) FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $board_class->board['id'] . " AND `IS_DELETED` = '0' AND `subject` = " . $tc_db->qstr($subject) . " AND `parentid` = '0'");
 		if ($result > 0) {
-			exitWithErrorPage(_gettext('Duplicate thread subject'), _gettext('This board may have only one thread with an unique subject. Please pick another.'));
+			exitWithErrorPage(_gettext('Duplicate thread subject'), _gettext('This board may have only one thread with a unique subject. Please pick another.'));
 		}
 	} */
 
@@ -254,6 +246,7 @@ class Posting {
 	}
 
 	function CheckBadUnicode($post_name, $post_email, $post_subject, $post_message) {
+		global $upload_class;
 		/* Check for bad characters which can cause the page to deform (right-to-left markers, etc) */
 		$bad_ords = array(8235, 8238);
 
@@ -261,7 +254,12 @@ class Posting {
 		$ords_email = unistr_to_ords($post_email);
 		$ords_subject = unistr_to_ords($post_subject);
 		$ords_message = unistr_to_ords($post_message);
-		$ords_filename = isset($_FILES['imagefile']) ? unistr_to_ords($_FILES['imagefile']['name']) : '';
+		$ords_attachment = array();
+		foreach ($upload_class->attachments as $attachment) {
+			$ords_attachment []= unistr_to_ords(($attachment['attachmenttype'] == 'file') 
+				? $attachment['file_original']
+				: $attachment['embed'] );
+		}
 		foreach ($bad_ords as $bad_ord) {
 			if ($ords_name != '') {
 				if (in_array($bad_ord, $ords_name)) {
@@ -283,8 +281,8 @@ class Posting {
 					exitWithErrorPage(_gettext('Your post contains one or more illegal characters.'));
 				}
 			}
-			if ($ords_filename != '') {
-				if (in_array($bad_ord, $ords_filename)) {
+			foreach($ords_attachment as $ord) {
+				if (in_array($bad_ord, $ord)) {
 					exitWithErrorPage(_gettext('Your post contains one or more illegal characters.'));
 				}
 			}
@@ -318,8 +316,8 @@ class Posting {
 		global $bans_class, $tc_db;
 
 		// Check if message html does not exceed field value
-		$maxlength = (int)($tc_db->GetOne("SELECT character_maximum_length
-			FROM   information_schema.columns
+		$maxlength = (int)($tc_db->GetOne("SELECT character_maximum_length 
+			FROM   information_schema.columns 
 			WHERE  table_name = '".KU_DBPREFIX."posts' AND	column_name = 'message'"));
 		$msglength = strlen($msg);
 		if ($msglength > $maxlength) {

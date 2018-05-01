@@ -90,9 +90,7 @@ a:visited {
 	/* color: #fff; */
 }
 .filesize {
-	text-decoration:none;
 	color: #666666;
-	font-size: .8em;
 }
 .filetitle {
 	background:inherit;
@@ -117,19 +115,12 @@ a:visited {
 .reply {
 	background: #F8F8F8;
 	padding: 0;
-	padding-right: 2px;
 	border-radius: 0px;
 	border: 1px #CCC solid;
-}
-blockquote {
-	margin: .5em .5em .5em 1em;
 }
 blockquote p {
 	margin: 0;
 	padding: 0;
-}
-.reply blockquote {
-	margin: .5em;
 }
 .doubledash {
 	display: none;
@@ -167,7 +158,6 @@ table td {
 .nothumb {
 	background-color: #FFFFFF;
 	border-style: dotted;
-	margin: .3em .5em;
 }
 
 .abbrev {
@@ -188,8 +178,7 @@ table td {
 }
 .b-icon:hover {
 	background-color: rgba(255, 255, 255, 0.67);
-	-webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
-	        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
 	fill: rgb(23, 53, 85);
 }
 
@@ -213,19 +202,15 @@ table td {
 #overlay_menu {
 	-webkit-transition: box-shadow 0.2s, background-color 0.2s;
 	-webkit-transition: background-color 0.2s, -webkit-box-shadow 0.2s;
-	transition: background-color 0.2s, -webkit-box-shadow 0.2s;
 	transition: box-shadow 0.2s, background-color 0.2s;
-	transition: box-shadow 0.2s, background-color 0.2s, -webkit-box-shadow 0.2s;
 	-o-transition: box-shadow 0.2s, background-color 0.2s;
 	-moz-transition: box-shadow 0.2s, background-color 0.2s;
-	-webkit-box-shadow: none;
-	        box-shadow: none;
+	box-shadow: none;
 	border-radius: 0;
 }
 
 #overlay_menu:hover {
-	-webkit-box-shadow: 0 0 20px #ccc;
-	        box-shadow: 0 0 20px #ccc;
+	box-shadow: 0 0 20px #ccc;
 	background: rgb(247, 247, 247);
 }
 
@@ -243,15 +228,9 @@ table td {
 	background: rgba(97, 138, 182, 0.07);
 }
 
-.maintable hr {
-	margin-left: -9px;
-margin-right: -9px;
-}
-
 .reflinkpreview {
 	border: 1px #CCC solid;
 	border-radius: none;
-	-webkit-box-shadow: 0 0 20px #ccc;
 	box-shadow: 0 0 20px #ccc;
 	border-radius: 0;
 }
@@ -261,7 +240,6 @@ input[type="text"], textarea {
 }
 
 .reflinkpreview .reply {
-	-webkit-box-shadow: none;
 	box-shadow: none;
 	/*margin: 0px;*/
 	border: none;
@@ -301,8 +279,7 @@ color: #000;
 }
 .cat-entry:hover .cat-card {
   background: #FFFFFF;
-  -webkit-box-shadow: 0 4px 8px #CCCCCC;
-          box-shadow: 0 4px 8px #CCCCCC;
+  box-shadow: 0 4px 8px #CCCCCC;
 }
 .nofile-removed {
 	border: 2px dashed #A6A7A9;
@@ -321,6 +298,7 @@ color: #000;
 .cat-entry:after {
 	background: -webkit-gradient(linear, left top, left bottom, from(rgba(135,224,253,0)),to(rgb(248, 248, 248)));
 	background: -webkit-linear-gradient(top, rgba(135,224,253,0) 0%,rgb(248, 248, 248) 100%);
+	background: -o-linear-gradient(top, rgba(135,224,253,0) 0%,rgb(248, 248, 248) 100%);
 	background: linear-gradient(to bottom, rgba(135,224,253,0) 0%,rgb(248, 248, 248) 100%);
 }
 .thumbExpanded .bigThumb {
@@ -328,12 +306,10 @@ color: #000;
 }
 .button-group {
 	background: rgba(255, 255, 255, 0.6);
-	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-	        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 .button-group:hover {
-  -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
-          box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
   background: rgba(255, 255, 255, 0.75);
 }
 .bg-button:hover {
@@ -342,8 +318,7 @@ color: #000;
 }
 .bgb-selected, .bgb-selected:hover {
   background: #BDD4EC;
-  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-          box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 .ce-gallery .namedate-overlay:hover {
   background: white;
@@ -372,4 +347,12 @@ color: #000;
 .reply::-webkit-scrollbar-corner {
   background: #f8f8f8;
   border-radius: 0 0 6px 0;
+}
+figure {
+  background-color: rgba(97, 138, 182, 0.09);
+}
+
+.form-spinner {
+  border-color: #90b3da;
+  box-shadow: 0 0 88px #658ebd, inset 0 0 88px #658ebd;
 }

@@ -30,8 +30,7 @@
  * @package kusaba
  */
 
-// }}}
-// {{{ Fake email field check
+// Fake email field check
 if (isset($_POST['email']) && !empty($_POST['email'])) {
 	exitWithErrorPage('Spam bot detected');
 }
@@ -66,16 +65,17 @@ function notify($id="???", $newthreadid = '') {
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-		    'Content-Type: application/json',
-		    'Content-Length: ' . strlen($data_string))
+			'Content-Type: application/json',
+			'Content-Length: ' . strlen($data_string))
 		);
 		curl_exec($ch);
 		if(curl_errno($ch)) error_log('Curl error during Notify: ' . curl_error($ch).' (Error code: '.curl_errno($ch).')');
 	}
 }
 
-class PostAction {
-  function __construct($id, $is_ajax) {
+class PolymorphicReporter {
+  function __construct($itemtype, $id, $is_ajax) {
+  	$this->itemtype = $itemtype;
     $this->id = $id;
     $this->is_ajax = $is_ajax;
   }
@@ -86,7 +86,7 @@ class PostAction {
       $this->message = $msg;
     }
     else
-      echo '#' . $this->id . ': ' . $msg . '<br />';
+      echo $this->itemtype . ' #' . $this->id . ': ' . $msg . '<br />';
   }
 
   function succ($msg="") {
@@ -95,12 +95,13 @@ class PostAction {
       $this->message = $msg;
     }
     else
-      echo '#' . $this->id . ': ' . $msg . '<br />';
+      echo $this->itemtype . ' #' . $this->id . ': ' . $msg . '<br />';
   }
 
   function report() {
     return array(
       'id' => $this->id,
+      'itemtype' => $this->itemtype,
       'action' => $this->action,
       'success' => $this->success,
       'message' => $this->message
@@ -119,18 +120,10 @@ function error_redirect($url, $message) {
 	}
 }
 
-// {{{ Module loading
-
 modules_load_all();
-
-
-// }}}
-// {{{ GET/POST board send check
 
 // In some cases, the board value is sent through post, others get
 if (isset($_POST['board']) || isset($_GET['board'])) $_POST['board'] = (isset($_GET['board'])) ? $_GET['board'] : $_POST['board'];
-
-// }}}
 
 // If the script was called using a board name:
 if (isset($_POST['board'])) {
@@ -148,8 +141,9 @@ if (isset($_POST['board'])) {
 	error_redirect(KU_WEBPATH, _gettext('No board provided'));
 }
 
-// {{{ Expired ban removal, and then existing ban check on the current user
 
+
+// Expired ban removal, and then existing ban check on the current user
 $ban_result = $bans_class->BanCheck($_SERVER['REMOTE_ADDR'], $board_class->board['name']);
 if ($ban_result && is_array($ban_result) && $_POST['AJAX']) {
 	exit(json_encode(array(
@@ -158,66 +152,42 @@ if ($ban_result && is_array($ban_result) && $_POST['AJAX']) {
 	)));
 }
 
-// }}}
 /* Ensure that UTF-8 is used on some of the post variables */
 $posting_class->UTF8Strings();
 
-/* Check if the user sent a valid post (image for thread, image/message for reply, etc) */
-if ($posting_class->CheckValidPost()) {
+if (isset($_POST['makepost'])) { // A more evident way to identify post action, as actual validity will be checked later anyway
 	$tc_db->Execute("START TRANSACTION");
 	$posting_class->CheckReplyTime();
-	if($_POST['replythread'] == 0) $posting_class->CheckNewThreadTime();
+	$post_isreply = $posting_class->CheckIsReply();
+	if(! $post_isreply) $posting_class->CheckNewThreadTime();
+
+	require_once KU_ROOTDIR . 'inc/classes/upload.class.php';
+	$upload_class = new Upload();
+
+	$upload_class->UnifyAttachments();
+	$posting_class->CheckValidPost($post_isreply);
 	$posting_class->CheckMessageLength();
 	$posting_class->CheckCaptcha();
 	$posting_class->CheckBannedHash();
-	$post_isreply = $posting_class->CheckIsReply();
-
-	$imagefile_name = isset($_FILES['imagefile']) ? $_FILES['imagefile']['name'] : '';
-
-	if ($post_isreply) {
-		list($thread_replies, $thread_locked, $thread_replyto) = $posting_class->GetThreadInfo($_POST['replythread']);
-	} else {
-		if ((($board_class->board['uploadtype'] == '1' || $board_class->board['uploadtype'] == '2') && $board_class->board['embeds_allowed'] != '')) {
-			if (isset($_POST['embed'])) {
-				if ($_POST['embed'] == '') {
-					if (($board_class->board['uploadtype'] == '1' && $imagefile_name == '') || $board_class->board['uploadtype'] == '2') {
-						exitWithErrorPage('Please enter an embed ID.');
-					}
-				}
-			} else {
-				exitWithErrorPage('Please enter an embed ID.');
-			}
-		}
-
-		$thread_replies = 0;
-		$thread_locked = 0;
-		$thread_replyto = 0;
-	}
-
+	list($thread_replies, $thread_locked, $thread_replyto) = $post_isreply
+		? $posting_class->GetThreadInfo($_POST['replythread'])
+		: array(0,0,0);
 	list($post_name, $post_email, $post_subject, $post_tag) = $posting_class->GetFields();
 	$post_password = isset($_POST['postpassword']) ? $_POST['postpassword'] : '';
 
-//	$posting_class->CheckNotDuplicateSubject($post_subject);
+	// $posting_class->CheckNotDuplicateSubject($post_subject);
 
 	list($user_authority, $flags) = $posting_class->GetUserAuthority();
 
-	$post_fileused = false;
 	$post_autosticky = false;
 	$post_autolock = false;
 	$post_displaystaffstatus = false;
-	$file_is_special = false;
 
-	if (isset($_POST['formatting'])) {
-		if ($_POST['formatting'] == 'aa') {
-			$_POST['message'] = '[aa]' . $_POST['message'] . '[/aa]';
-		}
-
-		if (isset($_POST['rememberformatting'])) {
-			setcookie('kuformatting', $_POST['formatting'], time() + 31556926, '/', KU_DOMAIN);
-		}
-	}
-
-	$results = $tc_db->GetAll("SELECT id FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $board_class->board['id'] . " ORDER BY id DESC LIMIT 1");
+	$results = $tc_db->GetAll("SELECT id
+		FROM `" . KU_DBPREFIX . "posts`
+		WHERE `boardid` = " . $board_class->board['id'] . "
+		ORDER BY id DESC
+		LIMIT 1");
 	if (count($results) > 0)
 		$nextid = $results[0]['id'] + 1;
 	else
@@ -272,41 +242,16 @@ if ($posting_class->CheckValidPost()) {
 
 	$post_tag = $posting_class->GetPostTag();
 
-	if ($post_isreply) {
-		if ($imagefile_name == '' && $post_message == '' && $_POST['embed'] == '') {
-			exitWithErrorPage(_gettext('An image, video, or message, is required for a reply.'));
-		}
-	} else {
-		if ($imagefile_name == '' && ((!isset($_POST['nofile'])&&$board_class->board['enablenofile']==1) || $board_class->board['enablenofile']==0)) {
-			if (!isset($_POST['embed']) && $board_class->board['uploadtype'] != 1) {
-				exitWithErrorPage(_gettext('A file is required for a new thread. If embedding is allowed, either a file or embed ID is required.'));
-			}
-		}
-	}
-
-	if (isset($_POST['nofile'])&&$board_class->board['enablenofile']==1) {
-		if ($post_message == '') {
-			exitWithErrorPage('A message is required to post without a file.');
-		}
-	}
-
 	if ($board_class->board['locked'] == 0 || ($user_authority > 0 && $user_authority != 3)) {
-		require_once KU_ROOTDIR . 'inc/classes/upload.class.php';
-		$upload_class = new Upload();
 		if ($post_isreply) {
 			$upload_class->isreply = true;
 		}
 
-		if ((!isset($_POST['nofile']) && $board_class->board['enablenofile'] == 1) || $board_class->board['enablenofile'] == 0) {
-			if (isset($_FILES['imagefile'])) {
-				$upload_class->HandleUpload();
-			}
-		}
+		$upload_class->HandleUpload();
 
 		if ($board_class->board['forcedanon'] == '1') {
 			if ($user_authority == 0 || $user_authority == 3) {
 				$post_name = '';
-				/*$post_subject = '';*/
 			}
 		}
 
@@ -318,14 +263,16 @@ if ($posting_class->CheckValidPost()) {
 			$name = $post_name;
 			$tripcode = '';
 		}
-		$filetype_withoutdot = substr($upload_class->file_type, 1);
 		$post_passwordmd5 = ($post_password == '') ? '' : md5($post_password);
 
 		if ($post_autosticky == true) {
 			if ($thread_replyto == 0) {
 				$sticky = 1;
 			} else {
-				$result = $tc_db->Execute("UPDATE `" . KU_DBPREFIX . "posts` SET `stickied` = '1' WHERE `boardid` = " . $board_class->board['id'] . " AND `id` = '" . $thread_replyto . "'");
+				$result = $tc_db->Execute("UPDATE `" . KU_DBPREFIX . "posts`
+					SET `stickied` = '1'
+					WHERE `boardid` = " . $board_class->board['id'] . "
+					AND `id` = '" . $thread_replyto . "'");
 				$sticky = 0;
 			}
 		} else {
@@ -336,7 +283,10 @@ if ($posting_class->CheckValidPost()) {
 			if ($thread_replyto == 0) {
 				$lock = 1;
 			} else {
-				$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "posts` SET `locked` = '1' WHERE `boardid` = " . $board_class->board['id'] . " AND `id` = '" . $thread_replyto . "'");
+				$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "posts`
+					SET `locked` = '1'
+					WHERE `boardid` = " . $board_class->board['id'] . "
+					AND `id` = '" . $thread_replyto . "'");
 				$lock = 0;
 			}
 		} else {
@@ -351,96 +301,113 @@ if ($posting_class->CheckValidPost()) {
 			$user_authority_display = 0;
 		}
 
-		if ((file_exists(KU_BOARDSDIR . $board_class->board['name'] . '/src/' . $upload_class->file_name . $upload_class->file_type) && file_exists(KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $upload_class->file_name . 's' . $upload_class->file_type)) || ($file_is_special && file_exists(KU_BOARDSDIR . $board_class->board['name'] . '/src/' . $upload_class->file_name . $upload_class->file_type)) || $post_fileused == false) {
-			$post = array();
+		$emoji_candidate = false;
 
-			//#snivystuff country!
-			$post['country'] = isset($_SERVER["HTTP_CF_IPCOUNTRY"]) ? strtolower($_SERVER["HTTP_CF_IPCOUNTRY"]) : 'xx';
-
-			$post['board'] = $board_class->board['name'];
-			$post['name'] = mb_substr($name, 0, KU_MAXNAMELENGTH);
-			$post['name_save'] = true;
-			$post['tripcode'] = $tripcode;
-			$post['email'] = mb_substr($post_email, 0, KU_MAXEMAILLENGTH);
-			// First array is the converted form of the japanese characters meaning sage, second meaning age
-			$ords_email = unistr_to_ords($post_email);
-			if (strtolower($_POST['em']) != 'sage' && $ords_email != array(19979, 12370) && strtolower($_POST['em']) != 'age' && $ords_email != array(19978, 12370) && $_POST['em'] != 'return' && $_POST['em'] != 'noko') {
-				$post['email_save'] = true;
-			} else {
-				$post['email_save'] = false;
-			}
-			$post['subject'] = mb_substr($post_subject, 0, KU_MAXSUBJLENGTH);
-			$post['message'] = $post_message;
-
-			$post = hook_process('posting', $post);
-
-			// Emoji registration →
-			if (I0_USERSMILES_ENABLED) {
-				preg_match('/\/reg(?:emoji|smiley?) :?([0-9a-z]{3,20}):?/i', $post['message'], $re_match);
+		foreach($upload_class->attachments as $attachment) {
+			if ($attachment['attachmenttype'] == 'file') {
+				$thumbfiletype = ($attachment['filetype_withoutdot'] == 'webm')	? '.jpg' : $attachment['file_type'];
+				if ($attachment['emoji_candidate']) {
+					$emoji_candidate = $attachment;
+				}
 				if (
-					($upload_class->file_type==".png" || $upload_class->file_type==".gif")
-					&& count($re_match)
-				) {
-					$emoji_name = strtolower($re_match[1]);
-					// Check if emoji exists
-					$exists = false;
-					foreach(array('.gif','.png') as $extension) {
-						if(file_exists(KU_ROOTDIR.I0_SMILEDIR.$matches[1].$extension))	 {
-							$exists = true;
-							break;
-						}
-					}
-					if (!$exists) {
-						$src = KU_BOARDSDIR . $board_class->board['name'] .
-						(($upload_class->imgWidth <= 50 && $upload_class->imgHeight <= 50)
-							? ('/src/' . $upload_class->file_name)
-							: ('/thumb/' . $upload_class->file_name . 'c')
-						) . $upload_class->file_type;
-						copy($src, KU_ROOTDIR.I0_SMILEDIR.$emoji_name.$upload_class->file_type);
-						// Reparse post
-						if (I0_SMILES_ENABLED)
-							$post['message'] = $parse_class->Smileys($post['message']);
-					}
-				}
+					!file_exists(KU_BOARDSDIR . $board_class->board['name'] . '/src/' . $attachment['file_name'] . $attachment['file_type'])
+					||
+					(
+						!$attachment['file_is_special']
+						&&
+						!(
+							file_exists(KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $attachment['file_name'] . 's' . $thumbfiletype)
+							&&
+							file_exists(KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $attachment['file_name'] . 'c' . $thumbfiletype)
+						)
+					)
+				) exitWithErrorPage(/*_gettext('Could not copy uploaded image.')*/'FUCK YOU LITERALLY');
 			}
-			// ← Emoji registration
-
-			if ($thread_replyto != '0') {
-				if ($post['message'] == '' && KU_NOMESSAGEREPLY != '') {
-					$post['message'] = KU_NOMESSAGEREPLY;
-				}
-			} else {
-				if ($post['message'] == '' && KU_NOMESSAGETHREAD != '') {
-					$post['message'] = KU_NOMESSAGETHREAD;
-				}
-			}
-
-			$post_class = new Post(0, $board_class->board['name'], $board_class->board['id'], true);
-			$post_id = $post_class->Insert($thread_replyto, $post['name'], $post['tripcode'], $post['email'], $post['subject'], addslashes($post['message']), $upload_class->file_name, $upload_class->original_file_name, $filetype_withoutdot, $upload_class->file_md5, $upload_class->imgWidth, $upload_class->imgHeight, $upload_class->file_size, $upload_class->imgWidth_thumb, $upload_class->imgHeight_thumb, $post_passwordmd5, time(), time(), $_SERVER['REMOTE_ADDR'], $user_authority_display, $sticky, $lock, $board_class->board['id'], $post['country']);
-
-			if ($user_authority > 0 && $user_authority != 3) {
-				$modpost_message = 'Modposted #<a href="' . KU_BOARDSFOLDER . $board_class->board['name'] . '/res/';
-				if ($post_isreply) {
-					$modpost_message .= $thread_replyto;
-				} else {
-					$modpost_message .= $post_id;
-				}
-				$modpost_message .= '.html#' . $post_id . '">' . $post_id . '</a> in /'.$_POST['board'].'/ with flags: ' . $flags . '.';
-				management_addlogentry($modpost_message, 1, md5_decrypt($_POST['modpassword'], KU_RANDOMSEED));
-			}
-
-			if ($post['name_save'] && isset($_POST['name'])) {
-				setcookie('name', $_POST['name'], time() + 31556926, '/', KU_DOMAIN);
-			}
-
-			if ($post['email_save']) {
-				setcookie('email', $post['email'], time() + 31556926, '/', KU_DOMAIN);
-			}
-
-			setcookie('postpassword', $_POST['postpassword'], time() + 31556926, '/');
-		} else {
-			exitWithErrorPage(_gettext('Could not copy uploaded image.'));
 		}
+
+		$post = array();
+		$post['country'] = isset($_SERVER["HTTP_CF_IPCOUNTRY"]) ? strtolower($_SERVER["HTTP_CF_IPCOUNTRY"]) : 'xx';
+		$post['board'] = $board_class->board['name'];
+		$post['name'] = mb_substr($name, 0, KU_MAXNAMELENGTH);
+		$post['name_save'] = true;
+		$post['tripcode'] = $tripcode;
+		$post['email'] = mb_substr($post_email, 0, KU_MAXEMAILLENGTH);
+		// First array is the converted form of the japanese characters meaning sage, second meaning age
+		$ords_email = unistr_to_ords($post_email);
+		if (strtolower($_POST['em']) != 'sage' && $ords_email != array(19979, 12370) && strtolower($_POST['em']) != 'age' && $ords_email != array(19978, 12370) && $_POST['em'] != 'return' && $_POST['em'] != 'noko') {
+		  $post['email_save'] = true;
+		} else {
+		  $post['email_save'] = false;
+		}
+		$post['subject'] = mb_substr($post_subject, 0, KU_MAXSUBJLENGTH);
+		$post['message'] = $post_message;
+
+		$post = hook_process('posting', $post);
+
+		// I never knew this weird shit exists in Kusaba
+		if ($thread_replyto != '0') {
+		  if ($post['message'] == '' && KU_NOMESSAGEREPLY != '') {
+		    $post['message'] = KU_NOMESSAGEREPLY;
+		  }
+		} else {
+		  if ($post['message'] == '' && KU_NOMESSAGETHREAD != '') {
+		    $post['message'] = KU_NOMESSAGETHREAD;
+		  }
+		}
+
+		// Emoji registration (use first file)
+		if (I0_USERSMILES_ENABLED) {
+		  preg_match('/\/reg(?:emoji|smiley?) :?([0-9a-z_]{3,20}):?/i', $post['message'], $re_match);
+		  if ($emoji_candidate && count($re_match)) {
+		    $emoji_name = strtolower($re_match[1]);
+		    // Check if emoji exists
+		    $exists = false;
+		    foreach(array('.gif','.png') as $extension) {
+		      if(file_exists(KU_ROOTDIR.I0_SMILEDIR.$matches[1].$extension))   {
+		        $exists = true;
+		        break;
+		      }
+		    }
+		    if (!$exists) {
+		      $src = KU_BOARDSDIR . $board_class->board['name'] .
+		      (($emoji_candidate['imgWidth'] <= 50 && $emoji_candidate['imgHeight'] <= 50)
+		        ? ('/src/' . $emoji_candidate['file_name'])
+		        : ('/thumb/' . $emoji_candidate['file_name'] . 'c')
+		      ) . $emoji_candidate['file_type'];
+		      copy($src, KU_ROOTDIR.I0_SMILEDIR.$emoji_name.$emoji_candidate['file_type']);
+		      // Reparse post
+		      if (I0_SMILES_ENABLED)
+		        $post['message'] = $parse_class->Smileys($post['message']);
+		    }
+		  }
+		}
+		// ← Emoji registration
+
+		// $upload_class->file_name, $upload_class->original_file_name, $filetype_withoutdot, $upload_class->file_md5, $upload_class->imgWidth, $upload_class->imgHeight, $upload_class->file_size, $upload_class->imgWidth_thumb, $upload_class->imgHeight_thumb
+		$post_class = new Post(0, $board_class->board['name'], $board_class->board['id'], true);
+		$post_id = $post_class->Insert($thread_replyto, $post['name'], $post['tripcode'], $post['email'], $post['subject'], addslashes($post['message']), $upload_class->attachments, $post_passwordmd5, time(), time(), $_SERVER['REMOTE_ADDR'], $user_authority_display, $sticky, $lock, $board_class->board['id'], $post['country']);
+
+		if ($user_authority > 0 && $user_authority != 3) {
+		  $modpost_message = 'Modposted #<a href="' . KU_BOARDSFOLDER . $board_class->board['name'] . '/res/';
+		  if ($post_isreply) {
+		    $modpost_message .= $thread_replyto;
+		  } else {
+		    $modpost_message .= $post_id;
+		  }
+		  $modpost_message .= '.html#' . $post_id . '">' . $post_id . '</a> in /'.$_POST['board'].'/ with flags: ' . $flags . '.';
+		  management_addlogentry($modpost_message, 1, md5_decrypt($_POST['modpassword'], KU_RANDOMSEED));
+		}
+
+		if ($post['name_save'] && isset($_POST['name'])) {
+		  setcookie('name', $_POST['name'], time() + 31556926, '/', KU_DOMAIN);
+		}
+
+		if ($post['email_save']) {
+		  setcookie('email', $post['email'], time() + 31556926, '/', KU_DOMAIN);
+		}
+
+		setcookie('postpassword', $_POST['postpassword'], time() + 31556926, '/');
+
 
 		// Determine the page from which post is getting bumbed →
 		$startpage = -1;
@@ -490,85 +457,148 @@ if ($posting_class->CheckValidPost()) {
 	} else {
 		exitWithErrorPage(_gettext('Sorry, this board is locked and can not be posted in.'));
 	}
-} elseif ((isset($_POST['deletepost']) || isset($_POST['reportpost']) || isset($_POST['moddelete'])) && isset($_POST['post'])) {
+}
+elseif (
+	(
+		(
+			isset($_POST['deletepost'])
+			||
+			isset($_POST['reportpost'])
+		)
+		&&
+		isset($_POST['post'])
+	)
+	|| isset($_POST['delete-file'])
+) {
 	$ismod = false;
 
 	if ($_POST['AJAX'])
-		$posts_affected = array();
+		$items_affected = array();
 
-	// Initialize the post class
-	foreach ($_POST['post'] as $val) {
-		$post_class = new Post($val, $board_class->board['name'], $board_class->board['id']);
+	$threads_to_regenerate = array(); // to prevent possible repeated regeneration
+	// $pages_to_regenerate = array(); // whether or not pages must be regenerated in the end
+	$regenerate_all_pages = false;
 
-		$post_action = new PostAction($val, (boolean)$_POST['AJAX']);
+	// Check rights
+	$pass =( isset($_POST['postpassword']) && $_POST['postpassword']!="") ? md5($_POST['postpassword']) : null;
+	$ismod = (
+		$_POST['moddelete']
+		&&
+		(require_once KU_ROOTDIR . 'inc/classes/manage.class.php')
+		&&
+		Manage::CurrentUserIsModeratorOfBoard($board_class->board['name'], $_SESSION['manageusername'])
+	);
 
-		if (isset($_POST['reportpost'])) {
-			// They clicked the Report button
-			$post_action->action = 'report';
-
-			if ($board_class->board['enablereporting'] == 1) {
-				$post_reported = $post_class->post['isreported'];
-				if ($post_reported === 'cleared') {
-					$post_action->fail(_gettext('That post has been cleared as not requiring any deletion.'));
-				} elseif ($post_reported) {
-					$post_action->fail(_gettext('That post is already in the report list.'));
-				} else {
-					if ($post_class->Report()) {
-						$post_action->succ(_gettext('Post successfully reported'));
+	// Post-related actions
+	if (isset($_POST['post']))
+		foreach ($_POST['post'] as $val) {
+			$post_class = new Post($val, $board_class->board['name'], $board_class->board['id']);
+			$post_action = new PolymorphicReporter('post', $val, (boolean)$_POST['AJAX']);
+			// Post reporting
+			if (isset($_POST['reportpost'])) {
+				$post_action->action = 'report';
+				if ($board_class->board['enablereporting'] == 1) {
+					$post_reported = $post_class->post['isreported'];
+					if ($post_reported === 'cleared') {
+						$post_action->fail(_gettext('That post has been cleared as not requiring any deletion.'));
+					} elseif ($post_reported) {
+						$post_action->fail(_gettext('That post is already in the report list.'));
 					} else {
-						$post_action->fail(_gettext('Unable to report post. Please go back and try again.'));
+						if ($post_class->Report()) {
+							$post_action->succ(_gettext('Post successfully reported'));
+						} else {
+							$post_action->fail(_gettext('Unable to report post. Please go back and try again.'));
+						}
+					}
+				} else {
+					$post_action->fail(_gettext('This board does not allow post reporting.'));
+				}
+			}
+			// Post deleting
+			if (isset($_POST['deletepost'])) {
+				$post_action->action = 'delete';
+				$isownpost = ($pass && $pass == $post_class->post['password']);
+				if ($isownpost || $ismod) {
+					$delres = $post_class->Delete();
+					if ($delres) {
+						if ($delres !== 'already_deleted') { // Skip the unneeded rebuild if the post is already deleted
+							if ($post_class->post['parentid'] != '0') {
+								$threads_to_regenerate []= $post_class->post['parentid'];
+								if (! $isownpost) {
+									management_addlogentry(_gettext('Deleted post') . ' #<a href="?action=viewthread&thread='. $post_class->post['parentid'] . '&board='. $board_class->board['name'] . '#'. $val . '">'. $val . '</a> - /'. $board_class->board['name'] . '/', 7);
+								}
+								$post_action->succ(_gettext('Post successfully deleted.').(!$isownpost ? _gettext('(By mod)') : ''));
+							}
+							else {
+								if (! $isownpost) {
+									management_addlogentry(_gettext('Deleted thread') . ' #<a href="?action=viewthread&thread='. $val . '&board='. $board_class->board['name'] . '">'. $val . '</a> ('. ($delres-1) . ' replies) - /'. $board_class->board['name'] . '/', 7);
+								}
+								$post_action->succ(_gettext('Thread successfully deleted.').(!$isownpost ? _gettext('(By mod)') : '').' '.($delres-1)._gettext('replies deleted').'.');
+							}
+							$regenerate_all_pages = true; // TODO: possibly optimize
+						}
+						else {
+							$post_action->succ(_gettext('Post is already deleted.'));
+						}
+					}
+					else {
+						$post_action->fail(_gettext('There was an error in trying to delete your post'));
 					}
 				}
-			} else {
-				$post_action->fail(_gettext('This board does not allow post reporting.'));
-			}
-		} elseif (isset($_POST['postpassword']) || ( isset($_POST['moddelete']) && (require_once KU_ROOTDIR . 'inc/classes/manage.class.php') && Manage::CurrentUserIsModeratorOfBoard($board_class->board['name'], $_SESSION['manageusername']) && $ismod = true)) {
-			// They clicked the Delete button
-			$post_action->action = 'delete';
-			if ($_POST['postpassword'] != '' || $ismod) {
-				if (md5($_POST['postpassword']) == $post_class->post['password'] || $ismod) {
-					if (isset($_POST['fileonly'])) {
-						$post_action->action .= '_file';
-						if ($post_class->post['file'] != '' && $post_class->post['file'] != 'removed') {
-							$post_class->DeleteFile();
-							$board_class->RegeneratePages();
-							if ($post_class->post['parentid'] != 0) {
-								$board_class->RegenerateThreads($post_class->post['parentid']);
-							}
-							$post_action->succ(_gettext('Image successfully deleted from your post.'));
-						} else {
-							$post_action->fail(_gettext('Your post already doesn\'t have an image!'));
-						}
-					} else {
-						if ($post_class->Delete()) {
-							if ($post_class->post_parentid != '0') {
-								$board_class->RegenerateThreads($post_class->post['parentid']);
-							}
-							$board_class->RegeneratePages();
-							$post_action->succ(_gettext('Post successfully deleted.'));
-						} else {
-							$post_action->fail(_gettext('There was an error in trying to delete your post'));
-						}
-					}
-				} else {
+				else {
 					$post_action->fail(_gettext('Incorrect password.'));
 				}
-			} else {
-				$post_action->fail(_gettext('Incorrect password.'));
+			}
+			$items_affected []= $post_action->report();
+		}
+	// File deleting
+	if (isset($_POST['delete-file']))
+		foreach($_POST['delete-file'] as $file) {
+			$file_action = new PolymorphicReporter('file', $file, (boolean)$_POST['AJAX']);
+			$file_action->action = 'delete-file';
+			$fdres = $board_class->DeleteFile($file, $pass, $ismod, $board_class->board['name']);
+			if ($fdres['error'])
+				$file_action->fail($fdres['error']);
+			else {
+				$file_action->succ(_gettext('Image successfully deleted from your post.'));
+				if (! $fdres['already_deleted']) {
+					$threads_to_regenerate []= $fdres['parentid'];
+					$regenerate_all_pages = true;//TODO: optimize.
+				}
+			}
+			$items_affected []= $file_action->report();
+		}
+	// Regeneration
+	$regenerated_threads = array();
+	foreach($threads_to_regenerate as $id) {
+		if (! in_array($id, $regenerated_threads)) {
+			$board_class->RegenerateThreads($id);
+			$regenerated_threads []= $id;
+		}
+	}
+	if ($regenerate_all_pages) {
+		$board_class->RegeneratePages();
+	}
+	/*else {
+		$regenerated_pages = array();
+		foreach($pages_to_regenerate as $page) {
+			if (! in_array($page, $regenerated_pages)) {
+				$board_class->RegeneratePages($page, 'single');
+				$regenerated_pages []= $page;
 			}
 		}
-
-		$posts_affected []= $post_action->report();
-	}
+	}*/
+	// Finish
 	if ($_POST['AJAX'])
 		exit(json_encode(array(
 		  'action' => 'multi_post_action',
-		  'data' => $posts_affected
+		  'data' => $items_affected
 		)));
 	else
 		do_redirect(KU_BOARDSPATH . '/' . $board_class->board['name'] . '/');
 	die();
-} else {
+}
+else {
 	error_redirect(KU_BOARDSPATH . '/' . $board_class->board['name'] . '/', _gettext('Unspecified action'));
 }
 

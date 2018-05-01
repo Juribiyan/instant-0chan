@@ -3,9 +3,13 @@
 	<tbody>
 	<tr>
 	<td>
-	{t}Delete post{/t}
-	[<input type="checkbox" name="fileonly" id="fileonly" value="on" /><label for="fileonly">{t}File Only{/t}</label>]<br />{t}Password{/t}
-	<input type="password" name="postpassword" size="8" readonly onfocus="this.removeAttribute('readonly');"/>&nbsp;<input name="deletepost" value="{t}Delete{/t}" type="submit" />{if $board.enablereporting eq 1}&nbsp;<input name="reportpost" value="{t}Report{/t}" type="submit" />{/if}
+		{t}Password{/t}
+		<input type="password" name="postpassword" size="8" class="make-me-readonly"/>
+	</td>
+	</tr>
+	<tr>
+	<td>
+	<input name="deletepost" value="{t}Delete post{/t}" type="submit" />{if $board.enablereporting eq 1}&nbsp;<input name="reportpost" value="{t}Report{/t}" type="submit" />{/if}
 	</td>
 	</tr>
 	</tbody>
@@ -95,13 +99,9 @@
 <table width="98%" border="0" align="center" cellpadding="0" cellspacing="0" class="maintable">
 	<tbody>
 		<tr>
-	        <td width="20" height="84" class="bottom-left"></td>
-	        <td height="84" class="bottom-center">&nbsp;</td>
-	        <td width="19" height="84" class="bottom-right"></td>
+	    <td width="20" height="84" class="bottom-left"></td>
+	    <td height="84" class="bottom-center">&nbsp;</td>
+	    <td width="19" height="84" class="bottom-right"></td>
 		</tr>
 	</tbody>
 </table>
-<script type="text/javascript">
-    // PostPreviews.setupPreviews(document);
-    delandbanlinks();
-</script>

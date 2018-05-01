@@ -278,16 +278,6 @@ CREATE TABLE `PREFIX_posts` (
   `subject` varchar(255) NOT NULL,
   `message` text NOT NULL,
   `password` varchar(255) NOT NULL,
-  `file` varchar(50) NOT NULL,
-  `file_md5` char(32) NOT NULL,
-  `file_type` varchar(20) NOT NULL,
-  `file_original` varchar(255) NOT NULL,
-  `file_size` int(20) NOT NULL DEFAULT '0',
-  `file_size_formatted` varchar(75) NOT NULL,
-  `image_w` smallint(5) NOT NULL DEFAULT '0',
-  `image_h` smallint(5) NOT NULL DEFAULT '0',
-  `thumb_w` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `thumb_h` smallint(5) unsigned NOT NULL DEFAULT '0',
   `ip` varchar(75) NOT NULL,
   `ipmd5` char(32) NOT NULL,
   `tag` varchar(5) NOT NULL,
@@ -303,10 +293,84 @@ CREATE TABLE `PREFIX_posts` (
   PRIMARY KEY (`boardid`,`id`),
   KEY `parentid` (`parentid`),
   KEY `bumped` (`bumped`),
-  KEY `file_md5` (`file_md5`),
   KEY `stickied` (`stickied`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `files`
+--
+
+CREATE TABLE `PREFIX_files` (
+  `file_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `post_id` INT(10) UNSIGNED NOT NULL,
+  `boardid` SMALLINT(5) UNSIGNED NOT NULL,
+  `file` VARCHAR(50) NOT NULL,
+  `file_md5` CHAR(32) NOT NULL,
+  `file_type` VARCHAR(20) NOT NULL,
+  `file_original` VARCHAR(255) NOT NULL,
+  `file_size` INT(20) NOT NULL DEFAULT '0',
+  `file_size_formatted` VARCHAR(75) NOT NULL,
+  `image_w` SMALLINT(5) NOT NULL DEFAULT '0',
+  `image_h` SMALLINT(5) NOT NULL DEFAULT '0',
+  `thumb_w` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `thumb_h` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`file_id`),
+  INDEX `file_md5` (`file_md5`),
+  INDEX `file_id` (`file_id`),
+  INDEX `post_id` (`post_id`)
+)
+ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
+
+-- --------------------------------------------------------
+
+--
+-- View `postembeds`
+--
+
+CREATE VIEW `PREFIX_postembeds`  
+AS SELECT 
+  `posts`.`id` AS `id`,
+  `posts`.`boardid` AS `boardid`,
+  `posts`.`parentid` AS `parentid`,
+  `posts`.`name` AS `name`,
+  `posts`.`tripcode` AS `tripcode`,
+  `posts`.`email` AS `email`,
+  `posts`.`subject` AS `subject`,
+  `posts`.`message` AS `message`,
+  `posts`.`password` AS `password`,
+  `posts`.`ip` AS `ip`,
+  `posts`.`ipmd5` AS `ipmd5`,
+  `posts`.`tag` AS `tag`,
+  `posts`.`timestamp` AS `timestamp`,
+  `posts`.`stickied` AS `stickied`,
+  `posts`.`locked` AS `locked`,
+  `posts`.`posterauthority` AS `posterauthority`,
+  `posts`.`reviewed` AS `reviewed`,
+  `posts`.`deleted_timestamp` AS `deleted_timestamp`,
+  `posts`.`IS_DELETED` AS `IS_DELETED`,
+  `posts`.`bumped` AS `bumped`,
+  `posts`.`country` AS `country`,
+  `files`.`file` AS `file`,
+  `files`.`file_md5` AS `file_md5`,
+  `files`.`file_type` AS `file_type`,
+  `files`.`file_original` AS `file_original`,
+  `files`.`file_size` AS `file_size`,
+  `files`.`file_size_formatted` AS `file_size_formatted`,
+  `files`.`image_w` AS `image_w`,
+  `files`.`image_h` AS `image_h`,
+  `files`.`thumb_w` AS `thumb_w`,
+  `files`.`thumb_h` AS `thumb_h` 
+FROM (
+  `posts` LEFT JOIN `files` ON (
+    (
+      (`files`.`post_id` = `posts`.`id`) 
+      and 
+      (`files`.`boardid` = `posts`.`boardid`)
+    )
+  )
+);
 
 -- --------------------------------------------------------
 

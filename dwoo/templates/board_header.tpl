@@ -13,14 +13,16 @@
 		var style_cookie = "kustyle";
 		var locale = '{$locale}';
 		var this_board_defaultName = '{$board.anonymous}';
-		var ku_youtube_apikey = '{%KU_YOUTUBE_APIKEY}';
 		var boardid = '{$board.id}';
+		var force_html_nocache = !!'{%I0_FORCE_HTML_NOCACHE}'
 {if $replythread > 0}
 		var ispage = false;
 {else}
 		var ispage = true;
 {/if}
 </script>
+<noscript><style>.yesscript { display: none; }</style></noscript>
+<!-- <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic&subset=latin,cyrillic' rel='stylesheet' type='text/css'> -->
 <link rel="stylesheet" type="text/css" href="{$cwebpath}css/img_global.css?v={%KU_CSSVER}" />
 {loop $ku_styles}
 	<link rel="{if $ neq $__.ku_defaultstyle}alternate {/if}stylesheet" type="text/css" href="{$__.cwebpath}css/{if $__.customstyle eq $}custom/{/if}{$}.css?v={if $__.customstyle eq $}{$__.csver}{else}{%KU_CSSVER}{/if}" title="{$|capitalize}" {if $__.customstyle eq $}data-custom="true"{/if}/>
@@ -49,6 +51,7 @@
 {if %KU_LIVEUPD_ENA}
 <script src="{%KU_CLI_LIVEUPD_API}/socket.io/socket.io.js"></script>
 {/if}
+<script>if(localStorage['constrainWidth']=='true') document.write('<style id="injector:constrainWidth">body\{max-width:960px;margin:0px auto\}</style>')</script>
 </head>
 <body>
 <script>
@@ -124,7 +127,6 @@
 		</div>
 	</div>
 </div>
-
 <table style="width:100%" border="0">
 <tbody><tr><td valign="center">
 	<div class="logo">{if %KU_DIRTITLE}	/{$board.name}/ - {/if}{$board.desc}</div>
