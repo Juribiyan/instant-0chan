@@ -151,7 +151,7 @@ class Upload {
 	function HandleUpload() {
 		global $tc_db, $board_class;
 
-		if (KU_MULTIFILE_METHOD = 'split') {
+		if (KU_MULTIFILE_METHOD == 'split') {
 			$allfilessize = 0;
 			foreach($this->attachments as $i => &$attachment) {
 				$atype = $attachment['attachmenttype'];
@@ -183,7 +183,7 @@ class Upload {
 			// Handle File
 			if ($attachment['attachmenttype'] == 'file') {
 				$filename = $attachment['name'];
-				if (KU_MULTIFILE_METHOD = 'each') {
+				if (KU_MULTIFILE_METHOD == 'each') {
 					if ($attachment['size'] > $board_class->board['maximagesize']) {
 						$this->exitWithUploadErrorPage(sprintf(_gettext('Please make sure your file is smaller than %dB'), $board_class->board['maximagesize']), $atype, $i, $filename);
 					}
