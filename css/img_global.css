@@ -517,7 +517,7 @@ pre {
 
 .closebox, .delete {
   background-position: -16px 0px;
-} 
+}
 
 .ban {
   background-position: 0px -32px;
@@ -627,16 +627,16 @@ border-radius: 5px;
 }
 
 /* Node insertion detection #snivystuff */
-@-o-keyframes nodeInserted {  
+@-o-keyframes nodeInserted {
   from { clip: rect(1px, auto, auto, auto); }
-  to { clip: rect(0px, auto, auto, auto); }  
+  to { clip: rect(0px, auto, auto, auto); }
 }
-@keyframes nodeInserted {  
+@keyframes nodeInserted {
   from { clip: rect(1px, auto, auto, auto); }
-  to { clip: rect(0px, auto, auto, auto); }  
+  to { clip: rect(0px, auto, auto, auto); }
 }
 
-@-webkit-keyframes nodeInserted {  
+@-webkit-keyframes nodeInserted {
   from { clip: rect(1px, auto, auto, auto); }
   to { clip: rect(0px, auto, auto, auto); }
 }
@@ -649,7 +649,7 @@ border-radius: 5px;
   -webkit-animation-duration: 0.001s;
   animation-name: nodeInserted;
   -o-animation-name: nodeInserted;
-  -ms-animation-name: nodeInserted;        
+  -ms-animation-name: nodeInserted;
   -moz-animation-name: nodeInserted;
   -webkit-animation-name: nodeInserted;
 }
@@ -909,7 +909,7 @@ border: none;
 }
 @media (min-width: 600px) {
   .replymode, .passvalid, .catalogmode {
-    margin-top: -20px; 
+    margin-top: -20px;
   }
 }
 .spin-around {
@@ -972,7 +972,7 @@ border: none;
 .expand-on-hover-enabled .cat-entry:not(.thumbExpanded):hover .cat-card {
   position: absolute;
   height: auto;
-  
+
   top: 0px;
 }
 .expand-on-hover-enabled .ce-text.cat-entry:not(.thumbExpanded):hover .cat-card {
@@ -1160,7 +1160,7 @@ border: none;
 }
 .cat-entry:not(.thumbExpanded):hover:after {
   opacity: 0;
-}/* 
+}/*
 .bigThumb .icon {
   position: absolute;
   bottom: 3px;
@@ -1252,16 +1252,16 @@ border: none;
 }
 
 /* cat-bt-embed insertion detection */
-@-o-keyframes embed-image-insert {  
+@-o-keyframes embed-image-insert {
   from { clip: rect(1px, auto, auto, auto); }
-  to { clip: rect(0px, auto, auto, auto); }  
+  to { clip: rect(0px, auto, auto, auto); }
 }
-@keyframes embed-image-insert {  
+@keyframes embed-image-insert {
   from { clip: rect(1px, auto, auto, auto); }
-  to { clip: rect(0px, auto, auto, auto); }  
+  to { clip: rect(0px, auto, auto, auto); }
 }
 
-@-webkit-keyframes embed-image-insert {  
+@-webkit-keyframes embed-image-insert {
   from { clip: rect(1px, auto, auto, auto); }
   to { clip: rect(0px, auto, auto, auto); }
 }
@@ -1273,7 +1273,7 @@ border: none;
   -webkit-animation-duration: 0.001s;
   animation-name: embed-image-insert;
   -o-animation-name: embed-image-insert;
-  -ms-animation-name: embed-image-insert;        
+  -ms-animation-name: embed-image-insert;
   -moz-animation-name: embed-image-insert;
   -webkit-animation-name: embed-image-insert;
 }
@@ -1352,7 +1352,7 @@ border: none;
   pointer-events: none;
 }
 
-input::-webkit-input-placeholder {opacity: 0; } 
+input::-webkit-input-placeholder {opacity: 0; }
 input:-moz-placeholder {opacity: 0; }
 
 .onsmall-show {
@@ -1442,7 +1442,7 @@ input:-moz-placeholder {opacity: 0; }
   .maintable hr {
       margin:0;
   }
-  input::-webkit-input-placeholder {opacity: 1; } 
+  input::-webkit-input-placeholder {opacity: 1; }
   input:-moz-placeholder {opacity: 1; }
   hr {
     margin: 0!important;
@@ -1608,8 +1608,8 @@ input[readonly] {
   padding: 0 10px;
 }
 .pmsg-form button {
-  width: 40%; 
-  margin: 0 5%; 
+  width: 40%;
+  margin: 0 5%;
   max-width: 150px;
 }
 input:disabled {
@@ -1648,7 +1648,7 @@ td > .bubble {
   width: 0;
   z-index: 0;
   border-width: 7px 12px 7px 0;
-} 
+}
 .bubble:not(.thought-bubble):after, .bubble:not(.thought-bubble):before {
   border-style: solid;
 }
@@ -1686,7 +1686,7 @@ td > .bubble {
 }
 .bubble:not(.thought-bubble):before {
   content: none;
-} 
+}
 
 .emoji {
   vertical-align: middle;
@@ -1698,7 +1698,7 @@ i .emoji {
           transform: skewX(-20deg);
 }
 
-.postbody::-webkit-scrollbar, 
+.postbody::-webkit-scrollbar,
 .prettyprint::-webkit-scrollbar,
 .code_part::-webkit-scrollbar {
   width: 8px;
@@ -2042,7 +2042,7 @@ blockquote {
   display: none;
 }
 .add-embed:not(:checked) + label + br + .multiembedwrap,
-.add-embed:not(:checked) + label + br + .multiembedwrap + .add-embed, 
+.add-embed:not(:checked) + label + br + .multiembedwrap + .add-embed,
 .add-embed:not(:checked) + label + br + .multiembedwrap + .add-embed + label,
 .add-embed:not(:checked) + label + br + .multiembedwrap + .add-embed + label + br {
   display: none;
@@ -2056,7 +2056,7 @@ blockquote {
   box-shadow: 0 0 3px 4px red;
 }
 
-/*New embeds*/ 
+/*New embeds*/
 .embed-wrap {
   position: relative;
   font-size: 0;
@@ -2108,7 +2108,7 @@ blockquote {
   opacity: 0.8;
   -webkit-transition: opacity 0.4s;
   -o-transition: opacity 0.4s;
-  transition: 
+  transition:
   opacity 0.4s;
   z-index: 3;
   /* height: 5.3rem; */

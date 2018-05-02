@@ -78,20 +78,20 @@
 	<div id="overlay_menu" class="content-background overlay-menu">
 		<span style="display: none" class="olm-link mgoback">[<a href="{%KU_CGIPATH}/{$board.name}/"> &lt; </a>]</span>
 		<span class="olm-link">[<a href="{%KU_BOARDSFOLDER}">home</a>]</span>
-		<span class="mobile-nav" id="mn-normalboards" style="display:none"> 
+		<span class="mobile-nav" id="mn-normalboards" style="display:none">
 			<select onchange="javascript:if(selectedIndex != 0) location.href='{%KU_WEBPATH}/' + this.options[this.selectedIndex].value;">
 				<option><b>{t}Boards{/t}</b></option>
 				{foreach name=sections item=sect from=$boardlist}
-					{if $sect.abbreviation neq '20'}						
-					{foreach name=brds item=brd from=$sect}							
+					{if $sect.abbreviation neq '20'}
+					{foreach name=brds item=brd from=$sect}
 						{if $brd.name neq $board.name}
-						{if isset($brd.desc) and is_array($brd)}							
+						{if isset($brd.desc) and is_array($brd)}
 						<option value="{$brd.name}">/{$brd.name}/ - {$brd.desc}</option>
 						{/if}
-						{/if}						
-					{/foreach}	
-					{/if}				
-				{/foreach}	
+						{/if}
+					{/foreach}
+					{/if}
+				{/foreach}
 			</select>
 			<select class="boardsel20" onchange="javascript:if(selectedIndex != 0) location.href='{%KU_WEBPATH}/' + this.options[this.selectedIndex].value;">
 				<option><b>2.0 {t}Boards{/t}</b></option>
@@ -113,15 +113,15 @@
 				<input type="text" id="boardselect" placeholder="{t}Filter{/t}" />
 				<div id="boards20">
 				</div>
-			{/if}	
+			{/if}
 		</div>
 		{/foreach}
 		<div class="menu-sect" id="ms-_options">
-			{t}Styles{/t}: 
+			{t}Styles{/t}:
 			{loop $ku_styles}
 			[<a href="#" onclick="javascript:Styles.change('{$|capitalize}');return false;">{if $__.customstyle eq $}Custom{else}{$|capitalize}{/if}</a>]
 			{/loop}<br />
-			<a href="#" onclick="javascript:menu_pin();return false;">{t}Pin/Unpin{/t}</a>  | 
+			<a href="#" onclick="javascript:menu_pin();return false;">{t}Pin/Unpin{/t}</a>  |
 			<a href="#" onclick="javascript:set_oldmenu(true);return false;">{t}Simple list{/t}</a>
 			<div id="js_settings"></div>
 		</div>

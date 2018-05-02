@@ -3,7 +3,7 @@ require 'config.php';
 
 if (!isset($_GET['b']) || !isset($_GET['p'])) {
 	http_response_code(404);
-} 
+}
 else {
 	$board  = $_GET['b'];
 	$post  = $_GET['p'];

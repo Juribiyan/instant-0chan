@@ -16,7 +16,7 @@ a:visited {
 }
  a:hover {
 	color: rgb(23, 53, 85);
-} 
+}
 .adminbar {
 	clear:both;
 	float:right;
@@ -314,7 +314,7 @@ color: #000;
 }
 .bg-button:hover {
   background-color: rgb(255, 255, 255);
-  color: black;; 
+  color: black;;
 }
 .bgb-selected, .bgb-selected:hover {
   background: #BDD4EC;

@@ -12,7 +12,7 @@ a:visited {
 }
  a:hover {
 	color: rgb(54, 171, 133);
-} 
+}
 .adminbar {
 	clear:both;
 	float:right;
@@ -122,7 +122,7 @@ a:visited {
 }
 .reply {
 	background: #363F4C;
-	padding-right: 3px; 
+	padding-right: 3px;
 	padding: 1px 3px 1px 1px;
 	border: 1px solid rgb(31, 37, 44);
 }
@@ -352,7 +352,7 @@ color: rgb(55, 201, 153);
 }
 .bg-button:hover {
 	background-color: rgba(255, 255, 255, 0.12);
-	color: #fff; 
+	color: #fff;
 }
 .bgb-selected, .bgb-selected:hover {
   background: #167355;

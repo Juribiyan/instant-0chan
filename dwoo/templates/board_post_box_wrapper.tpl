@@ -14,7 +14,7 @@ class="reflinkpreview content-background qreplyform" style="display:none">
 <hr />
 {if $topads neq ''}
 	<div class="content ads">
-		<center> 
+		<center>
 			{$topads}
 		</center>
 	</div>
