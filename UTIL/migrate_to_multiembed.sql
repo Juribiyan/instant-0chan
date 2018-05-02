@@ -102,3 +102,6 @@ FROM (
     )
   )
 );
+
+ALTER TABLE `boards`
+  CHANGE COLUMN `uploadtype` `maxfiles` TINYINT(3) UNSIGNED NOT NULL DEFAULT '4' AFTER `start`;

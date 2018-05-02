@@ -114,7 +114,7 @@ CREATE TABLE `PREFIX_boards` (
   `order` tinyint(5) NOT NULL DEFAULT '0',
   `name` varchar(75) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `start` int(10) unsigned NOT NULL DEFAULT '1',
-  `uploadtype` tinyint(1) NOT NULL DEFAULT '1',
+  `maxfiles` TINYINT(3) UNSIGNED NOT NULL DEFAULT '4',
   `desc` varchar(75) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `image` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `section` tinyint(2) NOT NULL DEFAULT '0',
