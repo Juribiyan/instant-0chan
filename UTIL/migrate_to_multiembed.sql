@@ -84,6 +84,7 @@ AS SELECT
   `posts`.`bumped` AS `bumped`,
   `posts`.`country` AS `country`,
   `files`.`file` AS `file`,
+  `files`.`file_id` AS `file_id`,
   `files`.`file_md5` AS `file_md5`,
   `files`.`file_type` AS `file_type`,
   `files`.`file_original` AS `file_original`,
