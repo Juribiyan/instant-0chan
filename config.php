@@ -69,18 +69,18 @@ if (!$cache_loaded) {
 		$cf['KU_20_BOARDSLIMIT'] = 5;	// How many 2.0 boards a user can create
 		$cf['KU_20_CLOUDTIME'] = "-24 hours";
 		$cf['KU_20MAXLOGINPASS'] = 50; // Maximum login and password size for 2.0
-		$cf['KU_SUPPORTED_LOCALES'] = 'ru|en';	// 
+		$cf['KU_SUPPORTED_LOCALES'] = 'ru|en';	//
 		$cf['KU_FFMPEGPATH'] = '/usr/local/bin/ffmpeg'; //path to FFMPEG, for example 'C:\ffmpeg\bin'
 		$cf['KU_SHOW_ORIGINAL_FILENAMES'] = true;
-		$cf['KU_MAXNAMELENGTH'] = 75; 
+		$cf['KU_MAXNAMELENGTH'] = 75;
 		$cf['KU_MAXEMAILLENGTH'] = 4; 	// do we need more?
-		$cf['KU_MAXSUBJLENGTH'] = 75; 
+		$cf['KU_MAXSUBJLENGTH'] = 75;
 		$cf['KU_YOUTUBE_APIKEY'] = '';	//Your personal anal probe ID. Can be obtained it Google Dev. Console
 		$cf['KU_USE_GESHI'] = false;	//Use original code highlighter from 0chan.ru like the cargo cultist you are
 		//offsite urls allowed in user submitted CSS (separated by single space (" "))
 		$cf['KU_ALLOWED_OFFSITE_URLS'] = 'http://i.imgur.com/ https://i.imgur.com/ https://fonts.googleapis.com/ https://fonts.gstatic.com/';
 		$cf['KU_MAX_CSS_SIZE'] = 102400; // msximum user submitted CSS size (in bytes)
-		
+
 		$cf['I0_SAYERS_ENABLED'] = false;
 		// Emoji configuration
 		$cf['I0_SMILES_ENABLED'] = true;
@@ -89,7 +89,7 @@ if (!$cache_loaded) {
 		$cf['I0_FORCE_HTML_NOCACHE'] = true; // When AJAX-ing HTML, force no-cache (default: off (server must handle this, recommended for local debugging only))
 
 	// Database
-		$cf['KU_DBTYPE']          = 'mysqli';	// Database type. Valid values are mysql and mysqli (reccomended for mysql). 
+		$cf['KU_DBTYPE']          = 'mysqli';	// Database type. Valid values are mysql and mysqli (reccomended for mysql).
 							// PostgreSQL is also supported. Supported values are postgres64, postgres7 and postgres8. Only postgres8 is tested.
 							// SQLite is also supported. Set to sqlite to use. SQLite will not use any database software, only a single file.
 		$cf['KU_DBHOST']          = 'localhost'; // Database hostname. On SQLite this has no effect.
@@ -158,6 +158,7 @@ if (!$cache_loaded) {
 		$cf['KU_VIDEOTHUMBWIDTH'] = 250;
 		$cf['KU_CATTHUMBWIDTH']    = 50; // Maximum thumbnail width (catalog)
 		$cf['KU_CATTHUMBHEIGHT']   = 50; // Maximum thumbnail height (catalog)
+		$cf['KU_MULTIFILE_METHOD'] = 'split'; // Method to use when determining the post file size. If it is set to 'split', limit will be applied to all files in post. Otherwise, if it is set to 'each', limit will be applied to each file.
 		$cf['KU_THUMBMETHOD']      = 'gd'; // Method to use when thumbnailing images in jpg, gif, or png format.  Options available: gd, imagemagick, ffmpeg
 		$cf['KU_ANIMATEDTHUMBS']   = false; // Whether or not to allow animated thumbnails (only applies if using ffmpeg or imagemagick)
 		$cf['KU_USEOPTIPNG']       = false; // Whether or not to use optipng for PNG thumbnails optimization. Suitable only when useing imagemagick or ffmpeg
@@ -264,7 +265,7 @@ if (!isset($tc_db) && !isset($preconfig_db_unnecessary)) {
 		$tc_db->Connect(KU_DBHOST, KU_DBUSERNAME, KU_DBPASSWORD, KU_DBDATABASE) or die('SQL database connection error: ' . $tc_db->ErrorMsg());
 	}
 
-	$tc_db->EXECUTE("set names 'utf8'"); 
+	$tc_db->EXECUTE("set names 'utf8'");
 
 	// SQL debug
 	if (KU_DEBUG) {
@@ -326,7 +327,7 @@ function stripslashes_deep($value)
 		array_map('stripslashes_deep', $value) :
 		stripslashes($value);
 	return $value;
-} 
+}
 
 // Thanks Z
 if (get_magic_quotes_gpc()) {

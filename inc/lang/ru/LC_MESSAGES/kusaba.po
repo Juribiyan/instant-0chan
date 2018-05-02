@@ -643,6 +643,9 @@ msgstr "Отмечено к удалению (старое)."
 msgid "Maximum file size allowed is"
 msgstr "Максимальный размер файла:"
 
+msgid "Maximum size for all files allowed is"
+msgstr "Максимальный размер всех файлов:"
+
 msgid "Maximum number of files + embeds per post is"
 msgstr "Максимальное количество файлов + вложений:"
 
@@ -846,6 +849,9 @@ msgstr "Заполните все требуемые поля."
 
 msgid "Please make sure your file is smaller than %dB"
 msgstr "Убедитесь, что Ваш файл меньше %dB"
+
+msgid "Please make sure all your files are smaller than %dB"
+msgstr "Убедитесь, что все Ваши файлы меньше %dB"
 
 msgid "Please select a board."
 msgstr "Выберите доску."
@@ -1773,7 +1779,7 @@ msgstr "Показывать ответы внутри поста"
 
 msgid "SFW mode"
 msgstr "Мамка в комнате"
-	
+
 msgid "Expand images to full size"
 msgstr "Разворачивать картинки до исходного размера"
 

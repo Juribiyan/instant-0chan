@@ -80,7 +80,7 @@
 			<td colspan="2">{$recaptcha}</td>
 		</tr>
 	{/if *}
-	
+
 	{* <noscript> *}
 	<input type="hidden" name="legacy-posting" value="1" />
 	{if sizeof($board.filetypes_allowed)}
@@ -162,7 +162,11 @@
 						{t}None{/t}
 					{/if}.{/strip}
 					</li>
+					{if %KU_MULTIFILE_METHOD eq 'split'}
+					<li>{t}Maximum size for all files allowed is{/t} {math "round(x/1024)" x=$board.maximagesize} KB.</li>
+					{else}
 					<li>{t}Maximum file size allowed is{/t} {math "round(x/1024)" x=$board.maximagesize} KB.</li>
+					{/if}
 					<li>{t}Maximum number of files + embeds per post is{/t} {$board.maxfiles}.</li>
 					{if $board.enablenofile}
 						<li>{t}No file or embed required for a new thread on this board{/t}.</li>
