@@ -240,11 +240,15 @@ class Board {
             JOIN (
               SELECT DISTINCT `id`
               FROM `".KU_DBPREFIX."postembeds`
-              where `parentid`=".$thread['id']." and `IS_DELETED`=0
-              order by `id` desc
-              limit ".(($thread['stickied'] == 1) ? (KU_REPLIESSTICKY) : (KU_REPLIES))."
-            ) `uniq_id` ON `".KU_DBPREFIX."postembeds`.`id` = `uniq_id`.`id`
-            order by `uniq_id`.`id` desc");
+              WHERE `boardid` = '". $this->board['id'] ." '
+                AND `parentid` = ".$thread['id']." 
+                AND `IS_DELETED` = 0
+              ORDER BY `id` DESC
+              LIMIT ".(($thread['stickied'] == 1) ? (KU_REPLIESSTICKY) : (KU_REPLIES))."
+            ) `uniq_id` 
+            ON `".KU_DBPREFIX."postembeds`.`id` = `uniq_id`.`id`
+            WHERE `boardid` = '". $this->board['id'] ." '
+            ORDER BY `uniq_id`.`id` desc");
 
           $posts = group_embeds($posts, true);
 
