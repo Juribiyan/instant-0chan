@@ -1968,8 +1968,9 @@ figure:hover .emb-button,
   opacity: 1;
   outline: none;
 }
-.unwrapped .delete-file {
-  right: 20px;
+.unwrapped .delete-file,
+.unwrapped-audio .delete-file {
+  display: none;
 }
 .filesize a {
   font-style: normal;
