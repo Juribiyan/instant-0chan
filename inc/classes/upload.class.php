@@ -24,7 +24,7 @@
 class Upload {
 	var $isreply = false;
 
-	function exitWithUploadErrorPage($errormsg, $attype, $i, $literal_name) {
+	function exitWithUploadErrorPage($errormsg, $attype, $i, $literal_name='') {
 		if ($_POST['AJAX']) {
 			exitWithErrorPage($errormsg, '', 'upload_error', array(
 				'attachmenttype' => $attype,
@@ -32,7 +32,7 @@ class Upload {
 			));
 		}
 		else {
-			$verbose = '('._gettext('Error in '.$attype).' "'.$literal_name.'")';
+			$verbose = $literal_name ? '('._gettext('Error in '.$attype).' "'.$literal_name.'")' : '';
 			exitWithErrorPage($errormsg, $verbose);
 		}
 	}
@@ -151,19 +151,14 @@ class Upload {
 	function HandleUpload() {
 		global $tc_db, $board_class;
 
-		if (KU_MULTIFILE_METHOD == 'split') {
-			$allfilessize = 0;
+		if (KU_FILESIZE_METHOD == 'sum') {
+			$sum = 0;
 			foreach($this->attachments as $i => &$attachment) {
-				$atype = $attachment['attachmenttype'];
-				$filename = $atype == 'file'
-					? $attachment['name']
-					: $attachment['embedtype'] . '/' . $attachment['embed'];
-
 				if ($attachment['attachmenttype'] == 'file') {
-					$allfilessize = $allfilessize +  $attachment['size'];
+					$sum += $attachment['size'];
 				}
-				if ($allfilessize > $board_class->board['maximagesize']) {
-					$this->exitWithUploadErrorPage(sprintf(_gettext('Please make sure all your files are smaller than %dB'), $board_class->board['maximagesize']), $atype, $i, $filename);
+				if ($sum > $board_class->board['maximagesize']) {
+					$this->exitWithUploadErrorPage(sprintf(_gettext('Please make sure that the total size of all your files does not exceed %d KB'), round($board_class->board['maximagesize']) / 1024), $atype, $i);
 				}
 			}
 		}
@@ -183,9 +178,9 @@ class Upload {
 			// Handle File
 			if ($attachment['attachmenttype'] == 'file') {
 				$filename = $attachment['name'];
-				if (KU_MULTIFILE_METHOD == 'each') {
+				if (KU_FILESIZE_METHOD == 'single') {
 					if ($attachment['size'] > $board_class->board['maximagesize']) {
-						$this->exitWithUploadErrorPage(sprintf(_gettext('Please make sure your file is smaller than %dB'), $board_class->board['maximagesize']), $atype, $i, $filename);
+						$this->exitWithUploadErrorPage(sprintf(_gettext('Please make sure your file is smaller than %d KB'), round($board_class->board['maximagesize']) / 1024), $atype, $i, $filename);
 					}
 				}
 

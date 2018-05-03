@@ -162,10 +162,10 @@
 						{t}None{/t}
 					{/if}.{/strip}
 					</li>
-					{if %KU_MULTIFILE_METHOD eq 'split'}
-					<li>{t}Maximum size for all files allowed is{/t} {math "round(x/1024)" x=$board.maximagesize} KB.</li>
+					{if %KU_FILESIZE_METHOD eq 'sum'}
+					<li>{t}Maximum total size for all files allowed is{/t} {math "round(x/1024)" x=$board.maximagesize} {t}KB{/t}.</li>
 					{else}
-					<li>{t}Maximum file size allowed is{/t} {math "round(x/1024)" x=$board.maximagesize} KB.</li>
+					<li>{t}Maximum file size allowed is{/t} {math "round(x/1024)" x=$board.maximagesize} {t}KB{/t}.</li>
 					{/if}
 					<li>{t}Maximum number of files + embeds per post is{/t} {$board.maxfiles}.</li>
 					{if $board.enablenofile}

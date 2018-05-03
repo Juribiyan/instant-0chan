@@ -158,7 +158,7 @@ if (!$cache_loaded) {
 		$cf['KU_VIDEOTHUMBWIDTH'] = 250;
 		$cf['KU_CATTHUMBWIDTH']    = 50; // Maximum thumbnail width (catalog)
 		$cf['KU_CATTHUMBHEIGHT']   = 50; // Maximum thumbnail height (catalog)
-		$cf['KU_MULTIFILE_METHOD'] = 'split'; // Method to use when determining the post file size. If it is set to 'split', limit will be applied to all files in post. Otherwise, if it is set to 'each', limit will be applied to each file.
+		$cf['KU_FILESIZE_METHOD'] = 'sum'; // Method to use when determining the post file size limit. If it is set to 'sum', limit will be applied to the sum of all files in the post. Otherwise, if it is set to 'single', limit will be applied to each file separately.
 		$cf['KU_THUMBMETHOD']      = 'gd'; // Method to use when thumbnailing images in jpg, gif, or png format.  Options available: gd, imagemagick, ffmpeg
 		$cf['KU_ANIMATEDTHUMBS']   = false; // Whether or not to allow animated thumbnails (only applies if using ffmpeg or imagemagick)
 		$cf['KU_USEOPTIPNG']       = false; // Whether or not to use optipng for PNG thumbnails optimization. Suitable only when useing imagemagick or ffmpeg

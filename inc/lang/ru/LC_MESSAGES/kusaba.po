@@ -643,8 +643,11 @@ msgstr "Отмечено к удалению (старое)."
 msgid "Maximum file size allowed is"
 msgstr "Максимальный размер файла:"
 
-msgid "Maximum size for all files allowed is"
-msgstr "Максимальный размер всех файлов:"
+msgid "Maximum total size for all files allowed is"
+msgstr "Максимальный суммарный размер всех файлов:"
+
+msgid "KB"
+msgstr "кБ"
 
 msgid "Maximum number of files + embeds per post is"
 msgstr "Максимальное количество файлов + вложений:"
@@ -847,11 +850,11 @@ msgstr "Введите поисковый запрос."
 msgid "Please fill in all required fields."
 msgstr "Заполните все требуемые поля."
 
-msgid "Please make sure your file is smaller than %dB"
-msgstr "Убедитесь, что Ваш файл меньше %dB"
+msgid "Please make sure your file is smaller than %d KB"
+msgstr "Убедитесь, что Ваш файл меньше %d кБ"
 
-msgid "Please make sure all your files are smaller than %dB"
-msgstr "Убедитесь, что все Ваши файлы меньше %dB"
+msgid "Please make sure that the total size of all your files does not exceed %d KB"
+msgstr "Убедитесь, что размер всех Ваших файлов в сумме не превышает %d кБ"
 
 msgid "Please select a board."
 msgstr "Выберите доску."
