@@ -114,30 +114,32 @@ class Upload {
 
 		  // 2) Collect embeds
 		  $embed_hashes = array();
-		  foreach($_POST['embed'] as $i => $code) {
-		  	if ($code != '') {
-		  		if (array_key_exists($_POST['embedtype'][$i], $board_class->board['embeds_allowed'])) {
-		  			$embed = $board_class->board['embeds_allowed'][$_POST['embedtype'][$i]];
-		  			$hash = md5($embed['filetype'].'/'.$code);
-		  			if (in_array($hash, $embed_hashes)) {
-		  				$this->exitWithUploadErrorPage(_gettext('Duplicate embed entry detected.'),
-		  					$atype, $i, $_POST['embedtype'][$i] . '/' . $code);
-		  			}
-		  			else {
-		  				$embed_hashes []= $hash;
-		  			}
-		  			$attachments []= array(
-		  				'attachmenttype' => 'embed',
-		  				'embedtype' => $embed['filetype'],
-		  				'embed' => $code,
-		  				'filetype_withoutdot' => $embed['filetype'],
-		  				'file_md5' => $hash
-		  			);
-		  		}
-		  		else $this->exitWithUploadErrorPage(_gettext('Sorry, that filetype is not allowed on this board.'),
-		  					$atype, $i, $_POST['embedtype'][$i] . '/' . $code);
-		  	}
-		  }
+		  if (is_array($_POST['embed']) || is_object($_POST['embed'])) {
+			foreach($_POST['embed'] as $i => $code) {
+			  	if ($code != '') {
+			  		if (array_key_exists($_POST['embedtype'][$i], $board_class->board['embeds_allowed'])) {
+			  			$embed = $board_class->board['embeds_allowed'][$_POST['embedtype'][$i]];
+			  			$hash = md5($embed['filetype'].'/'.$code);
+			  			if (in_array($hash, $embed_hashes)) {
+			  				$this->exitWithUploadErrorPage(_gettext('Duplicate embed entry detected.'),
+			  					$atype, $i, $_POST['embedtype'][$i] . '/' . $code);
+			  			}
+			  			else {
+			  				$embed_hashes []= $hash;
+			  			}
+			  			$attachments []= array(
+			  				'attachmenttype' => 'embed',
+			  				'embedtype' => $embed['filetype'],
+			  				'embed' => $code,
+			  				'filetype_withoutdot' => $embed['filetype'],
+			  				'file_md5' => $hash
+			  			);
+			  		}
+			  		else $this->exitWithUploadErrorPage(_gettext('Sorry, that filetype is not allowed on this board.'),
+			  					$atype, $i, $_POST['embedtype'][$i] . '/' . $code);
+				}
+			}
+		}
 		}
 
 		/*else { // Fancy embeds (not yet implemented)	}*/
