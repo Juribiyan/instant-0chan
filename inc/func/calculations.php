@@ -95,7 +95,7 @@ function array_insert(&$array, $position, $insert_array) {
 }
 
 function checkBoardDir($dir) {
-	return preg_match('/^[^[:punct:][:blank:][:cntrl:]]+$/', $dir);
+	return preg_match('/^(?:[^[:punct:][:blank:][:cntrl:]]|_)+$/', $dir);
 }
 
 /**
