@@ -1922,77 +1922,123 @@ class Manage {
 
 		if (isset($_POST['id']) && isset($_POST['board_from']) && isset($_POST['board_to'])) {
       $this->CheckToken($_POST['token']);
+      
+      // Validation
+      if (! preg_match('/^[0-9]+$/', $_POST['id']))
+        exitWithErrorPage(_gettext('Invalid thread ID.'));
+      if (!checkBoardDir($_POST['board_from']) || !checkBoardDir($_POST['board_to']) || $_POST['board_from']==$_POST['board_to'])
+        exitWithErrorPage(_gettext('Invalid directory name.'));
+      
 			// Get the IDs for the from and to boards
-			$board_from_id = $tc_db->GetOne("SELECT HIGH_PRIORITY `id` FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($_POST['board_from']) . "");
-			$board_to_id = $tc_db->GetOne("SELECT HIGH_PRIORITY `id` FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($_POST['board_to']) . "");
+			$board_from_id = $tc_db->GetOne("SELECT HIGH_PRIORITY `id` FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($_POST['board_from']));
+			$board_to_id = $tc_db->GetOne("SELECT HIGH_PRIORITY `id` FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($_POST['board_to']));
 			$board_from = $_POST['board_from'];
 			$board_to = $_POST['board_to'];
-			$id = $tc_db->qstr($_POST['id']);
+      $thread_from = $_POST['id'];
 
-			if (isset($_POST['mf'])) {
-				$image		= $tc_db->GetOne("SELECT `file` FROM " .KU_DBPREFIX. "posts WHERE `boardid` = " .$board_from_id. " AND `id` = " .$id);
-				$filetype	= $tc_db->GetOne("SELECT `file_type` FROM " .KU_DBPREFIX. "posts WHERE `boardid` = " .$board_from_id. " AND `id` = " .$id);
-				$from_pic	= KU_BOARDSDIR . $board_from . '/src/'. $image . '.'. $filetype;
-				$from_thumb	= KU_BOARDSDIR . $board_from . '/thumb/'. $image . 's'. '.'. $filetype;
-				$from_cat	= KU_BOARDSDIR . $board_from . '/thumb/'. $image . 'c'. '.'. $filetype;
-				$to_pic	= KU_BOARDSDIR . $board_to . '/src/'. $image . '.'. $filetype;
-				$to_thumb	= KU_BOARDSDIR . $board_to . '/thumb/'. $image . 's'. '.'. $filetype;
-				$to_cat	= KU_BOARDSDIR . $board_to . '/thumb/'. $image . 'c'. '.'. $filetype;
-				@rename($from_pic, $to_pic);
-				@rename($from_thumb, $to_thumb);
-				@rename($from_cat, $to_cat);
-				@unlink($from_pic);
-				@unlink($from_thumb);
-				@unlink($from_cat);
-			}
+      $boards_to_regenerate = array($board_from, $board_to);
 
-			$from_html = KU_BOARDSDIR . $board_from . '/res/'. $_POST['id'] . '.html';
-			$from_html_50 = KU_BOARDSDIR . $board_from . '/res/'. $_POST['id'] . '+50.html';
-			$from_html_100 = KU_BOARDSDIR . $board_from . '/res/'. $_POST['id'] . '-100.html';
+      // Delete old HTMLs
+			$from_html = KU_BOARDSDIR . $board_from . '/res/'. $thread_from . '.html';
+			$from_html_50 = KU_BOARDSDIR . $board_from . '/res/'. $thread_from . '+50.html';
+			$from_html_100 = KU_BOARDSDIR . $board_from . '/res/'. $thread_from . '-100.html';
 			@unlink($from_html);
 			@unlink($from_html_50);
 			@unlink($from_html_100);
 
-			$tc_db->Execute("START TRANSACTION");
-			$new_id = $tc_db->GetOne("SELECT COALESCE(MAX(id),0) + 1 FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $board_to_id);
-			$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "posts` SET `id` = " . $new_id . ", `boardid` = " .$board_to_id. " WHERE `boardid` = " .$board_from_id. " AND `id` = " . $id);
-			processPost($new_id, $new_id, $id, $board_from, $board_to, $board_to_id);
+      $tc_db->SetFetchMode(ADODB_FETCH_ASSOC);
+      $tc_db->Execute("START TRANSACTION");
+      $postembeds = $tc_db->GetAll("SELECT `id`, `file_id`, `file`, `file_type`, `file_size` 
+        FROM `" . KU_DBPREFIX . "postembeds` 
+        WHERE 
+          `boardid`=$board_from_id 
+          AND 
+          (`id`=$thread_from OR `parentid`=$thread_from)
+        ORDER BY `parentid` ASC, `id` ASC");
 
-			$results = $tc_db->GetAll("SELECT `id` FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " .$board_from_id. " AND `parentid` = " . $id . " ORDER BY `id` ASC");
-			foreach ($results as $line) {
-				if (isset($_POST['mf'])) {
-					$image		= $tc_db->GetOne("SELECT `file` FROM `" .KU_DBPREFIX. "posts` WHERE `boardid` = " .$board_from_id. " AND `id` = " .$line['id']);
-					$filetype	= $tc_db->GetOne("SELECT `file_type` FROM `" .KU_DBPREFIX. "posts` WHERE `boardid` = " .$board_from_id. " AND `id` = " .$line['id']);
-					$from_pic	= KU_BOARDSDIR . $board_from . '/src/'. $image . '.'. $filetype;
-					$from_thumb	= KU_BOARDSDIR . $board_from . '/thumb/'. $image . 's'. '.'. $filetype;
-					$from_cat	= KU_BOARDSDIR . $board_from . '/thumb/'. $image . 'c'. '.'. $filetype;
-					$to_pic	= KU_BOARDSDIR . $board_to . '/src/'. $image . '.'. $filetype;
-					$to_thumb	= KU_BOARDSDIR . $board_to . '/thumb/'. $image . 's'. '.'. $filetype;
-					$to_cat	= KU_BOARDSDIR . $board_to . '/thumb/'. $image . 'c'. '.'. $filetype;
-					@rename($from_pic, $to_pic);
-					@rename($from_thumb, $to_thumb);
-					@rename($from_cat, $to_cat);
-					@unlink($from_pic);
-					@unlink($from_thumb);
-					@unlink($from_cat);
-				}
-				$insert_id = $tc_db->GetOne("SELECT COALESCE(MAX(id),0) + 1 FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $board_to_id);
-				$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "posts` SET `id` = " . $insert_id . ", `boardid` = " .$board_to_id. " WHERE `boardid` = " .$board_from_id. " AND `id` = " . $line['id']);
-				processPost($insert_id, $new_id, $id, $board_from, $board_to, $board_to_id);
-				$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "posts` SET `parentid` = " . $new_id . " WHERE `boardid` = " . $board_to_id . " AND `id` = " . $insert_id);
-			}
+      $posts = group_embeds($postembeds);
+      $id_map = array();
+      foreach($posts as $post) {
+        $id = $post['id'];
+        $new_id = $tc_db->GetOne("SELECT COALESCE(MAX(id),0) + 1 FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = '$board_to_id'");
+        if ($id == $thread_from) {
+          $thread_to = $new_id;
+        }
+        $tc_db->Execute("UPDATE `" . KU_DBPREFIX . "posts` 
+          SET 
+            `id` = $new_id, 
+            `boardid` = $board_to_id".
+            ($id == $thread_from ? ' ' : ", `parentid` = $thread_to ").
+          "WHERE 
+            `boardid` = $board_from_id
+            AND 
+            `id` = $id");
+        foreach($post['embeds'] as $embed) {
+          if ($embed['file'] != 'removed') {
+            $files = GetFileAndThumbs($embed);
+            // move file physically
+            foreach($files as $f) {
+              @rename(KU_BOARDSDIR.$board_from.$f, KU_BOARDSDIR.$board_to.$f);
+              @unlink(KU_BOARDSDIR.$board_from.$f);
+            }
+          }
+          $tc_db->Execute("UPDATE `" . KU_DBPREFIX . "files`
+            SET 
+              `post_id` = $new_id,
+              `boardid` = $board_to_id
+            WHERE 
+              `file_id` = ".$embed['file_id']);
+        }
+        $id_map []= array('before'=>$id, 'after'=>$new_id);
+      }
 
-			$tc_db->Execute("COMMIT");
+      // Replace ref links across the whole site
+      $all_refs = $tc_db->GetAll("SELECT `id`, `boardid`, `message` FROM `" . KU_DBPREFIX . "posts` WHERE  `message` LIKE '%\"ref|$board_from|$thread_from%'");
+      $board_ids = array();
+      foreach($all_refs as &$ref) {
+        foreach($id_map as $idm) {
+          $ref_boardid = $ref['boardid'];
+          // Add the board id where reference was found to the array of boards which need regeneration
+          if ($ref_boardid != $board_from_id && $ref_boardid != $board_from_id && !in_array($ref_boardid, $board_ids))
+            $board_ids []= $ref_boardid;
 
-			$board_class = new Board($board_from);
-			$board_class->RegenerateThreads();
-			$board_class->RegeneratePages();
-			unset($board_class);
+          $id_before = $idm['before'];
+          $id_after = $idm['after'];
 
-			$board_class = new Board($board_to);
-			$board_class->RegenerateThreads();
-			$board_class->RegeneratePages();
-			unset($board_class);
+          // Replace message contents
+          $exp = '/<a href=\\\\"\/(' . $board_from. ')\/res\/' . $thread_from. '\.html#' . $id_before. '\\\\"( onclick=\\\\"return highlight\(\')?(' . $id_before. ')?(\', true\);\\\\")? class=\\\\"ref\|' . $board_from. '\|' . $thread_from. '\|' . $id_before. '(.+?)>(?:(&gt;&gt;)(?:(?:\/' . $board_from. '\/)?' . $id_before. ')|(##(?:OP|ОП)##)?)/';
+          $ref['message'] = preg_replace_callback($exp, function($matches) use ($board_from, $thread_from, $id_before, $board_to, $thread_to, $id_after, $ref_boardid, $board_to_id) {
+            $res = "<a href=\\\"/$board_to/res/$thread_to.html#$id_after\\\"";
+            $res.= $matches[2];
+            $res.= $matches[3] ? $id_after : '';
+            $res.= $matches[4];
+            $res.= " class=\\\"ref|$board_to|$thread_to|$id_after";
+            $res.= $matches[5].'>';
+            if ($matches[6]) {
+              $res.= $matches[6];
+              if ($ref_boardid != $board_to_id) // Reference should stay/become external
+                $res.= "/$board_to/";
+              $res.= $id_after;
+            }
+            else // In case it's a prooflabel
+              $res.= $matches[7];
+            return $res;
+          }, $ref['message']);
+        }
+        $tc_db->Execute("UPDATE `" . KU_DBPREFIX . "posts` SET `message` = " . $tc_db->qstr($ref['message']) . " WHERE `boardid` = " . $ref_boardid . " AND `id` = " . $ref['id']);
+      }
+      $tc_db->Execute("COMMIT");
+      
+      //Regenerate pages
+      foreach($board_ids as $b_id) {
+        $boards_to_regenerate []= boardid_to_dir($b_id);
+      }
+      foreach($boards_to_regenerate as $b) {
+        $board_class = new Board($b);
+        $board_class->RegenerateThreads();
+        $board_class->RegeneratePages();
+        unset($b);
+      }
 
 			$tpl_page .= _gettext('Move complete.') . ' <br /><hr />';
 		}
@@ -2011,8 +2057,6 @@ class Manage {
 		<label for="board_to">' ._gettext('To') . ':</label>' .
 		$this->MakeBoardListDropdown('board_to', $this->BoardList($_SESSION['manageusername'])) .
 		'<br />
-		<label for="mf">'. _gettext('Move Files') .':</label>
-		<input type="checkbox" id="mf" name="mf" /><br />
 		<input type="submit" value="'. _gettext('Move thread') . '" />';
 	}
 

@@ -165,4 +165,30 @@ function group_embeds($r, $group_deleted_files = false) {
 	}
 	return $rg;
 }
+
+function GetFileAndThumbs($file) {
+  $res = array();
+  if ($file['file_size'] > 0) {
+    $res []= '/src/'.$file['file'].'.'.$file['file_type'];
+    $res []= '/thumb/'.$file['file'].'s.'.$file['file_type'];
+    $res []= '/thumb/'.$file['file'].'c.'.$file['file_type'];
+    if ($file['file_type'] == 'mp3') {
+      $res []= '/thumb/'.$file['file'].'s.jpg';
+      $res []= '/thumb/'.$file['file'].'s.png';
+      $res []= '/thumb/'.$file['file'].'s.gif';
+      $res []= '/thumb/'.$file['file'].'c.jpg';
+      $res []= '/thumb/'.$file['file'].'c.png';
+      $res []= '/thumb/'.$file['file'].'c.gif';
+    }
+    if ($file['file_type'] == 'webm') {
+      $res []= '/thumb/'.$file['file'].'s.jpg';
+      $res []= '/thumb/'.$file['file'].'c.jpg';
+    }
+  }
+  else { //if embed
+    $res []= '/thumb/'.$file['file_type'].'-'.$file['file'].'-'.'s.jpg';
+    $res []= '/thumb/'.$file['file_type'].'-'.$file['file'].'-'.'c.jpg';
+  }
+  return $res;
+}
 ?>

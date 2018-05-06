@@ -306,19 +306,4 @@ function unistr_to_ords($str, $encoding = 'UTF-8'){
 	}
 	return($ords);
 }
-
-function processPost($id, $newthreadid, $oldthreadid, $board_from, $board_to, $boardid) {
-
-	global $tc_db;
-
-	$message = $tc_db->GetOne("SELECT `message` FROM " . KU_DBPREFIX . "posts WHERE `boardid` = " . $boardid . " AND `id` = " . $id . " LIMIT 1");
-
-	if ($message != '') {
-		$message_new = str_replace('/read.php/' . $board_from . '/' . $oldthreadid, '/read.php/' . $board_to . '/' . $newthreadid, $message);
-
-		if ($message_new != $message) {
-			$tc_db->GetOne("UPDATE " . KU_DBPREFIX . "posts SET `message` = " . $tc_db->qstr($message) . " WHERE `boardid` = " . $boardid . " AND `id` = " . $id);
-		}
-	}
-}
 ?>

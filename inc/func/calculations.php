@@ -107,13 +107,7 @@ function checkBoardDir($dir) {
 function boardid_to_dir($boardid) {
 	global $tc_db;
 
-	$query = "SELECT `name` FROM `".KU_DBPREFIX."boards` WHERE `id` = ".$tc_db->qstr($boardid)."";
-	$results = $tc_db->SelectLimit($query, 1);
-	if (count($results)>0) {
-		foreach($results AS $line) {
-			return $line['name'];
-		}
-	}
+	return $tc_db->GetOne("SELECT `name` FROM `".KU_DBPREFIX."boards` WHERE `id` = ".$tc_db->qstr($boardid));
 }
 
 /**

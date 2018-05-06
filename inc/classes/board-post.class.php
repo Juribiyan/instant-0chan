@@ -791,28 +791,10 @@ class Board {
 	}
 
   function EraseFileAndThumbs($file) {
+    $files = GetFileAndThumbs($file);
     $boardname = $this->board['name'];
-    if ($file['file_size'] > 0) {
-      @unlink(KU_BOARDSDIR.$boardname.'/src/'.$file['file'].'.'.$file['file_type']);
-      @unlink(KU_BOARDSDIR.$boardname.'/src/'.$file['file'].'.pch');
-      @unlink(KU_BOARDSDIR.$boardname.'/thumb/'.$file['file'].'s.'.$file['file_type']);
-      @unlink(KU_BOARDSDIR.$boardname.'/thumb/'.$file['file'].'c.'.$file['file_type']);
-      if ($file['file_type'] == 'mp3') {
-        @unlink(KU_BOARDSDIR.$boardname.'/thumb/'.$file['file'].'s.jpg');
-        @unlink(KU_BOARDSDIR.$boardname.'/thumb/'.$file['file'].'s.png');
-        @unlink(KU_BOARDSDIR.$boardname.'/thumb/'.$file['file'].'s.gif');
-        @unlink(KU_BOARDSDIR.$boardname.'/thumb/'.$file['file'].'c.jpg');
-        @unlink(KU_BOARDSDIR.$boardname.'/thumb/'.$file['file'].'c.png');
-        @unlink(KU_BOARDSDIR.$boardname.'/thumb/'.$file['file'].'c.gif');
-      }
-      if ($file['file_type'] == 'webm') {
-        @unlink(KU_BOARDSDIR.$boardname.'/thumb/'.$file['file'].'s.jpg');
-        @unlink(KU_BOARDSDIR.$boardname.'/thumb/'.$file['file'].'c.jpg');
-      }
-    }
-    else { //if embed
-      @unlink(KU_BOARDSDIR.$boardname.'/thumb/'.$file['file_type'].'-'.$file['file'].'-'.'s.jpg');
-      @unlink(KU_BOARDSDIR.$boardname.'/thumb/'.$file['file_type'].'-'.$file['file'].'-'.'c.jpg');
+    foreach($files as $f) {
+      @unlink(KU_BOARDSDIR.$boardname.$file);
     }
   }
 
