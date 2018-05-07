@@ -1999,7 +1999,7 @@ class Manage {
         foreach($id_map as $idm) {
           $ref_boardid = $ref['boardid'];
           // Add the board id where reference was found to the array of boards which need regeneration
-          if ($ref_boardid != $board_from_id && $ref_boardid != $board_from_id && !in_array($ref_boardid, $board_ids))
+          if ($ref_boardid != $board_from_id && $ref_boardid != $board_to_id && !in_array($ref_boardid, $board_ids))
             $board_ids []= $ref_boardid;
 
           $id_before = $idm['before'];
