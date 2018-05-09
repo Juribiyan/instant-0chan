@@ -183,13 +183,6 @@ if (!$cache_loaded) {
 		$cf['KU_FIRSTPAGE'] = 'board.html'; // Filename of the first page of a board.  Only change this if you are willing to maintain the .htaccess files for each board directory (they are created with a DirectoryIndex board.html, change them if you change this)
 		$cf['KU_DIRTITLE']  = true; // Whether or not to place the board directory in the board's title and at the top of the page.  true would render as "/b/ - Random", false would render as "Random"
 
-	// File tagging
-		$cf['KU_TAGS'] = array('Japanese' => 'J',
-		                       'Anime'    => 'A',
-		                       'Game'     => 'G',
-		                       'Loop'     => 'L',
-		                       'Other'    => '*'); // Used only in Upload imageboards.  These are the tags which a user may choose to use as they are posting a file.  If you wish to disable tagging on Upload imageboards, set this to ''
-
 	// Special Tripcodes
 		$cf['KU_TRIPS'] = array('#changeme'  => 'changeme',
 		                        '#changeme2' => 'changeme2'); // Special tripcodes which can have a predefined output.  Do not include the initial ! in the output.  Maximum length for the output is 30 characters.  Set to array(); to disable

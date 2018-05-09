@@ -289,14 +289,6 @@ class Posting {
 		}
 	}
 
-	function GetPostTag() {
-		global $board_class;
-		/* Check for and parse tags if one was provided, and they are enabled */
-		$post_tag = '';
-		$tags = unserialize(KU_TAGS);
-		return $post_tag;
-	}
-
 	function CheckBlacklistedText() {
 		global $bans_class, $tc_db;
 
