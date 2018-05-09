@@ -289,7 +289,7 @@ class Posting {
 		}
 	}
 
-	function CheckBlacklistedText() {
+	function CheckBlacklistedText() { // legacy & unused function, but let it be.
 		global $bans_class, $tc_db;
 
 		$badlinks = array_map('rtrim', file(KU_ROOTDIR . 'spam.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
@@ -330,9 +330,18 @@ class Posting {
 		if($msg == $lastmsg) exitWithErrorPage(_gettext('Flood Detected'), _gettext('You are posting the same message again.'));
 
 		$sturl = KU_BOARDSDIR . $board . '/spam.txt';
-		if(!file_exists($sturl)) return;
 
-		$badlinks = array_map('rtrim', file($sturl, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
+		$glsturl = KU_BOARDSDIR . '/spam.txt';
+
+		if (!file_exists($sturl) && !file_exists($glsturl)) {
+			return;
+		} elseif (file_exists($sturl) && !file_exists($glsturl)) {
+			$badlinks = array_map('rtrim', file($sturl, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
+		} elseif (!file_exists($sturl) && file_exists($glsturl)) {
+			$badlinks = array_map('rtrim', file($glsturl, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
+		} else {
+			$badlinks = array_map('rtrim', file($sturl, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES), file($glsturl, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
+		}
 
 		foreach ($badlinks as $badlink) {
 			if (stripos($msg, mb_strtolower(str_replace($cyr, $lat, $badlink))) !== false) {
