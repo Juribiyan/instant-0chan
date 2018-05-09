@@ -240,8 +240,6 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 
 	$posting_class->CheckBadUnicode($post_name, $post_email, $post_subject, $post_message);
 
-	$post_tag = $posting_class->GetPostTag();
-
 	if ($board_class->board['locked'] == 0 || ($user_authority > 0 && $user_authority != 3)) {
 		if ($post_isreply) {
 			$upload_class->isreply = true;

@@ -212,7 +212,6 @@ if (!$cache_loaded) {
 
 	// Post-configuration actions, don't modify these
 		$cf['KU_VERSION']    = '0.9.3';
-		$cf['KU_TAGS']       = serialize($cf['KU_TAGS']);
 		$cf['KU_TRIPS']      = serialize($cf['KU_TRIPS']);
 		$cf['KU_LINELENGTH'] = $cf['KU_LINELENGTH'] * 15;
 
