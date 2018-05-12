@@ -159,6 +159,16 @@ class Manage {
 		}
 	}
 
+	function GetToken() {
+		if ($this->CurrentUserIsAdministrator()) {
+			echo $_SESSION['token'];
+			exit;
+		} else {
+			echo "false";
+			exit;
+		}
+	}
+
   function CheckToken($posttoken) {
     if ($posttoken != $_SESSION['token']) {
       // Something is strange
@@ -1920,21 +1930,21 @@ class Manage {
 
 		$tpl_page .= '<h2>'. _gettext('Move thread') . '</h2><br />';
 
-		if (isset($_POST['id']) && isset($_POST['board_from']) && isset($_POST['board_to'])) {
-      $this->CheckToken($_POST['token']);
-      
+		if (isset($_GET['id']) && isset($_GET['board_from']) && isset($_GET['board_to'])) {
+      $this->CheckToken($_GET['token']);
+
       // Validation
-      if (! preg_match('/^[0-9]+$/', $_POST['id']))
+      if (! preg_match('/^[0-9]+$/', $_GET['id']))
         exitWithErrorPage(_gettext('Invalid thread ID.'));
-      if (!checkBoardDir($_POST['board_from']) || !checkBoardDir($_POST['board_to']) || $_POST['board_from']==$_POST['board_to'])
+      if (!checkBoardDir($_GET['board_from']) || !checkBoardDir($_GET['board_to']) || $_GET['board_from']==$_GET['board_to'])
         exitWithErrorPage(_gettext('Invalid directory name.'));
-      
+
 			// Get the IDs for the from and to boards
-			$board_from_id = $tc_db->GetOne("SELECT HIGH_PRIORITY `id` FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($_POST['board_from']));
-			$board_to_id = $tc_db->GetOne("SELECT HIGH_PRIORITY `id` FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($_POST['board_to']));
-			$board_from = $_POST['board_from'];
-			$board_to = $_POST['board_to'];
-      $thread_from = $_POST['id'];
+			$board_from_id = $tc_db->GetOne("SELECT HIGH_PRIORITY `id` FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($_GET['board_from']));
+			$board_to_id = $tc_db->GetOne("SELECT HIGH_PRIORITY `id` FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($_GET['board_to']));
+			$board_from = $_GET['board_from'];
+			$board_to = $_GET['board_to'];
+      $thread_from = $_GET['id'];
 
       $boards_to_regenerate = array($board_from, $board_to);
 
@@ -1948,11 +1958,11 @@ class Manage {
 
       $tc_db->SetFetchMode(ADODB_FETCH_ASSOC);
       $tc_db->Execute("START TRANSACTION");
-      $postembeds = $tc_db->GetAll("SELECT `id`, `file_id`, `file`, `file_type`, `file_size` 
-        FROM `" . KU_DBPREFIX . "postembeds` 
-        WHERE 
-          `boardid`=$board_from_id 
-          AND 
+      $postembeds = $tc_db->GetAll("SELECT `id`, `file_id`, `file`, `file_type`, `file_size`
+        FROM `" . KU_DBPREFIX . "postembeds`
+        WHERE
+          `boardid`=$board_from_id
+          AND
           (`id`=$thread_from OR `parentid`=$thread_from)
         ORDER BY `parentid` ASC, `id` ASC");
 
@@ -1964,14 +1974,14 @@ class Manage {
         if ($id == $thread_from) {
           $thread_to = $new_id;
         }
-        $tc_db->Execute("UPDATE `" . KU_DBPREFIX . "posts` 
-          SET 
-            `id` = $new_id, 
+        $tc_db->Execute("UPDATE `" . KU_DBPREFIX . "posts`
+          SET
+            `id` = $new_id,
             `boardid` = $board_to_id".
             ($id == $thread_from ? ' ' : ", `parentid` = $thread_to ").
-          "WHERE 
+          "WHERE
             `boardid` = $board_from_id
-            AND 
+            AND
             `id` = $id");
         foreach($post['embeds'] as $embed) {
           if ($embed['file'] != 'removed') {
@@ -1983,10 +1993,10 @@ class Manage {
             }
           }
           $tc_db->Execute("UPDATE `" . KU_DBPREFIX . "files`
-            SET 
+            SET
               `post_id` = $new_id,
               `boardid` = $board_to_id
-            WHERE 
+            WHERE
               `file_id` = ".$embed['file_id']);
         }
         $id_map []= array('before'=>$id, 'after'=>$new_id);
@@ -2028,7 +2038,7 @@ class Manage {
         $tc_db->Execute("UPDATE `" . KU_DBPREFIX . "posts` SET `message` = " . $tc_db->qstr($ref['message']) . " WHERE `boardid` = " . $ref_boardid . " AND `id` = " . $ref['id']);
       }
       $tc_db->Execute("COMMIT");
-      
+
       //Regenerate pages
       foreach($board_ids as $b_id) {
         $boards_to_regenerate []= boardid_to_dir($b_id);
@@ -2040,10 +2050,16 @@ class Manage {
         unset($b);
       }
 
-			$tpl_page .= _gettext('Move complete.') . ' <br /><hr />';
+			$msg = _gettext('Move complete.');
+
+			if ($_POST['AJAX'])
+				exitWithSuccessJSON($msg);
+			else
+				$tpl_page .= $msg . ' <br /><hr />';
 		}
 
-		$tpl_page .= '<form action="?action=movethread" method="post">
+		$tpl_page .= '<form action="?action=movethread" method="get">
+		  <input type="hidden" name="action" value="movethread" />
     	<input type="hidden" name="token" value="' . $_SESSION['token'] . '" />
 
 		<label for="id">'. _gettext('ID') . ':</label>
