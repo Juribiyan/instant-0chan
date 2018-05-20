@@ -937,10 +937,14 @@ class Post extends Board {
         `IS_DELETED` = 1 ,
         `deleted_timestamp` = '" . time() . "'
        WHERE
+        `boardid` = '" . $boardid . "'
+        AND
         `id` IN (".implode($post_ids, ',').")");
       // Clear reports
       $tc_db->Execute("DELETE FROM `".KU_DBPREFIX."reports`
        WHERE
+        `boardid` = '" . $boardid . "'
+        AND
         `id` IN (".implode($post_ids, ',').")");
 
       return (count($post_ids)+1).' '; // huh?
