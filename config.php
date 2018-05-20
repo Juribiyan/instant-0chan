@@ -80,6 +80,7 @@ if (!$cache_loaded) {
 		//offsite urls allowed in user submitted CSS (separated by single space (" "))
 		$cf['KU_ALLOWED_OFFSITE_URLS'] = 'http://i.imgur.com/ https://i.imgur.com/ https://fonts.googleapis.com/ https://fonts.gstatic.com/';
 		$cf['KU_MAX_CSS_SIZE'] = 102400; // msximum user submitted CSS size (in bytes)
+		$cf['KU_DISCLAIMER'] = false; // Whether or not a disclaimer (/dwoo/templates/disclaimer.tpl) should be displayed for new visitors.
 
 		$cf['I0_SAYERS_ENABLED'] = false;
 		// Emoji configuration
