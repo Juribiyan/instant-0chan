@@ -81,7 +81,7 @@ Before running this script, make sure that:<br />
 	$sqlfile = fopen('kusaba_freshinstall.mysql.sql', 'r');
 	echo 'File opened.<br />';
 	$readdata = fread($sqlfile, filesize('kusaba_freshinstall.mysql.sql'));
-	$readdata = str_replace('PREFIX_',KU_DBPREFIX,$readdata);
+	$readdata = str_replace(array('PREFIX_', 'KU_DBCHARSET', 'KU_COLLATION'), array(KU_DBPREFIX, KU_DBCHARSET, KU_COLLATION), $readdata);
 	fclose($sqlfile);
 	echo 'Contents read.<br />';
 	}else{

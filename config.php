@@ -99,6 +99,8 @@ if (!$cache_loaded) {
 		$cf['KU_DBPASSWORD']      = ''; // Database password. On SQLite this has no effect.
 		$cf['KU_DBPREFIX']        = ''; // Database table prefix
 		$cf['KU_DBUSEPERSISTENT'] = false; // Use persistent connection to database
+		$cf['KU_DBCHARSET']        = 'utf8mb4';	// Database charset. utfmb4 is recommended, use utf8 if your version of mysql does not support it yet
+		$cf['KU_COLLATION']        = 'utf8mb4_general_ci'; // Database collation. utfmb4_general_ci is recommended, use utf8_general_ci if your version of mysql does not support it yet
 
 	// Imageboard info
 		$cf['KU_NAME']      = 'Øchan'; // The name of your site
@@ -258,7 +260,7 @@ if (!isset($tc_db) && !isset($preconfig_db_unnecessary)) {
 		$tc_db->Connect(KU_DBHOST, KU_DBUSERNAME, KU_DBPASSWORD, KU_DBDATABASE) or die('SQL database connection error: ' . $tc_db->ErrorMsg());
 	}
 
-	$tc_db->EXECUTE("set names 'utf8'");
+	$tc_db->EXECUTE("set names '".KU_DBCHARSET."'");
 
 	// SQL debug
 	if (KU_DEBUG) {

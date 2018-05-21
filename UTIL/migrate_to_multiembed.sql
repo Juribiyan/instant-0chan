@@ -1,13 +1,13 @@
 CREATE TABLE `files` (
   `file_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `post_id` INT(10) UNSIGNED NOT NULL,
-  `boardid` SMALLINT(5) UNSIGNED NOT NULL,
-  `file` VARCHAR(50) NOT NULL,
-  `file_md5` CHAR(32) NOT NULL,
-  `file_type` VARCHAR(20) NOT NULL,
-  `file_original` VARCHAR(255) NOT NULL,
+  `post_id` INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `boardid` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
+  `file` VARCHAR(50) NOT NULL DEFAULT '',
+  `file_md5` CHAR(32) NOT NULL DEFAULT '',
+  `file_type` VARCHAR(20) NOT NULL DEFAULT '',
+  `file_original` VARCHAR(255) NOT NULL DEFAULT '',
   `file_size` INT(20) NOT NULL DEFAULT '0',
-  `file_size_formatted` VARCHAR(75) NOT NULL,
+  `file_size_formatted` VARCHAR(75) NOT NULL DEFAULT '',
   `image_w` SMALLINT(5) NOT NULL DEFAULT '0',
   `image_h` SMALLINT(5) NOT NULL DEFAULT '0',
   `thumb_w` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
@@ -17,7 +17,7 @@ CREATE TABLE `files` (
   INDEX `file_id` (`file_id`),
   INDEX `post_id` (`post_id`)
 )
-ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
+ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=1;
 
 INSERT INTO `files` (
   `post_id`,
