@@ -2,7 +2,6 @@
  <form id="delform" action="{%KU_CGIPATH}/board.php" method="post">
  <input type="hidden" name="board" value="{$board.name}" />
  {foreach name=thread item=posts_in_thread from=$posts}
-  <script>console.log({json_encode($posts_in_thread)})</script>
   {foreach key=postkey item=post from=$posts_in_thread}
 {* / INIT SECTION *}
 
