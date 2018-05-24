@@ -905,7 +905,7 @@ class Manage {
 							$log .= _gettext('Moderator');
 							break;
 						case 3:
-							$log .= _gettext('Board Owner');
+							$log .= _gettext('Userboards Owner');
 							break;
 					}
 					$log .= ' '. $_POST['username'];
@@ -963,7 +963,7 @@ class Manage {
 					} elseif ($_POST['type'] == '0') {
 						$logentry .= _gettext('Janitor');
 					} elseif ($_POST['type'] == '3') {
-						$logentry .= _gettext('Board Owner');
+						$logentry .= _gettext('Userboards Owner');
 					} else {
 						exitWithErrorPage('Something went wrong.');
 					}
@@ -994,7 +994,7 @@ class Manage {
 				$tpl_page .= ($type==1) ? '<option value="1" selected="selected">' ._gettext('Administrator'). '</option>' : '<option value="1">' ._gettext('Administrator'). '</option>';
 				$tpl_page .= ($type==2) ? '<option value="2" selected="selected">' ._gettext('Moderator'). '</option>' : '<option value="2">' ._gettext('Moderator'). '</option>';
 				$tpl_page .= ($type==0) ? '<option value="0" selected="selected">' ._gettext('Janitor'). '</option>' : '<option value="0">' ._gettext('Janitor'). '</option>';
-				$tpl_page .= ($type==3) ? '<option value="3" selected="selected">' ._gettext('Board Owner'). '</option>' : '<option value="3">' ._gettext('Board Owner'). '</option>';
+				$tpl_page .= ($type==3) ? '<option value="3" selected="selected">' ._gettext('Userboards Owner'). '</option>' : '<option value="3">' ._gettext('Userboards Owner'). '</option>';
 				$tpl_page .= '</select><br /><br />';
 
 				$tpl_page .= _gettext('Moderates') . '<br />
@@ -1025,7 +1025,7 @@ class Manage {
 						<option value="1">' ._gettext('Administrator'). '</option>
 						<option value="2">' ._gettext('Moderator'). '</option>
 						<option value="0">' ._gettext('Janitor'). '</option>
-						<option value="3">' ._gettext('Board Owner'). '</option>
+						<option value="3">' ._gettext('Userboards Owner'). '</option>
 					</select><br />
 
 					<input type="submit" value="' ._gettext('Add staff member'). '" />
@@ -1045,7 +1045,7 @@ class Manage {
 				$stafftype = 'Janitor';
 				$numtype = 0;
 			} elseif ($i == 4) {
-				$stafftype = 'Board Owner';
+				$stafftype = 'Userboards Owner';
 				$numtype = 3;
 			}
 			$tpl_page .= '<tr><td align="center" colspan="5"><font size="+1"><strong>'. _gettext($stafftype) . '</strong></font></td></tr>'. "\n";
@@ -4500,13 +4500,14 @@ class Manage {
 		}
 		$instantban = false;
 		if ((isset($_GET['instant']) || isset($_GET['cp'])) && $ban_ip) {
+			// TODO:
 			if (isset($_GET['cp'])) {
 					$ban_reason = "You have been banned for posting Child Pornography. Your IP has been logged, and the proper authorities will be notified.";
 			} else {
 				if($_GET['reason']) {
 					$ban_reason = urldecode($_GET['reason']);
 				} else {
-					$ban_Reason = KU_BANREASON;
+					$ban_reason = KU_BANREASON;
 				}
 			}
 			$instantban = true;
@@ -4565,6 +4566,10 @@ class Manage {
 
 				$ban_reason = ($instantban) ? $ban_reason : $_POST['reason'];
 				$ban_note = ($instantban) ? '' : $_POST['staffnote'];
+				if (! $this->CurrentUserIsAdministrator()) {
+					$ban_reason = htmlspecialchars($ban_reason);
+					$ban_note = htmlspecialchars($ban_note);
+				}
 				$ban_appealat = 0;
 				if (KU_APPEAL != '' && !$instantban) {
 					$ban_appealat = intval($_POST['appealdays'] * 86400);
@@ -4583,8 +4588,31 @@ class Manage {
 					}
 					if ($bans_class->BanUser($ban_ip, $_SESSION['manageusername'], $ban_globalban, $ban_duration, $ban_boards, $ban_reason, $ban_note, $ban_appealat, $ban_type, $ban_allowread)) {
 						$regenerated = array();
-						if (((KU_BANMSG != '' || $_POST['banmsg'] != '') && isset($_POST['addbanmsg']) && (isset($_POST['quickbanpostid']) || isset($_POST['quickmultibanpostid']))) || $instantban ) {
-							$ban_msg = ((KU_BANMSG == $_POST['banmsg']) || empty($_POST['banmsg'])) ? KU_BANMSG : $_POST['banmsg'];
+						if (
+							(
+								(
+									KU_BANMSG != '' 
+									|| 
+									$_POST['banmsg'] != ''
+								) 
+								&& 
+								isset($_POST['addbanmsg']) 
+								&& 
+								(
+									isset($_POST['quickbanpostid']) 
+									|| 
+									isset($_POST['quickmultibanpostid'])
+								)
+							) 
+							|| 
+							$instantban 
+						) {
+							$ban_msg = (KU_BANMSG == $_POST['banmsg'] || empty($_POST['banmsg'])) 
+								? KU_BANMSG 
+								: $_POST['banmsg'];
+							if (! $this->CurrentUserIsAdministrator()) {
+								$ban_msg = '<br /><font color="#FF0000"><b>'.htmlspecialchars($ban_msg).'</b></font>';
+							}
 							if (isset($ban_post_id))
 								$postids = Array($ban_post_id);
 							else
@@ -4606,7 +4634,8 @@ class Manage {
 							}
 						}
 						$tpl_page .= _gettext('Ban successfully placed.')."<br />";
-					} else {
+					} 
+					else {
 						exitWithErrorPage(_gettext('Sorry, a generic error has occurred.'));
 					}
 
@@ -4713,6 +4742,7 @@ class Manage {
 			<input type="checkbox" name="deleteposts" id="deleteposts" />';
 		}
 		if($this->CurrentUserIsAdministrator()) {
+			$banmsg = '<br /><font color="#FF0000"><b>'.KU_BANMSG.'</b></font>';
 			$tpl_page .= '<br />
 			<label for="allowread">'. _gettext('Allow read') . ':</label>
 			<select name="allowread" id="allowread"><option value="1">'._gettext('Yes').'</option><option value="0">'._gettext('No').'</option></select>
@@ -4720,15 +4750,18 @@ class Manage {
 
 			<label for="type">'. _gettext('Type') . ':</label>
 			<select name="type" id="type"><option value="0">'. _gettext('Single IP') . '</option><option value="1">'. _gettext('IP Range') . '</option><option value="2">'. _gettext('Whitelist') . '</option></select>
-			<div class="desc">'. _gettext('The type of ban. A single IP can be banned by providing the full address. A whitelist ban prevents that IP from being banned. An IP range can be banned by providing the IP range you would like to ban, in this format: 123.123.12') . '</div><br />';
+			<div class="desc">'. _gettext('The type of ban. A single IP can be banned by providing the full address. A whitelist ban prevents that IP from being banned. An IP range can be banned by providing the IP range you would like to ban, in this format: 123.123.12') . '</div>';
+		}
+		else {
+			$banmsg = KU_BANMSG;
 		}
 
 		if ($isquickban && KU_BANMSG != '') {
-			$tpl_page .= '<label for="addbanmsg">'. _gettext('Add ban message') . ':</label>
+			$tpl_page .= '<br /><label for="addbanmsg">'. _gettext('Add ban message') . ':</label>
 			<input type="checkbox" name="addbanmsg" id="addbanmsg" checked="checked" />
 			<div class="desc">'. _gettext('If checked, the configured ban message will be added to the end of the post.') . '</div><br />
 			<label for="banmsg">'. _gettext('Ban message') . ':</label>
-			<input type="text" name="banmsg" id="banmsg" value="'. htmlspecialchars(KU_BANMSG) . '" size='. strlen(KU_BANMSG) . '" />';
+			<input type="text" name="banmsg" id="banmsg" value="'. htmlspecialchars($banmsg) . '" size='. strlen($banmsg) . '" />';
 		}
 
 		$tpl_page .='</fieldset>

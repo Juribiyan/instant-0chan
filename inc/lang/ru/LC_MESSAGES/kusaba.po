@@ -1786,8 +1786,11 @@ msgstr "Мамка в комнате"
 msgid "Expand images to full size"
 msgstr "Разворачивать картинки до исходного размера"
 
-msgid "Board Owner"
+msgid "Userboards Owner"
 msgstr "Владелец 2.0 досок"
+
+msgid "Board Owner"
+msgstr "Владелец доски"
 
 msgid "Board limit exceeded. Delete the unused boards."
 msgstr "Превышен лимит 2.0 досок. Удалите неиспользуемые доски."

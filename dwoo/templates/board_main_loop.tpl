@@ -61,10 +61,10 @@
    {/strip}
    {if $post.posterauthority eq 1}
     <span class="admin">&#35;&#35;&nbsp;{t}Admin{/t}&nbsp;&#35;&#35;</span>
-   {elseif $post.posterauthority eq 4}
-    <span class="mod">&#35;&#35;&nbsp;{t}Super Mod{/t}&nbsp;&#35;&#35;</span>
    {elseif $post.posterauthority eq 2}
     <span class="mod">&#35;&#35;&nbsp;{t}Mod{/t}&nbsp;&#35;&#35;</span>
+   {elseif $post.posterauthority eq 3}
+    <span class="admin">&#35;&#35;&nbsp;{t}Board owner{/t}&nbsp;&#35;&#35;</span>
    {/if}
    {$post.timestamp_formatted}
   </label>

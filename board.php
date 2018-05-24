@@ -197,7 +197,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 	$dice = ($board_class->board['dice']) ? true : false;
 	$ipmd5 = md5($_SERVER['REMOTE_ADDR']);
 	// If they are just a normal user, or vip...
-	if (isNormalUser($user_authority)) {
+	if ($user_authority <= 0) {
 		// If the thread is locked
 		if ($thread_locked == 1) {
 			// Don't let the user post
@@ -206,17 +206,19 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 
 		$post_message = $parse_class->ParsePost($_POST['message'], $board_class->board['name'], $thread_replyto, $board_class->board['id'], false, $ua, $dice, $ipmd5);
 	// Or, if they are a moderator/administrator...
-	} else {
+	} 
+	else {
 		// If they checked the D checkbox, set the variable to tell the script to display their staff status (Admin/Mod) on the post during insertion
 		if (isset($_POST['displaystaffstatus'])) {
 			$post_displaystaffstatus = true;
 		}
 
-		// If they checked the RH checkbox, set the variable to tell the script to insert the post as-is...
-		if (isset($_POST['rawhtml'])) {
+		// If they checked the RH checkbox, set the variable to tell the script to insert the post as-is... (admin only)
+		if (isset($_POST['rawhtml']) && $user_authority==1) {
 			$post_message = $_POST['message'];
 		// Otherwise, parse it as usual...
-		} else {
+		} 
+		else {
 			$post_message = $parse_class->ParsePost($_POST['message'], $board_class->board['name'], $thread_replyto, $board_class->board['id'], false, $ua, $dice, $ipmd5);
 			// (Moved) check against blacklist and detect flood
 		}
@@ -291,7 +293,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 			$lock = 0;
 		}
 
-		if (!$post_displaystaffstatus && $user_authority > 0 && $user_authority != 3) {
+		if (!$post_displaystaffstatus && $user_authority > 0) {
 			$user_authority_display = 0;
 		} elseif ($user_authority > 0) {
 			$user_authority_display = $user_authority;

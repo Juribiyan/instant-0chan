@@ -54,7 +54,7 @@ if (!$manage_class->ValidateSession(true)) {
 	} elseif ($manage_class->CurrentUserIsModerator()) {
 		$tpl_links .= _gettext('Moderator');
 	} elseif ($manage_class->CurrentUserIsBoardOwner()) {
-		$tpl_links .= _gettext('Board Owner');
+		$tpl_links .= _gettext('Userboards Owner');
 		$includelogo20 = '1';
 	} else {
 		$tpl_links .= _gettext('Janitor');
