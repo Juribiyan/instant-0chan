@@ -30,11 +30,15 @@
 require 'config.php';
 require KU_ROOTDIR . 'inc/functions.php';
 require KU_ROOTDIR . 'inc/classes/bans.class.php';
+require KU_ROOTDIR . 'inc/classes/posting.class.php';
+
+session_start();
 
 $bans_class = new Bans();
+$posting_class = new Posting();
 
 if (isset($_POST['appealmessage']) && KU_APPEAL != '') {
-	$results = $tc_db->GetAll("SELECT * FROM `".KU_DBPREFIX."banlist` WHERE `type` = '0' AND `ipmd5` = '" . md5($_SERVER['REMOTE_ADDR']) . "' AND `id` = " . $tc_db->qstr($_POST['banid']) . "LIMIT 1");
+	$results = $tc_db->GetAll("SELECT * FROM `".KU_DBPREFIX."banlist` WHERE `type` = '0' AND `ipmd5` = '" . $posting_class->user_id_md5 . "' AND `id` = " . $tc_db->qstr($_POST['banid']) . "LIMIT 1");
 	if (count($results)>0) {
 		foreach($results AS $line) {
 			if ($line['appealat'] > 0 && $line['appealat'] < time()) {
@@ -50,6 +54,6 @@ if (isset($_POST['appealmessage']) && KU_APPEAL != '') {
 	}
 }
 
-$bans_class->BanCheck($_SERVER['REMOTE_ADDR'], '', true);
+$bans_class->BanCheck($posting_class->user_id, '', true);
 
 ?>

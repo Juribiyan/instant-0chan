@@ -20,28 +20,102 @@
  */
 class Posting {
 
+	function __construct() {
+		global $tc_db, $board_class;
+
+		$this->ipless_mode = (I0_IPLESS_MODE==true || (I0_IPLESS_MODE=='auto' && $_SERVER['REMOTE_ADDR']=='127.0.0.1'));
+
+		// Set user ID
+		if ($this->ipless_mode) {
+			if (isset($_COOKIE['I0_persistent_id'])) {
+				$this->user_id = $_COOKIE['I0_persistent_id'];
+			}
+			else {
+				$this->user_id = session_id();
+				$this->need_cookie = true;
+				$this->is_new_user = true;
+			}
+		}
+		else {
+			$this->user_id = $_SERVER['REMOTE_ADDR'];
+		}
+		$this->user_id_md5 = md5($this->user_id);
+		
+		if (I0_GLOBAL_NEWTHREADDELAY > 0 && !$this->is_new_user) {
+			// Check if the user has created any threads on this board
+			$any_threads = $tc_db->GetOne("SELECT COUNT(*) FROM `posts` WHERE `boardid`=? AND `parentid`='0' AND `ipmd5`=?",
+				array($board_class->board['id'], $this->user_id_md5));
+			if ($any_threads)
+				$this->is_new_user = false;
+			elseif (I0_REPLIES_TO_RECOGNIZE) { // Check if the user has created a sufficient number of posts on this board
+				$post_count = $tc_db->GetOne("SELECT COUNT(*) FROM `posts` WHERE `boardid`=? AND `ipmd5`=? LIMIT ?",
+					array($board_class->board['id'], $this->user_id_md5, I0_REPLIES_TO_RECOGNIZE));
+				$this->is_new_user = ($post_count < I0_REPLIES_TO_RECOGNIZE);
+			}
+			else
+				$this->is_new_user = true;
+		}
+
+		$this->now = time();
+	}
+
 	function CheckReplyTime() {
 		global $tc_db, $board_class;
 		/* Get the timestamp of the last time a reply was made by this IP address */
-		$result = $tc_db->GetOne("SELECT MAX(timestamp) FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $board_class->board['id'] . " AND `parentid` != 0 AND `ipmd5` = '" . md5($_SERVER['REMOTE_ADDR']) . "' AND `timestamp` > " . (time() - KU_REPLYDELAY));
-		/* If they have posted before and it was recorded... */
-		if (isset($result)) {
-		/* If the time was shorter than the minimum time distance */
-			if (time() - $result <= KU_REPLYDELAY) {
-				exitWithErrorPage(_gettext('Please wait a moment before posting again.'), _gettext('You are currently posting faster than the configured minimum post delay allows.'));
-			}
+		$result = $tc_db->GetOne("SELECT MAX(timestamp) 
+			FROM `" . KU_DBPREFIX . "posts` 
+			WHERE 
+				`boardid` = " . $board_class->board['id'] . " 
+				AND 
+				`ipmd5` = '" . $this->user_id_md5 . "' 
+				AND
+				NOT `IS_DELETED`
+				AND 
+				`timestamp` > " . ($this->now - KU_REPLYDELAY));
+		if ($result) {
+			exitWithErrorPage(sprintf(_gettext('Please wait %d s before posting again.'), KU_REPLYDELAY - ($this->now - $result)), 
+				_gettext('You are currently posting faster than the configured minimum post delay allows.'));
 		}
 	}
 
 	function CheckNewThreadTime() {
 		global $tc_db, $board_class;
-		/* Get the timestamp of the last time a new thread was made by this IP address */
-		$result = $tc_db->GetOne("SELECT MAX(timestamp) FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = " . $board_class->board['id'] . " AND `parentid` = 0 AND `ipmd5` = '" . md5($_SERVER['REMOTE_ADDR']) . "' AND `timestamp` > " . (time() - KU_NEWTHREADDELAY));
-		/* If they have posted before and it was recorded... */
-		if (isset($result)) {
-			/* If the time was shorter than the minimum time distance */
-			if (time() - $result <= KU_NEWTHREADDELAY) {
-				exitWithErrorPage(_gettext('Please wait a moment before posting again.'), _gettext('You are currently posting faster than the configured minimum post delay allows.'));
+		/* Check the global new thread delay */
+		if (I0_GLOBAL_NEWTHREADDELAY > 0 && $this->is_new_user) {
+			$result = $tc_db->GetOne("SELECT MAX(timestamp) 
+				FROM `" . KU_DBPREFIX . "posts` 
+				WHERE 
+					`boardid` = " . $board_class->board['id'] . " 
+					AND 
+					`parentid` = 0 
+					AND 
+					`by_new_user` = '1'
+					AND
+					NOT `IS_DELETED`
+					AND 
+					`timestamp` > " . ($this->now - I0_GLOBAL_NEWTHREADDELAY));
+			if ($result) {
+				exitWithErrorPage(sprintf(_gettext('Please wait %d s before posting again.'), I0_GLOBAL_NEWTHREADDELAY - ($this->now - $result)), 
+					_gettext('Global new thread delay for new users is imposed.'));
+			}
+		}
+		else {
+			/* Get the timestamp of the last time a new thread was made by this IP address */
+			$result = $tc_db->GetOne("SELECT MAX(timestamp) 
+				FROM `" . KU_DBPREFIX . "posts` 
+				WHERE 
+					`boardid` = " . $board_class->board['id'] . " 
+					AND 
+					`parentid` = 0 
+					AND 
+					`ipmd5` = '" . $this->user_id_md5 . "' 
+					AND
+					NOT `IS_DELETED`
+					AND 
+					`timestamp` > " . ($this->now - KU_NEWTHREADDELAY));
+			if ($result) {
+				exitWithErrorPage(sprintf(_gettext('Please wait %d s before posting again.'), KU_NEWTHREADDELAY - ($this->now - $result)), 
+					_gettext('You are currently posting faster than the configured minimum post delay allows.'));
 			}
 		}
 	}
@@ -140,8 +214,8 @@ class Posting {
 				WHERE `md5` = " . $tc_db->qstr($attachment['file_md5']) . " 
 				LIMIT 1");
 			if (count($results) > 0) {
-				$bans_class->BanUser($_SERVER['REMOTE_ADDR'], 'SERVER', '1', $results[0]['bantime'], '', 'Posting a banned file.<br />' . $results[0]['description'], 0, 0, 1);
-				$bans_class->BanCheck($_SERVER['REMOTE_ADDR'], $board_class->board['name']);
+				$bans_class->BanUser($this->user_id, 'SERVER', '1', $results[0]['bantime'], '', 'Posting a banned file.<br />' . $results[0]['description'], 0, 0, 1);
+				$bans_class->BanCheck($this->user_id, $board_class->board['name']);
 				die();
 				// TODO: AJAX response
 			}
@@ -308,7 +382,7 @@ class Posting {
 		foreach ($badlinks as $badlink) {
 			if (stripos($_POST['message'], $badlink) !== false) {
 				/* They included a blacklisted link in their post. Ban them for an hour */
-				$bans_class->BanUser($_SERVER['REMOTE_ADDR'], 'board.php', 1, 3600, '', _gettext('Posting a blacklisted link.') . ' (' . $badlink . ')', $_POST['message']);
+				$bans_class->BanUser($this->user_id, 'board.php', 1, 3600, '', _gettext('Posting a blacklisted link.') . ' (' . $badlink . ')', $_POST['message']);
 				exitWithErrorPage(sprintf(_gettext('Blacklisted link ( %s ) detected.'), $badlink));
 			}
 		}
@@ -335,7 +409,7 @@ class Posting {
 
 		if(!strlen($msg)) return;
 
-		$lastmsg = $tc_db->GetAll("SELECT `message` FROM `".KU_DBPREFIX."posts` WHERE  `ipmd5` = '" . md5($_SERVER['REMOTE_ADDR']) . "' AND `boardid`='".$boardid."' ORDER BY `timestamp` DESC LIMIT 1");
+		$lastmsg = $tc_db->GetAll("SELECT `message` FROM `".KU_DBPREFIX."posts` WHERE  `ipmd5` = '" . $this->user_id_md5 . "' AND `boardid`='".$boardid."' ORDER BY `timestamp` DESC LIMIT 1");
 		$lastmsg = mb_strtolower(strip_tags(str_replace($cyr, $lat, $lastmsg[0][0])));
 
 		if($msg == $lastmsg) exitWithErrorPage(_gettext('Flood Detected'), _gettext('You are posting the same message again.'));
@@ -357,7 +431,7 @@ class Posting {
 		foreach ($badlinks as $badlink) {
 			if (stripos($msg, mb_strtolower(str_replace($cyr, $lat, $badlink))) !== false) {
 				/* They included a blacklisted link in their post. Ban them for an hour */
-				$bans_class->BanUser($_SERVER['REMOTE_ADDR'], 'board.php', 0, 3600, $board, _gettext('Posting a blacklisted link.') . ' (' . $badlink . ')', $_POST['message']);
+				$bans_class->BanUser($this->user_id, 'board.php', 0, 3600, $board, _gettext('Posting a blacklisted link.') . ' (' . $badlink . ')', $_POST['message']);
 				exitWithErrorPage(sprintf(_gettext('Blacklisted link ( %s ) detected.'), $badlink));
 			}
 		}

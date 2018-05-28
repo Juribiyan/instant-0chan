@@ -441,7 +441,7 @@ class Board {
 	function RegenerateThreads($id = 0) {
 		global $tc_db, $CURRENTLOCALE;
 		require_once(KU_ROOTDIR."lib/dwoo.php");
-		if (!isset($this->dwoo)) { $this->dwoo = New Dwoo; $this->dwoo_data = new Dwoo_Data(); $this->InitializeDwoo(); }
+		if (!isset($this->dwoo)) { $this->dwoo = New Dwoo(); $this->dwoo_data = new Dwoo_Data(); $this->InitializeDwoo(); }
 		// $embeds = Array();
 		$numimages = 0;
 		$embeds = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "embeds`");
@@ -1014,11 +1014,33 @@ class Post extends Board {
     }
   }
 
-	function Insert($parentid, $name, $tripcode, $email, $subject, $message, $attachments, $password, $timestamp, $bumped, $ip, $posterauthority, $stickied, $locked, $boardid, $country) {
+	function Insert($parentid, $name, $tripcode, $email, $subject, $message, $attachments, $password, $timestamp, $bumped, $ip, $posterauthority, $stickied, $locked, $boardid, $country, $is_new_user) {
 		global $tc_db;
+    $post_fields = array(
+      $parentid,
+      $boardid,
+      $name,
+      $tripcode,
+      $mail,
+      $subject,
+      $message,
+      $password,
+      $timestamp,
+      $bumped,
+      md5_encrypt($ip, KU_RANDOMSEED),
+      md5($ip),
+      $posterauthority,
+      $stickied,
+      $locked,
+      $country,
+      $is_new_user
+    );
+    foreach($post_fields as &$pf) {
+      $pf = $tc_db->qstr($pf);
+    }
 		$query = "INSERT INTO `".KU_DBPREFIX."posts`
-			( `parentid` , `boardid`, `name` , `tripcode` , `email` , `subject` , `message` , `password` , `timestamp` , `bumped` , `ip` , `ipmd5` , `posterauthority` , `stickied` , `locked`, `country` )
-			VALUES ( ".$tc_db->qstr($parentid).", ".$tc_db->qstr($boardid).", ".$tc_db->qstr($name).", ".$tc_db->qstr($tripcode).", ".$tc_db->qstr($email).", ".$tc_db->qstr($subject).", ".$tc_db->qstr($message).", ".$tc_db->qstr($password).", ".$tc_db->qstr($timestamp).", ".$tc_db->qstr($bumped).", ".$tc_db->qstr(md5_encrypt($ip, KU_RANDOMSEED)).", '".md5($ip)."', ".$tc_db->qstr($posterauthority).", ".$tc_db->qstr($stickied).", ".$tc_db->qstr($locked).", ".$tc_db->qstr($country)." )";
+			(`parentid` , `boardid`, `name` , `tripcode` , `email` , `subject` , `message` , `password` , `timestamp` , `bumped` , `ip` , `ipmd5` , `posterauthority` , `stickied` , `locked`, `country`, `by_new_user`)
+			VALUES ( ".implode(', ', $post_fields)." )";
     $tc_db->Execute($query);
 		$id = $tc_db->Insert_Id();
     $sqlerr = $tc_db->ErrorNo();
