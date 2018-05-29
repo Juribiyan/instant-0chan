@@ -43,12 +43,12 @@ class Posting {
 		
 		if (I0_GLOBAL_NEWTHREADDELAY > 0 && !$this->is_new_user) {
 			// Check if the user has created any threads on this board
-			$any_threads = $tc_db->GetOne("SELECT COUNT(*) FROM `posts` WHERE `boardid`=? AND `parentid`='0' AND `ipmd5`=?",
+			$any_threads = $tc_db->GetOne("SELECT COUNT(*) FROM `" . KU_DBPREFIX . "posts` WHERE `boardid`=? AND `parentid`='0' AND `ipmd5`=? LIMIT 1",
 				array($board_class->board['id'], $this->user_id_md5));
 			if ($any_threads)
 				$this->is_new_user = false;
 			elseif (I0_REPLIES_TO_RECOGNIZE) { // Check if the user has created a sufficient number of posts on this board
-				$post_count = $tc_db->GetOne("SELECT COUNT(*) FROM `posts` WHERE `boardid`=? AND `ipmd5`=? LIMIT ?",
+				$post_count = $tc_db->GetOne("SELECT COUNT(*) FROM `" . KU_DBPREFIX . "posts` WHERE `boardid`=? AND `ipmd5`=? LIMIT ?",
 					array($board_class->board['id'], $this->user_id_md5, I0_REPLIES_TO_RECOGNIZE));
 				$this->is_new_user = ($post_count < I0_REPLIES_TO_RECOGNIZE);
 			}

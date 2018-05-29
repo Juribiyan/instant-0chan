@@ -866,7 +866,7 @@ msgid "Please wait %d s before posting again."
 msgstr "Подождите %d с перед отправкой нового сообщения."
 
 msgid "Global new thread delay for new users is imposed."
-msgid "Действует режим глобального ограничения на создание тредов новыми пользователями."
+msgstr "Действует режим глобального ограничения на создание тредов новыми пользователями."
 
 msgid "Popular"
 msgstr "Популярные"
