@@ -142,7 +142,7 @@ class Parse {
 		include_once KU_ROOTDIR . '/lib/geshi.php';
 		$geshi = new GeSHi(html_entity_decode($matches[2], ENT_QUOTES), $matches[1]);
 		$geshi->set_header_type(GESHI_HEADER_PRE);
-		$geshi->enable_classes();
+		// $geshi->enable_classes();
 		$tr = array("["=>"&#91;", "]"=>"&#93;", "*"=>"&#42;", "%"=>"&#37;", "&quot;"=>"&#34;", "-"=>"&#45;", ":"=>"&#58;", "# "=>"&#35; ", "~"=>"&#126;",  "&#039;"=>"'", "&apos;"=>"'", "&gt;"=>"&#62;", "&lt;"=>"&#60;", "`"=>'&#96;');
 		return '<div class="code_part">'.strtr($geshi->parse_code(), $tr).'</div>';
 	}
