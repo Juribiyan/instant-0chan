@@ -55,7 +55,7 @@ class Bans {
 				return $bans;
 			}
 			else {
-				echo $this->DisplayBannedMessage($bans);
+				echo $this->DisplayBannedMessage($bans, $ip);
 			}
 			die();
 		}
@@ -99,9 +99,9 @@ class Bans {
 	}
 
 	/* Return the page which will inform the user a quite unfortunate message */
-	function DisplayBannedMessage($bans, $board='') {
+	function DisplayBannedMessage($bans, $ip) {
 		/* Set a cookie with the users current IP address in case they use a proxy to attempt to make another post */
-		setcookie('tc_previousip', $_SERVER['REMOTE_ADDR'], (time() + 604800), KU_BOARDSFOLDER);
+		setcookie('tc_previousip', $ip, (time() + 604800), KU_BOARDSFOLDER);
 
 		require_once KU_ROOTDIR . 'lib/dwoo.php';
 

@@ -49,7 +49,6 @@ require KU_ROOTDIR . 'inc/classes/cloud20.class.php';
 
 $bans_class = new Bans();
 $parse_class = new Parse();
-$posting_class = new Posting();
 
 function notify($id="???", $newthreadid = '') {
 	$cl20 = new Cloud20();
@@ -140,11 +139,11 @@ if (isset($_POST['board'])) {
 	// A board being supplied is required for this script to function
 	error_redirect(KU_WEBPATH, _gettext('No board provided'));
 }
-
-
+// Must be declared after board class
+$posting_class = new Posting();
 
 // Expired ban removal, and then existing ban check on the current user
-$ban_result = $bans_class->BanCheck($_SERVER['REMOTE_ADDR'], $board_class->board['name']);
+$ban_result = $bans_class->BanCheck($posting_class->user_id, $board_class->board['name']);
 if ($ban_result && is_array($ban_result) && $_POST['AJAX']) {
 	exit(json_encode(array(
 	  'error' => _gettext('YOU ARE BANNED'),
@@ -195,7 +194,6 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 	$parse_class->id = $nextid;
 	$ua = ($board_class->board['useragent']) ? htmlspecialchars($_SERVER['HTTP_USER_AGENT']) : false;
 	$dice = ($board_class->board['dice']) ? true : false;
-	$ipmd5 = md5($_SERVER['REMOTE_ADDR']);
 	// If they are just a normal user, or vip...
 	if ($user_authority <= 0) {
 		// If the thread is locked
@@ -204,7 +202,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 			exitWithErrorPage(_gettext('Sorry, this thread is locked and can not be replied to.'));
 		}
 
-		$post_message = $parse_class->ParsePost($_POST['message'], $board_class->board['name'], $thread_replyto, $board_class->board['id'], false, $ua, $dice, $ipmd5);
+		$post_message = $parse_class->ParsePost($_POST['message'], $board_class->board['name'], $thread_replyto, $board_class->board['id'], false, $ua, $dice, $posting_class->user_id_md5);
 	// Or, if they are a moderator/administrator...
 	} 
 	else {
@@ -219,7 +217,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 		// Otherwise, parse it as usual...
 		} 
 		else {
-			$post_message = $parse_class->ParsePost($_POST['message'], $board_class->board['name'], $thread_replyto, $board_class->board['id'], false, $ua, $dice, $ipmd5);
+			$post_message = $parse_class->ParsePost($_POST['message'], $board_class->board['name'], $thread_replyto, $board_class->board['id'], false, $ua, $dice, $posting_class->user_id_md5);
 			// (Moved) check against blacklist and detect flood
 		}
 
@@ -293,7 +291,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 			$lock = 0;
 		}
 
-		if (!$post_displaystaffstatus && $user_authority > 0) {
+		if (!$post_displaystaffstatus && $user_authority > 0/* && $user_authority != 3*/) {
 			$user_authority_display = 0;
 		} elseif ($user_authority > 0) {
 			$user_authority_display = $user_authority;
@@ -385,7 +383,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 
 		// $upload_class->file_name, $upload_class->original_file_name, $filetype_withoutdot, $upload_class->file_md5, $upload_class->imgWidth, $upload_class->imgHeight, $upload_class->file_size, $upload_class->imgWidth_thumb, $upload_class->imgHeight_thumb
 		$post_class = new Post(0, $board_class->board['name'], $board_class->board['id'], true);
-		$post_id = $post_class->Insert($thread_replyto, $post['name'], $post['tripcode'], $post['email'], $post['subject'], addslashes($post['message']), $upload_class->attachments, $post_passwordmd5, time(), time(), $_SERVER['REMOTE_ADDR'], $user_authority_display, $sticky, $lock, $board_class->board['id'], $post['country']);
+		$post_id = $post_class->Insert($thread_replyto, $post['name'], $post['tripcode'], $post['email'], $post['subject'], addslashes($post['message']), $upload_class->attachments, $post_passwordmd5, time(), time(), $posting_class->user_id, $user_authority_display, $sticky, $lock, $board_class->board['id'], $post['country'], $posting_class->is_new_user);
 
 		if ($user_authority > 0 && $user_authority != 3) {
 		  $modpost_message = 'Modposted #<a href="' . KU_BOARDSFOLDER . $board_class->board['name'] . '/res/';
@@ -398,6 +396,10 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 		  management_addlogentry($modpost_message, 1, md5_decrypt($_POST['modpassword'], KU_RANDOMSEED));
 		}
 
+		// Give persistent cookie
+		if ($posting_class->ipless_mode && $posting_class->need_cookie)
+			setcookie('I0_persistent_id', $posting_class->user_id, time() + 31556926, '/'/*, KU_DOMAIN*/);
+
 		if ($post['name_save'] && isset($_POST['name'])) {
 		  setcookie('name', $_POST['name'], time() + 31556926, '/', KU_DOMAIN);
 		}
@@ -407,7 +409,6 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 		}
 
 		setcookie('postpassword', $_POST['postpassword'], time() + 31556926, '/');
-
 
 		// Determine the page from which post is getting bumbed →
 		$startpage = -1;

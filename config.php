@@ -87,7 +87,8 @@ if (!$cache_loaded) {
 		$cf['I0_SMILES_ENABLED'] = true;
 		$cf['I0_USERSMILES_ENABLED'] = true;
 		$cf['I0_SMILEDIR'] = 'images/smileys/'; // Make sure to set proper write rights to this directory
-		$cf['I0_FORCE_HTML_NOCACHE'] = true; // When AJAX-ing HTML, force no-cache (default: off (server must handle this, recommended for local debugging only))
+		$cf['I0_FORCE_HTML_NOCACHE'] = false; // When AJAX-ing HTML, force no-cache (default: off (server must handle this, recommended for local debugging only))
+		$cf['I0_IPLESS_MODE'] = 'auto'; // Whether or not cookies should be used instead of IP's (typically for TOR hidden services). Supported values: true, false and 'auto'. In auto mode, cookies will be used when client IP is 127.0.0.1 
 
 	// Database
 		$cf['KU_DBTYPE']          = 'mysqli';	// Database type. Valid values are mysql and mysqli (reccomended for mysql).
@@ -148,10 +149,12 @@ if (!$cache_loaded) {
 		$cf['KU_MENUSTYLESWITCHER'] = true; // Whether or not to display the different styles in a clickable switcher in the menu
 
 	// Limitations
-		$cf['KU_NEWTHREADDELAY'] = 30; // Minimum time in seconds a user must wait before posting a new thread again
+		$cf['KU_NEWTHREADDELAY'] = 300; // Minimum time in seconds a user must wait before posting a new thread again
 		$cf['KU_REPLYDELAY']     = 7; // Minimum time in seconds a user must wait before posting a reply again
 		$cf['KU_LINELENGTH']     = 150; // Used when cutting long post messages on pages and placing the message too long notification
 		$cf['KU_CUTPOSTS']     = false;
+		$cf['I0_GLOBAL_NEWTHREADDELAY'] = 0; // Minimum time in seconds a NEW user must wait before posting a new thread. Usable for limiting the speed of wipe
+		$cf['I0_REPLIES_TO_RECOGNIZE'] = 10; // Minimum number of replies a user must post to be recognized as not “New”. 0 means a user can lose the “New” status only through creating a new thread. Usable only if I0_GLOBAL_NEWTHREADDELAY is enabled
 
 	// Image handling
 		$cf['KU_THUMBWIDTH']       = 200; // Maximum thumbnail width

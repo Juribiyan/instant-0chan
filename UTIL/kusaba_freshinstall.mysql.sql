@@ -273,6 +273,7 @@ CREATE TABLE `PREFIX_posts` (
   `IS_DELETED` tinyint(1) NOT NULL DEFAULT '0',
   `bumped` int(20) unsigned NOT NULL DEFAULT '0',
   `country` varchar(10) NOT NULL DEFAULT 'xx',
+  `by_new_user` TINYINT(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`boardid`,`id`),
   KEY `parentid` (`parentid`),
   KEY `bumped` (`bumped`),

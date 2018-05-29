@@ -862,8 +862,11 @@ msgstr "Выберите доску."
 msgid "Please select only one image to upload."
 msgstr "Выберите только изображение для загрузки."
 
-msgid "Please wait a moment before posting again."
-msgstr "Подождите перед отправкой нового сообщения."
+msgid "Please wait %d s before posting again."
+msgstr "Подождите %d с перед отправкой нового сообщения."
+
+msgid "Global new thread delay for new users is imposed."
+msgstr "Действует режим глобального ограничения на создание тредов новыми пользователями."
 
 msgid "Popular"
 msgstr "Популярные"
