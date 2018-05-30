@@ -419,6 +419,13 @@ figure:hover {
           animation-duration: 1s;
   box-shadow: 0 0 88px rgba(0, 0, 0, 0.4), inset 0 0 88px rgba(0, 0, 0, 0.4);
 }
+.code_part, .prettyprint {
+   -webkit-filter: invert(1) contrast(0.85) saturate(0.75) hue-rotate(180deg);
+           filter: invert(1) contrast(0.85) saturate(0.75) hue-rotate(180deg);
+}
+.code_part pre, .prettyprint *  {
+	mix-blend-mode: multiply;
+}
 .inline-pp {
   background: rgba(255, 255, 255, 0.08);
 }

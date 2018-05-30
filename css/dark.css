@@ -460,3 +460,10 @@ color: rgb(36, 218, 226);
 .reply::-webkit-scrollbar-corner {
 	background: #353535;
 }
+.code_part, .prettyprint {
+   -webkit-filter: invert(1) contrast(0.85) saturate(0.75) hue-rotate(180deg);
+           filter: invert(1) contrast(0.85) saturate(0.75) hue-rotate(180deg);
+}
+.code_part pre, .prettyprint *  {
+	mix-blend-mode: multiply;
+}
