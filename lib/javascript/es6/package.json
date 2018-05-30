@@ -3,25 +3,14 @@
   "version": "0.0.1",
   "description": "0chan revival kit",
   "scripts": {
-    "build": "babel src --out-dir ../ --source-maps"
+    "build": "cross-env BABEL_ENV=production babel src --out-dir ../ --source-maps"
   },
   "author": "Juribiyan",
   "license": "GPL-2",
   "devDependencies": {
-    "babel-cli": "^6.22.2",
-    "babel-plugin-html-template": "^1.0.1",
-    "babel-plugin-remove-comments": "^2.0.0",
-    "babel-preset-babili": "0.0.9",
-    "babel-preset-latest": "^6.16.0"
-  },
-  "babel": {
-    "plugins": [
-      "remove-comments",
-      "html-template"
-    ],
-    "presets": [
-      "babili",
-      "latest"
-    ]
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-minify": "^0.4.1",
+    "cross-env": "^5.1.5"
   }
 }
