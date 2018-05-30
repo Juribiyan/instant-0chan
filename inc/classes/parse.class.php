@@ -28,7 +28,7 @@ class Parse {
 	function BBCode($string){
 	if(!KU_USE_GESHI)
 		$string = preg_replace_callback('`\[code\](.+?)\[/code\]`is', array(&$this, 'code_callback'), $string);
-	$string = preg_replace_callback('#`(.+?)`#is', array(&$this, 'inline_code_callback'), $string);
+	$string = preg_replace_callback('#`(.+?)`#i', array(&$this, 'inline_code_callback'), $string);
 	$string = preg_replace_callback('`\[tex\](.+?)\[/tex\]`is', array(&$this, 'latex_callback'), $string);
 	$string = preg_replace_callback('`((?:(?:(?:^[\-\*] )(?:[^\r\n]+))[\r\n]*)+)`m', array(&$this, 'bullet_list'), $string);
 	$string = preg_replace_callback('`((?:(?:(?:[+\#] )(?:[^\r\n]+))[\r\n]*)?(?:(?:(?:^[+\#] )(?:[^\r\n]+))[\r\n]*)+)`m', array(&$this, 'number_list'), $string);
@@ -47,7 +47,6 @@ class Parse {
       '`\[lination\](.+?)\[/lination\]`is',
       '`\[caps\](.+?)\[/caps\]`is',
       '`&quot;(.+?)&quot;`is',
-      '#`(.+?)`#',
       '`&gt;(.+?)&lt;`'
       );
     $replaces =  array(
@@ -64,7 +63,6 @@ class Parse {
       '<table class="lination"><tr><td><img src="/images/lina.png"></td><td><div class="bubble">\\1</div></td></tr></table>',
       '<span style="text-transform: uppercase;">\\1</span>',
       '«\\1»',
-      '<span class="inline-code">\\1</span>',
       '<span class="unkfunc">&gt;\\1</span>'
       );
 		$string = preg_replace($patterns, $replaces , $string);

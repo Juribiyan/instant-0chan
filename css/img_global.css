@@ -1852,7 +1852,9 @@ blockquote ol {
 }
 .inline-pp {
   display: inline;
-  padding-right: 2px!important;
+  padding: 1px 4px;
+  background: rgba(0, 0, 0, 0.07);
+  border-radius: 4px;
 }
 blockquote ul,
 blockquote ol {
