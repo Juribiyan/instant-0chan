@@ -26,8 +26,10 @@ class Parse {
 	}
 
 	function BBCode($string){
-	if(!KU_USE_GESHI)
+	if(!KU_USE_GESHI) {
 		$string = preg_replace_callback('`\[code\](.+?)\[/code\]`is', array(&$this, 'code_callback'), $string);
+		$string = preg_replace_callback('/```\s+?\R(.+?)\R```/is', array(&$this, 'code_callback'), $string);
+	}
 	$string = preg_replace_callback('#`(.+?)`#i', array(&$this, 'inline_code_callback'), $string);
 	$string = preg_replace_callback('`\[tex\](.+?)\[/tex\]`is', array(&$this, 'latex_callback'), $string);
 	$string = preg_replace_callback('`((?:(?:(?:^[\-\*] )(?:[^\r\n]+))[\r\n]*)+)`m', array(&$this, 'bullet_list'), $string);
@@ -130,13 +132,15 @@ class Parse {
 
 	function Process_geshi($string) {
 		$geshi_langs = array("text", "4cs", "6502acme", "6502kickass", "6502tasm", "68000devpac", "abap", "actionscript", "actionscript3", "ada", "aimms", "algol68", "apache", "applescript", "apt_sources", "arm", "asm", "asp", "asymptote", "autoconf", "autohotkey", "autoit", "avisynth", "awk", "bascomavr", "bash", "basic4gl", "batch", "bf", "biblatex", "bibtex", "blitzbasic", "bnf", "boo", "c", "caddcl", "cadlisp", "ceylon", "cfdg", "cfm", "chaiscript", "chapel", "cil", "clojure", "cmake", "cobol", "coffeescript", "cpp-qt", "cpp-winapi", "cpp", "csharp", "css", "cuesheet", "c_loadrunner", "c_mac", "c_winapi", "d", "dart", "dcl", "dcpu16", "dcs", "delphi", "diff", "div", "dos", "dot", "e", "ecmascript", "eiffel", "email", "epc", "erlang", "euphoria", "ezt", "f1", "falcon", "fo", "fortran", "freebasic", "freeswitch", "fsharp", "gambas", "gdb", "genero", "genie", "gettext", "glsl", "gml", "gnuplot", "go", "groovy", "gwbasic", "haskell", "haxe", "hicest", "hq9plus", "html4strict", "html5", "icon", "idl", "ini", "inno", "intercal", "io", "ispfpanel", "j", "java", "java5", "javascript", "jcl", "jquery", "julia", "kixtart", "klonec", "klonecpp", "kotlin", "latex", "lb", "ldif", "lisp", "llvm", "locobasic", "logtalk", "lolcode", "lotusformulas", "lotusscript", "lscript", "lsl2", "lua", "m68k", "magiksf", "make", "mapbasic", "mathematica", "matlab", "mercury", "metapost", "mirc", "mk-61", "mmix", "modula2", "modula3", "mpasm", "mxml", "mysql", "nagios", "netrexx", "newlisp", "nginx", "nimrod", "nsis", "oberon2", "objc", "objeck", "ocaml-brief", "ocaml", "octave", "oobas", "oorexx", "oracle11", "oracle8", "oxygene", "oz", "parasail", "parigp", "pascal", "pcre", "per", "perl", "perl6", "pf", "phix", "php-brief", "php", "pic16", "pike", "pixelbender", "pli", "plsql", "postgresql", "postscript", "povray", "powerbuilder", "powershell", "proftpd", "progress", "prolog", "properties", "providex", "purebasic", "pys60", "python", "q", "qbasic", "qml", "racket", "rails", "rbs", "rebol", "reg", "rexx", "robots", "rpmspec", "rsplus", "ruby", "rust", "sas", "sass", "scala", "scheme", "scilab", "scl", "sdlbasic", "smalltalk", "smarty", "spark", "sparql", "sql", "standardml", "stonescript", "swift", "systemverilog", "tcl", "tclegg", "teraterm", "texgraph", "text", "thinbasic", "tsql", "twig", "typoscript", "unicon", "upc", "urbi", "uscript", "vala", "vb", "vbnet", "vbscript", "vedit", "verilog", "vhdl", "vim", "visualfoxpro", "visualprolog", "whitespace", "whois", "winbatch", "xbasic", "xml", "xojo", "xorg_conf", "xpp", "xyscript", "yaml", "z80", "zxbasic"); //all supported languages
-
-		return preg_replace_callback('`\[code=('.implode('|', $geshi_langs).')\](.+?)\[/code\]`is', array(&$this, 'geshi_callback'), $string);
+		$langs = implode('|', $geshi_langs);
+		$string = preg_replace_callback('`\[code(?:=('.$langs.'))?\](.+?)\[/code\]`is', array(&$this, 'geshi_callback'), $string);
+		return preg_replace_callback('/```('.$langs.')?\s+?\R(.+?)\R```/is', array(&$this, 'geshi_callback'), $string);
 	}
 
 	function geshi_callback($matches) {
 		include_once KU_ROOTDIR . '/lib/geshi.php';
-		$geshi = new GeSHi(html_entity_decode($matches[2], ENT_QUOTES), $matches[1]);
+		$lang = $matches[1] ? $matches[1] : 'text';
+		$geshi = new GeSHi(html_entity_decode($matches[2], ENT_QUOTES), $lang);
 		$geshi->set_header_type(GESHI_HEADER_PRE);
 		$tr = array("\t"=>"&#9;", "["=>"&#91;", "]"=>"&#93;", "*"=>"&#42;", "%"=>"&#37;", "&quot;"=>"&#34;", "-"=>"&#45;", ":"=>"&#58;", "# "=>"&#35; ", "~"=>"&#126;",  "&#039;"=>"'", "&apos;"=>"'", "&gt;"=>"&#62;", "&lt;"=>"&#60;", "`"=>'&#96;');
 		return '<div class="code_part">'.strtr($geshi->parse_code(), $tr).'</div>';
