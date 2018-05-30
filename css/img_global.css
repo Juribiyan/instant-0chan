@@ -1621,7 +1621,7 @@ input:disabled {
   display: table-cell;
   vertical-align: top;
   margin-left: 20px;
-  padding: 11px 10px;
+  padding: 9px 15px;
   text-shadow: none;
 }
 td > .bubble {
@@ -1652,6 +1652,7 @@ td > .bubble {
 }
 .thought-bubble {
   left: 10px;
+  margin-right: 10px!important;
 }
 .thought-bubble:after {
   height: 14px;
@@ -1666,7 +1667,7 @@ td > .bubble {
   top: 5px;
 }
 .thought-bubble, .thought-bubble:after, .thought-bubble:before {
-  border-radius: 80px;
+  border-radius: 20px;
 }
 .thought-bubble:after, .thought-bubble:before {
   box-sizing: border-box;
