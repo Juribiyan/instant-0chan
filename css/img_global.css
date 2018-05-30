@@ -840,6 +840,19 @@ border-radius: 5px;
   text-decoration: none;
   padding: 0 14px;
 }
+.uib-spoiler {
+  position: relative;
+}
+.uib-spoiler:before {
+  content: '░░░';
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  text-align: center;
+  overflow: hidden;
+}
 
 #interface-notifier {
 display: inline-block;
@@ -1555,15 +1568,15 @@ svg {
   position: absolute;
   display: inline-block;
   top: 0;
-  padding-top: 16px; /* to prevent mouseleave */
   left: 0;
+  top: 16px;
 }
 .expandee {
   z-index: 2;
   max-height: 0;
-  -webkit-transition: max-height .3s;
-  -o-transition: max-height .3s;
-  transition: max-height .3s;
+  -webkit-transition: max-height .3s, top .3s;
+  -o-transition: max-height .3s, top .3s;
+  transition: max-height .3s, top .3s;
   overflow: hidden;
 }
 .expandee select {
@@ -1571,6 +1584,7 @@ svg {
 }
 .expanded.expandee {
   max-height: 200px;
+  top: -40px;
 }
 textarea {
   z-index: 1;
