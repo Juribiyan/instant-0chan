@@ -574,6 +574,9 @@ img.latex, object.latex  {
   text-shadow: none;
   padding: 2px;
   padding-right: 20px !important;
+  -moz-tab-size: 2;
+    -o-tab-size: 2;
+       tab-size: 2;
 }
 
 .code_part {
