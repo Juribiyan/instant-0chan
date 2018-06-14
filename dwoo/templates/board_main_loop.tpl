@@ -181,7 +181,7 @@
            <a href="{$embed.videourl}" target="_blank" title="{$embed.file_original} — {t}Watch on{/t} {$embed.site_name}">{$embed.file_original}</a>
           </div>
           <div class="embed-duration">{$embed.file_size_formatted}</div>
-          <img src="{%KU_BOARDSFOLDER}images/site-logos/{$embed.site_name}.png" alt="" class="embed-logo">
+          <img src="{%KU_BOARDSFOLDER}images/site-logos/{strtolower($embed.site_name)}.png" alt="" class="embed-logo">
           <button type="submit" title="{t}Delete file{/t}" class="emb-button yesscript delete-file emb-button" name="delete-file[]" value="{$embed.file_id}">
            <svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-x"></use></svg>
           </button>
