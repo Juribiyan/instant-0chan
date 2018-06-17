@@ -75,6 +75,7 @@
     {/if}
 <div class="adminbar">
 [<a href="{%KU_WEBPATH}/kusaba.php" target="_top">{t}Frames{/t}</a>]&nbsp;[<a href="{%KU_CGIPATH}/manage.php" target="_top">{t}Manage{/t}</a>]
+<svg class="icon b-icon history-toggle" onclick="pups.historyToggle()" title="{t}Show alert history{/t}"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-bell"></use></svg>
 </div>
 <div id="boardlist_header">
 	<div id="overlay_menu" class="content-background overlay-menu">

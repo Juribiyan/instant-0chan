@@ -407,10 +407,6 @@ color: rgb(36, 218, 226);
 .icon {
 	-webkit-filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.6));
 }
-#popupMessage {
-	-webkit-box-shadow: 0 3px 20px #000000;
-	        box-shadow: 0 3px 20px #000000;
-}
 ::-moz-selection {
 	background: rgb(32, 157, 162);
 	text-shadow: 0 1px 0 rgba(0,0,0,0.5);
@@ -466,4 +462,31 @@ color: rgb(36, 218, 226);
 }
 .code_part pre, .prettyprint *  {
 	mix-blend-mode: multiply;
+}
+.pup[pupclass=succ] .pup-wrapped {
+  background: #4dbb35;
+  border-color: #68e64d;
+  color: #d7ffce;
+  box-shadow: 0 3px 13px rgba(57, 255, 17, 0.5);
+}
+.pup[pupclass=err] .pup-wrapped {
+  background: #ad5757;
+  border-color: #ff5555;
+  color: #ffc1c1;
+  box-shadow: 0 3px 13px rgba(255, 63, 63, 0.5);
+}
+.pup[pupclass=info] .pup-wrapped {
+  background: #317aa0;
+  border-color: #6cc9fb;
+  color: #caecff;
+  box-shadow: 0 3px 13px rgba(44, 181, 255, 0.5);
+}
+.pup[pupclass=warn] .pup-wrapped {
+  background: #c19425;
+  border-color: #ecd547;
+  color: #fff451;
+  box-shadow: 0 3px 13px rgba(236, 213, 71, .5);
+}
+.pup a:hover, .pup a:visited:hover {
+	color: white;
 }

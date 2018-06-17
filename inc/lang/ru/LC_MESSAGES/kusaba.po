@@ -2070,3 +2070,6 @@ msgstr " с"
 
 msgid "replies deleted"
 msgstr "ответов удалено"
+
+msgid "Show alert history"
+msgstr "Показать историю уведомлений"

@@ -429,3 +429,30 @@ figure:hover {
 .inline-pp {
   background: rgba(255, 255, 255, 0.08);
 }
+.pup[pupclass=succ] .pup-wrapped {
+  background: #4dbb35;
+  border-color: #68e64d;
+  color: #d7ffce;
+  box-shadow: 0 3px 13px rgba(57, 255, 17, 0.5);
+}
+.pup[pupclass=err] .pup-wrapped {
+  background: #ad5757;
+  border-color: #ff5555;
+  color: #ffc1c1;
+  box-shadow: 0 3px 13px rgba(255, 63, 63, 0.5);
+}
+.pup[pupclass=info] .pup-wrapped {
+  background: #317aa0;
+  border-color: #6cc9fb;
+  color: #caecff;
+  box-shadow: 0 3px 13px rgba(44, 181, 255, 0.5);
+}
+.pup[pupclass=warn] .pup-wrapped {
+  background: #c19425;
+  border-color: #ecd547;
+  color: #fff451;
+  box-shadow: 0 3px 13px rgba(236, 213, 71, .5);
+}
+.pup a:hover, .pup a:visited:hover {
+	color: white;
+}
