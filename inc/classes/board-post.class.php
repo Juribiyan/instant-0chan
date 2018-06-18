@@ -794,7 +794,7 @@ class Board {
     $files = GetFileAndThumbs($file);
     $boardname = $this->board['name'];
     foreach($files as $f) {
-      @unlink(KU_BOARDSDIR.$boardname.$file);
+      @unlink(KU_BOARDSDIR.$boardname.$f);
     }
   }
 
