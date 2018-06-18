@@ -299,13 +299,13 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 			$user_authority_display = 0;
 		}
 
-		$emoji_candidate = false;
+		$emoji_candidates = array();
 
 		foreach($upload_class->attachments as $attachment) {
 			if ($attachment['attachmenttype'] == 'file') {
 				$thumbfiletype = ($attachment['filetype_withoutdot'] == 'webm')	? '.jpg' : $attachment['file_type'];
 				if ($attachment['emoji_candidate']) {
-					$emoji_candidate = $attachment;
+					$emoji_candidates []= $attachment;
 				}
 				if (
 					!file_exists(KU_BOARDSDIR . $board_class->board['name'] . '/src/' . $attachment['file_name'] . $attachment['file_type'])
@@ -319,7 +319,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 							file_exists(KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $attachment['file_name'] . 'c' . $thumbfiletype)
 						)
 					)
-				) exitWithErrorPage(/*_gettext('Could not copy uploaded image.')*/'FUCK YOU LITERALLY');
+				) exitWithErrorPage(_gettext('Could not copy uploaded image.'));
 			}
 		}
 
@@ -353,31 +353,37 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 		  }
 		}
 
-		// Emoji registration (use first file)
-		if (I0_USERSMILES_ENABLED) {
-		  preg_match('/\/reg(?:emoji|smiley?) :?([0-9a-z_]{3,20}):?/i', $post['message'], $re_match);
-		  if ($emoji_candidate && count($re_match)) {
-		    $emoji_name = strtolower($re_match[1]);
-		    // Check if emoji exists
-		    $exists = false;
-		    foreach(array('.gif','.png') as $extension) {
-		      if(file_exists(KU_ROOTDIR.I0_SMILEDIR.$matches[1].$extension))   {
-		        $exists = true;
-		        break;
-		      }
-		    }
-		    if (!$exists) {
-		      $src = KU_BOARDSDIR . $board_class->board['name'] .
-		      (($emoji_candidate['imgWidth'] <= 50 && $emoji_candidate['imgHeight'] <= 50)
-		        ? ('/src/' . $emoji_candidate['file_name'])
-		        : ('/thumb/' . $emoji_candidate['file_name'] . 'c')
-		      ) . $emoji_candidate['file_type'];
-		      copy($src, KU_ROOTDIR.I0_SMILEDIR.$emoji_name.$emoji_candidate['file_type']);
-		      // Reparse post
-		      if (I0_SMILES_ENABLED)
-		        $post['message'] = $parse_class->Smileys($post['message']);
-		    }
-		  }
+		// Emoji registration
+		if (I0_USERSMILES_ENABLED && $emoji_candidates) {
+			$any_new = false;
+			preg_match_all('/\/reg(?:emoji|smiley?) :?([0-9a-z_]{3,20}):?/i', $post['message'], $re_match);
+			foreach($re_match[1] as $i=>$emoji) {
+				// Check if corresponding file is present
+				if ($emoji_candidates[$i]) {
+					$emoji_file = $emoji_candidates[$i];
+					$emoji_name = strtolower($emoji);
+					// Check if emoji exists
+					$exists = false;
+					foreach(array('.gif','.png') as $extension) {
+						if(file_exists(KU_ROOTDIR.I0_SMILEDIR.$emoji.$extension))   {
+							$exists = true;
+							break;
+						}
+					}
+					if (!$exists) {
+						$src = KU_BOARDSDIR . $board_class->board['name'] .
+						(($emoji_file['imgWidth'] <= 50 && $emoji_file['imgHeight'] <= 50)
+							? ('/src/' . $emoji_file['file_name'])
+							: ('/thumb/' . $emoji_file['file_name'] . 'c')
+						) . $emoji_file['file_type'];
+						copy($src, KU_ROOTDIR.I0_SMILEDIR.$emoji_name.$emoji_file['file_type']);
+						$any_new = true;
+					}
+				}
+			}
+			// Reparse post
+			if ($any_new)
+			  $post['message'] = $parse_class->Smileys($post['message']);
 		}
 		// ← Emoji registration
 

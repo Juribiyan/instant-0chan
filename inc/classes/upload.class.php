@@ -43,7 +43,6 @@ class Upload {
 		if ($_POST['legacy-posting']) { // no-js file input (implemented first)
 
 		  $attachments = array();
-		  $first_emoji_candidate = false;
 
 		  // 1) Collect uploaded files
 		  $file_hashes = array();
@@ -101,9 +100,8 @@ class Upload {
 		  				'filetype_withoutdot' => $filetype_withoutdot,
 		  				'file_md5' => $file_md5
 		  			);
-		  			if (in_array($file_entry['file_type'], array('.png', '.gif')) && !$first_emoji_candidate) {
+		  			if (in_array($file_entry['file_type'], array('.png', '.gif'))) {
 		  				$file_entry['emoji_candidate'] = true;
-		  				$first_emoji_candidate = 'taken';
 		  			}
 		  			$attachments []= $file_entry;
 		  		}
