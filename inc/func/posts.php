@@ -242,6 +242,8 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
   curl_setopt ($ch, CURLOPT_TIMEOUT, 10);
+  if (I0_CURL_PROXY)
+    curl_setopt($ch, CURLOPT_PROXY, I0_CURL_PROXY);
   // Getting a URL
   if ($site == 'cob')
     $url = "http://coub.com/api/v2/coubs/".$code.".json";

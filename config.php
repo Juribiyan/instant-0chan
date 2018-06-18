@@ -89,6 +89,7 @@ if (!$cache_loaded) {
 		$cf['I0_SMILEDIR'] = 'images/smileys/'; // Make sure to set proper write rights to this directory
 		$cf['I0_FORCE_HTML_NOCACHE'] = false; // When AJAX-ing HTML, force no-cache (default: off (server must handle this, recommended for local debugging only))
 		$cf['I0_IPLESS_MODE'] = 'auto'; // Whether or not cookies should be used instead of IP's (typically for TOR hidden services). Supported values: true, false and 'auto'. In auto mode, cookies will be used when client IP is 127.0.0.1 
+		$cf['I0_CURL_PROXY'] = false; // Proxy to use when fetching external resources, for example 'socks://127.0.0.1:9050' — to connect through TOR
 
 	// Database
 		$cf['KU_DBTYPE']          = 'mysqli';	// Database type. Valid values are mysql and mysqli (reccomended for mysql).
