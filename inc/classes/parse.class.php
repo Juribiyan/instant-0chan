@@ -72,17 +72,39 @@ class Parse {
 	}
 
 	function SaysThinks($string) {
-		$string = preg_replace_callback('/\[says(?:=(.+?))?\](.+?)\[\/(says)\]/is', array(&$this, 'caption_callback'), $string);
-		$string = preg_replace_callback('/\[thinks(?:=(.+?))?\](.+?)\[\/(thinks)\]/is', array(&$this, 'caption_callback'), $string);
+		$string = preg_replace_callback('/\[says(?:=(?:(\:)?(.+?)\:?))?\](.+?)\[\/(?:says)\]/is', array(&$this, 'caption_callback'), $string);
+		$string = preg_replace_callback('/\[thinks(?:=(?:(\:)?(.+?)\:?))?\](.+?)\[\/(?:thinks)\]/is', array(&$this, 'caption_callback'), $string);
 		return $string;
 	}
 
 	function caption_callback($matches) {
-	  $sayer = strtolower($matches[1]);
-	  $thought_bubble = strtolower($matches[3])=='thinks' ? ' thought-bubble' : '';
-	  $sayer_exists = ($sayer && file_exists(KU_ROOTDIR.'images/sayers/'.$sayer.'.png'));
-	  return ($sayer_exists ? '<table class="caption"><tr><td><img src="/images/sayers/'.$sayer.'.png"></td><td>' : '') .
-	  '<div class="bubble'.$thought_bubble.'">'.$matches[2].'</div>' . ($sayer_exists ? '</td></tr></table>' : '');
+		$sayer = strtolower($matches[2]);
+		$thought_bubble = strtolower($matches[4])=='thinks' ? ' thought-bubble' : '';
+		$is_emoji = ($matches[1]==':');
+		$content = $matches[3];
+
+		$sayer_exists = false;
+		if ($sayer) {
+			if ($is_emoji) {
+				$src = null;
+				foreach(array('.gif','.png') as $extension) {
+					if(file_exists(KU_ROOTDIR.I0_SMILEDIR.$sayer.$extension)) {
+						$src = KU_WEBPATH.'/'.I0_SMILEDIR.$sayer.$extension;
+						$sayer_exists = true;
+						break;
+					}
+				}
+			}
+			else {
+				$src = '/images/sayers/'.$sayer.'.png';
+				$sayer_exists = file_exists(KU_ROOTDIR.$src);
+			}
+		}
+		
+		$colon = $is_emoji ? '&colon;' : '';
+		return ($sayer_exists ? '<table class="caption"><tr><td><img src="'.$src.'" title="'.$colon.$sayer.$colon.'"></td><td>' : '') .
+			'<div class="bubble'.$thought_bubble.'">'.$content.'</div>' . 
+			($sayer_exists ? '</td></tr></table>' : '');
 	}
 
 	function bullet_list($matches) {
