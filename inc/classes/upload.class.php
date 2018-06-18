@@ -168,7 +168,7 @@ class Upload {
 		foreach($this->attachments as $i => &$attachment) {
 			$atype = $attachment['attachmenttype'];
 			$filename = $atype == 'file'
-				? $attachment['name']
+				? $attachment['file_original'].$attachment['file_type']
 				: $attachment['embedtype'] . '/' . $attachment['embed'];
 			// Check if attachment already posted somewhere else
 			$exists_thread = checkMd5($attachment['file_md5'], $board_class->board['name'], $board_class->board['id']);
@@ -179,7 +179,6 @@ class Upload {
 			}
 			// Handle File
 			if ($attachment['attachmenttype'] == 'file') {
-				$filename = $attachment['name'];
 				if (KU_FILESIZE_METHOD == 'single') {
 					if ($attachment['size'] > $board_class->board['maximagesize']) {
 						$this->exitWithUploadErrorPage(sprintf(_gettext('Please make sure your file is smaller than %d KB'), round($board_class->board['maximagesize']) / 1024), $atype, $i, $filename);
@@ -221,8 +220,7 @@ class Upload {
 						$this->exitWithUploadErrorPage($css_error, $atype, $i, $filename);
 				}
 
-				$attachment['file_name'] = str_replace('.','_',substr(htmlspecialchars(preg_replace('/(.*)\..+/','\1',$attachment['name']), ENT_QUOTES), 0, 50));
-				$attachment['original_file_name'] = $attachment['file_name'];
+				$attachment['file_name'] = time() . mt_rand(1, 99);
 
 				if ($attachment['file_type'] == 'svg') {
 					require_once 'svg.class.php';
@@ -251,7 +249,6 @@ class Upload {
 					AND " . KU_DBPREFIX . "filetypes.filetype = '" . $attachment['filetype_withoutdot'] . "';");
 				if ($filetype_forcethumb != '') {
 					if ($filetype_forcethumb == 0) {
-						$attachment['file_name'] = time() . mt_rand(1, 99);
 
 						/* If this board has a load balance url and password configured for it, attempt to use it */
 						if ($board_class->board['loadbalanceurl'] != '' && $board_class->board['loadbalancepassword'] != '') {
@@ -331,18 +328,6 @@ class Upload {
 						$filetype_required_mime = $tc_db->GetOne("SELECT `mime`
 							FROM `" . KU_DBPREFIX . "filetypes`
 							WHERE `filetype` = " . $tc_db->qstr($attachment['filetype_withoutdot']));
-
-						if($attachment['file_type'] == '.css') {
-							$attachment['file_name'] = htmlspecialchars_decode($attachment['file_name'], ENT_QUOTES);
-							$attachment['file_name'] = stripslashes($attachment['file_name']);
-							$attachment['file_name'] = str_replace("\x80", " ", $attachment['file_name']);
-							$attachment['file_name'] = str_replace(' ', '_', $attachment['file_name']);
-							$attachment['file_name'] = str_replace('#', '(number)', $attachment['file_name']);
-							$attachment['file_name'] = str_replace('@', '(at)', $attachment['file_name']);
-							$attachment['file_name'] = str_replace('/', '(fwslash)', $attachment['file_name']);
-							$attachment['file_name'] = str_replace('\\', '(bkslash)', $attachment['file_name']);
-						}
-						else $attachment['file_name'] = time() . mt_rand(1, 99);
 
 						/* If this board has a load balance url and password configured for it, attempt to use it */
 						if ($board_class->board['loadbalanceurl'] != '' && $board_class->board['loadbalancepassword'] != '') {
@@ -448,7 +433,6 @@ class Upload {
 			}
 			// Handle Embed
 			else {
-				$filename = $attachment['embedtype'] . '/' . $attachment['embed'];
 				$attachment['embed'] = strip_tags(substr($attachment['embed'], 0, 20));
 				$video_id = $attachment['embed'];
 				$attachment['file_name'] = $video_id;

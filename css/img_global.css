@@ -2411,3 +2411,10 @@ figure:not(.unwrapped):hover .playable-thumb {
     background: linear-gradient(to left, rgba(0, 0, 0, .5) 0%, transparent 100%);
   }
 }
+.styletest-form {
+  margin-top: 4px;
+  text-align: center;
+}
+.styletest-form button {
+  width: 40%;
+}
