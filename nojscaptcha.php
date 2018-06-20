@@ -1,7 +1,7 @@
 <?php
 require 'config.php';
 $initial = !$_GET['show'];
-$shorten_life = KU_CAPTCHALIFE - 0.5;
+$shorten_life = number_format(KU_CAPTCHALIFE - 0.5, 1, '.', '');
 ?>
 <!DOCTYPE html>
 <html lang="en">
