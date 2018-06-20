@@ -21,7 +21,7 @@
 		var ispage = true;
 {/if}
 </script>
-<noscript><style>.yesscript { display: none; }</style></noscript>
+<noscript><style>.yesscript { display: none!important; }</style></noscript>
 <!-- <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic&subset=latin,cyrillic' rel='stylesheet' type='text/css'> -->
 <link rel="stylesheet" type="text/css" href="{$cwebpath}css/img_global.css?v={%KU_CSSVER}" />
 {loop $ku_styles}
@@ -75,7 +75,7 @@
     {/if}
 <div class="adminbar">
 [<a href="{%KU_WEBPATH}/kusaba.php" target="_top">{t}Frames{/t}</a>]&nbsp;[<a href="{%KU_CGIPATH}/manage.php" target="_top">{t}Manage{/t}</a>]
-<svg class="icon b-icon history-toggle" onclick="pups.historyToggle()" title="{t}Show alert history{/t}"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-bell"></use></svg>
+<svg class="icon b-icon history-toggle yesscript" onclick="pups.historyToggle()"><use title="{t}Show alert history{/t}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-bell"></use></svg>
 </div>
 <div id="boardlist_header">
 	<div id="overlay_menu" class="content-background overlay-menu">

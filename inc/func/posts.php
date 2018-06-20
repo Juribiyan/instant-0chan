@@ -188,38 +188,6 @@ function fastImageCopyResampled(&$dst_image, &$src_image, $dst_x, $dst_y, $src_x
 	return true;
 }
 
-
-/*
-Link validator
-
-Will use cURL to attempt to visit a webpage, and then return based upon how the
-request was handled. Used for embedded videos to validate the ID is existant.
-
-Thanks phadeguy - http://www.zend.com/codex.php?id=1256&single=1
-expects a link url as string
-returns an array of three elements:
-return_array[0] = HTTP version
-return_array[1] = Returned error number (200, 404, etc)
-return_array[2] = Returned error text ("OK", "File Not Found", etc) */
-function check_link($link) {
-	$main = array();
-	$ch = curl_init();
-	curl_setopt ($ch, CURLOPT_URL, $link);
-	curl_setopt ($ch, CURLOPT_HEADER, 1);
-	curl_setopt ($ch, CURLOPT_NOBODY, 1);
-//	curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 1);
-	curl_setopt ($ch, CURLOPT_TIMEOUT, 10);
-	curl_setopt ($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
-	ob_start();
-	curl_exec ($ch);
-	$stuff = ob_get_contents();
-	ob_end_clean();
-	curl_close ($ch);
-	$parts = explode("n",$stuff,2);
-	$main = explode(" ",$parts[0],3);
-	return $main;
-}
-
 /**
  * Fetch information about the video from hosting's API
  *
@@ -242,6 +210,8 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
   curl_setopt ($ch, CURLOPT_TIMEOUT, 10);
+  if (I0_CURL_PROXY)
+    curl_setopt($ch, CURLOPT_PROXY, I0_CURL_PROXY);
   // Getting a URL
   if ($site == 'cob')
     $url = "http://coub.com/api/v2/coubs/".$code.".json";

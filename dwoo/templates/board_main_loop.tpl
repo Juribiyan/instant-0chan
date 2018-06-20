@@ -72,7 +72,7 @@
   {if $board.showid}
    <img src="data:image/png;base64,{rainbow($post.ipmd5, $post.id);}">
   {/if}
-  <span class="extrabtns">
+  <span class="extrabtns yesscript">
    {if $post.parentid eq 0} {* Extra-buttons related to OP only → *}
     {if $post.locked eq 1}
      <svg class="icon i-icon i-lock"><use xlink:href="#i-lock"></use></svg>
@@ -81,7 +81,7 @@
      <svg class="icon i-icon i-pin"><use xlink:href="#i-pin"></use></svg>
     {/if}
     {if not $isthread}
-     <span class="yesscript" id="hide{$post.id}">
+     <span id="hide{$post.id}">
       <a href="#" onclick="javascript:togglethread('{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}');return false;" title="Hide Thread">
        <svg class="icon b-icon"><use xlink:href="#i-hide"></use></svg>
       </a>
@@ -93,7 +93,7 @@
    {if $post.parentid neq 0}
     data-postnum="{$post.id}"
    {/if} 
-   class="qrl yesscript" 
+   class="qrl" 
    title="{strip}{t}Quick Reply{/t}
     {if $post.parentid neq 0}
      {t}in thread{/t} {$post.parentid}
