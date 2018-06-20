@@ -63,35 +63,8 @@
 	</table>
 {/if}
 <br />
-{if $boardlist}
-	<div id="boardlist_footer" class="navbar">
-	{if %KU_GENERATEBOARDLIST}
-		{foreach name=sections item=sect from=$boardlist}
-			{if $sect.abbreviation neq '20'}
-			[
-			{foreach name=brds item=brd from=$sect}
-				{if isset($brd.desc) and is_array($brd)}
-				<a title="{$brd.desc}" href="{%KU_BOARDSFOLDER}{$brd.name}/">{$brd.name}</a>{if $.foreach.brds.last}{else} / {/if}
-				{/if}
-			{/foreach}
-			]
-			{else}
-			<span style="float: right">[<select onchange="javascript:if(selectedIndex != 0) location.href='{%KU_WEBPATH}/' + this.options[this.selectedIndex].value;">
-			<option>2.0</option>
-			{foreach name=brds item=brd from=$sect}
-				{if isset($brd.desc) and is_array($brd)}
-				<option value="{$brd.name}">/{$brd.name}/ - {$brd.desc}</option>{if $.foreach.brds.last}{else} / {/if}
-				{/if}
-			{/foreach}
-			</select>]</span>
-			{/if}
-		{/foreach}
-	{else}
-		{if is_file($boardlist)}
-			{include $boardlist}
-		{/if}
-	{/if}
-	</div>
+{if $boardlist_prebuilt}
+	<div id="boardlist_footer" class="navbar boardlist">{$boardlist_prebuilt}</div>
 {/if}
 </td>
 <td width="13" class="border-right"></td>

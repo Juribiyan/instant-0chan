@@ -264,6 +264,9 @@ form .trap {
 .navbar {
   display: block;
 }
+.boardlist select {
+  max-width: 5em;
+}
 
 .overlay-menu {
   position:fixed;

@@ -78,7 +78,11 @@
 <svg class="icon b-icon history-toggle yesscript" onclick="pups.historyToggle()"><use title="{t}Show alert history{/t}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-bell"></use></svg>
 </div>
 <div id="boardlist_header">
-	<div id="overlay_menu" class="content-background overlay-menu">
+	{if $boardlist_prebuilt}
+		<noscript id="ns_oldmenu">{$boardlist_prebuilt}</noscript>
+	{/if}
+	<script>if (getCookie('ku_oldmenu') == 'yes') toggle_oldmenu(true)</script>
+	<div id="overlay_menu" class="content-background overlay-menu yesscript">
 		<span style="display: none" class="olm-link mgoback">[<a href="{%KU_CGIPATH}/{$board.name}/"> &lt; </a>]</span>
 		<span class="olm-link">[<a href="{%KU_BOARDSFOLDER}">home</a>]</span>
 		<span class="mobile-nav" id="mn-normalboards" style="display:none">
@@ -125,7 +129,7 @@
 			[<a href="#" onclick="javascript:Styles.change('{$|capitalize}');return false;">{if $__.customstyle eq $}Custom{else}{$|capitalize}{/if}</a>]
 			{/loop}<br />
 			<a href="#" onclick="javascript:menu_pin();return false;">{t}Pin/Unpin{/t}</a>  |
-			<a href="#" onclick="javascript:set_oldmenu(true);return false;">{t}Simple list{/t}</a>
+			<a href="#" onclick="javascript:toggle_oldmenu(true);return false;">{t}Simple list{/t}</a>
 			<div id="js_settings"></div>
 		</div>
 	</div>

@@ -669,6 +669,8 @@ class Board {
     $this->dwoo_data->assign('ku_styles', $styles);
     $this->dwoo_data->assign('ku_defaultstyle', $defaultstyle);
 		$this->dwoo_data->assign('boardlist', $this->board['boardlist']);
+    $this->PrebuildBoardlist();
+    $this->dwoo_data->assign('boardlist_prebuilt', $this->board['boardlist_prebuilt']);
 
 		$global_header = $this->dwoo->get(KU_TEMPLATEDIR . '/global_board_header.tpl', $this->dwoo_data);
 
@@ -707,9 +709,13 @@ class Board {
 		if (KU_GENERATEBOARDLIST) {
 			global $tc_db;
 			$output = '';
-			$results = $tc_db->GetAll("SELECT `id`,`name`,`abbreviation` FROM `" . KU_DBPREFIX . "sections` ORDER BY `order` ASC");
+			$results = $tc_db->GetAll("SELECT 
+        `id`,`name`,`abbreviation`, if(`abbreviation`='20', 1, 0) as `is_20` 
+        FROM `" . KU_DBPREFIX . "sections` 
+        ORDER BY `is_20` ASC, `order` ASC");
 			$boards = array();
 			foreach($results AS $line) {
+        $boards[$line['id']]['is_20'] = $line['is_20'];
 				$boards[$line['id']]['nick'] = htmlspecialchars($line['name']);
 				$boards[$line['id']]['abbreviation'] = htmlspecialchars($line['abbreviation']);
 				$results2 = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "boards` WHERE `section` = '" . $line['id'] . "' ORDER BY `order` ASC, `name` ASC");
@@ -724,6 +730,11 @@ class Board {
 
 		return $boards;
 	}
+
+  function PrebuildBoardlist() {
+    if (!isset($this->board['boardlist_prebuilt']))
+      $this->board['boardlist_prebuilt'] = $this->dwoo->get(KU_TEMPLATEDIR . '/boardlist.tpl', $this->dwoo_data);
+  }
 
 	/**
 	 * Display the page footer
