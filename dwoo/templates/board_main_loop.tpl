@@ -345,7 +345,7 @@
   </div>{* Huh? *}
   <br clear="left" />
   <div id="newposts_get"><!-- 
-  --><a href="#" onclick="return getnewposts()" title="А если нет, то не получать новые посты"><!-- 
+  --><a href="#" onclick="return newposts.get()" title="А если нет, то не получать новые посты"><!-- 
     --><svg class="icon b-icon refresher">
        <use xlink:href="#i-refresh"></use>
        <g class="tc-wrapper">
