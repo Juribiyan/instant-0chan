@@ -181,7 +181,7 @@ if (!$cache_loaded) {
 		$cf['KU_THREADS']         = 10; // Number of threads to display on a board page
 		$cf['KU_REPLIES']         = 5; // Number of replies to display on a board page
 		$cf['KU_REPLIESSTICKY']   = 1; // Number of replies to display on a board page when a thread is stickied
-		$cf['KU_BANMSG']          = '<br /><font color="#FF0000"><b>(USER WAS BANNED FOR THIS POST)</b></font>'; // The text to add at the end of a post if a ban is placed and "Add ban message" is checked
+		$cf['KU_BANMSG']          = '(USER WAS BANNED FOR THIS POST)'; // The text to add at the end of a post if a ban is placed and "Add ban message" is checked
 		$cf['KU_YOUTUBEWIDTH']    = 200; // Width to display embedded YouTube videos
 		$cf['KU_YOUTUBEHEIGHT']   = 164; // Height to display embedded YouTube videos
 
