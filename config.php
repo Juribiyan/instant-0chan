@@ -182,7 +182,6 @@ if (!$cache_loaded) {
 		$cf['KU_REPLIES']         = 5; // Number of replies to display on a board page
 		$cf['KU_REPLIESSTICKY']   = 1; // Number of replies to display on a board page when a thread is stickied
 		$cf['KU_BANMSG']          = '<br /><font color="#FF0000"><b>(USER WAS BANNED FOR THIS POST)</b></font>'; // The text to add at the end of a post if a ban is placed and "Add ban message" is checked
-		$cf['KU_TRADITIONALREAD'] = false; // Whether or not to use the traditional style for multi-quote urls.  Traditional: read.php/board/thread/posts, Non-traditional: read.php?b=board&t=thread&p=posts
 		$cf['KU_YOUTUBEWIDTH']    = 200; // Width to display embedded YouTube videos
 		$cf['KU_YOUTUBEHEIGHT']   = 164; // Height to display embedded YouTube videos
 
@@ -207,6 +206,7 @@ if (!$cache_loaded) {
 		$cf['KU_RANDOMSEED']        = 'ENTERANOTHERRANDOMSHIT'; // Type a bunch of random letters/numbers here, any large amount (35+ characters) will do
 		$cf['KU_STATICMENU']        = false; // Whether or not to generate the menu files as static files, instead of linking to menu.php.  Enabling this will reduce load, however some users have had trouble with getting the files to generate
 		$cf['KU_GENERATEBOARDLIST'] = true; // Set to true to automatically make the board list which is displayed ad the top and bottom of the board pages, or false to use the boards.html file
+		$cf['KU_GEOIPMODE'] = 'flare'; // Method to use when determining country for countryballs mode. Can be 'flare' if you are using CloudFlare or 'php-geoip' if you have GeoIP extension for PHP installed
 
 	// Language / timezone / encoding
 		$cf['KU_LOCALE']  = 'ru'; // The locale of kusaba you would like to use.  Locales available: en, de, et, es, fi, pl, nl, nb, ro, ru, it, ja

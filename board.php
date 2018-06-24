@@ -324,7 +324,19 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 		}
 
 		$post = array();
-		$post['country'] = isset($_SERVER["HTTP_CF_IPCOUNTRY"]) ? strtolower($_SERVER["HTTP_CF_IPCOUNTRY"]) : 'xx';
+		if (KU_GEOIPMODE == 'flare') {
+			$post['country'] = isset($_SERVER["HTTP_CF_IPCOUNTRY"]) ? strtolower($_SERVER["HTTP_CF_IPCOUNTRY"]) : 'xx';
+		} elseif (KU_GEOIPMODE == 'php-geoip') {
+			if (geoip_db_avail(GEOIP_COUNTRY_EDITION)) {
+				if ($country_code = @geoip_country_code_by_name($_SERVER['REMOTE_ADDR'])) {
+					$post['country'] = isset($country_code) ? strtolower($country_code) : 'xx';
+				}
+			} else {
+				$post['country'] = 'xx';
+			}
+		} else {
+			$post['country'] = 'xx';
+		}
 		$post['board'] = $board_class->board['name'];
 		$post['name'] = mb_substr($name, 0, KU_MAXNAMELENGTH);
 		$post['name_save'] = true;
