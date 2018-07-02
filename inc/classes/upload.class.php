@@ -118,20 +118,20 @@ class Upload {
 			foreach($_POST['embed'] as $i => $code) {
 			  	if ($code != '') {
 			  		if (array_key_exists($_POST['embedtype'][$i], $board_class->board['embeds_allowed_assoc'])) {
-			  			$embed = $board_class->board['embeds_allowed_assoc'][$_POST['embedtype'][$i]];
-			  			$hash = md5($embed['filetype'].'/'.$code);
+			  			$embed_filetype = $_POST['embedtype'][$i];
+			  			$hash = md5($embed_filetype.'/'.$code);
 			  			if (in_array($hash, $embed_hashes)) {
 			  				$this->exitWithUploadErrorPage(_gettext('Duplicate embed entry detected.'),
-			  					$atype, $i, $_POST['embedtype'][$i] . '/' . $code);
+			  					$atype, $i, $embed_filetype . '/' . $code);
 			  			}
 			  			else {
 			  				$embed_hashes []= $hash;
 			  			}
 			  			$attachments []= array(
 			  				'attachmenttype' => 'embed',
-			  				'embedtype' => $embed['filetype'],
+			  				'embedtype' => $embed_filetype,
 			  				'embed' => $code,
-			  				'filetype_withoutdot' => $embed['filetype'],
+			  				'filetype_withoutdot' => $embed_filetype,
 			  				'file_md5' => $hash
 			  			);
 			  		}

@@ -3059,11 +3059,7 @@ class Manage {
 							// $tpl_page .= '<script>console.log('.json_encode($_POST).')</script>';
 							if(count($_POST['allowedembeds']) > 0) {
 								$allowedembeds = array();
-								$embeds = array();
-								foreach (explode(',', KU_SUPPORTED_EMBEDS) as $e) {
-									$e = explode('=', $e);
-									$embeds []= array('name' => $e[1], 'filetype' => $e[0]);
-								}
+								$embeds = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `filetype`, `name` FROM `" . KU_DBPREFIX . "embeds` ORDER BY `filetype` ASC");
 								foreach ($embeds as $e) {
 									if(in_array($e['filetype'], $_POST['allowedembeds'])) {
 										$allowedembeds []= $e['filetype'];
@@ -3184,11 +3180,7 @@ class Manage {
 					/* Allowed embeds */
 					$tpl_page .= '<label>'. _gettext('Allowed embeds') .':</label>
 					<div class="desc">'. _gettext('What embed sites are allowed on this board. Only useful on board with embedding enabled.') .'</div><br />';
-					$embeds = array();
-					foreach (explode(',', KU_SUPPORTED_EMBEDS) as $e) {
-						$e = explode('=', $e);
-						$embeds []= array('name' => $e[1], 'filetype' => $e[0]);
-					}
+					$embeds = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `filetype`, `name` FROM `" . KU_DBPREFIX . "embeds` ORDER BY `filetype` ASC");
 					foreach ($embeds as $embed) {
 						$tpl_page .= '<label for="allowedembeds[]">'. $embed['name'] . '</label><input type="checkbox" name="allowedembeds[]" value="'. $embed['filetype'] . '"';
 						if (in_array($embed['filetype'], explode(',', $lineboard['embeds_allowed']))) {
@@ -3491,11 +3483,7 @@ class Manage {
 					if(in_array($_POST['locale'], explode('|', KU_SUPPORTED_LOCALES))) {
 						if(count($_POST['allowedembeds']) > 0) {
 							$allowedembeds = array();
-							$embeds = array();
-							foreach (explode(',', KU_SUPPORTED_EMBEDS) as $e) {
-								$e = explode('=', $e);
-								$embeds []= array('name' => $e[1], 'filetype' => $e[0]);
-							}
+							$embeds = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `filetype`, `name` FROM `" . KU_DBPREFIX . "embeds` ORDER BY `filetype` ASC");
 							foreach ($embeds as $e) {
 								if(in_array($e['filetype'], $_POST['allowedembeds'])) {
 									$allowedembeds []= $e['filetype'];
@@ -3576,11 +3564,7 @@ class Manage {
 					/* Allowed embeds */
 					$tpl_page .= '<label>'. _gettext('Allowed embeds') .':</label>
 					<div class="desc">'. _gettext('What embed sites are allowed on this board. Only useful on board with embedding enabled.') .'</div><br />';
-					$embeds = array();
-					foreach (explode(',', KU_SUPPORTED_EMBEDS) as $e) {
-						$e = explode('=', $e);
-						$embeds []= array('name' => $e[1], 'filetype' => $e[0]);
-					}
+					$embeds = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `filetype`, `name` FROM `" . KU_DBPREFIX . "embeds` ORDER BY `filetype` ASC");
 					foreach ($embeds as $embed) {
 						$tpl_page .= '<label for="allowedembeds[]">'. $embed['name'] . '</label><input type="checkbox" name="allowedembeds[]" value="'. $embed['filetype'] . '"';
 						if (in_array($embed['filetype'], explode(',', $lineboard['embeds_allowed']))) {

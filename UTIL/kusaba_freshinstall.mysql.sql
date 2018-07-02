@@ -164,6 +164,20 @@ CREATE TABLE `PREFIX_board_filetypes` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `embeds`
+--
+
+CREATE TABLE `PREFIX_embeds` (
+  `id` tinyint(5) unsigned NOT NULL auto_increment,
+  `filetype` varchar(3) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `videourl` varchar(510) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=KU_DBCHARSET COLLATE=KU_COLLATION;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `events`
 --
 
