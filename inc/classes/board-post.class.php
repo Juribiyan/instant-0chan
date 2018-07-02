@@ -97,17 +97,15 @@ class Board {
 					AND ".KU_DBPREFIX."board_filetypes.boardid = " . $this->board['id'] . "
 					AND ".KU_DBPREFIX."board_filetypes.typeid = ".KU_DBPREFIX."filetypes.id
 					ORDER BY ".KU_DBPREFIX."filetypes.filetype ASC;");
+        
         $embeds_allowed = array_filter(explode(',', $this->board['embeds_allowed']));
-        $this->board['embeds_allowed_flat'] = $embeds_allowed;
         $this->board['embeds_allowed'] = array();
-        if ($embeds_allowed) {
-          $tc_db->SetFetchMode(ADODB_FETCH_ASSOC);
-          $embeds = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "embeds`
-            WHERE `filetype` IN ('" . implode("','", $embeds_allowed) . "')" );
-          if ($embeds) {
-            foreach($embeds as $embed) {
-              $this->board['embeds_allowed'][strtolower($embed['filetype'])] = $embed;
-            }
+        $this->board['embeds_allowed_assoc'] = array();
+        foreach (explode(',', KU_SUPPORTED_EMBEDS) as $e) {
+          $e = explode('=', $e);
+          if (in_array($e[0], $embeds_allowed)) {
+            $this->board['embeds_allowed_assoc'][$e[0]] = $e[1];
+            $this->board['embeds_allowed'] []= array('name' => $e[1], 'filetype' => $e[0]);
           }
         }
        
@@ -564,7 +562,7 @@ class Board {
 		$post['timestamp_formatted'] = formatDate($post['timestamp'], 'post', $CURRENTLOCALE, $dateEmail);
 		$post['reflink'] = formatReflink($this->board['name'], (($post['parentid'] == 0) ? ($post['id']) : ($post['parentid'])), $post['id'], $CURRENTLOCALE);
     foreach ($post['embeds'] as &$embed) {
-      if (in_array($embed['file_type'], $this->board['embeds_allowed_flat'])) {
+      if (array_key_exists($embed['file_type'], $board_class->board['embeds_allowed_assoc'])) {
         $embed['is_embed'] = true;
         $embed_site = $this->board['embeds_allowed'][$embed['file_type']];
         $embed['thumbnail'] = $embed['file_type'].'-'.$embed['file'].'-s.jpg';

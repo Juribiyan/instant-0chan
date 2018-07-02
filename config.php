@@ -70,6 +70,7 @@ if (!$cache_loaded) {
 		$cf['KU_20_CLOUDTIME'] = "-24 hours";
 		$cf['KU_20MAXLOGINPASS'] = 50; // Maximum login and password size for 2.0
 		$cf['KU_SUPPORTED_LOCALES'] = 'ru|en';	//
+    $cf['KU_SUPPORTED_EMBEDS'] = 'you=Youtube,vim=Vimeo,cob=Coub';  //
 		$cf['KU_FFMPEGPATH'] = '/usr/local/bin/ffmpeg'; //path to FFMPEG, for example 'C:\ffmpeg\bin'
 		$cf['KU_SHOW_ORIGINAL_FILENAMES'] = true;
 		$cf['KU_MAXNAMELENGTH'] = 75;

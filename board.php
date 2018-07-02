@@ -161,8 +161,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 	if(! $post_isreply) $posting_class->CheckNewThreadTime();
 
 	require_once KU_ROOTDIR . 'inc/classes/upload.class.php';
-	$upload_class = new Upload();
-
+	$upload_class = new Upload($post_isreply);
 	$upload_class->UnifyAttachments();
 	$posting_class->CheckValidPost($post_isreply);
 	$posting_class->CheckMessageLength();
@@ -473,7 +472,8 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 			$board_class->RegenerateThreads($thread_replyto);
 			notify($board_class->board['name'].':'.$thread_replyto);
 		}
-	} else {
+	} 
+	else {
 		exitWithErrorPage(_gettext('Sorry, this board is locked and can not be posted in.'));
 	}
 }

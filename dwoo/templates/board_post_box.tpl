@@ -162,21 +162,37 @@
 						{t}None{/t}
 					{/if}.{/strip}
 					</li>
+					<li>{t}Supported embed types are{/t}: {strip}
+					{if $board.embeds_allowed neq ''}
+						{foreach name=embs item=emb from=$board.embeds_allowed}
+							{$emb.name}{if $.foreach.embs.last}{else}, {/if}
+						{/foreach}
+					{else}
+						{t}None{/t}
+					{/if}.{/strip}
+					</li>
+					{if not $board.enablenofile}
+					<li>{t}A file or embed ID is required for a new thread.{/t}</li>
+					{/if}
 					{if %KU_FILESIZE_METHOD eq 'sum'}
 					<li>{t}Maximum total size for all files allowed is{/t} {math "round(x/1024)" x=$board.maximagesize} {t}KB{/t}.</li>
 					{else}
 					<li>{t}Maximum file size allowed is{/t} {math "round(x/1024)" x=$board.maximagesize} {t}KB{/t}.</li>
 					{/if}
 					<li>{t}Maximum number of files + embeds per post is{/t} {$board.maxfiles}.</li>
+					<li>
 					{if $board.enablenofile}
-						<li>{t}No file or embed required for a new thread on this board{/t}.</li>
+						{t}No file or embed required for a new thread on this board{/t}.
+					{else}
+						{t}A file or embed ID is required for a new thread.{/t}
 					{/if}
+					</li>
 				</ul>
-			<script type="text/javascript"><!--
+			<script>
 				if (getCookie('ku_showblotter') != '1') {
 					hideblotter();
 				}
-				--></script>
+			</script>
 			</td>
 		</tr>
 	</tbody>

@@ -2987,7 +2987,17 @@ class Manage {
 		$_POST['desc'] = htmlspecialchars($_POST['desc']);
 
 		$tpl_page .= '<h2>'. _gettext('Board options') . '</h2><br />';
-		if (isset($_GET['updateboard']) && isset($_POST['order']) && isset($_POST['maxpages']) && isset($_POST['maxage']) && isset($_POST['messagelength'])) {
+		if (
+			isset($_GET['updateboard']) 
+			&& 
+			isset($_POST['order']) 
+			&& 
+			isset($_POST['maxpages']) 
+			&& 
+			isset($_POST['maxage']) 
+			&& 
+			isset($_POST['messagelength'])
+		) {
       $this->CheckToken($_POST['token']);
 			if (!$this->CurrentUserIsModeratorOfBoard($_GET['updateboard'], $_SESSION['manageusername'])) {
 				exitWithErrorPage(_gettext('You are not a moderator of this board.'));
@@ -3006,78 +3016,117 @@ class Manage {
 					&&
 					$_POST['maxpages'] >= 0
 					&&
+					$_POST['maxfiles'] >= 0
+					&&
 					$_POST['markpage'] >= 0
 					&&
 					$_POST['maxage'] >= 0
 					&&
 					$_POST['messagelength'] >= 0
-					&&
-					(
+				) {
+					if (
 						$_POST['defaultstyle'] == ''
 						||
 						in_array($_POST['defaultstyle'], $available_styles)
-					)
-				) {
-					$filetypes = array();
-					foreach($_POST as $postkey => $postvalue) {
-						if (substr($postkey, 0, 9) == 'filetype_') {
-							$filetypes []= substr($postkey, 9);
+					) {
+						$filetypes = array();
+						foreach($_POST as $postkey => $postvalue) {
+							if (substr($postkey, 0, 9) == 'filetype_') {
+								$filetypes []= substr($postkey, 9);
+							}
 						}
-					}
-					$updateboard_enablecatalog = isset($_POST['enablecatalog']) ? '1' : '0';
-					$updateboard_enablenofile = isset($_POST['enablenofile']) ? '1' : '0';
-					$updateboard_redirecttothread = isset($_POST['redirecttothread']) ? '1' : '0';
-					$updateboard_enablereporting = isset($_POST['enablereporting']) ? '1' : '0';
-					$updateboard_enablecaptcha = isset($_POST['enablecaptcha']) ? '1' : '0';
-					$updateboard_forcedanon = isset($_POST['forcedanon']) ? '1' : '0';
-					$updateboard_trial = isset($_POST['trial']) ? '1' : '0';
-					$updateboard_popular = isset($_POST['popular']) ? '1' : '0';
-					$updateboard_enablearchiving = isset($_POST['enablearchiving']) ? '1' : '0';
-					$updateboard_showid = isset($_POST['showid']) ? '1' : '0';
-					$updateboard_compactlist = isset($_POST['compactlist']) ? '1' : '0';
-					$updateboard_locked = isset($_POST['locked']) ? '1' : '0';
-					$updateboard_balls = isset($_POST['balls']) ? '1' : '0';
-					$updateboard_dice = isset($_POST['dice']) ? '1' : '0';
-					$updateboard_useragent = isset($_POST['useragent']) ? '1' : '0';
-
-					if(in_array($_POST['locale'], explode('|', KU_SUPPORTED_LOCALES))) {
-						if(count($_POST['allowedembeds']) > 0) {
-							$updateboard_allowedembeds = '';
-							$results = $tc_db->GetAll("SELECT `filetype` FROM `" . KU_DBPREFIX . "embeds`");
-							foreach ($results as $line) {
-								if(in_array($line['filetype'], $_POST['allowedembeds'])) {
-									$updateboard_allowedembeds .= $line['filetype'].',';
+						$set = array();
+						foreach (array( // boolean properties
+							'enablecatalog', 
+							'enablenofile', 
+							'redirecttothread',
+							'enablereporting',
+							'enablecaptcha',
+							'forcedanon',
+							'trial',
+							'popular',
+							'enablearchiving',
+							'showid',
+							'compactlist',
+							'locked',
+							'balls',
+							'dice',
+							'useragent' 
+						) as $prop) {
+							$set []= "`$prop` = ".$tc_db->qstr(isset($_POST[$prop]) ? '1' : '0');
+						}
+						if(in_array($_POST['locale'], explode('|', KU_SUPPORTED_LOCALES))) {
+							// $tpl_page .= '<script>console.log('.json_encode($_POST).')</script>';
+							if(count($_POST['allowedembeds']) > 0) {
+								$allowedembeds = array();
+								$embeds = array();
+								foreach (explode(',', KU_SUPPORTED_EMBEDS) as $e) {
+									$e = explode('=', $e);
+									$embeds []= array('name' => $e[1], 'filetype' => $e[0]);
 								}
+								foreach ($embeds as $e) {
+									if(in_array($e['filetype'], $_POST['allowedembeds'])) {
+										$allowedembeds []= $e['filetype'];
+									}
+								}
+								$set []= "`embeds_allowed` = ".$tc_db->qstr(implode(',', $allowedembeds));
 							}
-							if ($updateboard_allowedembeds != '') {
-								$updateboard_allowedembeds = substr($updateboard_allowedembeds, 0, -1);
+							foreach(array( // string properties
+								'desc',
+								'locale',
+								'maximagesize',
+								'maxfiles',
+								'messagelength',
+								'maxpages',
+								'maxage',
+								'markpage',
+								'maxreplies',
+								'image',
+								'includeheader',
+								'anonymous',
+								'defaultstyle',
+								'loadbalanceurl',
+								'loadbalancepassword'
+							) as $prop) {
+								$set []= "`$prop` = ".$tc_db->qstr($_POST[$prop]);
 							}
+							foreach(array( // numeric properties
+								'order',
+								'section'
+							) as $prop) {
+								$set []= "`$prop` = ".$tc_db->qstr(intval($_POST[$prop]));
+							}
+							$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "boards` 
+								SET ". implode(',', $set) ."
+								WHERE `name` = " . $tc_db->qstr($_GET['updateboard'])
+							);
+							$tc_db->Execute("DELETE FROM `" . KU_DBPREFIX . "board_filetypes` WHERE `boardid` = '" . $boardid . "'");
+							$vals = array();
+							foreach ($filetypes as $filetype) {
+								$vals [] = "( '" . $boardid . "', " . $tc_db->qstr($filetype) . " )";
+							}
+							$tc_db->Execute("INSERT INTO `" . KU_DBPREFIX . "board_filetypes` (`boardid`, `typeid`) VALUES " . implode(',', $vals));
+							require_once KU_ROOTDIR . 'inc/classes/menu.class.php';
+							$this->rebuild20json();
+							$menu_class = new Menu();
+							$menu_class->Generate();
+							if (isset($_POST['submit_regenerate'])) {
+								$board_class = new Board($_GET['updateboard']);
+								$board_class->RegenerateAll();
+							}
+							$tpl_page .= _gettext('Update successful.');
+							management_addlogentry(_gettext('Updated board configuration') . " - /" . $_GET['updateboard'] . "/", 4);
 						}
-						$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "boards` SET `order` = " . $tc_db->qstr(intval($_POST['order'])) . " , `section` = " . $tc_db->qstr(intval($_POST['section'])) . " , `desc` = " . $tc_db->qstr($_POST['desc']) . " , `locale` = " . $tc_db->qstr($_POST['locale']) . " , `showid` = '" . $updateboard_showid . "' , `compactlist` = '" . $updateboard_compactlist . "' , `locked` = '" . $updateboard_locked . "' , `balls` = '" . $updateboard_balls . "' , `dice` = '" . $updateboard_dice . "' , `useragent` = '" . $updateboard_useragent . "' , `maximagesize` = " . $tc_db->qstr($_POST['maximagesize']) . " , `maxfiles` = " . $tc_db->qstr($_POST['maxfiles']) . " , `messagelength` = " . $tc_db->qstr($_POST['messagelength']) . " , `maxpages` = " . $tc_db->qstr($_POST['maxpages']) . " , `maxage` = " . $tc_db->qstr($_POST['maxage']) . " , `markpage` = " . $tc_db->qstr($_POST['markpage']) . " , `maxreplies` = " . $tc_db->qstr($_POST['maxreplies']) . " , `image` = " . $tc_db->qstr($_POST['image']) . " , `includeheader` = " . $tc_db->qstr($_POST['includeheader']) . " , `redirecttothread` = '" . $updateboard_redirecttothread . "' , `anonymous` = " . $tc_db->qstr($_POST['anonymous']) . " , `forcedanon` = '" . $updateboard_forcedanon . "' , `embeds_allowed` = " . $tc_db->qstr($updateboard_allowedembeds) . " , `trial` = '" . $updateboard_trial . "' , `popular` = '" . $updateboard_popular . "' , `defaultstyle` = " . $tc_db->qstr($_POST['defaultstyle']) . " , `enablereporting` = '" . $updateboard_enablereporting . "', `enablecaptcha` = '" . $updateboard_enablecaptcha . "' , `enablenofile` = '" . $updateboard_enablenofile . "' , `enablearchiving` = '" . $updateboard_enablearchiving . "', `enablecatalog` = '" . $updateboard_enablecatalog . "' , `loadbalanceurl` = " . $tc_db->qstr($_POST['loadbalanceurl']) . " , `loadbalancepassword` = " . $tc_db->qstr($_POST['loadbalancepassword']) . " WHERE `name` = " . $tc_db->qstr($_GET['updateboard']) . "");
-						$tc_db->Execute("DELETE FROM `" . KU_DBPREFIX . "board_filetypes` WHERE `boardid` = '" . $boardid . "'");
-						foreach ($filetypes as $filetype) {
-							$tc_db->Execute("INSERT INTO `" . KU_DBPREFIX . "board_filetypes` ( `boardid`, `typeid` ) VALUES ( '" . $boardid . "', " . $tc_db->qstr($filetype) . " )");
-						}
-						require_once KU_ROOTDIR . 'inc/classes/menu.class.php';
-						$this->rebuild20json();
-						$menu_class = new Menu();
-						$menu_class->Generate();
-						if (isset($_POST['submit_regenerate'])) {
-							$board_class = new Board($_GET['updateboard']);
-							$board_class->RegenerateAll();
-						}
-						$tpl_page .= _gettext('Update successful.');
-						management_addlogentry(_gettext('Updated board configuration') . " - /" . $_GET['updateboard'] . "/", 4);
+						else $tpl_page .= _gettext('Locale unsupported.');
 					}
-					else $tpl_page .= _gettext('Sorry, a generic error has occurred.');
+					else
+						$tpl_page .= _gettext('Style not found') . ': ' . $_POST['defaultstyle'];
 				}
-				else {
+				else
 					$tpl_page .= _gettext('Integer values must be entered correctly.');
-				}
 			}
-			else {
+			else
 				$tpl_page .= _gettext('Unable to locate a board named') . ' <strong>'. $_GET['updateboard'] . '</strong>.';
-			}
 		}
 		elseif (isset($_POST['board'])) {
 			if (!$this->CurrentUserIsModeratorOfBoard($_POST['board'], $_SESSION['manageusername'])) {
@@ -3135,7 +3184,11 @@ class Manage {
 					/* Allowed embeds */
 					$tpl_page .= '<label>'. _gettext('Allowed embeds') .':</label>
 					<div class="desc">'. _gettext('What embed sites are allowed on this board. Only useful on board with embedding enabled.') .'</div><br />';
-					$embeds = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `filetype`, `name` FROM `" . KU_DBPREFIX . "embeds` ORDER BY `filetype` ASC");
+					$embeds = array();
+					foreach (explode(',', KU_SUPPORTED_EMBEDS) as $e) {
+						$e = explode('=', $e);
+						$embeds []= array('name' => $e[1], 'filetype' => $e[0]);
+					}
 					foreach ($embeds as $embed) {
 						$tpl_page .= '<label for="allowedembeds[]">'. $embed['name'] . '</label><input type="checkbox" name="allowedembeds[]" value="'. $embed['filetype'] . '"';
 						if (in_array($embed['filetype'], explode(',', $lineboard['embeds_allowed']))) {
@@ -3391,14 +3444,15 @@ class Manage {
 
 	function boardopts_mod() {
 		global $tc_db, $tpl_page;
+		$this->BoardOwnersOnly();
 
 		$_POST['desc'] = htmlspecialchars($_POST['desc']);
 
-		$this->BoardOwnersOnly();
-
 		$tpl_page .= '<h2>'. _gettext('Board options') . '</h2><br />';
-		if (isset($_GET['updateboard'])) {
-      	    $this->CheckToken($_POST['token']);
+		if (
+			isset($_GET['updateboard']) 
+		) {
+      $this->CheckToken($_POST['token']);
 			if (!$this->CurrentUserIsModeratorOfBoard($_GET['updateboard'], $_SESSION['manageusername'])) {
 				exitWithErrorPage(_gettext('You are not a moderator of this board.'));
 			}
@@ -3411,65 +3465,80 @@ class Manage {
 						$available_styles[] = $stylesheet['name'];
 					}
 				}
-				if($_POST['defaultstyle'] == '' || in_array($_POST['defaultstyle'], $available_styles)) {
+				if (
+					$_POST['defaultstyle'] == ''
+					||
+					in_array($_POST['defaultstyle'], $available_styles)
+				) {
 					$filetypes = array();
-					while (list($postkey, $postvalue) = each($_POST)) {
+					foreach($_POST as $postkey => $postvalue) {
 						if (substr($postkey, 0, 9) == 'filetype_') {
-							$filetypes[] = substr($postkey, 9);
+							$filetypes []= substr($postkey, 9);
 						}
 					}
-					$updateboard_enablenofile = isset($_POST['enablenofile']) ? '1' : '0';
-					$updateboard_forcedanon = isset($_POST['forcedanon']) ? '1' : '0';
-					$updateboard_showid = isset($_POST['showid']) ? '1' : '0';
-					$updateboard_locked = isset($_POST['locked']) ? '1' : '0';
-					$updateboard_balls = isset($_POST['balls']) ? '1' : '0';
-					$updateboard_dice = isset($_POST['dice']) ? '1' : '0';
-					$updateboard_useragent = isset($_POST['useragent']) ? '1' : '0';
-
-					if ($_POST['uploadtype'] == '0' || $_POST['uploadtype'] == '1' || $_POST['uploadtype'] == '2') {
-						if(in_array($_POST['locale'], explode('|', KU_SUPPORTED_LOCALES))) {
-							if(count($_POST['allowedembeds']) > 0) {
-								$updateboard_allowedembeds = '';
-
-								$results = $tc_db->GetAll("SELECT `filetype` FROM `" . KU_DBPREFIX . "embeds`");
-								foreach ($results as $line) {
-									if(in_array($line['filetype'], $_POST['allowedembeds'])) {
-										$updateboard_allowedembeds .= $line['filetype'].',';
-									}
-								}
-								if ($updateboard_allowedembeds != '') {
-									$updateboard_allowedembeds = substr($updateboard_allowedembeds, 0, -1);
+					$set = array();
+					foreach (array( // boolean properties
+						'enablenofile', 
+						'forcedanon',
+						'showid',
+						'locked',
+						'balls',
+						'dice',
+						'useragent' 
+					) as $prop) {
+						$set []= "`$prop` = ".$tc_db->qstr(isset($_POST[$prop]) ? '1' : '0');
+					}
+					if(in_array($_POST['locale'], explode('|', KU_SUPPORTED_LOCALES))) {
+						if(count($_POST['allowedembeds']) > 0) {
+							$allowedembeds = array();
+							$embeds = array();
+							foreach (explode(',', KU_SUPPORTED_EMBEDS) as $e) {
+								$e = explode('=', $e);
+								$embeds []= array('name' => $e[1], 'filetype' => $e[0]);
+							}
+							foreach ($embeds as $e) {
+								if(in_array($e['filetype'], $_POST['allowedembeds'])) {
+									$allowedembeds []= $e['filetype'];
 								}
 							}
-							$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "boards` SET `uploadtype` = " . $tc_db->qstr($_POST['uploadtype']) . " , `desc` = " . $tc_db->qstr($_POST['desc']) . " , `showid` = '" . $updateboard_showid . "' , `locked` = '" . $updateboard_locked . "' , `anonymous` = " . $tc_db->qstr($_POST['anonymous']) . " , `balls` = '" . $updateboard_balls . "' , `dice` = '" . $updateboard_dice . "' , `useragent` = '" . $updateboard_useragent . "' , `forcedanon` = '" . $updateboard_forcedanon . "' , `embeds_allowed` = " . $tc_db->qstr($updateboard_allowedembeds) . " , `locale` = " . $tc_db->qstr($_POST['locale']) . " , `defaultstyle` = " . $tc_db->qstr($_POST['defaultstyle']) . " , `enablenofile` = '" . $updateboard_enablenofile . "' WHERE `name` = " . $tc_db->qstr($_GET['updateboard']) . "");
-							$tc_db->Execute("DELETE FROM `" . KU_DBPREFIX . "board_filetypes` WHERE `boardid` = '" . $boardid . "'");
-							foreach ($filetypes as $filetype) {
-								$tc_db->Execute("INSERT INTO `" . KU_DBPREFIX . "board_filetypes` ( `boardid`, `typeid` ) VALUES ( '" . $boardid . "', " . $tc_db->qstr($filetype) . " )");
-							}
-							require_once KU_ROOTDIR . 'inc/classes/menu.class.php';
-							$menu_class = new Menu();
-							$menu_class->Generate();
+							$set []= "`embeds_allowed` = ".$tc_db->qstr(implode(',', $allowedembeds));
+						}
+						foreach(array( // string properties
+							'desc',
+							'locale',
+							'anonymous',
+							'defaultstyle'
+						) as $prop) {
+							$set []= "`$prop` = ".$tc_db->qstr($_POST[$prop]);
+						}
+						$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "boards` 
+							SET ". implode(',', $set) ."
+							WHERE `name` = " . $tc_db->qstr($_GET['updateboard'])
+						);
+						$tc_db->Execute("DELETE FROM `" . KU_DBPREFIX . "board_filetypes` WHERE `boardid` = '" . $boardid . "'");
+						$vals = array();
+						foreach ($filetypes as $filetype) {
+							$vals [] = "( '" . $boardid . "', " . $tc_db->qstr($filetype) . " )";
+						}
+						$tc_db->Execute("INSERT INTO `" . KU_DBPREFIX . "board_filetypes` (`boardid`, `typeid`) VALUES " . implode(',', $vals));
+						require_once KU_ROOTDIR . 'inc/classes/menu.class.php';
+						$this->rebuild20json();
+						$menu_class = new Menu();
+						$menu_class->Generate();
+						if (isset($_POST['submit_regenerate'])) {
 							$board_class = new Board($_GET['updateboard']);
 							$board_class->RegenerateAll();
-							$this->rebuild20json();
-							$tpl_page .= _gettext('Update successful.');
-							management_addlogentry(_gettext('Updated board configuration') . " - /" . $_GET['updateboard'] . "/", 4);
 						}
-						else $tpl_page .= _gettext('Sorry, a generic error has occurred.');
+						$tpl_page .= _gettext('Update successful.');
+						management_addlogentry(_gettext('Updated board configuration') . " - /" . $_GET['updateboard'] . "/", 4);
 					}
-					else {
-						$tpl_page .= _gettext('Sorry, a generic error has occurred.');
-					}
+					else $tpl_page .= _gettext('Locale unsupported.');
 				}
-				else {
-					$tpl_page .= _gettext('Integer values must be entered correctly.');
-				}
-
-
+				else
+					$tpl_page .= _gettext('Style not found') . ': ' . $_POST['defaultstyle'];
 			}
-			else {
+			else
 				$tpl_page .= _gettext('Unable to locate a board named') . ' <strong>'. $_GET['updateboard'] . '</strong>.';
-			}
 		}
 		elseif (isset($_POST['board'])) {
 			if (!$this->CurrentUserIsModeratorOfBoard($_POST['board'], $_SESSION['manageusername'])) {
@@ -3480,7 +3549,7 @@ class Manage {
 				foreach ($resultsboard as $lineboard) {
 					$tpl_page .= '<div class="container">
 					<form action="?action=boardopts_mod&updateboard='.urlencode($_POST['board']).'" method="post">
-          <input type="hidden" name="token" value="' . $_SESSION['token'] . '" />';
+          			<input type="hidden" name="token" value="' . $_SESSION['token'] . '" />';
 					/* Directory */
 					$tpl_page .= '<label for="board">'. _gettext('Directory') .':</label>
 					<input type="text" name="board" value="'.$_POST['board'].'" disabled />
@@ -3507,7 +3576,11 @@ class Manage {
 					/* Allowed embeds */
 					$tpl_page .= '<label>'. _gettext('Allowed embeds') .':</label>
 					<div class="desc">'. _gettext('What embed sites are allowed on this board. Only useful on board with embedding enabled.') .'</div><br />';
-					$embeds = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `filetype`, `name` FROM `" . KU_DBPREFIX . "embeds` ORDER BY `filetype` ASC");
+					$embeds = array();
+					foreach (explode(',', KU_SUPPORTED_EMBEDS) as $e) {
+						$e = explode('=', $e);
+						$embeds []= array('name' => $e[1], 'filetype' => $e[0]);
+					}
 					foreach ($embeds as $embed) {
 						$tpl_page .= '<label for="allowedembeds[]">'. $embed['name'] . '</label><input type="checkbox" name="allowedembeds[]" value="'. $embed['filetype'] . '"';
 						if (in_array($embed['filetype'], explode(',', $lineboard['embeds_allowed']))) {
@@ -3539,14 +3612,14 @@ class Manage {
 					$tpl_page .= ' />
 					<div class="desc">'. _gettext('If enabled, each post will display the poster\'s ID, which is a representation of their IP address.') .'</div><br />';
 
-					/* Enable "no file" posting */
-					$tpl_page .= '<label for="enablenofile">'. _gettext('Enable \'no file\' posting') .':</label>
-					<input type="checkbox" name="enablenofile"';
-					if ($lineboard['enablenofile'] == '1') {
+					/* Enable reporting */
+					$tpl_page .= '<label for="enablereporting">'. _gettext('Enable reporting') .':</label>
+					<input type="checkbox" name="enablereporting"';
+					if ($lineboard['enablereporting'] == '1') {
 						$tpl_page .= ' checked';
 					}
-					$tpl_page .= ' />
-					<div class="desc">'. _gettext('If set to yes, new threads will not require an image to be posted.') . ' '. _gettext('Default') .': <strong>'. _gettext('No') .'</strong></div><br />';
+					$tpl_page .= ' />'. "\n" .
+					'<div class="desc">'. _gettext('Reporting allows users to report posts, adding the post to the report list.') .' '. _gettext('Default') .': <strong>'. _gettext('Yes') .'</strong></div><br />';
 
 					/* Locale */;
 					$locales = explode('|', KU_SUPPORTED_LOCALES);
@@ -3585,6 +3658,15 @@ class Manage {
 					$tpl_page .= ' />'. "\n" .
 					'<div class="desc">'. _gettext('Add ##Useragent## feature') .'</div><br />';
 
+					/* Enable "no file" posting */
+					$tpl_page .= '<label for="enablenofile">'. _gettext('Enable \'no file\' posting') .':</label>
+					<input type="checkbox" name="enablenofile"';
+					if ($lineboard['enablenofile'] == '1') {
+						$tpl_page .= ' checked';
+					}
+					$tpl_page .= ' />
+					<div class="desc">'. _gettext('If set to yes, new threads will not require an image to be posted.') . ' '. _gettext('Default') .': <strong>'. _gettext('No') .'</strong></div><br />';
+
 					/* Forced anonymous */
 					$tpl_page .= '<label for="forcedanon">'. _gettext('Forced anonymous') .':</label>
 					<input type="checkbox" name="forcedanon"';
@@ -3621,10 +3703,12 @@ class Manage {
 						}
 						$tpl_page .= '</optgroup>';
 					}
-					$tpl_page .= '</select><div class="desc">'. _gettext('The style which will be set when the user first visits the board.').'<br>'._gettext('For custom styles, the custom style will be set until user choose otherwise.').'<br />';
+
+					$tpl_page .= '</select>
+					<div class="desc">'. _gettext('The style which will be set when the user first visits the board.') .' '. _gettext('Default') .': <strong>'. _gettext('Use Default') .'</strong></div><br />';
 
 					/* Submit form */
-					$tpl_page .= '<br><input type="submit" name="submit_regenerate" value="'. _gettext('Update') .'" />
+					$tpl_page .= '<input type="submit" name="submit_regenerate" value="'. _gettext('Update and regenerate board') .'" /><br /><input type="submit" name="submit_noregenerate" value="'. _gettext('Update without regenerating board') .'" />
 
 					</form>
 					</div><br />';
@@ -3632,7 +3716,8 @@ class Manage {
 			} else {
 				$tpl_page .= _gettext('Unable to locate a board named') . ' <strong>'. $_POST['board'] . '</strong>.';
 			}
-		} else {
+		}
+		else {
 			$tpl_page .= '<form action="?action=boardopts_mod" method="post">
 			<label for="board">'. _gettext('Board') .':</label>' .
 			$this->MakeBoardListDropdown('board', $this->BoardList($_SESSION['manageusername'])) .

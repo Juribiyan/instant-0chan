@@ -36,8 +36,8 @@ msgstr "Доски с таким названием не существует."
 msgid "A common cause for this is an incorrect extension when the file is actually of a different type."
 msgstr "Скорее всего, расширение файла не соответствует действительности."
 
-msgid "A file is required for a new thread.  If embedding is allowed, either a file or embed ID is required."
-msgstr "Сля создания нового треда требуется картинка или видео, если возможно."
+msgid "A file or embed ID is required for a new thread."
+msgstr "Для создания нового треда требуется картинка или видео."
 
 msgid "A message is required to post without a file."
 msgstr "Сообщение необходимо отправить без файла."
@@ -1129,8 +1129,8 @@ msgstr "Отправить"
 msgid "Supported file types are"
 msgstr "Поддерживаемые типы файлов"
 
-msgid "Supported file types are:"
-msgstr "Поддерживаемые типы файлов:"
+msgid "Supported embed types are"
+msgstr "Поддерживаемые типы вложений"
 
 msgid "System lockout"
 msgstr "Системное замыкание x_x"

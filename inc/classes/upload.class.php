@@ -22,8 +22,10 @@
  */
 
 class Upload {
-	var $isreply = false;
-
+	function __construct($isreply) {
+		$this->isreply = $isreply;
+	}
+	
 	function exitWithUploadErrorPage($errormsg, $attype, $i, $literal_name='') {
 		if ($_POST['AJAX']) {
 			exitWithErrorPage($errormsg, '', 'upload_error', array(
@@ -115,8 +117,8 @@ class Upload {
 		  if (is_array($_POST['embed']) || is_object($_POST['embed'])) {
 			foreach($_POST['embed'] as $i => $code) {
 			  	if ($code != '') {
-			  		if (array_key_exists($_POST['embedtype'][$i], $board_class->board['embeds_allowed'])) {
-			  			$embed = $board_class->board['embeds_allowed'][$_POST['embedtype'][$i]];
+			  		if (array_key_exists($_POST['embedtype'][$i], $board_class->board['embeds_allowed_assoc'])) {
+			  			$embed = $board_class->board['embeds_allowed_assoc'][$_POST['embedtype'][$i]];
 			  			$hash = md5($embed['filetype'].'/'.$code);
 			  			if (in_array($hash, $embed_hashes)) {
 			  				$this->exitWithUploadErrorPage(_gettext('Duplicate embed entry detected.'),
@@ -144,6 +146,9 @@ class Upload {
 
 		if (count($attachments) > $board_class->board['maxfiles']) {
 			exitWithErrorPage(_gettext('Attachments number limit reached.'), _gettext('Maximum number of files + embeds per post is').' '.$board_class->board['maxfiles'].'.', 'upload_error');
+		}
+		if (!$this->isreply && count($attachments) == 0 && !$board_class->board['enablenofile']) {
+			exitWithErrorPage(_gettext('A file or embed ID is required for a new thread.'));
 		}
 		$this->attachments = $attachments;
 	}
