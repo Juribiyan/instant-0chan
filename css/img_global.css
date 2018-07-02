@@ -1376,6 +1376,9 @@ input:-moz-placeholder {opacity: 0; }
 }
 
 @media only screen and (max-width: 768px) {
+  .maintable {
+    margin-top: 0;
+  }
   #delform {
     margin: 0 2px;
   }
@@ -2406,7 +2409,6 @@ figure:not(.unwrapped):hover .playable-thumb {
   #pups-container {
     max-width: 100%;
     width: 100%;
-    padding-top: 16px;
   }
   #pups-container::after {
     background: -webkit-linear-gradient(right, rgba(0, 0, 0, .5) 0%, transparent 100%);
@@ -2420,4 +2422,195 @@ figure:not(.unwrapped):hover .playable-thumb {
 }
 .styletest-form button {
   width: 40%;
+}
+/* ------------- Mobile menu ------------- */
+#mobile-menu {
+  position: fixed;
+  /* background: rgb(46, 100, 90); */
+  left: 10px;
+  top: 10px;
+  text-align: center;
+  box-sizing: border-box;
+  /* display: none; */
+  font-size: 0;
+  max-height: 50%;
+  overflow: hidden;
+  z-index: 10;
+  height: 40px;
+  width: 40px;
+}
+.mm-expanded#mobile-menu {
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: auto;
+}
+#mobile-menu-contents {
+  padding: 6px 20px;
+  max-height: 50vh;
+  overflow: auto;
+  opacity: 0;
+  visibility: hidden;
+  -webkit-transition: opacity .3s;
+  -o-transition: opacity .3s;
+  transition: opacity .3s;
+  box-sizing: border-box;
+}
+.mm-item {
+  position: relative;
+  text-decoration: none;
+  display: inline-block;
+  padding: 6px 10px;
+  margin: 6px;
+  box-sizing: border-box;
+  z-index: 1;
+  height: 27px;
+  line-height: 16px;
+  font-size: 14px;
+}
+.mm-cat::after, .mm-brd::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top:0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  -webkit-transform: skew(-20deg, 0);
+      -ms-transform: skew(-20deg, 0);
+       -o-transform: skew(-20deg, 0);
+          transform: skew(-20deg, 0);
+  border-radius: 2px;
+}
+.mm-brd::after {
+  box-shadow: inset 0 0 0 1px #2c333d;
+  background: #2c333d4f;
+}
+.mm-cat::after {
+  -webkit-transition: box-shadow .2s, background-color .2s;
+  -o-transition: box-shadow .2s, background-color .2s;
+  transition: box-shadow .2s, background-color .2s;
+  background: #2c333d;
+}
+.mm-cat {
+  font-weight: bold;
+}
+.mm-cat:not(.mmc-expanded)::after {
+  box-shadow: 1px 1px 0 #2e645a, 2px 2px 0 #2c333dd1, 3px 3px 0 #2e645a, 4px 4px 0 #2c333d73;
+}
+.mmc-expanded::after {
+  background: #3c7562;
+  box-shadow: inset 0 2px 8px #000000b8, inset -1px -1px 0 0 #36c49382;
+}
+.mm-brd {
+  -webkit-animation: mmb-appear .15s linear normal forwards;
+       -o-animation: mmb-appear .15s linear normal forwards;
+          animation: mmb-appear .15s linear normal forwards;
+  -webkit-transform-origin: left center;
+      -ms-transform-origin: left center;
+       -o-transform-origin: left center;
+          transform-origin: left center;
+}
+.mm-boards {
+  display: none;
+}
+@-webkit-keyframes mmb-appear {
+  from {
+    -webkit-transform: scale(0,1);
+            transform: scale(0,1);
+    opacity: 0;
+  }
+  to {
+    -webkit-transform: scale(1,1);
+            transform: scale(1,1);
+    opacity: 1;
+  }
+}
+@-o-keyframes mmb-appear {
+  from {
+    -o-transform: scale(0,1);
+       transform: scale(0,1);
+    opacity: 0;
+  }
+  to {
+    -o-transform: scale(1,1);
+       transform: scale(1,1);
+    opacity: 1;
+  }
+}
+@keyframes mmb-appear {
+  from {
+    -webkit-transform: scale(0,1);
+         -o-transform: scale(0,1);
+            transform: scale(0,1);
+    opacity: 0;
+  }
+  to {
+    -webkit-transform: scale(1,1);
+         -o-transform: scale(1,1);
+            transform: scale(1,1);
+    opacity: 1;
+  }
+}
+#mobile-menu #ms-_options {
+  display: inline-block;
+  text-align: left;
+  line-height: 2;
+  font-size: 14px;
+}
+
+#mm-toggle {
+  content: '';
+  height: 40px;
+  width: 40px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  line-height: 40px;
+  text-align: center;
+}
+#mm-circle {
+  height: 40px;
+  width: 40px;
+  background: #2e6359;
+  border-radius: 40px;
+  -webkit-transition: -webkit-transform .3s;
+  transition: -webkit-transform .3s;
+  -o-transition: -o-transform .3s;
+  transition: transform .3s;
+  transition: transform .3s, -webkit-transform .3s, -o-transform .3s;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.mm-expanded #mm-toggle {
+  left: 10px;
+  top: 10px;
+}
+#mm-circle, .mm-expanded-full {
+  background: #2e6359;
+}
+.mm-bars {
+  position: relative;
+  vertical-align: middle;
+  color: rgba(8, 255, 174, 0.75);
+  -webkit-transition: opacity .3s, box-shadow .25s, -webkit-transform .3s;
+  transition: opacity .3s, box-shadow .25s, -webkit-transform .3s;
+  -o-transition: opacity .3s, box-shadow .25s, -o-transform .3s;
+  transition: transform .3s, opacity .3s, box-shadow .25s;
+  transition: transform .3s, opacity .3s, box-shadow .25s, -webkit-transform .3s, -o-transform .3s;
+  z-index: 1;
+  height: 2px;
+  width: 18px;
+  background: currentColor;
+  display: inline-block;
+  box-shadow: 0 6px 0 0, 0 -6px 0 0;
+}
+.bars-away .mm-bars {
+  -webkit-transform: scale(0);
+      -ms-transform: scale(0);
+       -o-transform: scale(0);
+          transform: scale(0);
+  opacity: 0;
 }

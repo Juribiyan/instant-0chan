@@ -81,29 +81,40 @@
 	{if $boardlist_prebuilt}
 		<noscript id="ns_oldmenu">{$boardlist_prebuilt}</noscript>
 	{/if}
-	<script>if (getCookie('ku_oldmenu') == 'yes') toggle_oldmenu(true)</script>
+	<script>
+		if (getCookie('ku_oldmenu') == 'yes') toggle_oldmenu(true)
+		var isTouch = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch) || false;
+		if(localStorage['interfaceType'] == 'desktop')
+		  isTouch = false;
+		if(localStorage['interfaceType'] == 'touch')
+		  isTouch = true;
+		if (isTouch) {
+			injector.inject('mb', `
+				#overlay_menu {
+					display: none;
+				}
+			  body {
+			    margin-bottom: 350px;
+			  }
+			  #postclone {
+			    bottom: 0px;
+			    left: 0px;
+			    position: fixed;
+			    opacity: 1
+			  }
+			  .logo {
+			    margin-left: 40px;
+			  }
+			  @media only screen and (max-width: 768px) {
+			    .logo {
+			      margin-left: 60px;
+			    }
+			  }`)
+		}
+	</script>
 	<div id="overlay_menu" class="content-background overlay-menu yesscript">
 		<span style="display: none" class="olm-link mgoback">[<a href="{%KU_CGIPATH}/{$board.name}/"> &lt; </a>]</span>
 		<span class="olm-link">[<a href="{%KU_BOARDSFOLDER}">home</a>]</span>
-		<span class="mobile-nav" id="mn-normalboards" style="display:none">
-			<select onchange="javascript:if(selectedIndex != 0) location.href='{%KU_WEBPATH}/' + this.options[this.selectedIndex].value;">
-				<option><b>{t}Boards{/t}</b></option>
-				{foreach name=sections item=sect from=$boardlist}
-					{if $sect.abbreviation neq '20'}
-					{foreach name=brds item=brd from=$sect}
-						{if $brd.name neq $board.name}
-						{if isset($brd.desc) and is_array($brd)}
-						<option value="{$brd.name}">/{$brd.name}/ - {$brd.desc}</option>
-						{/if}
-						{/if}
-					{/foreach}
-					{/if}
-				{/foreach}
-			</select>
-			<select class="boardsel20" onchange="javascript:if(selectedIndex != 0) location.href='{%KU_WEBPATH}/' + this.options[this.selectedIndex].value;">
-				<option><b>2.0 {t}Boards{/t}</b></option>
-			</select>
-		</span>
 		{foreach name=sections item=sect from=$boardlist}
 		<b  class="olm-link">[<a href="{if $sect.abbreviation eq '20'}{%KU_BOARDSPATH}/?p=2.0{else}#{/if}" class="sect-exr" data-toexpand="{$sect.abbreviation}">{$sect.nick}</a>]</b>
 		{/foreach}
