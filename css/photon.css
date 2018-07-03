@@ -128,15 +128,9 @@ a:hover {
 	padding: 0;
 	border-radius: 5px;
 }
-blockquote {
-	margin: .5em .5em .5em 1em;
-}
 blockquote p {
 	margin: 0;
 	padding: 0;
-}
-.reply blockquote {
-	margin: .5em;
 }
 .doubledash {
 	display: none;
@@ -191,7 +185,8 @@ table td {
 }
 
 .b-icon {
-	fill: white;
+	color: white;
+	fill: currentColor;
 	background-color: #aba8a6;
 }
 .b-icon:hover {
@@ -308,4 +303,49 @@ table td {
 }
 .reply::-webkit-scrollbar-corner {
 	background: #dddddd;
+}
+.markupbtns {
+  margin-bottom: -2px;
+}
+.uibutton {
+	background: #f5f5f5;
+	border: 1px solid rgb(169, 169, 169);
+	border-radius: 4px 4px 0 0;
+	border-bottom: 0;
+}
+.uibutton:hover {
+background: rgb(255, 255, 255);
+border: 1px solid #0066FF;
+color: #0066FF;
+}
+
+/* ------------- Mobile menu ------------- */
+.mm-brd::after {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.45);
+}
+.mm-cat, .mm-brd {
+	color: white!important;
+}
+.mm-cat::after {
+  background: #ff6500;
+}
+.mm-cat:not(.mmc-expanded)::after {
+  box-shadow: 1px 1px 0 #0240e0, 2px 2px 0 rgba(255, 101, 0, 0.9), 3px 3px 0 #0240e0, 4px 4px 0 rgba(255, 101, 0, 0.7);
+}
+.mmc-expanded::after {
+  background: #ce783f;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5), inset -1px -1px 0 0 #86a8ff;
+}
+#mm-circle, .mm-expanded-full {
+  background: #0240e0;
+}
+.mm-bars {
+	color: rgba(255, 255, 255, 0.87);
+}
+.mm-toggle-options, #mmb-_options {
+	color: white!important;
+}
+#mmb-_options a, #mmb-_options a:hover, #mmb-_options a:visited {
+	color: #ffb686;
 }

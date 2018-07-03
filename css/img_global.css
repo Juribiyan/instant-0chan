@@ -2426,12 +2426,10 @@ figure:not(.unwrapped):hover .playable-thumb {
 /* ------------- Mobile menu ------------- */
 #mobile-menu {
   position: fixed;
-  /* background: rgb(46, 100, 90); */
   left: 10px;
   top: 10px;
   text-align: center;
   box-sizing: border-box;
-  /* display: none; */
   font-size: 0;
   max-height: 50%;
   overflow: hidden;
@@ -2482,26 +2480,16 @@ figure:not(.unwrapped):hover .playable-thumb {
           transform: skew(-20deg, 0);
   border-radius: 2px;
 }
-.mm-brd::after {
-  box-shadow: inset 0 0 0 1px #2c333d;
-  background: #2c333d4f;
-}
+
 .mm-cat::after {
   -webkit-transition: box-shadow .2s, background-color .2s;
   -o-transition: box-shadow .2s, background-color .2s;
   transition: box-shadow .2s, background-color .2s;
-  background: #2c333d;
 }
 .mm-cat {
   font-weight: bold;
 }
-.mm-cat:not(.mmc-expanded)::after {
-  box-shadow: 1px 1px 0 #2e645a, 2px 2px 0 #2c333dd1, 3px 3px 0 #2e645a, 4px 4px 0 #2c333d73;
-}
-.mmc-expanded::after {
-  background: #3c7562;
-  box-shadow: inset 0 2px 8px #000000b8, inset -1px -1px 0 0 #36c49382;
-}
+
 .mm-brd {
   -webkit-animation: mmb-appear .15s linear normal forwards;
        -o-animation: mmb-appear .15s linear normal forwards;
@@ -2573,7 +2561,6 @@ figure:not(.unwrapped):hover .playable-thumb {
 #mm-circle {
   height: 40px;
   width: 40px;
-  background: #2e6359;
   border-radius: 40px;
   -webkit-transition: -webkit-transform .3s;
   transition: -webkit-transform .3s;
@@ -2588,13 +2575,10 @@ figure:not(.unwrapped):hover .playable-thumb {
   left: 10px;
   top: 10px;
 }
-#mm-circle, .mm-expanded-full {
-  background: #2e6359;
-}
 .mm-bars {
   position: relative;
   vertical-align: middle;
-  color: rgba(8, 255, 174, 0.75);
+  
   -webkit-transition: opacity .3s, box-shadow .25s, -webkit-transform .3s;
   transition: opacity .3s, box-shadow .25s, -webkit-transform .3s;
   -o-transition: opacity .3s, box-shadow .25s, -o-transform .3s;
