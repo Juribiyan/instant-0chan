@@ -3,9 +3,9 @@ define ( 'DOCUMENT_ROOT', dirname ( __FILE__ ) );
 define("img_dir", DOCUMENT_ROOT."/captcha/");
 include("nrand.php");
 $ltrs = rand(4, 7);
-if($_COOKIE['captchalang'] == 'en') 
+if(isset($_COOKIE['captchalang']) && $_COOKIE['captchalang'] == 'en') 
 	$captcha = english_word($ltrs);
-elseif($_COOKIE['captchalang'] == 'ru')
+elseif(isset($_COOKIE['captchalang']) && $_COOKIE['captchalang'] == 'ru')
 	$captcha = generate_code($ltrs);	
 else {
 	$ltrs = rand(4, 7);
