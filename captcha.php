@@ -1,11 +1,15 @@
 <?php
+$_GLOBALS['skipdb'] = true;
 define ( 'DOCUMENT_ROOT', dirname ( __FILE__ ) );
 define("img_dir", DOCUMENT_ROOT."/captcha/");
-include("nrand.php");
+require 'config.php';
+include 'nrand.php';
+
+$captchalang = (isset($_COOKIE['captchalang']) ? $_COOKIE['captchalang'] : KU_CAPTCHALANG);
 $ltrs = rand(4, 7);
-if(isset($_COOKIE['captchalang']) && $_COOKIE['captchalang'] == 'en') 
+if($captchalang == 'en') 
 	$captcha = english_word($ltrs);
-elseif(isset($_COOKIE['captchalang']) && $_COOKIE['captchalang'] == 'ru')
+elseif($captchalang == 'ru')
 	$captcha = generate_code($ltrs);	
 else {
 	$ltrs = rand(4, 7);
