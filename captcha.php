@@ -5,7 +5,7 @@ define("img_dir", DOCUMENT_ROOT."/captcha/");
 require 'config.php';
 include 'nrand.php';
 
-$captchalang = (isset($_COOKIE['captchalang']) && in_array($_COOKIE['captchalang'], array("ru", "en", "num") ? $_COOKIE['captchalang'] : KU_CAPTCHALANG);
+$captchalang = (isset($_COOKIE['captchalang']) && in_array($_COOKIE['captchalang'], array("ru", "en", "num")) ? $_COOKIE['captchalang'] : KU_CAPTCHALANG);
 $ltrs = rand(4, 7);
 if($captchalang == 'en') 
 	$captcha = english_word($ltrs);
