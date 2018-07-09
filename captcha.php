@@ -3,16 +3,16 @@ define ( 'DOCUMENT_ROOT', dirname ( __FILE__ ) );
 define("img_dir", DOCUMENT_ROOT."/captcha/");
 include("nrand.php");
 $ltrs = rand(4, 7);
-if(isset($_COOKIE['captchalang'])) {
-	if($_COOKIE['captchalang'] == 'en') $captcha = english_word($ltrs);
-	elseif($_COOKIE['captchalang'] == 'num') {
-		$ltrs = rand(4, 7);
-		for ($i=0; $i < $ltrs; $i++) { 
-			$captcha .= rand(0, 9);
-		}
+if($_COOKIE['captchalang'] == 'en') 
+	$captcha = english_word($ltrs);
+elseif($_COOKIE['captchalang'] == 'ru')
+	$captcha = generate_code($ltrs);	
+else {
+	$ltrs = rand(4, 7);
+	for ($i=0; $i < $ltrs; $i++) { 
+		$captcha .= rand(0, 9);
 	}
 }
-else $captcha = generate_code($ltrs);
 session_start();
 function img_code($code) {
   if(isset($_GET['color'])) {
