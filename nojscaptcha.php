@@ -1,6 +1,9 @@
 <?php
 require 'config.php';
 $initial = !$_GET['show'];
+if (in_array($_GET['show'], array('ru', 'en', 'num'))) {
+	setcookie('captchalang', $_GET['show'], time() + 31556926, '/'/*, KU_DOMAIN*/);
+}
 $shorten_life = number_format(KU_CAPTCHALIFE - 0.5, 1, '.', '');
 ?>
 <!DOCTYPE html>
@@ -24,19 +27,23 @@ $shorten_life = number_format(KU_CAPTCHALIFE - 0.5, 1, '.', '');
 </head>
 <body>
   <form action="">
-    <input type="hidden" name="show" value="1">
-    <button type="submit">    
-    <?php
-    if ($initial) 
-      echo 
-      '<div class="msg">'.(KU_LOCALE=='ru' ? 'Показать капчу' : 'Show captcha').'</div>';
-    else 
-      echo 
-      '<img alt="Captcha image" src="'.KU_WEBFOLDER.'captcha.php?'.(float)rand()/(float)getrandmax().'&color=77,77,77">
-      <div class="rotting-indicator"></div>
-      <div class="rotten-msg msg">'.(KU_LOCALE=='ru' ? 'Капча-протухла' : 'Captcha has expired').'</div> ';
-    ?>
+    <button type="submit" name="show" value="1">    
+	    <?php
+	    if ($initial) 
+	      echo 
+	      '<div class="msg">'.(KU_LOCALE=='ru' ? 'Показать капчу' : 'Show captcha').'</div>';
+	    else 
+	      echo 
+	      '<img alt="Captcha image" src="'.KU_WEBFOLDER.'captcha.php?'.(float)rand()/(float)getrandmax().'&color=77,77,77">
+	      <div class="rotting-indicator"></div>
+	      <div class="rotten-msg msg">'.(KU_LOCALE=='ru' ? 'Капча-протухла' : 'Captcha has expired').'</div> ';
+	    ?>
     </button>
+    <div class="langs">
+    	<button type="submit" name="show" value="ru">CYR</button><br>
+    	<button type="submit" name="show" value="en">LAT</button><br>
+    	<button type="submit" name="show" value="num">123</button>
+    </div>
   </form>
 </body>
 </html>

@@ -92,3 +92,34 @@ button:hover .msg {
 	from {opacity: 0}
 	to {opacity: 1}
 }
+form {
+	position: relative;
+	overflow: hidden;
+}
+.langs {
+  position: absolute;
+  top: 0;
+  right: -22px;
+  transition: right .2s;
+}
+form:hover .langs {
+	right: 0;
+}
+.langs button {
+	display: inline-block;
+	height: 9px;
+	font-size: 8px;
+	background: black;
+	color: white;
+	margin-bottom: 1px;
+	width: 22px;
+	opacity: 0;
+	transition: opacity .2s, background-color .2s;
+}
+form:hover .langs button {
+	opacity: .6;
+}
+form .langs button:hover {
+	opacity: 1;
+	background: #5100ff;
+}
