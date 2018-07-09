@@ -256,7 +256,7 @@ _bindtextdomain('kusaba', KU_ROOTDIR . 'inc/lang');
 _bind_textdomain_codeset('kusaba', KU_CHARSET);
 
 // SQL  database
-if (!isset($tc_db) && !isset($preconfig_db_unnecessary)) {
+if (!isset($tc_db) && !isset($preconfig_db_unnecessary) && !$_GLOBALS['skipdb']) {
 	$tc_db = &NewADOConnection(KU_DBTYPE);
 	if (KU_DBUSEPERSISTENT) {
 		$tc_db->PConnect(KU_DBHOST, KU_DBUSERNAME, KU_DBPASSWORD, KU_DBDATABASE) or die('SQL database connection error: ' . $tc_db->ErrorMsg());
