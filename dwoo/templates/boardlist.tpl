@@ -23,3 +23,7 @@
 		{include $boardlist}
 	{/if}
 {/if}
+[ {t}Style{/t}: {foreach name=syles item=style from=$ku_styles}
+	<a href='{%KU_WEBPATH}/setstylesheet.php?style={$style}'>{$style|capitalize}</a>
+	{if not $.foreach.syles.last} /{/if}
+{/foreach}]
