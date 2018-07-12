@@ -50,7 +50,7 @@ require KU_ROOTDIR . 'inc/classes/cloud20.class.php';
 $bans_class = new Bans();
 $parse_class = new Parse();
 
-function notify($event_type, $room, $data=array()) {
+function notify($room, $data=array()) {
 	if (!KU_LIVEUPD_ENA) return;
 	if (!KU_LIVEUPD_SITENAME || !KU_LOCAL_LIVEUPD_API) {
 		error_log('Error during Notify: please fill the required fields in Config.php');
@@ -60,7 +60,6 @@ function notify($event_type, $room, $data=array()) {
 	$data_c = array(
 		'srvtoken' => KU_LIVEUPD_SRVTOKEN, 
 		'room' => $room,
-		'event_type' => $event_type, 
 		'token' => $_POST['token'], 
 		'timestamp' => time()
 	);
@@ -479,11 +478,11 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 		if ($thread_replyto == '0') {
 			// Regenerate the thread
 			$board_class->RegenerateThreads($post_id);
-			notify('new', $board_class->board['name'].':threads', array('new_thread_id' => $post_id));
+			notify($board_class->board['name'].':threads', array('action' => 'new_thread', 'new_thread_id' => $post_id));
 		} else {
 			// Regenerate the thread
 			$board_class->RegenerateThreads($thread_replyto);
-			notify('new', $board_class->board['name'].':'.$thread_replyto);
+			notify($board_class->board['name'].':'.$thread_replyto, array('action' => 'new_reply'));
 		}
 	} 
 	else {
@@ -508,6 +507,7 @@ elseif (
 		$items_affected = array();
 
 	$threads_to_regenerate = array(); // to prevent possible repeated regeneration
+	$notifications = array();
 	// $pages_to_regenerate = array(); // whether or not pages must be regenerated in the end
 	$regenerate_all_pages = false;
 
@@ -554,16 +554,24 @@ elseif (
 					$delres = $post_class->Delete();
 					if ($delres) {
 						if ($delres !== 'already_deleted') { // Skip the unneeded rebuild if the post is already deleted
+							$thread_id = $post_class->post['parentid'] != '0' ? $post_class->post['parentid'] : $post_class->post['id'];
+							$room_id = $board_class->board['name'].':'.$thread_id;
+							if (! isset($notifications[$room_id]))
+								$notifications[$room_id] = array();
+							$notifications[$room_id] []= array(
+								'action' => 'delete_post',
+								'id' => $post_class->post['id']
+							);
 							if ($post_class->post['parentid'] != '0') {
-								$threads_to_regenerate []= $post_class->post['parentid'];
+								$threads_to_regenerate []= $thread_id;
 								if (! $isownpost) {
-									management_addlogentry(_gettext('Deleted post') . ' #<a href="?action=viewthread&thread='. $post_class->post['parentid'] . '&board='. $board_class->board['name'] . '#'. $val . '">'. $val . '</a> - /'. $board_class->board['name'] . '/', 7);
+									management_addlogentry(_gettext('Deleted post') . ' #<a href="?action=viewthread&thread='. $thread_id . '&board='. $board_class->board['name'] . '#'. $val . '">'. $val . '</a> - /'. $board_class->board['name'] . '/', 7);
 								}
 								$post_action->succ(_gettext('Post successfully deleted.').(!$isownpost ? _gettext('(By mod)') : ''));
 							}
 							else {
 								if (! $isownpost) {
-									management_addlogentry(_gettext('Deleted thread') . ' #<a href="?action=viewthread&thread='. $val . '&board='. $board_class->board['name'] . '">'. $val . '</a> ('. ($delres-1) . ' replies) - /'. $board_class->board['name'] . '/', 7);
+									management_addlogentry(_gettext('Deleted thread') . ' #<a href="?action=viewthread&thread='. $thread_id . '&board='. $board_class->board['name'] . '">'. $val . '</a> ('. ($delres-1) . ' replies) - /'. $board_class->board['name'] . '/', 7);
 								}
 								$post_action->succ(_gettext('Thread successfully deleted.').(!$isownpost ? _gettext('(By mod)') : '').' '.($delres-1)._gettext('replies deleted').'.');
 							}
@@ -592,6 +600,13 @@ elseif (
 			if ($fdres['error'])
 				$file_action->fail($fdres['error']);
 			else {
+				$room_id = $board_class->board['name'].':'.$fdres['parentid'];
+				if (! isset($notifications[$room_id]))
+					$notifications[$room_id] = array();
+				$notifications[$room_id] []= array(
+					'action' => 'delete_file',
+					'id' => $file
+				);
 				$file_action->succ(_gettext('Image successfully deleted from your post.'));
 				if (! $fdres['already_deleted']) {
 					$threads_to_regenerate []= $fdres['parentid'];
@@ -621,6 +636,9 @@ elseif (
 		}
 	}*/
 	// Finish
+	foreach ($notifications as $room=>$data) {
+		notify($room, array('action' => 'delete', 'items' => $data));
+	}
 	if ($_POST['AJAX'])
 		exit(json_encode(array(
 		  'action' => 'multi_post_action',
