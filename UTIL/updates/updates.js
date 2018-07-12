@@ -19,13 +19,12 @@ app.post('/qr/:site', (req, res) => {
 		return
 	}
 	let data = req.body
-	if(typeof data.srvtoken !== 'undefined' || data.srvtoken === srvtoken || typeof data.room !== 'undefined')
-		io.to(site+':'+data.room).emit('update', {
-			timestamp: data.timestamp, 
-			room: data.room.split(':')[1],
-			post_id: data.post_id,
-			token: data.clitoken
-		})
+	if(typeof data.srvtoken !== 'undefined' || data.srvtoken === srvtoken || typeof data.room !== 'undefined') {
+		let room = site+':'+data.room
+		data.room = data.room.split(':')[1]
+		delete data.srvtoken
+		io.to(room).emit('update', data)
+	}
 	res.status(200).end()
 })
 

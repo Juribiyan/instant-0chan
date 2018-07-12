@@ -50,26 +50,35 @@ require KU_ROOTDIR . 'inc/classes/cloud20.class.php';
 $bans_class = new Bans();
 $parse_class = new Parse();
 
-function notify($id="???", $newthreadid = '') {
-	$cl20 = new Cloud20();
-	$cl20->rebuild();
-
-	if(KU_LIVEUPD_ENA) {
-		$data_string = json_encode(array('srvtoken' => KU_LIVEUPD_SRVTOKEN, 'room' => $id, 'clitoken' => $_POST['token'], 'timestamp' => time(), 'newthreadid' => $newthreadid ));
-		$suckTo = KU_LIVEUPD_SITENAME ? KU_LOCAL_LIVEUPD_API.'/qr/'.KU_LIVEUPD_SITENAME : KU_LOCAL_LIVEUPD_API;
-		$ch = curl_init($suckTo);
-		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-		curl_setopt($ch, CURLOPT_PROXY, "");
-		curl_setopt($ch, CURLOPT_TIMEOUT, 0.5);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-			'Content-Type: application/json',
-			'Content-Length: ' . strlen($data_string))
-		);
-		curl_exec($ch);
-		if(curl_errno($ch)) error_log('Curl error during Notify: ' . curl_error($ch).' (Error code: '.curl_errno($ch).')');
+function notify($event_type, $room, $data=array()) {
+	if (!KU_LIVEUPD_ENA) return;
+	if (!KU_LIVEUPD_SITENAME || !KU_LOCAL_LIVEUPD_API) {
+		error_log('Error during Notify: please fill the required fields in Config.php');
+		return;
 	}
+
+	$data_c = array(
+		'srvtoken' => KU_LIVEUPD_SRVTOKEN, 
+		'room' => $room,
+		'event_type' => $event_type, 
+		'token' => $_POST['token'], 
+		'timestamp' => time()
+	);
+	$data_string = json_encode(array_merge($data_c, $data));
+
+	$ch = curl_init(KU_LOCAL_LIVEUPD_API.'/qr/'.KU_LIVEUPD_SITENAME);
+	curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+	curl_setopt($ch, CURLOPT_PROXY, "");
+	curl_setopt($ch, CURLOPT_TIMEOUT, 0.5);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		'Content-Type: application/json',
+		'Content-Length: ' . strlen($data_string))
+	);
+	curl_exec($ch);
+	if(curl_errno($ch)) 
+		error_log('Curl error during Notify: ' . curl_error($ch).' (Error code: '.curl_errno($ch).')');
 }
 
 class PolymorphicReporter {
@@ -463,14 +472,18 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 		// Regenerate board pages
 		$board_class->RegeneratePages($startpage, strtolower($_POST['em']) != 'sage' ? 'up' : 'single');
 
+		// Regeneate JSON
+		$cl20 = new Cloud20();
+		$cl20->rebuild();
+
 		if ($thread_replyto == '0') {
 			// Regenerate the thread
 			$board_class->RegenerateThreads($post_id);
-			notify($board_class->board['name'].':newthreads', $post_id);
+			notify('new', $board_class->board['name'].':threads', array('new_thread_id' => $post_id));
 		} else {
 			// Regenerate the thread
 			$board_class->RegenerateThreads($thread_replyto);
-			notify($board_class->board['name'].':'.$thread_replyto);
+			notify('new', $board_class->board['name'].':'.$thread_replyto);
 		}
 	} 
 	else {
