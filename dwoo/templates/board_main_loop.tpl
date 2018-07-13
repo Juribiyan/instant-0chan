@@ -42,7 +42,7 @@
 {* POSTHEAD SECTION *}
  <div class="posthead{if $post.parentid eq 0}{if $post.locked eq 1} thread-locked{/if}{if $post.stickied eq 1} thread-stickied{/if}{/if}">
   <label class="postinfo">
-   <input type="checkbox" name="post[]" value="{$post.id}" />
+   <input type="checkbox" name="post[]" class="multidel" value="{$post.id}" />
    {if $post.subject neq ''}
     <span class="filetitle">{$post.subject}</span>
    {/if}
@@ -165,12 +165,10 @@
           {if $embed.id3.playtime_string neq ''}
            , {$embed.id3.playtime_string}
           {/if}{/strip}
-          <button type="submit" title="{t}Delete file{/t}" class="yesscript delete-file emb-button" name="delete-file[]" value="{$embed.file_id}">
+          <button type="submit" title="{t}Delete file{/t} ({t}hold Ctrl to select multiple{/t})" class="yesscript delete-file emb-button" name="delete-file[]" value="{$embed.file_id}">
            <svg class="icon b-icon "><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-x"></use></svg>
           </button>
-          <noscript>
-           <input title="{t}Delete file{/t}" type="checkbox" name="delete-file[]" class="delete-file emb-button" value="{$embed.file_id}">
-          </noscript>
+          <input title="{t}Delete file{/t}" type="checkbox" name="delete-file[]" class="delete-file emb-button noscript multidel" value="{$embed.file_id}">
          </figcaption>
         {else}
          <div class="embed-wrap">

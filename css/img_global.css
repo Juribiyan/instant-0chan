@@ -1934,6 +1934,12 @@ figure:first-of-type {
   border: none;
   padding: 0;
 }
+.delete-multiple button.emb-button {
+  display: none;
+}
+.delete-multiple input.emb-button {
+  display: initial;
+}
 .embed-wrap .icon {
   margin: 0 2px;
   border-radius: 3px;
@@ -2597,4 +2603,11 @@ figure:not(.unwrapped):hover .playable-thumb {
        -o-transform: scale(0);
           transform: scale(0);
   opacity: 0;
+}
+
+.js-supported .noscript {
+  display: none;
+}
+.deleted {
+  opacity: 0.5;
 }

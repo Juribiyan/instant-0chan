@@ -2073,3 +2073,9 @@ msgstr "ответов удалено"
 
 msgid "Show alert history"
 msgstr "Показать историю уведомлений"
+
+msgid "Delete file"
+msgstr "Удалить файл"
+
+msgid "hold Ctrl to select multiple"
+msgstr "удерживайте Ctrl, чтобы выбрать несколько"
