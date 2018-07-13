@@ -2608,6 +2608,38 @@ figure:not(.unwrapped):hover .playable-thumb {
 .js-supported .noscript {
   display: none;
 }
-.deleted {
-  opacity: 0.5;
+
+/* ---------- deleted items ---------- */
+.deleted.reply, figure.deleted {
+  box-shadow: inset 0 0 59px rgba(255, 15, 15, 0.33);
+}
+.deleted.reply {
+  border: 1px solid rgba(255, 15, 15, 0.51);
+}
+figure.deleted {
+  position: relative;
+}
+figure.deleted:after {
+  content: '';
+  position: absolute;
+  box-shadow: inset 0 0 0 1px rgba(255, 15, 15, 0.51);
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+.deleted[id^=thread] .op .posthead {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+}
+.deleted[id^=thread] .op .posthead:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: calc(50% - 1px);
+  width: 100%;
+  border-bottom: 2px solid #ce3e3d;
 }
