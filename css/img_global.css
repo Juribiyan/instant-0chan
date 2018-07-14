@@ -2643,3 +2643,8 @@ figure.deleted:after {
   width: 100%;
   border-bottom: 2px solid #ce3e3d;
 }
+figure.deleted:not(:hover) .embed-thumbnail,
+figure.deleted:not(:hover) .thumb,
+.deleted.reply:not(:hover) > div {
+  opacity: .5;
+}

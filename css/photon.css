@@ -349,3 +349,9 @@ color: #0066FF;
 #mmb-_options a, #mmb-_options a:hover, #mmb-_options a:visited {
 	color: #ffb686;
 }
+.deleted.reply {
+	border-style: dashed;
+	border-width: 2px;
+	background: #f8efef;
+	box-shadow: none;
+}

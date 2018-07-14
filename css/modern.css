@@ -383,3 +383,8 @@ figure {
 #mmb-_options a, #mmb-_options a:hover, #mmb-_options a:visited {
 	color: #d5e8ff;
 }
+.deleted.reply {
+	border-style: dashed;
+	background: #f8efef;
+	box-shadow: none;
+}
