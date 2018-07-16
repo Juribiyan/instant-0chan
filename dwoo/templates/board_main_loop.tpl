@@ -104,8 +104,8 @@
    {if $board.balls}
     <img class="_country_" src="{%KU_WEBPATH}/images/flags/{$post.country}.png">
    {/if}
-  </span>
-  <span id="dnb-{$board.name}-{$post.id}-{if $post.parentid eq 0}y{else}n{/if}"></span>
+  </span
+  ><span id="dnb-{$board.name}-{$post.id}-{if $post.parentid eq 0}y{else}n{/if}"></span>
   {if $post.parentid eq 0}
    {if not $isthread}
     {strip}[<a href="{%KU_BOARDSFOLDER}{$board.name}/res/{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}.html">
