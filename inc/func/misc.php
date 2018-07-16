@@ -153,3 +153,15 @@ function check_css($css) {
 function ISO8601_callback($matches) {
   return 60*(60*($matches[1]) + $matches[2]) + $matches[3];
 }
+
+// For debugging
+function console_log($ret = false) {
+  $args = func_get_args();
+  foreach ($args as &$arg) {
+    $arg = json_encode($arg);
+  }
+  $r = '<script>console.log('.implode(',', $args).')</script>';
+  if ($ret)
+    return $r;
+  echo $r;
+}
