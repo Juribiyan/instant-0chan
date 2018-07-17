@@ -569,6 +569,8 @@ class Board {
     $post['deleted_timestamp_formatted'] = formatDate($post['deleted_timestamp'], 'post', $CURRENTLOCALE, $dateEmail);
     $post_ttl = $post['deleted_timestamp'] > time() ? ($post['deleted_timestamp'] - time())/3600 : 0;
     $post['ttl'] = $post_ttl ? sprintf('%02d:%02d', (int)$post_ttl, round(fmod($post_ttl, 1) * 60)) : 0;
+
+    $post['hash_id'] = md5($post['ipmd5'].((KU_IMGHASH_UNIQUENESS=='board'||KU_IMGHASH_UNIQUENESS=='thread') ? '_'.$this->board['name'] : '').(KU_IMGHASH_UNIQUENESS=='thread' ? '_'.($post['parentid']=='0' ? $post['id'] : $post['parentid']) : ''));
     
     foreach ($post['embeds'] as &$embed) {
       if (array_key_exists($embed['file_type'], $this->board['embeds_allowed_assoc'])) {

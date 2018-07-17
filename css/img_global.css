@@ -2652,3 +2652,8 @@ figure.deleted:not(:hover) .thumb,
   font-size: .9em;
   color: #e03d43;
 }
+.hashpic {
+  vertical-align: middle;
+  margin-bottom: 4px;
+  cursor: pointer;
+}

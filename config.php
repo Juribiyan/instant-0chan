@@ -82,7 +82,11 @@ if (!$cache_loaded) {
 		$cf['KU_ALLOWED_OFFSITE_URLS'] = 'http://i.imgur.com/ https://i.imgur.com/ https://fonts.googleapis.com/ https://fonts.gstatic.com/';
 		$cf['KU_MAX_CSS_SIZE'] = 102400; // msximum user submitted CSS size (in bytes)
 		$cf['KU_DISCLAIMER'] = false; // Whether or not a disclaimer (/dwoo/templates/disclaimer.tpl) should be displayed for new visitors.
-
+		$cf['KU_IMGHASH_UNIQUENESS'] = 'thread'; // ('thread'|'board'|false)
+			// When "Show ID" is on, hash pics will be displayed for each post. 
+			// If IMGHASH_UNIQUENESS is set to 'thread' those pics will be unique per each thread; 
+			// if it is set to 'board' they will be persistent across the board; 
+			// if it is set to false they will be persistent across the whole site.
 		$cf['I0_SAYERS_ENABLED'] = false;
 		// Emoji configuration
 		$cf['I0_SMILES_ENABLED'] = true;

@@ -73,7 +73,7 @@
     <span class="post-ttl" data-deleted-timestamp="{$post.deleted_timestamp}" title="{t}To be deleted on{/t} {$post.deleted_timestamp_formatted}">{$post.ttl}</span>
   {/if}
   {if $board.showid}
-   <img src="data:image/png;base64,{rainbow($post.ipmd5, $post.id);}">
+   <img class="hashpic" src="data:image/gif;base64,{rainbow($post.hash_id)}" alt="{$post.hash_id}">
   {/if}
   <span class="extrabtns yesscript">
    {if $post.parentid eq 0} {* Extra-buttons related to OP only → *}

@@ -21,15 +21,14 @@
   return $img;
 }
 
-function rainbow ($ip, $threadno)
+function rainbow ($string)
 {
   $size=16;
   $steps=2;
   $step=$size/$steps;
 
-  $string = $ip . $threadno;
-
   $image = image_create_alpha($size, $size);
+  imagecolortransparent($image, 127<<24);
 
   $n = 0;
   $prev = 0;
@@ -58,13 +57,12 @@ function rainbow ($ip, $threadno)
 
   ob_start ();
 
-  imagepng ($image);
+  imagegif($image);
   $image_data = ob_get_contents ();
 
 	ob_end_clean ();
 
-return base64_encode ($image_data);
-
+  return base64_encode ($image_data);
 }
 
 function omitted_syntax($posts, $images) {
