@@ -2079,3 +2079,15 @@ msgstr "Удалить файл"
 
 msgid "hold Ctrl to select multiple"
 msgstr "удерживайте Ctrl, чтобы выбрать несколько"
+
+msgid "Time to live"
+msgstr "Время жизни"
+
+msgid "Delete after"
+msgstr "Удалить через"
+
+msgid "hours"
+msgstr "часов"
+
+msgid "To be deleted on"
+msgstr "Будет удален в"

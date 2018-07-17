@@ -565,6 +565,11 @@ class Board {
 		}
 		$post['timestamp_formatted'] = formatDate($post['timestamp'], 'post', $CURRENTLOCALE, $dateEmail);
 		$post['reflink'] = formatReflink($this->board['name'], (($post['parentid'] == 0) ? ($post['id']) : ($post['parentid'])), $post['id'], $CURRENTLOCALE);
+    
+    $post['deleted_timestamp_formatted'] = formatDate($post['deleted_timestamp'], 'post', $CURRENTLOCALE, $dateEmail);
+    $post_ttl = $post['deleted_timestamp'] > time() ? ($post['deleted_timestamp'] - time())/3600 : 0;
+    $post['ttl'] = $post_ttl ? sprintf('%02d:%02d', (int)$post_ttl, round(fmod($post_ttl, 1) * 60)) : 0;
+    
     foreach ($post['embeds'] as &$embed) {
       if (array_key_exists($embed['file_type'], $this->board['embeds_allowed_assoc'])) {
         $embed['is_embed'] = true;
@@ -1027,7 +1032,7 @@ class Post extends Board {
     }
   }
 
-	function Insert($parentid, $name, $tripcode, $email, $subject, $message, $attachments, $password, $timestamp, $bumped, $ip, $posterauthority, $stickied, $locked, $boardid, $country, $is_new_user) {
+	function Insert($parentid, $name, $tripcode, $email, $subject, $message, $attachments, $password, $timestamp, $bumped, $ip, $posterauthority, $stickied, $locked, $boardid, $country, $is_new_user, $deleted_timestamp) {
 		global $tc_db;
     $post_fields = array(
       $parentid,
@@ -1046,13 +1051,31 @@ class Post extends Board {
       $stickied,
       $locked,
       $country,
-      $is_new_user
+      $is_new_user,
+      $deleted_timestamp
     );
     foreach($post_fields as &$pf) {
       $pf = $tc_db->qstr($pf);
     }
-		$query = "INSERT INTO `".KU_DBPREFIX."posts`
-			(`parentid` , `boardid`, `name` , `tripcode` , `email` , `subject` , `message` , `password` , `timestamp` , `bumped` , `ip` , `ipmd5` , `posterauthority` , `stickied` , `locked`, `country`, `by_new_user`)
+		$query = "INSERT INTO `".KU_DBPREFIX."posts` (
+      `parentid`, 
+      `boardid`, 
+      `name` , 
+      `tripcode` , 
+      `email` , 
+      `subject` , 
+      `message` , 
+      `password` , 
+      `timestamp` , 
+      `bumped` , 
+      `ip` , 
+      `ipmd5` , 
+      `posterauthority` , 
+      `stickied` , 
+      `locked`, 
+      `country`, 
+      `by_new_user`,
+      `deleted_timestamp` )
 			VALUES ( ".implode(', ', $post_fields)." )";
     $tc_db->Execute($query);
 		$id = $tc_db->Insert_Id();

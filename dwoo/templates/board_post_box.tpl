@@ -139,6 +139,18 @@
 		</tr>
 		<tr>
 			<td class="postblock">
+				<abbr title="{t}Time to live{/t}">TTL</abbr>
+			</td>
+			<td>
+				<label for="ttl-enable">
+					<input type="checkbox" id="ttl-enable" name="ttl-enable" value="1">
+					{t}Delete after{/t}
+				</label>
+				<input type="number" value="0" name="ttl" min="0" style="width: 7ch">&nbsp;{t}hours{/t}
+			</td>
+		</tr>
+		<tr>
+			<td class="postblock">
 				{t}Go to thread{/t}
 			</td>
 			<td>

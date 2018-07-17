@@ -2648,3 +2648,7 @@ figure.deleted:not(:hover) .thumb,
 .deleted.reply:not(:hover) > div {
   opacity: .5;
 }
+.post-ttl {
+  font-size: .9em;
+  color: #e03d43;
+}

@@ -129,6 +129,9 @@ function error_redirect($url, $message) {
 
 modules_load_all();
 
+// Delete posts whose time is up
+collect_dead();
+
 // In some cases, the board value is sent through post, others get
 if (isset($_POST['board']) || isset($_GET['board'])) $_POST['board'] = (isset($_GET['board'])) ? $_GET['board'] : $_POST['board'];
 
@@ -178,7 +181,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 	list($thread_replies, $thread_locked, $thread_replyto) = $post_isreply
 		? $posting_class->GetThreadInfo($_POST['replythread'])
 		: array(0,0,0);
-	list($post_name, $post_email, $post_subject, $post_tag) = $posting_class->GetFields();
+	list($post_name, $post_email, $post_subject, $post_del_timestamp) = $posting_class->GetFields();
 	$post_password = isset($_POST['postpassword']) ? $_POST['postpassword'] : '';
 
 	// $posting_class->CheckNotDuplicateSubject($post_subject);
@@ -408,7 +411,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 
 		// $upload_class->file_name, $upload_class->original_file_name, $filetype_withoutdot, $upload_class->file_md5, $upload_class->imgWidth, $upload_class->imgHeight, $upload_class->file_size, $upload_class->imgWidth_thumb, $upload_class->imgHeight_thumb
 		$post_class = new Post(0, $board_class->board['name'], $board_class->board['id'], true);
-		$post_id = $post_class->Insert($thread_replyto, $post['name'], $post['tripcode'], $post['email'], $post['subject'], addslashes($post['message']), $upload_class->attachments, $post_passwordmd5, time(), time(), $posting_class->user_id, $user_authority_display, $sticky, $lock, $board_class->board['id'], $post['country'], $posting_class->is_new_user);
+		$post_id = $post_class->Insert($thread_replyto, $post['name'], $post['tripcode'], $post['email'], $post['subject'], addslashes($post['message']), $upload_class->attachments, $post_passwordmd5, time(), time(), $posting_class->user_id, $user_authority_display, $sticky, $lock, $board_class->board['id'], $post['country'], $posting_class->is_new_user, $post_del_timestamp);
 
 		if ($user_authority > 0 && $user_authority != 3) {
 		  $modpost_message = 'Modposted #<a href="' . KU_BOARDSFOLDER . $board_class->board['name'] . '/res/';

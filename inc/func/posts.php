@@ -365,4 +365,56 @@ function TrimToPageLimit($board) {
 	}
 }
 
+// Delete posts whose time is up
+function collect_dead() {
+  global $tc_db;
+  
+  $deathlist = $tc_db->GetAll("SELECT `id`, `".KU_DBPREFIX."boardid`, `parentid` 
+    FROM `posts`
+    WHERE 
+      `IS_DELETED`='0' 
+      AND
+      `deleted_timestamp`>'0'
+      AND 
+      `deleted_timestamp`<=UNIX_TIMESTAMP(NOW())");
+  $dl_struct = array();
+  foreach ($deathlist as $post) {
+    if (! $dl_struct[$post['boardid']]) {
+      $dl_struct[$post['boardid']] = array();
+    }
+    $thread_id = $post['parentid'] == 0 ? $post['id'] : $post['parentid'];
+    if (! $dl_struct[$post['boardid']][$thread_id]) {
+      $dl_struct[$post['boardid']][$thread_id] = array();
+    }
+    $dl_struct[$post['boardid']][$thread_id] []= $post['id'];
+  }
+  foreach ($dl_struct as $boardid => $threads) {
+    $board_name = $tc_db->GetOne("SELECT `name` FROM `".KU_DBPREFIX."boards` WHERE `id`='$boardid'");
+    $board_class = new Board($board_name);
+    $board_rebuild = false;
+    foreach ($threads as $thread_id => $posts) {
+      $thread_rebuild = false;
+      foreach($posts as $post_id) {
+        $post_class = new Post($post_id, $board_name, $boardid);
+        $delres = $post_class->Delete();
+        if ($delres && $delres !== 'already_deleted') {
+          $thread_rebuild = true;
+          if ($post_id == $thread_id) {
+            $thread_deleted = true;
+          }
+        }
+      }
+      if ($thread_rebuild) {
+        $board_rebuild = true;
+        if (! $thread_deleted) {
+          $board_class->RegenerateThreads($thread_id);
+        }
+      }
+    }
+    if ($board_rebuild) {
+      $board_class->RegeneratePages();
+    }
+  }
+}
+
 ?>

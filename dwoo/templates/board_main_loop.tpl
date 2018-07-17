@@ -69,6 +69,9 @@
    {$post.timestamp_formatted}
   </label>
   <span class="reflink">{$post.reflink}</span>
+  {if $post.ttl}
+    <span class="post-ttl" data-deleted-timestamp="{$post.deleted_timestamp}" title="{t}To be deleted on{/t} {$post.deleted_timestamp_formatted}">{$post.ttl}</span>
+  {/if}
   {if $board.showid}
    <img src="data:image/png;base64,{rainbow($post.ipmd5, $post.id);}">
   {/if}

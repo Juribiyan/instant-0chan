@@ -281,8 +281,10 @@ class Posting {
 		/* If the user used a software function, don't store it in the database */
 		if ($post_email == 'return' || $post_email == 'noko') $post_email = '';
 		$post_subject = isset($_POST['subject']) ? htmlspecialchars($_POST['subject'], ENT_QUOTES) : '';
-
-		return array($post_name, $post_email, $post_subject);
+		/* Calculate the post's deleted timestamp */
+		$ttl = $_POST['ttl-enable'] ? round(floatval($_POST['ttl'])) : 0;
+		$post_del_timestamp = ($ttl<1) ? 0 : time() + $ttl*3600;
+		return array($post_name, $post_email, $post_subject, $post_del_timestamp);
 	}
 
 	function GetUserAuthority() {
