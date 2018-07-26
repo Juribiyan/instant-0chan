@@ -2091,3 +2091,6 @@ msgstr "часов"
 
 msgid "To be deleted on"
 msgstr "Будет удален в"
+
+msgid "Read more"
+msgstr "Читать далее"

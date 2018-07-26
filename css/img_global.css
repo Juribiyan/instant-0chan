@@ -126,7 +126,7 @@ form {
   padding-top: 0.7em;
 }
 textarea {
-  width: 397px;
+  width: 440px;
 }
 
 /* ---------- captcha ----------*/
@@ -630,6 +630,9 @@ border-radius: 5px;
 
 .xlink {
   cursor: pointer;
+}
+.read-more {
+  display: inline-block;
 }
 
 /* Node insertion detection #snivystuff */

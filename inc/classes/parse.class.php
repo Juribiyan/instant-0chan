@@ -433,6 +433,26 @@ class Parse {
 		$this->boardname = $board;
 		$this->ipmd5 = $ipmd5;
 		$message = trim($message);
+
+		$cut_split = preg_split('/\s*\[cut(?:=?[^\[\]]+?)?\]\s*/m', $message);
+		$before_cut = $cut_split[0];
+		$after_cut = implode("\n[cut]\n", array_slice($cut_split, 1));
+
+		preg_match('/\[cut(?:=([^\[\]\n\r]+)?)?\]/m', $message, $matches);
+		if ($matches && $matches[1])
+			$summary = htmlspecialchars($matches[1]);
+
+		$message = $this->ParsePostFragment($before_cut, $board, $parentid, $boardid, $ispage = false, $useragent, $dice, $ipmd5);
+		if ($after_cut) {
+			if (!$summary)
+				$summary = _gettext('Read more').'...';
+			$message .= '<details><summary class="xlink read-more">'.$summary.'</summary>'.$this->ParsePostFragment($after_cut, $board, $parentid, $boardid, $ispage = false, $useragent, $dice, $ipmd5).'</details>';
+		}
+
+		return $message;
+	}
+
+	function ParsePostFragment($message, $board, $parentid, $boardid, $ispage = false, $useragent, $dice, $ipmd5) {
 		if(KU_CUTPOSTS) {
 			$message = $this->CutWord($message, (KU_LINELENGTH / 15));
 		}

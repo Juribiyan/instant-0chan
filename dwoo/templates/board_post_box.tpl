@@ -70,6 +70,7 @@
 				<a title="{t}Bullet list{/t}" href="#" class="uibutton uib-bul" data-bul="* "><span>•</span></a>
 				<a title="{t}Numbered list{/t}" href="#" class="uibutton uib-bul" data-bul="# "><span>#</span></a>
 				<a title="{t}Open LaTex editor{/t}" href="#" class="uibutton uib-tx">TeX</a>
+				<a title="Cut" href="#" class="uibutton uib-mup" data-mups="[cut]" data-mupe="">Cut</a>
 			</nobr></div>
 			<textarea name="message" cols="48" rows="4" accesskey="m"></textarea>
 		</td>
