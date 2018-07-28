@@ -632,7 +632,7 @@ border-radius: 5px;
   cursor: pointer;
 }
 .read-more {
-  display: inline-block;
+  margin: .3em 0;
 }
 
 /* Node insertion detection #snivystuff */

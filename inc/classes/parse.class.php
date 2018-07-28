@@ -446,7 +446,7 @@ class Parse {
 		if ($after_cut) {
 			if (!$summary)
 				$summary = _gettext('Read more').'...';
-			$message .= '<details><summary class="xlink read-more">'.$summary.'</summary><br>'.$this->ParsePostFragment($after_cut, $board, $parentid, $boardid, $ispage = false, $useragent, $dice, $ipmd5).'</details>';
+			$message .= '<details><summary class="read-more"><span class="xlink">'.$summary.'</span></summary>'.$this->ParsePostFragment($after_cut, $board, $parentid, $boardid, $ispage = false, $useragent, $dice, $ipmd5).'</details>';
 		}
 
 		return $message;
