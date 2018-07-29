@@ -157,11 +157,12 @@ function ISO8601_callback($matches) {
 // For debugging
 function console_log($ret = false) {
   $args = func_get_args();
+  echo call_user_func_array('get_console_log', $args);
+}
+function get_console_log() {
+  $args = func_get_args();
   foreach ($args as &$arg) {
     $arg = json_encode($arg);
   }
   $r = '<script>console.log('.implode(',', $args).')</script>';
-  if ($ret)
-    return $r;
-  echo $r;
-}
+  return $r;
