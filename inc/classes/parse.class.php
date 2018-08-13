@@ -11,17 +11,17 @@ class Parse {
 
 
 	function urlcallback($matches) {
-		return '<a target="_blank" rel="nofollow" href="'.$matches[1].$matches[2].'">'.$matches[1].urldecode($matches[2]).'</a>';
+		return '<a target="_blank" rel="nofollow noopener noreferrer" href="'.$matches[1].$matches[2].'">'.$matches[1].urldecode($matches[2]).'</a>';
 	}
 
 	function exturlcallback($matches) {
 		$text = strtr(urldecode($matches[1]), array('/' => '&#47;'));
-		return '<a target="_blank" rel="nofollow" href="'.$matches[2].$matches[3].'">'.$text.'</a>';
+		return '<a target="_blank" rel="nofollow noopener noreferrer" href="'.$matches[2].$matches[3].'">'.$text.'</a>';
 	}
 
 	function MakeClickable($txt) {
-		$txt = preg_replace_callback('#«([^«»]*)»:(http://|https://|ftp://)([^(\s<|\[)]+(?:\([\w\d]+\)|([^[:punct:]«»\s]|/)))#u',array(&$this, 'exturlcallback'),$txt);
-		$txt = preg_replace_callback('#(?<!href=")((?:http:|https:|ftp:)\/\/)([^(\s<|\[)]+(?:\([\w\d]+\)|([^[:punct:]«»\s]|\/)))#u',array(&$this, 'urlcallback'),$txt);
+		$txt = preg_replace_callback('#«([^«»]*)»:(http://|https://|ftp://|gopher://)([^(\s<|\[)]+(?:\([\w\d]+\)|([^[:punct:]«»\s]|/)))#u',array(&$this, 'exturlcallback'),$txt);
+		$txt = preg_replace_callback('#(?<!href=")((?:http:|https:|ftp:|gopher:)\/\/)([^(\s<|\[)]+(?:\([\w\d]+\)|([^[:punct:]«»\s]|\/)))#u',array(&$this, 'urlcallback'),$txt);
 		return $txt;
 	}
 
