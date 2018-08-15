@@ -1429,8 +1429,21 @@ input:-moz-placeholder {opacity: 0; }
     text-align: center;
     margin: 0;
   }
-  .postarea table,.postarea input[name="name"],.postarea input[name="captcha"],.postarea input[name="subject"],.postarea input[name="imagefile"] {
+  .postarea table,.postarea input[name="name"],.postarea input[name="subject"],.postarea input[name="imagefile"] {
     width:100%;
+  }
+  .postarea input[name="captcha"] {
+    -webkit-box-ordinal-group: 2;
+    -webkit-order: 1;
+        -ms-flex-order: 1;
+            order: 1;
+    margin: 0px auto;
+  }
+  .captcharow {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
   }
   label[for^=disable_name] {
     display: block;
@@ -1446,9 +1459,11 @@ input:-moz-placeholder {opacity: 0; }
     width:100%;
   }
   .captchawrap {
-    display:block;
     margin: 0px auto;
-    margin-top:4px;
+    text-align: right;
+    /* flex-grow: 1; */
+    /* text-align: center; */
+    /* margin: 0; */
   }
   .bottom-left,.bottom-right,.bottom-center {
     display:none;
