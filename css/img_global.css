@@ -1460,10 +1460,7 @@ input:-moz-placeholder {opacity: 0; }
   }
   .captchawrap {
     margin: 0px auto;
-    text-align: right;
-    /* flex-grow: 1; */
-    /* text-align: center; */
-    /* margin: 0; */
+     text-align: center; 
   }
   .bottom-left,.bottom-right,.bottom-center {
     display:none;
