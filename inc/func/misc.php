@@ -166,3 +166,4 @@ function get_console_log() {
   }
   $r = '<script>console.log('.implode(',', $args).')</script>';
   return $r;
+}
