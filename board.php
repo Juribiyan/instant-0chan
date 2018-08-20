@@ -517,7 +517,7 @@ elseif (
 	// Check rights
 	$pass =( isset($_POST['postpassword']) && $_POST['postpassword']!="") ? md5($_POST['postpassword']) : null;
 	$ismod = (
-		$_POST['moddelete']
+		$_POST['moddelete']=="true"
 		&&
 		(require_once KU_ROOTDIR . 'inc/classes/manage.class.php')
 		&&
