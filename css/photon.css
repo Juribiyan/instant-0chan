@@ -355,3 +355,18 @@ color: #0066FF;
 	background: #f8efef;
 	box-shadow: none;
 }
+
+.post-menu {
+	border: 1px solid #cccccc;
+	border-radius: 5px;
+	overflow: hidden;
+}
+.post-menu li:hover {
+  background: #dddddd;
+}
+.reply .post-menu {
+  border-radius: 0 5px 5px 5px
+}
+figure .post-menu {
+  border-radius: 0 0 5px 5px;
+}

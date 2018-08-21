@@ -490,3 +490,16 @@ color: rgb(36, 218, 226);
 .pup a:hover, .pup a:visited:hover {
 	color: white;
 }
+
+.post-menu  {
+  left: -1px;
+  box-shadow: 0 2px 2px rgb(29, 29, 29);
+  border-radius: 0 3px 3px 3px;
+  overflow: hidden;
+}
+.reply .post-menu {
+  background: #464646;
+}
+.post-menu li:hover {
+  background: #00000033;
+}

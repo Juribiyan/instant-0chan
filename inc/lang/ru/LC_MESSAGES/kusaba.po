@@ -2077,9 +2077,6 @@ msgstr "Показать историю уведомлений"
 msgid "Delete file"
 msgstr "Удалить файл"
 
-msgid "hold Ctrl to select multiple"
-msgstr "удерживайте Ctrl, чтобы выбрать несколько"
-
 msgid "Time to live"
 msgstr "Время жизни"
 

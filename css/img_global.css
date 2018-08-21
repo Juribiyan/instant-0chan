@@ -453,7 +453,7 @@ pre {
   transition: color 0.2s, background-color 0.2s;
 }
 
-.extrabtns, [id^=dnb] {
+.extrabtns, .mod-thread-controls {
   vertical-align: middle;
   display: inline-block;
   line-height: 8px;
@@ -850,7 +850,7 @@ border-radius: 5px;
   position: relative;
 }
 .uib-spoiler:before {
-  content: '░░░';
+  content: 'â–‘â–‘â–‘';
   position: absolute;
   height: 100%;
   width: 100%;
@@ -941,8 +941,8 @@ border: none;
   top: -18px;
   border: 2px solid;
   -webkit-animation: spin 0.7s infinite linear;
-       -o-animation: spin 0.7s infinite linear;
-          animation: spin 0.7s infinite linear;
+  -o-animation: spin 0.7s infinite linear;
+  animation: spin 0.7s infinite linear;
   border-color: currentColor currentColor transparent transparent;
 }
 
@@ -1534,6 +1534,9 @@ input:-moz-placeholder {opacity: 0; }
   .replies {
     margin: 0;
   }
+  .post-menu-toggle {
+    margin-bottom: -2px;
+  }
 }
 ol,ul {
   list-style-position:inside;
@@ -1892,9 +1895,6 @@ td > .bubble {
   margin-right: 0.8em; */
   margin-bottom:;
   margin-bottom: 0.4em;
-  /* white-space: nowrap; */
-  /* max-width: 100%; */
-  overflow: auto;
 }
 figure {
   display: inline-block;
@@ -1980,7 +1980,7 @@ figure:first-of-type {
        -o-transform: translate(0, 1px);
           transform: translate(0, 1px);
 }
-.delete-file, .collapse-video {
+.file-control, .collapse-video {
   right: 2px;
 }
 .collapse-video {
@@ -1991,13 +1991,14 @@ figure:first-of-type {
   display: inline-block;
 }
 figure:hover .emb-button,
-.delete-file:checked,
-.emb-button:focus {
+.file-control:checked,
+.emb-button:focus,
+.select-multiple .file-control {
   opacity: 1;
   outline: none;
 }
-.unwrapped .delete-file,
-.unwrapped-audio .delete-file {
+.unwrapped .file-control,
+.unwrapped-audio .file-control {
   display: none;
 }
 .filesize a {
@@ -2054,6 +2055,7 @@ blockquote {
   margin: 0;
 }
 .posthead {
+    position: relative;
     margin-bottom: 0.2em;
 }
 
@@ -2677,4 +2679,93 @@ figure.deleted:not(:hover) .thumb,
   vertical-align: middle;
   margin-bottom: 4px;
   cursor: pointer;
+}
+
+.post-menu-toggle {
+  vertical-align: -2px;
+}
+.touch-mode .post-menu-toggle {
+  width: 16px;
+}
+.post-menu {
+  position: absolute;
+  left: -1px;
+  padding: 0;
+  z-index: 2;
+  font-size: 0;
+}
+figure .post-menu {
+  min-width: 100%;
+  box-sizing: border-box;
+  left: 0px;
+}
+.post-menu ul {
+  margin: 0;
+  padding: 0;
+  white-space: pre-line;
+}
+.post-menu a, .post-menu a:hover, .post-menu a:visited {
+  text-decoration: none;
+  color: inherit;
+}
+.post-menu li {
+  list-style: none;
+  padding: 0 6px 0 3px;
+  padding-right: 6px;
+  cursor: pointer;
+  transition: background-color .2s, color .2s;
+  line-height: 24px;
+  white-space: nowrap;
+  font-style: normal;
+}
+.touch-mode .post-menu li {
+  line-height: 30px;
+}
+.post-menu li * {
+  vertical-align: middle;
+}
+.post-menu li span {
+  font-size: 14px;
+}
+.post-menu li .icon {
+  margin-right: 5px;
+}
+.select-multiple .multidel {
+  display: initial;
+}
+.select-multiple .post-menu-toggle {
+  display: none;
+}
+.close-multisel {
+  position: absolute;
+  top: 4px;
+  left: 2px;
+  background: none;
+  border: none;
+  padding: 0;
+}
+.post-menu li.spin-around:before {
+  top: 2px;
+  left: 1px;
+}
+.touch-mode .post-menu li.spin-around:before {
+  top: 5px;
+}
+.pm-link {
+	-webkit-transition: width .2s!important;
+	display: inline-block;
+	width: 60px;
+}
+.pm-direct-link {
+  margin-right: 6px;
+}
+.pm-link.selected {
+  width: 120px;
+}
+.js-supported .shl {
+	pointer-events: none;
+	cursor: default;
+}
+.file-menu {
+  z-index: 9999
 }

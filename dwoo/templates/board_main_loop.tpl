@@ -19,7 +19,7 @@
   {/if}
   <div id="thread{$post.id}{$board.name}"{if $isthread} class="replies"{/if}> {* #thread → *}
    {if $isthread}<div class="i0svcel">!i0-pd:{$post.id}</div>{/if} {* post delimiter for quick parsing *}
-   <div class="postnode op"> {* .postnode.op → *}
+   <div class="postnode op" data-id="{$post.id}" data-board="{$board.name}"> {* .postnode.op → *}
     {if not $isthread}
      <script type="text/javascript">
       if (localStorage['hiddenThreads.' + '{$board.name}'] && in_array('{$post.id}', localStorage['hiddenThreads.' + '{$board.name}'].split(',') ) ) {
@@ -31,7 +31,7 @@
     <a name="s{$.foreach.thread.iteration}"></a>
  {else} {* If reply → *}
   {if $isthread}<div class="i0svcel">!i0-pd:{$post.id}</div>{/if} {* post delimiter for quick parsing *}
-  <table class="postnode"><tbody>
+  <table class="postnode" data-id="{$post.id}" data-board="{$board.name}"><tbody>
    <tr>
     <td class="doubledash">&gt;&gt;</td>
     <td class="reply" id="reply{$post.id}"> {* td.reply → *}
@@ -42,7 +42,8 @@
 {* POSTHEAD SECTION *}
  <div class="posthead{if $post.parentid eq 0}{if $post.locked eq 1} thread-locked{/if}{if $post.stickied eq 1} thread-stickied{/if}{/if}">
   <label class="postinfo">
-   <input type="checkbox" name="post[]" class="multidel" value="{$post.id}" />
+   <svg class="icon b-icon post-menu-toggle yesscript"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-dots"></use></svg>
+   <input type="checkbox" name="post[]" class="multidel noscript" value="{$post.id}" />
    {if $post.subject neq ''}
     <span class="filetitle">{$post.subject}</span>
    {/if}
@@ -66,7 +67,9 @@
    {elseif $post.posterauthority eq 3}
     <span class="admin">&#35;&#35;&nbsp;{t}Board owner{/t}&nbsp;&#35;&#35;</span>
    {/if}
-   {$post.timestamp_formatted}
+   <span class="posttime">
+    {$post.timestamp_formatted}
+   </span>
   </label>
   <span class="reflink">{$post.reflink}</span>
   {if $post.ttl}
@@ -107,8 +110,7 @@
    {if $board.balls}
     <img class="_country_" src="{%KU_WEBPATH}/images/flags/{$post.country}.png">
    {/if}
-  </span
-  ><span id="dnb-{$board.name}-{$post.id}-{if $post.parentid eq 0}y{else}n{/if}"></span>
+  </span>
   {if $post.parentid eq 0}
    {if not $isthread}
     {strip}[<a href="{%KU_BOARDSFOLDER}{$board.name}/res/{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}.html">
@@ -168,10 +170,10 @@
           {if $embed.id3.playtime_string neq ''}
            , {$embed.id3.playtime_string}
           {/if}{/strip}
-          <button type="submit" title="{t}Delete file{/t} ({t}hold Ctrl to select multiple{/t})" class="yesscript delete-file emb-button" name="delete-file[]" value="{$embed.file_id}">
-           <svg class="icon b-icon "><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-x"></use></svg>
+          <button type="submit" class="yesscript file-control file-menu-toggle emb-button post-menu-toggle" name="delete-file[]" value="{$embed.file_id}">
+           <svg class="icon b-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-dots"></use></svg>
           </button>
-          <input title="{t}Delete file{/t}" type="checkbox" name="delete-file[]" class="delete-file emb-button noscript multidel" value="{$embed.file_id}">
+          <input title="{t}Delete file{/t}" type="checkbox" name="delete-file[]" class="file-control emb-button noscript multidel" value="{$embed.file_id}">
          </figcaption>
         {else}
          <div class="embed-wrap">
@@ -183,12 +185,10 @@
           </div>
           <div class="embed-duration">{$embed.file_size_formatted}</div>
           <img src="{%KU_BOARDSFOLDER}images/site-logos/{strtolower($embed.site_name)}.png" alt="" class="embed-logo">
-          <button type="submit" title="{t}Delete file{/t}" class="emb-button yesscript delete-file emb-button" name="delete-file[]" value="{$embed.file_id}">
-           <svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-x"></use></svg>
+          <button type="submit" title="{t}Delete file{/t}" class="emb-button yesscript file-control file-menu-toggle emb-button" name="delete-file[]" value="{$embed.file_id}">
+           <svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-dots"></use></svg>
           </button>
-          <noscript>
-           <input title="{t}Delete file{/t}" type="checkbox" name="delete-file[]" class="delete-file emb-button" value="{$embed.file_id}">
-          </noscript>
+          <input title="{t}Delete file{/t}" type="checkbox" name="delete-file[]" class="file-control emb-button noscript" value="{$embed.file_id}">
           <a href="{$embed.videourl}" class="embed-play-button" title="{t}Play{/t}"></a>
          </div>
         {/if}
