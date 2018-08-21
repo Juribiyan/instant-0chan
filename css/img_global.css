@@ -2684,8 +2684,13 @@ figure.deleted:not(:hover) .thumb,
 .post-menu-toggle {
   vertical-align: -2px;
 }
-.touch-mode .post-menu-toggle {
+.touch-mode .posthead .post-menu-toggle,
+.touch-mode .post-menu-toggle .b-icon {
   width: 16px;
+}
+.touch-mode .file-menu-toggle {
+  opacity: 1;
+  height: 16px;
 }
 .post-menu {
   position: absolute;
@@ -2693,6 +2698,7 @@ figure.deleted:not(:hover) .thumb,
   padding: 0;
   z-index: 2;
   font-size: 0;
+  box-sizing: border-box;
 }
 figure .post-menu {
   min-width: 100%;
