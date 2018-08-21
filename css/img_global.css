@@ -2739,7 +2739,8 @@ figure .post-menu {
 .select-multiple .multidel {
   display: initial;
 }
-.select-multiple .post-menu-toggle {
+.select-multiple .post-menu-toggle,
+.select-multiple .file-menu-toggle {
   display: none;
 }
 .close-multisel {

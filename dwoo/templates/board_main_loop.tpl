@@ -170,7 +170,7 @@
           {if $embed.id3.playtime_string neq ''}
            , {$embed.id3.playtime_string}
           {/if}{/strip}
-          <button type="submit" class="yesscript file-control file-menu-toggle emb-button post-menu-toggle" name="delete-file[]" value="{$embed.file_id}">
+          <button type="submit" class="yesscript file-control file-menu-toggle emb-button post-menu-toggle" value="{$embed.file_id}">
            <svg class="icon b-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-dots"></use></svg>
           </button>
           <input title="{t}Delete file{/t}" type="checkbox" name="delete-file[]" class="file-control emb-button noscript multidel" value="{$embed.file_id}">
@@ -185,10 +185,10 @@
           </div>
           <div class="embed-duration">{$embed.file_size_formatted}</div>
           <img src="{%KU_BOARDSFOLDER}images/site-logos/{strtolower($embed.site_name)}.png" alt="" class="embed-logo">
-          <button type="submit" title="{t}Delete file{/t}" class="emb-button yesscript file-control file-menu-toggle emb-button" name="delete-file[]" value="{$embed.file_id}">
+          <button type="submit" class="emb-button yesscript file-control file-menu-toggle emb-button" value="{$embed.file_id}">
            <svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-dots"></use></svg>
           </button>
-          <input title="{t}Delete file{/t}" type="checkbox" name="delete-file[]" class="file-control emb-button noscript" value="{$embed.file_id}">
+          <input title="{t}Delete file{/t}" type="checkbox" name="delete-file[]" class="file-control emb-button noscript multidel" value="{$embed.file_id}">
           <a href="{$embed.videourl}" class="embed-play-button" title="{t}Play{/t}"></a>
          </div>
         {/if}
