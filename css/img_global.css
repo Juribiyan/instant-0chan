@@ -850,7 +850,7 @@ border-radius: 5px;
   position: relative;
 }
 .uib-spoiler:before {
-  content: 'â–‘â–‘â–‘';
+  content: '░░░';
   position: absolute;
   height: 100%;
   width: 100%;
