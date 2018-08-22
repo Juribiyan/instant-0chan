@@ -409,7 +409,7 @@ msgid "File was not fully uploaded.  Please go back and try again."
 msgstr "Файл загружен не полностью, вернитесь назад и повторите попытку."
 
 msgid "File<br />Removed"
-msgstr "Фейл<br />Удален"
+msgstr "Файл<br />Удален"
 
 msgid "Filetype added."
 msgstr "Добавлен тип файла."
@@ -1169,7 +1169,7 @@ msgid "That thread has yet to be deleted."
 msgstr "Этот тред будет удален."
 
 msgid "That thread may have been recently deleted."
-msgstr "Этот тред могу быть недавно удален."
+msgstr "Этот тред мог быть недавно удален."
 
 msgid "That video ID has already been posted %shere%s."
 msgstr "Видео с этим ID уже находится %sздесь%s."
