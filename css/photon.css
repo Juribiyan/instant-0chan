@@ -370,3 +370,8 @@ color: #0066FF;
 figure .post-menu {
   border-radius: 0 0 5px 5px;
 }
+
+.salient {
+  background: #ff6500;
+  color: white!important;
+}

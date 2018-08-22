@@ -2776,3 +2776,14 @@ figure .post-menu {
 .file-menu {
   z-index: 9999
 }
+
+.salient {
+  padding: 1px 7px;
+  border-radius: 30px;
+  border: none;
+  text-decoration: none;
+}
+.fresh-replies {
+  margin-top: 4px;
+  display: inline-block;
+}

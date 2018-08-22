@@ -480,3 +480,8 @@ figure:hover {
 .reply div > .post-menu {
   border-top: none;
 }
+
+.salient {
+  background: #8749a5;
+  color: rgba(255, 255, 255, 0.7)!important;
+}

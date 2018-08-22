@@ -490,3 +490,8 @@ figure:hover {
 .reply .post-menu {
   border-top: none;
 }
+
+.salient {
+  background: #37c999;
+  color: black!important;
+}

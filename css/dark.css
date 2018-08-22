@@ -525,3 +525,9 @@ color: rgb(36, 218, 226);
 .post-menu li:hover {
   background: #00000033;
 }
+
+.salient {
+  background: #29cbd2;
+  color: black!important;
+  text-shadow: none;
+}

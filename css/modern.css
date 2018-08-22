@@ -399,3 +399,8 @@ figure {
 .post-menu li:hover {
   background: rgba(97, 138, 182, 0.2);
 }
+
+.salient {
+  background: #6188b6;
+  color: white!important;
+}
