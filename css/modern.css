@@ -174,14 +174,18 @@ table td {
 }
 
 .b-icon {
-	fill: dimgrey;
+	color: dimgrey;
 }
-.b-icon:hover {
+.b-icon:hover,
+.icon-checkbox-wrap input[type=checkbox]:checked + .icon-with-fallback .b-icon {
 	background-color: rgba(255, 255, 255, 0.67);
 	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
-	fill: rgb(23, 53, 85);
+	color: rgb(23, 53, 85);
 }
-
+.icon-checkbox-wrap input[type=checkbox]:checked + .icon-with-fallback .b-icon {
+	background: #6189b6;
+	color: white;
+}
 .topbar-left {
 	height: 0px;
 }

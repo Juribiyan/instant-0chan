@@ -473,6 +473,7 @@ pre {
 }
 
 .b-icon {
+  fill: currentColor;
   border-radius: 3px;
   -webkit-transition-property: background-color, color, box-shadow, fill;
   -webkit-transition-property: background-color, color, fill, -webkit-box-shadow;
@@ -2068,6 +2069,24 @@ blockquote {
        -o-transform: box-shadow 0.3s;
           transform: box-shadow 0.3s;
 }
+.multiembedwrap .b-icon,
+.multiembedwrap .icon-wraping-button {
+  vertical-align: middle;
+}
+noscript.b-icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+  text-align: center;
+  font-size: 14px;
+}
+.icon-with-fallback {
+  display: contents;
+}
+.icon-checkbox-wrap input[type=checkbox] {
+  display: none;
+}
 .add-embed,
 .add-embed:checked + label {
   display: none;
@@ -2081,7 +2100,13 @@ blockquote {
 .add-embed-button {
   cursor: pointer;
   font-weight: bold;
-  padding: 0 6px;
+  /* padding: 0 6px; */
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+  line-height: 16px;
 }
 .error-in-attachment {
   box-shadow: 0 0 3px 4px red;
@@ -2743,13 +2768,23 @@ figure .post-menu {
 .select-multiple .file-menu-toggle {
   display: none;
 }
-.close-multisel {
-  position: absolute;
-  top: 4px;
-  left: 2px;
+.icon-wraping-button {
+  outline: none;
   background: none;
   border: none;
   padding: 0;
+  font-size: 0;
+  width: 16px;
+  height: 16px;
+  margin: 0 2px;
+}
+.icon-wraping-button .b-icon {
+  margin: 0;
+}
+.close-multisel {
+  position: absolute;
+  top: 4px;
+  left: 2px; 
 }
 .post-menu li.spin-around:before {
   top: 2px;
@@ -2759,9 +2794,9 @@ figure .post-menu {
   top: 5px;
 }
 .pm-link {
-	-webkit-transition: width .2s!important;
-	display: inline-block;
-	width: 60px;
+  -webkit-transition: width .2s!important;
+  display: inline-block;
+  width: 60px;
 }
 .pm-direct-link {
   margin-right: 6px;
@@ -2770,8 +2805,8 @@ figure .post-menu {
   width: 120px;
 }
 .js-supported .shl {
-	pointer-events: none;
-	cursor: default;
+  pointer-events: none;
+  cursor: default;
 }
 .file-menu {
   z-index: 9999

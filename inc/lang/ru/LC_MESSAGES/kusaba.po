@@ -2091,3 +2091,15 @@ msgstr "Будет удален в"
 
 msgid "Read more"
 msgstr "Читать далее"
+
+msgid "Remove file"
+msgstr "Убрать файл"
+
+msgid "Add file"
+msgstr "Добавить файл"
+
+msgid "Add embed"
+msgstr "Добавить вложение"
+
+msgid "Hide filename"
+msgstr "Скрыть имя файла"

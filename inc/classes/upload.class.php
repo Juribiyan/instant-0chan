@@ -94,7 +94,7 @@ class Upload {
 		  			}
 		  			$file_entry = array(
 		  				'attachmenttype' => 'file',
-		  				'file_original' => preg_replace('/(.*)\..+/','\1', $filename),
+		  				'file_original' => $_POST['hidename-'.$i]==1 ? '/hidden' : preg_replace('/(.*)\..+/','\1', $filename),
 		  				'tmp_name' => $_FILES['imagefile']['tmp_name'][$i],
 		  				'type' => $_FILES['imagefile']['type'][$i],
 		  				'size' => $_FILES['imagefile']['size'][$i],

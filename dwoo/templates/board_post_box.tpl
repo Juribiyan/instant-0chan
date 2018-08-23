@@ -93,10 +93,22 @@
 			{for embcnt 1 $board.maxfiles}
 				<div class="multiembedwrap" data-pos="file-{$embcnt}">
 					<input type="file" multiple name="imagefile[]" size="35" accesskey="f" />
+					<button class="remove-file icon-wraping-button yesscript" title="{t}Remove file{/t}"><svg class="icon b-icon">
+					  <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-x"></use>
+					</svg></button>
+					<label class="icon-checkbox-wrap" title="{t}Hide filename{/t}">
+						<input type="checkbox" name="hidename-{$embcnt-1}" value="1">
+						<span class="icon-with-fallback">
+							<noscript class="b-icon"><strike>N</strike></noscript>
+							<svg class="icon b-icon yesscript">
+							  <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-hide-name"></use>
+							</svg>
+						</span>
+					</label>
 				</div>
 				{if $embcnt < $board.maxfiles}
 					<input type="checkbox" name="addfile-{$embcnt}" id="addfile-{$embcnt}" class="add-embed">
-					<label for="addfile-{$embcnt}" title="Добавить файл" class="add-embed-button b-icon">+</label>
+					<label for="addfile-{$embcnt}" title="{t}Add file{/t}" class="add-embed-button b-icon">+</label>
 					<br>
 				{/if}
 				{* if $replythread eq 0 && $board.enablenofile eq 1 }
@@ -122,7 +134,7 @@
 					</div>
 					{if $embcnt < $board.maxfiles}
 						<input type="checkbox" name="addembed-{$embcnt}" id="addembed-{$embcnt}" class="add-embed">
-						<label for="addembed-{$embcnt}" title="Добавить вложение" class="add-embed-button b-icon">+</label> {* TODO: internationalize *}
+						<label for="addembed-{$embcnt}" title="{t}Add embed{/t}" class="add-embed-button b-icon">+</label>
 						<br>
 					{/if}
 				{/for}

@@ -96,6 +96,8 @@ function set_max_filename_width($thumb_w, $has_title) {
 }
 
 function get_embed_filename($embed) {
+  if ($embed['file_original'] == '/hidden')
+    return $embed['file'];
   if (isset($embed['id3']['comments_html'])) {
     $r = '';
     if ($embed['id3']['comments_html']['artist'][0])
@@ -113,8 +115,6 @@ function get_embed_filename($embed) {
     $embed['file_type'] == 'ogg'
     ||
     $embed['file_type'] == 'swf'
-    ||
-    KU_SHOW_ORIGINAL_FILENAMES
   ) {
     return $embed['file_original'];
   }

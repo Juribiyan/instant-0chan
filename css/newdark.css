@@ -181,10 +181,11 @@ table td {
 }
 
 .b-icon {
-	fill: #B4B4B4;
+	color: #B4B4B4;
 }
-.b-icon:hover {
-	fill:white;
+.b-icon:hover,
+.icon-checkbox-wrap input[type=checkbox]:checked + .icon-with-fallback .b-icon {
+	color:white;
 	background-color:rgba(55, 201, 153, 0.67);
 }
 

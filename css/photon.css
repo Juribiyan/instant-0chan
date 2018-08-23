@@ -186,11 +186,13 @@ table td {
 
 .b-icon {
 	color: white;
-	fill: currentColor;
 	background-color: #aba8a6;
 }
 .b-icon:hover {
 	background-color: #777;
+}
+.icon-checkbox-wrap input[type=checkbox]:checked + .icon-with-fallback .b-icon {
+	background: #d65500;
 }
 
 .topbar-left {
