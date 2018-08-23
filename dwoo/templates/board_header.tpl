@@ -2,23 +2,23 @@
 {if $replythread > 0}<!-- i0:thrno={$replythread} -->{/if}
 <meta property="i0:buildtime" content="{time();}"/>
 <script type="text/javascript">
-		var captchaTimeout = {%KU_CAPTCHALIFE} - 0.5;
-		var liveupd_api = '{%KU_CLI_LIVEUPD_API}';
-		var liveupd_ena = '{%KU_LIVEUPD_ENA}';
-		var liveupd_sitename = {if %KU_LIVEUPD_SITENAME}'{%KU_LIVEUPD_SITENAME}:'{else}''{/if};
-		var this_board_dir = '{$board.name}';
-		var ku_boardspath = '{%KU_BOARDSPATH}';
-		var ku_boardsfolder = '{%KU_BOARDSFOLDER}';
-		var ku_cgipath = '{%KU_CGIPATH}';
-		var style_cookie = "kustyle";
-		var locale = '{$locale}';
-		var this_board_defaultName = '{$board.anonymous}';
-		var boardid = '{$board.id}';
-		var force_html_nocache = !!'{%I0_FORCE_HTML_NOCACHE}'
+	var captchaTimeout = {%KU_CAPTCHALIFE} - 0.5;
+	var liveupd_api = '{%KU_CLI_LIVEUPD_API}';
+	var liveupd_ena = '{%KU_LIVEUPD_ENA}';
+	var liveupd_sitename = {if %KU_LIVEUPD_SITENAME}'{%KU_LIVEUPD_SITENAME}:'{else}''{/if};
+	var this_board_dir = '{$board.name}';
+	var ku_boardspath = '{%KU_BOARDSPATH}';
+	var ku_boardsfolder = '{%KU_BOARDSFOLDER}';
+	var ku_cgipath = '{%KU_CGIPATH}';
+	var style_cookie = "kustyle";
+	var locale = '{$locale}';
+	var this_board_defaultName = '{$board.anonymous}';
+	var boardid = '{$board.id}';
+	var force_html_nocache = !!'{%I0_FORCE_HTML_NOCACHE}'
 {if $replythread > 0}
-		var ispage = false;
+	var ispage = false;
 {else}
-		var ispage = true;
+	var ispage = true;
 {/if}
 </script>
 <noscript><style>.yesscript { display: none!important; }</style></noscript>
@@ -59,6 +59,7 @@
 </head>
 <body>
 <script>
+	document.body.classList.add('js-supported')
 	$.get("{$cwebpath}css/icons/icons.svg?v={%KU_SVGVER}", function(data) {
 	  var div = document.createElement("div");
 	  div.innerHTML = new XMLSerializer().serializeToString(data.documentElement);
