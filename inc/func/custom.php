@@ -109,17 +109,8 @@ function get_embed_filename($embed) {
     else
       return $embed['file_original'];
   }
-  else if (
-    $embed['file_type'] == 'mp3'
-    ||
-    $embed['file_type'] == 'ogg'
-    ||
-    $embed['file_type'] == 'swf'
-  ) {
-    return $embed['file_original'];
-  }
   else
-    return $embed['file'];
+    return $embed['file_original'];
 }
 
 ?>

@@ -96,8 +96,8 @@
 					<button class="remove-file icon-wraping-button yesscript" title="{t}Remove file{/t}"><svg class="icon b-icon">
 					  <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-x"></use>
 					</svg></button>
-					<label class="icon-checkbox-wrap" title="{t}Hide filename{/t}">
-						<input type="checkbox" name="hidename-{$embcnt-1}" value="1">
+					<label class="icon-checkbox-wrap" title="{t}Hide filename{/t}" for="hidename-{$embcnt-1}">
+						<input type="checkbox" name="hidename-{$embcnt-1}" id="hidename-{$embcnt-1}" value="1">
 						<span class="icon-with-fallback">
 							<noscript class="b-icon"><strike>N</strike></noscript>
 							<svg class="icon b-icon yesscript">
