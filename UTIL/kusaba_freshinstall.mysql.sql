@@ -315,6 +315,7 @@ CREATE TABLE `PREFIX_files` (
   `image_h` smallint(5) NOT NULL DEFAULT '0',
   `thumb_w` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
   `thumb_h` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
+  `spoiler` smallint(5) UNSIGNED NOT NULL DEFAULT '0'
   PRIMARY KEY (`file_id`),
   INDEX `file_md5` (`file_md5`),
   INDEX `file_id` (`file_id`),
@@ -361,7 +362,8 @@ AS SELECT
   `files`.`image_w` AS `image_w`,
   `files`.`image_h` AS `image_h`,
   `files`.`thumb_w` AS `thumb_w`,
-  `files`.`thumb_h` AS `thumb_h` 
+  `files`.`thumb_h` AS `thumb_h`,
+  `files`.`spoiler` AS `spoiler`
 FROM (
   `posts` LEFT JOIN `files` ON (
     (

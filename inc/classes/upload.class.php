@@ -94,6 +94,7 @@ class Upload {
 		  			}
 		  			$file_entry = array(
 		  				'attachmenttype' => 'file',
+		  				'spoiler' => $_POST['spoiler-'.$i] || '0',
 		  				'file_original' => $_POST['hidename-'.$i]==1 ? '/hidden' : preg_replace('/(.*)\..+/','\1', $filename),
 		  				'tmp_name' => $_FILES['imagefile']['tmp_name'][$i],
 		  				'type' => $_FILES['imagefile']['type'][$i],
@@ -129,6 +130,7 @@ class Upload {
 			  			}
 			  			$attachments []= array(
 			  				'attachmenttype' => 'embed',
+			  				'spoiler' => $_POST['spoiler-'.$i] || '0',
 			  				'embedtype' => $embed_filetype,
 			  				'embed' => $code,
 			  				'filetype_withoutdot' => $embed_filetype,

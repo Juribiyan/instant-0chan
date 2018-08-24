@@ -135,6 +135,7 @@ function group_embeds($r, $group_deleted_files = false) {
 			unset($rg[$i]['image_h']);
 			unset($rg[$i]['thumb_w']);
 			unset($rg[$i]['thumb_h']);
+			unset($rg[$i]['spoiler']);
 			$current_id = $id;
 		}
 		if ($pe['file']) {
@@ -159,7 +160,8 @@ function group_embeds($r, $group_deleted_files = false) {
 				'image_w' => $pe['image_w'],
 				'image_h' => $pe['image_h'],
 				'thumb_w' => $pe['thumb_w'],
-				'thumb_h' => $pe['thumb_h']
+				'thumb_h' => $pe['thumb_h'],
+				'spoiler' => $pe['spoiler']
 			);
 		}
 	}

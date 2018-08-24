@@ -2744,6 +2744,8 @@ figure .post-menu {
   padding: 0 6px 0 3px;
   padding-right: 6px;
   cursor: pointer;
+  -webkit-transition: background-color .2s, color .2s;
+  -o-transition: background-color .2s, color .2s;
   transition: background-color .2s, color .2s;
   line-height: 24px;
   white-space: nowrap;
@@ -2821,4 +2823,73 @@ figure .post-menu {
 .fresh-replies {
   margin-top: 4px;
   display: inline-block;
+}
+
+.f-spoiler {
+  position: relative;
+  overflow: hidden;
+}
+.f-spoiler figcaption,
+.f-spoiler a img.thumb {
+  -webkit-transition: -webkit-filter .3s;
+  transition: -webkit-filter .3s;
+  -o-transition: filter .3s;
+  transition: filter .3s;
+  transition: filter .3s, -webkit-filter .3s;
+}
+.spoiler-cover {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  line-height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  border: 1px dashed currentColor;
+  box-sizing: border-box;
+}
+.spoiler-cover .icon {
+  width: 32px;
+  height: 32px;
+}
+.spoiler-checkbox {
+  display: none;
+}
+.spoiler-checkbox:checked + label .spoiler-cover {
+  display: none;
+}
+.spoiler-checkbox:not(:checked) + label + figcaption,
+.spoiler-checkbox:not(:checked) + label + figcaption + a img.thumb {
+  opacity: 0;
+
+}
+@supports ((-webkit-filter: blur(15px)) or (filter: blur(15px))) {
+  .spoiler-checkbox:not(:checked) + label + figcaption,
+  .spoiler-checkbox:not(:checked) + label + figcaption + a img.thumb {
+    -webkit-filter: blur(15px);
+            filter: blur(15px);
+    opacity: 1;
+  }
+  .spoiler-cover {
+    border: none;
+  }
+}
+.spoiler-cover div {
+  vertical-align: middle;
+  display: inline-block;
+  -webkit-align-self: center;
+      -ms-flex-item-align: center;
+              -ms-grid-row-align: center;
+          align-self: center;
+  opacity: .7;
+  -webkit-transition: opacity .2s;
+  -o-transition: opacity .2s;
+  transition: opacity .2s;
+  margin: 0px auto;
+}
+.spoiler-cover:hover div {
+  opacity: 1;
 }

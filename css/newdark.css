@@ -496,3 +496,8 @@ figure:hover {
   background: #37c999;
   color: black!important;
 }
+
+.spoiler-cover {
+  background: rgba(44, 51, 61, 0.6);
+  color: rgba(255, 255, 255, 0.75);
+}

@@ -1144,7 +1144,9 @@ class Post extends Board {
         //thumb_w
         intval($attachment['imgWidth_thumb']),
         //thumb_h
-        intval($attachment['imgHeight_thumb'])
+        intval($attachment['imgHeight_thumb']),
+        //spoiler
+        $attachment['spoiler']
       );
       foreach($fields as &$field) {
         $field = $tc_db->qstr($field);
@@ -1152,7 +1154,7 @@ class Post extends Board {
       $row_inserts []= '('. implode(', ', $fields) . ')';
     }
     $fquery = "INSERT INTO `".KU_DBPREFIX."files`
-    (`post_id`, `boardid`, `file` , `file_original`, `file_type` , `file_md5` , `image_w` , `image_h` , `file_size` , `file_size_formatted` , `thumb_w` , `thumb_h`)
+    (`post_id`, `boardid`, `file` , `file_original`, `file_type` , `file_md5` , `image_w` , `image_h` , `file_size` , `file_size_formatted` , `thumb_w` , `thumb_h`, `spoiler`)
     VALUES " . implode(',', $row_inserts);
     $tc_db->Execute($fquery);
     $sqlerr = $tc_db->ErrorNo();

@@ -408,3 +408,8 @@ figure {
   background: #6188b6;
   color: white!important;
 }
+
+.spoiler-cover {
+  background: rgba(199, 225, 255, 0.53);
+  color: rgba(0, 0, 0, 0.5);
+}

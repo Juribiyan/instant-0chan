@@ -525,3 +525,8 @@ color: rgb(36, 218, 226);
   color: black!important;
   text-shadow: none;
 }
+
+.spoiler-cover {
+  background: rgba(42, 42, 42, 0.6);
+  color: rgba(255, 255, 255, 0.6);
+}

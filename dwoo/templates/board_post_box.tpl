@@ -105,6 +105,15 @@
 							</svg>
 						</span>
 					</label>
+					<label class="icon-checkbox-wrap" title="{t}Spoiler{/t}" for="spoiler-{$embcnt-1}">
+						<input type="checkbox" name="spoiler-{$embcnt-1}" id="spoiler-{$embcnt-1}" value="1">
+						<span class="icon-with-fallback">
+							<noscript class="b-icon">S</noscript>
+							<svg class="icon b-icon yesscript">
+							  <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-spoiler"></use>
+							</svg>
+						</span>
+					</label>
 				</div>
 				{if $embcnt < $board.maxfiles}
 					<input type="checkbox" name="addfile-{$embcnt}" id="addfile-{$embcnt}" class="add-embed">

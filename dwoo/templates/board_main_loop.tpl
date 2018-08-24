@@ -147,7 +147,16 @@
         {t}File<br />Removed{/t}
        </div>
       {else}
-       <figure class="multiembed{if $embed.is_embed} video-embed{/if}" data-fileid="{$embed.file_id}">
+       <figure class="multiembed{if $embed.is_embed} video-embed{/if}{if $embed.spoiler} f-spoiler{/if}" data-fileid="{$embed.file_id}">
+        {if $embed.spoiler}
+         <input type="checkbox" class="spoiler-checkbox" id="emb-{$embed.file_id}-spoiler">
+         <label for="emb-{$embed.file_id}-spoiler" title="{t}Spoiler{/t}"><div class="spoiler-cover"><div>
+          <svg class="icon yesscript">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-spoiler"></use>
+          </svg><br class="yesscript">
+          <noscript>{t}Spoiler{/t}</noscript>
+         </div></div></label>
+        {/if}
         {if !$embed.is_embed}
          {assign var="filename" value=get_embed_filename($embed)}
          <figcaption class="filesize">

@@ -377,3 +377,8 @@ figure .post-menu {
   background: #ff6500;
   color: white!important;
 }
+
+.spoiler-cover {
+  background: rgba(206, 206, 206, 0.7);
+  color: rgb(249, 101, 0);
+}
