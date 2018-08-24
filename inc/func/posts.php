@@ -5,14 +5,18 @@
  */
 function checkMd5($md5, $board, $boardid) {
 	global $tc_db;
-	$matches = $tc_db->GetAll("SELECT `id`, `parentid` 
+	$matches = $tc_db->GetAll("SELECT `id`, `parentid`, `file`, `file_size`, `file_size_formatted`, `image_w`, `image_h`, `thumb_w`, `thumb_h`, `file_original`
 		FROM `".KU_DBPREFIX."postembeds` 
 		WHERE `boardid` = " . $boardid . " 
-		AND `IS_DELETED` = 0 
+		AND `IS_DELETED` = 0
+		AND `file` != 'removed' 
 		AND `file_md5` = ".$tc_db->qstr($md5)." LIMIT 1");
 	if (count($matches) > 0) {
+		$r = $matches[0];
+		if ($r['parentid'] == 0)
+			$r['parentid'] = $r['id'];
 		$real_parentid = ($matches[0]['parentid'] == 0) ? $matches[0]['id'] : $matches[0]['parentid'];
-		return array($real_parentid, $matches[0]['id']);
+		return $r;
 	}
 
 	return false;

@@ -212,6 +212,9 @@
 						{t}A file or embed ID is required for a new thread.{/t}
 					{/if}
 					</li>
+					{if $board.duplication}
+						<li>{t}File end embed duplication is allowed{/t}.</li>
+					{/if}
 				</ul>
 			<script>
 				if (getCookie('ku_showblotter') != '1') {

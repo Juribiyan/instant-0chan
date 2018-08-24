@@ -147,6 +147,7 @@ CREATE TABLE `PREFIX_boards` (
   `balls` tinyint(1) NOT NULL DEFAULT '0',
   `dice` tinyint(1) NOT NULL DEFAULT '0',
   `useragent` tinyint(1) NOT NULL DEFAULT '0',
+  `duplication` tinyint(1) NOT NULL DEFAULT '0'
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=KU_DBCHARSET COLLATE=KU_COLLATION;
 

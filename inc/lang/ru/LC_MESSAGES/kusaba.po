@@ -2103,3 +2103,12 @@ msgstr "Добавить вложение"
 
 msgid "Hide filename"
 msgstr "Скрыть имя файла"
+
+msgid "Duplication"
+msgstr "Дубликация файлов"
+
+msgid "Enable file and embed duplication"
+msgstr "Разрешить многократное переиспользование файлов и вложений"
+
+msgid "File end embed duplication is allowed"
+msgstr "Разрешено переиспользование файлов и вложений"

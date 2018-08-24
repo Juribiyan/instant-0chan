@@ -811,6 +811,16 @@ class Board {
 	}
 
   function EraseFileAndThumbs($file) {
+    global $tc_db;
+
+    $dups_exist = $tc_db->GetOne("SELECT COUNT(*) FROM `".KU_DBPREFIX."postembeds`
+      WHERE `file_md5`= ? 
+      AND `boardid` = ?
+      AND `IS_DELETED` = 0
+      AND `file` != 'removed'", array($file['file_md5'], $this->board['id']));
+    if ($dups_exist)
+      return;
+
     $files = GetFileAndThumbs($file);
     $boardname = $this->board['name'];
     foreach($files as $f) {
@@ -835,8 +845,8 @@ class Board {
       return array('error' => _gettext('Incorrect password.'));
     }
     clearPostCache($postfile['id'], $this->board['name']);
-    $this->EraseFileAndThumbs($postfile);
     $tc_db->Execute("UPDATE `".KU_DBPREFIX."files` SET `file`='removed' WHERE `file_id`=".$tc_db->qstr($file_id));
+    $this->EraseFileAndThumbs($postfile);
     if ($ismod) {
       $parentid = $postfile['parentid']=='0' ? $postfile['id'] : $postfile['parentid'];
       management_addlogentry(_gettext('Deleted file') .
@@ -929,12 +939,9 @@ class Post extends Board {
       @unlink(KU_BOARDSDIR.$boardname.'/res/'.$postid.'-100.html');
       @unlink(KU_BOARDSDIR.$boardname.'/res/'.$postid.'+50.html');
 
-      // Physically delete all files
+      // Collect ID's
       $file_ids = array(); $post_ids = array();
       foreach($files as $file) {
-        if ($file['file'] != 'removed' && $file['file_size'] > 0)
-          $this->EraseFileAndThumbs($file);
-        // Do some extra stuff along the way
         $post_id = "'".$file['id']."'";
         if (!in_array($post_id, $post_ids)) {
           $post_ids []= $post_id;
@@ -960,6 +967,11 @@ class Post extends Board {
         `boardid` = '" . $boardid . "'
         AND
         `id` IN (".implode($post_ids, ',').")");
+      // Physically delete all files
+      foreach($files as $file) {
+        if ($file['file'] != 'removed' && $file['file_size'] > 0)
+          $this->EraseFileAndThumbs($file);
+      }
       // Clear reports
       $tc_db->Execute("DELETE FROM `".KU_DBPREFIX."reports`
        WHERE
@@ -970,20 +982,10 @@ class Post extends Board {
       return (count($post_ids)+1).' '; // huh?
     }
     else {
-      if ($this->post['embeds']) {
-        // Physically delete all files
-        foreach($this->post['embeds'] as $embed) {
-          $this->EraseFileAndThumbs($embed);
-          $file_ids []= "'".$embed['file_id']."'";
-        }
-        // Mark files as removed in db
-        $tc_db->Execute("UPDATE `".KU_DBPREFIX."files`
-         SET
-          `file`='removed'
-         WHERE
-          `boardid` = '" . $boardid . "'
-          AND
-          `file_id` IN (".implode($file_ids, ',').")");
+      // Collect ID's
+      $file_ids = array();
+      foreach($this->post['embeds'] as $embed) {
+        $file_ids []= "'".$embed['file_id']."'";
       }
       // Mark post as deleted
       $tc_db->Execute("UPDATE `".KU_DBPREFIX."posts`
@@ -994,6 +996,20 @@ class Post extends Board {
         `boardid` = '" . $boardid . "'
         AND
         `id` = ".$tc_db->qstr($postid));
+      if ($this->post['embeds']) {
+        // Mark files as removed in db
+        $tc_db->Execute("UPDATE `".KU_DBPREFIX."files`
+         SET
+          `file`='removed'
+         WHERE
+          `boardid` = '" . $boardid . "'
+          AND
+          `file_id` IN (".implode($file_ids, ',').")");
+        // Physically delete all files
+        foreach($this->post['embeds'] as $embed) {
+          $this->EraseFileAndThumbs($embed);
+        }
+      }
       // Un-bump threda
       $tc_db->Execute('UPDATE
        `'.KU_DBPREFIX.'posts` AS t1,
@@ -1124,7 +1140,7 @@ class Post extends Board {
         //file_size
         ($is_embed ? null : $attachment['file_size']),
         //file_size_formatted
-        ($is_embed ? $attachment['file_size_formatted'] : ConvertBytes($attachment['size'])),
+        (($is_embed || $attachment['is_duplicate']) ? $attachment['file_size_formatted'] : ConvertBytes($attachment['size'])),
         //thumb_w
         intval($attachment['imgWidth_thumb']),
         //thumb_h

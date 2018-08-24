@@ -115,7 +115,7 @@ class Upload {
 		  // 2) Collect embeds
 		  $embed_hashes = array();
 		  if (is_array($_POST['embed']) || is_object($_POST['embed'])) {
-			foreach($_POST['embed'] as $i => $code) {
+				foreach($_POST['embed'] as $i => $code) {
 			  	if ($code != '') {
 			  		if (array_key_exists($_POST['embedtype'][$i], $board_class->board['embeds_allowed_assoc'])) {
 			  			$embed_filetype = $_POST['embedtype'][$i];
@@ -137,9 +137,9 @@ class Upload {
 			  		}
 			  		else $this->exitWithUploadErrorPage(_gettext('Sorry, that filetype is not allowed on this board.'),
 			  					$atype, $i, $_POST['embedtype'][$i] . '/' . $code);
+					}
 				}
 			}
-		}
 		}
 
 		/*else { // Fancy embeds (not yet implemented)	}*/
@@ -174,11 +174,26 @@ class Upload {
 				? $attachment['file_original'].$attachment['file_type']
 				: $attachment['embedtype'] . '/' . $attachment['embed'];
 			// Check if attachment already posted somewhere else
-			$exists_thread = checkMd5($attachment['file_md5'], $board_class->board['name'], $board_class->board['id']);
-			if (is_array($exists_thread)) {
-				$exists_url = KU_BOARDSPATH . '/' . $board_class->board['name'] . '/res/' . $exists_thread[0] . '.html#' . $exists_thread[1];
-				$this->exitWithUploadErrorPage(_gettext('Duplicate file entry detected.') .
-					sprintf(_gettext('Already posted %shere%s.'),'<a target="_blank" href="' . $exists_url . '">','</a>'), $atype, $i, $filename);
+			$existing = checkMd5($attachment['file_md5'], $board_class->board['name'], $board_class->board['id']);
+			if ($existing) {
+				if ($board_class->board['duplication']) { // If file duplication is allowed on this board just copy all the properties from the prototype
+					$attachment[$attachment['attachmenttype']=='file' ? 'file_name' : 'embed'] = $existing['file'];
+					$attachment['imgWidth'] = $existing['image_w'];
+					$attachment['imgHeight'] = $existing['image_h'];
+					$attachment['file_size'] = $existing['file_size'];
+					$attachment['file_size_formatted'] = $existing['file_size_formatted'];
+					$attachment['imgWidth_thumb'] = $existing['thumb_w'];
+					$attachment['imgHeight_thumb'] = $existing['thumb_h'];
+					$attachment['is_duplicate'] = true;
+					if ($attachment['attachmenttype']=='embed')
+						$attachment['file_original'] = $existing['file_original'];
+					break;
+				}
+				else {
+					$exists_url = KU_BOARDSPATH . '/' . $board_class->board['name'] . '/res/' . $existing['parentid'] . '.html#' . $existing['id'];
+					$this->exitWithUploadErrorPage(_gettext('Duplicate file entry detected.') .
+						sprintf(_gettext('Already posted %shere%s.'),'<a target="_blank" href="' . $exists_url . '">','</a>'), $atype, $i, $filename);
+				}
 			}
 			// Handle File
 			if ($attachment['attachmenttype'] == 'file') {
