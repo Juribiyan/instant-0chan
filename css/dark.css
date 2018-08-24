@@ -134,16 +134,6 @@ background: linear-gradient(#4b4b4b 0px, #353535 88px);
 	padding-right: 3px; 
 	padding: 0 3px 1px 1px;
 }
-blockquote {
-	margin: .5em .5em .5em 1em;
-}
-blockquote p {
-	margin: 0;
-	padding: 0;
-}
-.reply blockquote {
-	margin: .5em;
-}
 .doubledash {
 	display: none;
  	vertical-align:top;
