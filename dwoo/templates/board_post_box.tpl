@@ -140,6 +140,15 @@
 							<option value="{$embed.filetype}">{$embed.name}</option>
 						{/foreach}
 						</select>
+						<label class="icon-checkbox-wrap" title="{t}Spoiler{/t}" for="embed-spoiler-{$embcnt-1}">
+							<input type="checkbox" name="embed-spoiler-{$embcnt-1}" id="embed-spoiler-{$embcnt-1}" value="1">
+							<span class="icon-with-fallback">
+								<noscript class="b-icon">S</noscript>
+								<svg class="icon b-icon yesscript">
+								  <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-spoiler"></use>
+								</svg>
+							</span>
+						</label>
 					</div>
 					{if $embcnt < $board.maxfiles}
 						<input type="checkbox" name="addembed-{$embcnt}" id="addembed-{$embcnt}" class="add-embed">

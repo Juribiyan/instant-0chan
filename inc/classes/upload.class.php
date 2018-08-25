@@ -130,7 +130,7 @@ class Upload {
 			  			}
 			  			$attachments []= array(
 			  				'attachmenttype' => 'embed',
-			  				'spoiler' => $_POST['spoiler-'.$i] || '0',
+			  				'spoiler' => $_POST['embed-spoiler-'.$i] || '0',
 			  				'embedtype' => $embed_filetype,
 			  				'embed' => $code,
 			  				'filetype_withoutdot' => $embed_filetype,

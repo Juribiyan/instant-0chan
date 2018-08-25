@@ -2862,13 +2862,14 @@ figure .post-menu {
   display: none;
 }
 .spoiler-checkbox:not(:checked) + label + figcaption,
-.spoiler-checkbox:not(:checked) + label + figcaption + a img.thumb {
+.spoiler-checkbox:not(:checked) + label + figcaption + a img.thumb,
+.spoiler-checkbox:not(:checked) + label + .embed-wrap {
   opacity: 0;
-
 }
 @supports ((-webkit-filter: blur(15px)) or (filter: blur(15px))) {
   .spoiler-checkbox:not(:checked) + label + figcaption,
-  .spoiler-checkbox:not(:checked) + label + figcaption + a img.thumb {
+  .spoiler-checkbox:not(:checked) + label + figcaption + a img.thumb,
+  .spoiler-checkbox:not(:checked) + label + .embed-wrap {
     -webkit-filter: blur(15px);
             filter: blur(15px);
     opacity: 1;
