@@ -2894,3 +2894,10 @@ figure .post-menu {
 .spoiler-cover:hover div {
   opacity: 1;
 }
+
+.site-indicator {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  margin-left: 4px;
+}

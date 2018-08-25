@@ -116,14 +116,14 @@ class Upload {
 		  // 2) Collect embeds
 		  $embed_hashes = array();
 		  if (is_array($_POST['embed']) || is_object($_POST['embed'])) {
-				foreach($_POST['embed'] as $i => $code) {
+				foreach($_POST['embed'] as $i => $url) {
+					list($site, $code, $time) = $this->ParseEmbed($url);
 			  	if ($code != '') {
-			  		if (array_key_exists($_POST['embedtype'][$i], $board_class->board['embeds_allowed_assoc'])) {
-			  			$embed_filetype = $_POST['embedtype'][$i];
-			  			$hash = md5($embed_filetype.'/'.$code);
+			  		if (array_key_exists($site, $board_class->board['embeds_allowed_assoc'])) {
+			  			$hash = md5($site.'/'.$code);
 			  			if (in_array($hash, $embed_hashes)) {
 			  				$this->exitWithUploadErrorPage(_gettext('Duplicate embed entry detected.'),
-			  					$atype, $i, $embed_filetype . '/' . $code);
+			  					$atype, $i, $site . '/' . $code);
 			  			}
 			  			else {
 			  				$embed_hashes []= $hash;
@@ -131,14 +131,16 @@ class Upload {
 			  			$attachments []= array(
 			  				'attachmenttype' => 'embed',
 			  				'spoiler' => $_POST['embed-spoiler-'.$i] || '0',
-			  				'embedtype' => $embed_filetype,
+			  				'embedtype' => $site,
+			  				'embedtime' => $time,
 			  				'embed' => $code,
-			  				'filetype_withoutdot' => $embed_filetype,
-			  				'file_md5' => $hash
+			  				'filetype_withoutdot' => $site,
+			  				'file_md5' => $hash,
+			  				'start' => $time
 			  			);
 			  		}
 			  		else $this->exitWithUploadErrorPage(_gettext('Sorry, that filetype is not allowed on this board.'),
-			  					$atype, $i, $_POST['embedtype'][$i] . '/' . $code);
+			  					$atype, $i, $site . '/' . $code);
 					}
 				}
 			}
@@ -153,6 +155,34 @@ class Upload {
 			exitWithErrorPage(_gettext('A file or embed ID is required for a new thread.'));
 		}
 		$this->attachments = $attachments;
+	}
+
+	function ParseEmbed($url) {
+		$sites = array(
+			'you' => "/(?:youtu(?:\.be|be\.com)\/(?:.*v(?:\/|=)|(?:.*\/)?)(?P<code>[\w'-]+))(?:[?#&]t=(?:(?P<h>[0-9]{1,2})h)?(?:(?P<m>[0-9]{1,2})m)?(?:(?P<s>[0-9]{1,2})s)?)?/i",
+			'vim' => "/[\w\W]*vimeo\.com\/(?:.*?)(?P<code>[0-9]+)(?:#t=(?:(?P<h>[0-9]{1,2})h)?(?:(?P<m>[0-9]{1,2})m)?(?:(?P<s>[0-9]{1,2})s)?)?/i",
+			'cob' => "/[\w\W]*coub\.com\/view\/(?P<code>[\w\W]*)[\w\W]*/i"
+		);
+		foreach ($sites as $s => $rx) {
+			preg_match($rx, $url, $matches);
+			if ($matches) {
+				$time = 0;
+				$code = $matches['code'];
+				$site = $s;
+				foreach(array('h', 'm', 's') as $u) {
+					$t = (int)$matches[$u];
+					if ($t > 0 && $t < 60) {
+						if ($u == 'h')
+							$t *= 60;
+						if ($u != 's')
+							$t *= 60;
+						$time += $t;
+					}
+				}
+				break;
+			}
+		}
+		return array($site, $code, $time);
 	}
 
 	function HandleUpload() {

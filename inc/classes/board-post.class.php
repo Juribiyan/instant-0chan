@@ -579,6 +579,16 @@ class Board {
         $embed['thumbnail'] = $embed['file_type'].'-'.$embed['file'].'-s.jpg';
         $embed['site_name'] = $embed_site['name'];
         $embed['videourl'] = $embed_site['videourl'].$embed['file'];
+        if ($embed['file_size'] > 0) {
+          $h = floor($embed['file_size'] / 3600);
+          if ($h) $time .= $h.'h';
+          $m = floor(($embed['file_size'] / 60) % 60);
+          if ($m) $time .= $m.'m';
+          $s = $embed['file_size'] % 60;
+          if ($s) $time .= $s.'s';
+          $embed['start'] = $time;
+          $embed['videourl'] .= $embed_site['timeprefix'].$time;
+        }
       }
       if ($embed['file_type'] == 'mp3' && $this->board['loadbalanceurl'] == '') {
         require_once(KU_ROOTDIR . 'lib/getid3/getid3.php');
@@ -1138,7 +1148,7 @@ class Post extends Board {
         //image_h
         intval($attachment['imgHeight']),
         //file_size
-        ($is_embed ? null : $attachment['file_size']),
+        ($is_embed ? $attachment['start'] : $attachment['file_size']),
         //file_size_formatted
         (($is_embed || $attachment['is_duplicate']) ? $attachment['file_size_formatted'] : ConvertBytes($attachment['size'])),
         //thumb_w

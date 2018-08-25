@@ -186,7 +186,7 @@
          </figcaption>
         {else}
          <div class="embed-wrap">
-          <div class="emb-iframe-wrapper" data-w="{$embed.image_w}" data-h="{$embed.image_h}" data-code="{$embed.file}" data-site="{$embed.site_name}"></div>
+          <div class="emb-iframe-wrapper" data-w="{$embed.image_w}" data-h="{$embed.image_h}" data-code="{$embed.file}" data-site="{$embed.site_name}"{if $embed.start} data-start="{$embed.start}" data-startraw="{$embed.file_size}"{/if}></div>
           <div class="embed-overlay"></div>
           <img class="embed-thumbnail" src="{$file_path}/thumb/{$embed.thumbnail}" alt="">
           <div class="embed-title">

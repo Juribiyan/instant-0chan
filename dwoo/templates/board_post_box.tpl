@@ -135,11 +135,7 @@
 			<td>
 				{for embcnt 1 $board.maxfiles}
 					<div class="multiembedwrap" data-pos="embed-{$embcnt}">
-						<input type="text" name="embed[]" placeholder="{t}Embed{/t}" size="28" maxlength="75" accesskey="e" />&nbsp;<select name="embedtype[]">
-						{foreach name=embed from=$board.embeds_allowed item=embed}
-							<option value="{$embed.filetype}">{$embed.name}</option>
-						{/foreach}
-						</select>
+						<input type="text" name="embed[]" placeholder="{t}Embed{/t}" size="28" maxlength="75" accesskey="e" />
 						<label class="icon-checkbox-wrap" title="{t}Spoiler{/t}" for="embed-spoiler-{$embcnt-1}">
 							<input type="checkbox" name="embed-spoiler-{$embcnt-1}" id="embed-spoiler-{$embcnt-1}" value="1">
 							<span class="icon-with-fallback">

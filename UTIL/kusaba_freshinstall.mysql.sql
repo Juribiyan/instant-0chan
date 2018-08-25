@@ -173,6 +173,7 @@ CREATE TABLE `PREFIX_embeds` (
   `filetype` varchar(3) NOT NULL,
   `name` varchar(255) NOT NULL,
   `videourl` varchar(510) NOT NULL,
+  `timeprefix` varchar(10) NULL DEFAULT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=KU_DBCHARSET COLLATE=KU_COLLATION;
 
