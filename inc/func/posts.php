@@ -284,6 +284,8 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
   if ($site == 'you') {
     $thumb_url = $data['items'][0]['snippet']['thumbnails'][$chosen_preset]['url'];
   }
+  if (! $thumb_url)
+    return array('error' => _gettext('API returned invalid data.'));
   // Download thumbnail to temporary directory
   $ch = curl_init($thumb_url);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -304,14 +306,14 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
   // Get the rest of the data
   $r = array('width' => $thumbwidth);
   if ($site == 'cob') {
-  	$r['width'] = $data['dimensions']['big'][0];
-  	$r['height'] = $data['dimensions']['big'][1];
+  	$r['width'] = (int)$data['dimensions']['big'][0];
+  	$r['height'] = (int)$data['dimensions']['big'][1];
     $r['title'] = $data['title'];
     $duration = $data['duration'];
   }
   if ($site == 'vim') {
-  	$r['width'] = $data[0]['width'];
-  	$r['height'] = $data[0]['height'];
+  	$r['width'] = (int)$data[0]['width'];
+  	$r['height'] = (int)$data[0]['height'];
     $r['title'] = $data[0]['title'];
     $duration = $data[0]['duration'];
   }
@@ -321,8 +323,10 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
     $r['title'] = $data['items'][0]['snippet']['title'];
     $duration = preg_replace_callback('/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/', 'ISO8601_callback', $data['items'][0]['contentDetails']['duration']);
   }
-  if ($r['title']===NULL || $duration===NULL)
+  if ($r['width'] <= 0 || $r['height'] <= 0 || $duration <= 0) {
+    // var_dump($r);
   	return array('error' => _gettext('API returned invalid data.'));
+  }
   // Convert duration into readable string
   $r['duration'] = preg_replace('/^00:/m', '', gmdate("H:i:s", round($duration, 0)));
   $r['error'] = false;
