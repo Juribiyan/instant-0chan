@@ -323,7 +323,7 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
     $r['title'] = $data['items'][0]['snippet']['title'];
     $duration = preg_replace_callback('/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/', 'ISO8601_callback', $data['items'][0]['contentDetails']['duration']);
   }
-  if ($r['width'] <= 0 || $r['height'] <= 0 || $duration <= 0) {
+  if ($r['width'] <= 0 || $r['height'] <= 0) {
     // var_dump($r);
   	return array('error' => _gettext('API returned invalid data.'));
   }
