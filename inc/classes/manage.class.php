@@ -1958,7 +1958,7 @@ class Manage {
 
       $tc_db->SetFetchMode(ADODB_FETCH_ASSOC);
       $tc_db->Execute("START TRANSACTION");
-      $postembeds = $tc_db->GetAll("SELECT `id`, `file_id`, `file`, `file_type`, `file_size`
+      $postembeds = $tc_db->GetAll("SELECT `id`, `file_id`, `file`, `file_type`, `file_size_formatted`
         FROM `" . KU_DBPREFIX . "postembeds`
         WHERE
           `boardid`=$board_from_id

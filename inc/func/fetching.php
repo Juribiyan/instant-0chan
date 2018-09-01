@@ -170,7 +170,7 @@ function group_embeds($r, $group_deleted_files = false) {
 
 function GetFileAndThumbs($file) {
   $res = array();
-  if ($file['file_size'] > 0) {
+  if (strpos($file['file_size_formatted'], ':') !== false) {
     $res []= '/src/'.$file['file'].'.'.$file['file_type'];
     $res []= '/thumb/'.$file['file'].'s.'.$file['file_type'];
     $res []= '/thumb/'.$file['file'].'c.'.$file['file_type'];
