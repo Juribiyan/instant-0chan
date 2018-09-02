@@ -478,7 +478,7 @@ class Parse {
 		if (KU_MAKELINKS) {
 			$message = $this->MakeClickable($message);
 		}
-		$message = preg_replace('# - #is', '&nbsp;— ', $message);
+		$message = preg_replace('# -{1,2} #is', '&nbsp;— ', $message);
 
 		if($useragent) $message = preg_replace('`##[uU]seragent##`im', '<span style="color:blue">'.$useragent.'</span>', $message);
 
