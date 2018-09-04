@@ -219,7 +219,7 @@ class Upload {
 					$attachment['is_duplicate'] = true;
 					if ($attachment['attachmenttype']=='embed')
 						$attachment['file_original'] = $existing['file_original'];
-					break;
+					continue;
 				}
 				else {
 					$exists_url = KU_BOARDSPATH . '/' . $board_class->board['name'] . '/res/' . $existing['parentid'] . '.html#' . $existing['id'];
