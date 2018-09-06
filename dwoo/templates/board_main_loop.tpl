@@ -17,7 +17,7 @@
     </a>
    </span>
   {/if}
-  <div id="thread{$post.id}{$board.name}"{if $isthread} class="replies"{/if}> {* #thread → *}
+  <div id="thread{$post.id}{$board.name}" data-threadid="{$post.id}"> {* #thread → *}
    {if $isthread}<div class="i0svcel">!i0-pd:{$post.id}</div>{/if} {* post delimiter for quick parsing *}
    <div class="postnode op" data-id="{$post.id}" data-board="{$board.name}"> {* .postnode.op → *}
     {if not $isthread}
