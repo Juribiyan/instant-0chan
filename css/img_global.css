@@ -634,6 +634,8 @@ border-radius: 5px;
 }
 .read-more {
   margin: .3em 0;
+  outline:none;
+  user-select:none;
 }
 
 /* Node insertion detection #snivystuff */
