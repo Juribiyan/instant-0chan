@@ -485,7 +485,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 		} else {
 			// Regenerate the thread
 			$board_class->RegenerateThreads($thread_replyto);
-			notify($board_class->board['name'].':'.$thread_replyto, array('action' => 'new_reply'));
+			notify($board_class->board['name'].':'.$thread_replyto, array('action' => 'new_reply', 'reply_id' => $post_id));
 		}
 	} 
 	else {
@@ -563,7 +563,8 @@ elseif (
 								$notifications[$room_id] = array();
 							$notifications[$room_id] []= array(
 								'action' => 'delete_post',
-								'id' => $post_class->post['id']
+								'id' => $post_class->post['id'],
+								'thread_id' => $thread_id
 							);
 							if ($post_class->post['parentid'] != '0') {
 								$threads_to_regenerate []= $thread_id;
@@ -573,6 +574,14 @@ elseif (
 								$post_action->succ(_gettext('Post successfully deleted.').(!$isownpost ? _gettext('(By mod)') : ''));
 							}
 							else {
+								// Notify about new thread so the client could remove the new thread notification
+								$room_id = $board_class->board['name'].':threads';
+								if (! isset($notifications[$room_id]))
+									$notifications[$room_id] = array();
+								$notifications[$room_id] []= array(
+									'action' => 'delete_thread',
+									'id' => $thread_id
+								);
 								if (! $isownpost) {
 									management_addlogentry(_gettext('Deleted thread') . ' #<a href="?action=viewthread&thread='. $thread_id . '&board='. $board_class->board['name'] . '">'. $val . '</a> ('. ($delres-1) . ' replies) - /'. $board_class->board['name'] . '/', 7);
 								}
