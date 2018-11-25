@@ -1079,7 +1079,7 @@ class Post extends Board {
       $stickied,
       $locked,
       $country,
-      $is_new_user,
+      $is_new_user ? 1 : 0,
       $deleted_timestamp
     );
     foreach($post_fields as &$pf) {
