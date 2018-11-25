@@ -191,7 +191,7 @@ if (!$cache_loaded) {
 		$cf['KU_YOUTUBEHEIGHT']   = 164; // Height to display embedded YouTube videos
 
 	// Pages
-		$cf['KU_FIRSTPAGE'] = 'board.html'; // Filename of the first page of a board.  Only change this if you are willing to maintain the .htaccess files for each board directory (they are created with a DirectoryIndex board.html, change them if you change this)
+		$cf['KU_FIRSTPAGE'] = 'index.html'; // Filename of the first page of a board.  Only change this if you are willing to maintain the .htaccess files for each board directory (they are created with a DirectoryIndex board.html, change them if you change this)
 		$cf['KU_DIRTITLE']  = true; // Whether or not to place the board directory in the board's title and at the top of the page.  true would render as "/b/ - Random", false would render as "Random"
 
 	// Special Tripcodes
