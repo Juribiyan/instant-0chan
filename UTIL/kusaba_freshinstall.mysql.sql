@@ -147,7 +147,7 @@ CREATE TABLE `PREFIX_boards` (
   `balls` tinyint(1) NOT NULL DEFAULT '0',
   `dice` tinyint(1) NOT NULL DEFAULT '0',
   `useragent` tinyint(1) NOT NULL DEFAULT '0',
-  `duplication` tinyint(1) NOT NULL DEFAULT '0'
+  `duplication` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=KU_DBCHARSET COLLATE=KU_COLLATION;
 
@@ -316,7 +316,7 @@ CREATE TABLE `PREFIX_files` (
   `image_h` smallint(5) NOT NULL DEFAULT '0',
   `thumb_w` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
   `thumb_h` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
-  `spoiler` smallint(5) UNSIGNED NOT NULL DEFAULT '0'
+  `spoiler` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY (`file_id`),
   INDEX `file_md5` (`file_md5`),
   INDEX `file_id` (`file_id`),
