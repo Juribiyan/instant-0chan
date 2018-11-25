@@ -396,30 +396,6 @@ pre {
   font-weight: normal;
 }
 
-#watchedthreads {
-  position: absolute;
-  background-color: #F0E0D6;
-  border: 1px dotted #EEAA88;
-  border-top: 0px none;
-}
-
-#watchedthreadsdraghandle {
-  text-align: center;
-  font-family: Trebuchet MS;
-  cursor: move;
-}
-
-#watchedthreadlist {
-  padding: 3px;
-  font-size: 0.8em;
-}
-
-#watchedthreadsbuttons {
-  position: absolute;
-  bottom: 3px;
-  left: 3px;
-}
-
 .spoiler {
   color: black;
   background-color: black;

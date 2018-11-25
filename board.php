@@ -456,16 +456,6 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 			$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "posts` SET `bumped` = '" . time() . "' WHERE `boardid` = " . $board_class->board['id'] . " AND `id` = '" . $thread_replyto . "'");
 		}
 
-		// If the user replied to a thread he is watching, update it so it doesn't count his reply as unread
-		if (KU_WATCHTHREADS && $thread_replyto != '0') {
-			$viewing_thread_is_watched = $tc_db->GetOne("SELECT COUNT(*) FROM `" . KU_DBPREFIX . "watchedthreads` WHERE `ip` = '" . $_SERVER['REMOTE_ADDR'] . "' AND `board` = '" . $board_class->board['name'] . "' AND `threadid` = '" . $thread_replyto . "'");
-			if ($viewing_thread_is_watched > 0) {
-				$newestreplyid = $tc_db->GetOne('SELECT `id` FROM `'.KU_DBPREFIX.'posts` WHERE `boardid` = ' . $board_class->board['id'] . ' AND `IS_DELETED` = 0 AND `parentid` = '.$thread_replyto.' ORDER BY `id` DESC LIMIT 1');
-
-				$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "watchedthreads` SET `lastsawreplyid` = " . $newestreplyid . " WHERE `ip` = '" . $_SERVER['REMOTE_ADDR'] . "' AND `board` = '" . $board_class->board['name'] . "' AND `threadid` = '" . $thread_replyto . "'");
-			}
-		}
-
 		$tc_db->Execute("COMMIT");
 
 		// Trim any threads which have been pushed past the limit, or exceed the maximum age limit

@@ -202,15 +202,6 @@ table td {
 	border: 2px dashed #EE6600;
 }
 
-#watchedthreads {
-	background-color: #DDDDDD !important;
-  	border: 1px solid #CCCCCC !important;
-  	-moz-border-radius: 5px;
-	-webkit-border-bottom-left-radius: 5px;
-	-webkit-border-bottom-right-radius: 5px;
-	-webkit-border-top-left-radius: 5px;
-	-webkit-border-top-right-radius: 5px;
-}
 .b-icon {
 	fill: white;
 	background-color: #aba8a6;

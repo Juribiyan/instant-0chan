@@ -185,11 +185,6 @@ a:hover {
   -webkit-border-top-right-radius: 7px;
 }
 
-#watchedthreads {
-  background-color: #DAF0D6 !important;
-    border: 1px solid #88DD88 !important;
-}
-
 .replymode {
   background:#DAF0D6;
   text-align:center;

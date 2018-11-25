@@ -181,12 +181,6 @@ table td {
 	border: 1px dashed #EE6600;
 }
 
-#watchedthreads {
-	background-color: #DDDDDD !important;
-  	border: 1px solid #CCCCCC !important;
-  	border-radius: 5px;
-}
-
 .b-icon {
 	fill: rgb(255, 255, 255);
 	background: rgb(106, 111, 43);

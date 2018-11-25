@@ -67,7 +67,7 @@ Before running this script, make sure that:<br />
 } else {
 	require('config.php');
 	require KU_ROOTDIR . 'inc/func/custom.php';
-	$reqiredtables = array("ads","announcements","banlist","bannedhashes","blotter","boards","board_filetypes","embeds","events","filetypes","front","loginattempts","modlog","module_settings","posts","reports","sections","staff","watchedthreads","wordfilter");
+	$reqiredtables = array("ads","announcements","banlist","bannedhashes","blotter","boards","board_filetypes","embeds","events","filetypes","front","loginattempts","modlog","module_settings","posts","reports","sections","staff","wordfilter");
 	foreach ($reqiredtables as $tablename) {
 			if (mysql_table_exists(KU_DBDATABASE,KU_DBPREFIX.$tablename)) {
 					die("Table <strong>".KU_DBPREFIX.$tablename."</strong> already exists in the database! Drop it, and re run this script.");

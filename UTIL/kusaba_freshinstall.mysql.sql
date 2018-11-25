@@ -428,21 +428,6 @@ CREATE TABLE `PREFIX_staff` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `watchedthreads`
---
-
-CREATE TABLE `PREFIX_watchedthreads` (
-  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `threadid` int(20) NOT NULL DEFAULT '0',
-  `board` varchar(255) NOT NULL DEFAULT '',
-  `ip` char(15) NOT NULL DEFAULT '',
-  `lastsawreplyid` int(20) NOT NULL DEFAULT '0',
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=KU_DBCHARSET;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `wordfilter`
 --
 
