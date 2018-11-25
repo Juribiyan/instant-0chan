@@ -1156,7 +1156,7 @@ class Post extends Board {
         //thumb_h
         intval($attachment['imgHeight_thumb']),
         //spoiler
-        $attachment['spoiler']
+        $attachment['spoiler'] ? '1' : '0'
       );
       foreach($fields as &$field) {
         $field = $tc_db->qstr($field);
