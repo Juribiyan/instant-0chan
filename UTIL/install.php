@@ -54,6 +54,7 @@ ul { list-style: none; padding-left: 0px; margin: 0px }
 li { margin: 0px }
 li:hover { background: #fec; }
 li a { display: block; width: 100%; }
+.spoiler {background:#000;} .spoiler:hover {color: #fff;}
 </style>
 <link rel="shortcut icon" href="/favicon.ico" />
 </head>
@@ -112,7 +113,7 @@ if (file_exists('config.php')) {
 			require_once KU_ROOTDIR . 'inc/classes/menu.class.php';
 			$menu_class = new Menu();
 			$menu_class->Generate();
-			echo '<h2>Done!</h2>Installation has finished! The administrator account is <strong>'.$username.'</strong> with the password of <strong>'.$password.'</strong>.<br /><br />Delete this and the install-mysql.php file from the server, then <a href="manage.php">add some boards</a>!';
+			echo '<h2>Done!</h2>Installation has finished! The administrator account is <strong>'.$username.'</strong> with the password of <strong class="spoiler">'.$password.'</strong>.<br /><br />Delete this and the install-mysql.php file from the server, then <a href="manage.php">add some boards</a>!';
 			echo '<br /><br /><br /><h1><font color="red">DELETE THIS AND install-mysql.php RIGHT NOW!</font></h1>';
 		} else {
 			echo 'Error inserting SQL. Please add <strong>$tc_db->debug = true;</strong> just before ?&gt; in config.php to turn on debugging, and check the error message.';
