@@ -28,13 +28,19 @@ class Posting {
 		// Set user ID
 		if ($this->ipless_mode) {
 			if (isset($_COOKIE['I0_persistent_id'])) {
-				$this->user_id = $_COOKIE['I0_persistent_id'];
+				$user_id = $_COOKIE['I0_persistent_id'];
 			}
 			else {
-				$this->user_id = session_id();
+				$user_id = session_id();
 				$this->need_cookie = true;
 				$this->is_new_user = true;
 			}
+			$user_id_trunc = substr($user_id, 0, 45);
+			if ($user_id_trunc != $user_id) {
+				$this->need_cookie = true;
+				$this->is_new_user = true;
+			}
+			$this->user_id = $user_id_trunc;
 		}
 		else {
 			$this->user_id = $_SERVER['REMOTE_ADDR'];

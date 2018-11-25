@@ -61,7 +61,7 @@ CREATE TABLE `PREFIX_banlist` (
   `type` tinyint(1) NOT NULL DEFAULT '0',
   `expired` tinyint(1) NOT NULL DEFAULT '0',
   `allowread` tinyint(1) NOT NULL DEFAULT '1',
-  `ip` varchar(50) NOT NULL DEFAULT '',
+  `ip` varchar(88) NOT NULL DEFAULT '',
   `ipmd5` char(32) NOT NULL DEFAULT '',
   `globalban` tinyint(1) NOT NULL DEFAULT '0',
   `boards` varchar(255) NOT NULL DEFAULT '',
@@ -231,7 +231,7 @@ CREATE TABLE `PREFIX_front` (
 
 CREATE TABLE `PREFIX_loginattempts` (
   `username` varchar(255) NOT NULL DEFAULT '',
-  `ip` varchar(20) NOT NULL DEFAULT '',
+  `ip` varchar(45) NOT NULL DEFAULT '',
   `timestamp` int(20) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=KU_DBCHARSET;
 
@@ -277,7 +277,7 @@ CREATE TABLE `PREFIX_posts` (
   `subject` varchar(255) NOT NULL DEFAULT '',
   `message` text,
   `password` varchar(255) NOT NULL DEFAULT '',
-  `ip` varchar(75) NOT NULL DEFAULT '',
+  `ip` varchar(88) NOT NULL DEFAULT '',
   `ipmd5` char(32) NOT NULL DEFAULT '',
   `tag` varchar(5) NOT NULL DEFAULT '',
   `timestamp` int(20) unsigned NOT NULL DEFAULT '0',
@@ -387,7 +387,7 @@ CREATE TABLE `PREFIX_reports` (
   `board` varchar(255) NOT NULL DEFAULT '',
   `postid` int(20) NOT NULL DEFAULT '0',
   `when` int(20) NOT NULL DEFAULT '0',
-  `ip` varchar(75) NOT NULL DEFAULT '',
+  `ip` varchar(88) NOT NULL DEFAULT '',
   `reason` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=KU_DBCHARSET;
