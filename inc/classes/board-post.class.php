@@ -851,6 +851,19 @@ class Board {
         'error' => false,
         'already_deleted' => true
       );
+
+    // Delpass hashing
+    $passtype = $postfile['password'] [0];
+    if ($passtype == '+') {
+      $pass = $passtype . md5($pass . $postfile['id'] . $postfile['boardid'] . KU_RANDOMSEED);
+    }
+    elseif ($passtype == '-') {
+      $pass = $passtype . md5($pass . KU_RANDOMSEED);
+    }
+    else {
+      $pass = md5($pass);
+    }
+
     if (!$ismod && $postfile['password'] != $pass) {
       return array('error' => _gettext('Incorrect password.'));
     }
@@ -1124,6 +1137,12 @@ class Post extends Board {
       $tc_db->Execute("UPDATE `".KU_DBPREFIX."posts`
         SET `id` = '".$id."'
         WHERE `boardid` = ".$boardid);
+    }
+
+    // Hash the delpass with id as a salt
+    if (I0_DELPASS_SALTING && $password != '') {
+      $passwordmd5salted = '+'.md5($password . $id . $boardid . KU_RANDOMSEED);
+      $tc_db->Execute("UPDATE `".KU_DBPREFIX."posts` SET `password`=? WHERE `boardid`=? AND `id`=?", array($passwordmd5salted, $boardid, $id));
     }
 
     // Insert files

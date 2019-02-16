@@ -96,6 +96,8 @@ if (!$cache_loaded) {
 		$cf['I0_IPLESS_MODE'] = 'auto'; // Whether or not cookies should be used instead of IP's (typically for TOR hidden services). Supported values: true, false and 'auto'. In auto mode, cookies will be used when client IP is 127.0.0.1 
 		$cf['I0_CURL_PROXY'] = false; // Proxy to use when fetching external resources, for example 'socks5h://127.0.0.1:9050' — to connect through TOR
 
+		$cf['I0_DELPASS_SALTING'] = true; // Whether or not the delpass should be hashed to prevent poster identification
+
 	// Database
 		$cf['KU_DBTYPE']          = 'mysqli';	// Database type. Valid values are mysql and mysqli (reccomended for mysql).
 							// PostgreSQL is also supported. Supported values are postgres64, postgres7 and postgres8. Only postgres8 is tested.

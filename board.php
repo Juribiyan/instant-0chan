@@ -271,7 +271,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 			$name = $post_name;
 			$tripcode = '';
 		}
-		$post_passwordmd5 = ($post_password == '') ? '' : md5($post_password);
+		$post_passwordmd5 = (I0_DELPASS_SALTING || $post_password == '') ? $post_password : '-'.md5($post_password . KU_RANDOMSEED);
 
 		if ($post_autosticky == true) {
 			if ($thread_replyto == 0) {
@@ -505,7 +505,7 @@ elseif (
 	$regenerate_all_pages = false;
 
 	// Check rights
-	$pass =( isset($_POST['postpassword']) && $_POST['postpassword']!="") ? md5($_POST['postpassword']) : null;
+	$pass = (isset($_POST['postpassword']) && $_POST['postpassword']!="") ? $_POST['postpassword'] : null;
 	$ismod = (
 		$_POST['moddelete']=="true"
 		&&
@@ -542,7 +542,23 @@ elseif (
 			// Post deleting
 			if (isset($_POST['deletepost'])) {
 				$post_action->action = 'delete';
-				$isownpost = ($pass && $pass == $post_class->post['password']);
+				if ($pass) {
+					$passtype = $post_class->post['password'] [0];
+					if ($passtype == '+') { // modern hash with salt: +md5(password+postid+boardid+randomseed)
+					  $pass_for_this_post = '+'.md5($pass . $val . $board_class->board['id'] . KU_RANDOMSEED);
+					}
+					elseif ($passtype == '-') { // modern hash w/o salt: -md5(password+randomseed)
+						if (!$passmd5_new)
+							$passmd5_new = '-'.md5($pass . KU_RANDOMSEED);
+						$pass_for_this_post = $passmd5_new;
+					}
+					else { // legacy hash: md5(password)
+						if (!$passmd5_old)
+							$passmd5_old = md5($pass);
+						$pass_for_this_post = $passmd5_old;
+					}
+				}
+				$isownpost = ($pass && $pass_for_this_post == $post_class->post['password']);
 				if ($isownpost || $ismod) {
 					$delres = $post_class->Delete();
 					if ($delres) {
