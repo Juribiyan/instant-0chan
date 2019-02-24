@@ -2937,3 +2937,7 @@ figure .post-menu {
     margin: 0 8px 0 -3px;
   }
 }
+
+.logo {
+  text-decoration: none;
+}

@@ -154,6 +154,6 @@
 </div>
 <table style="width:100%" border="0">
 <tbody><tr><td valign="center">
-	<div class="logo">{if %KU_DIRTITLE}	/{$board.name}/ - {/if}{$board.desc}</div>
+	<{if $replythread > 0}a href="{%KU_WEBFOLDER}{$board.name}/"{else}div{/if} class="logo">{if %KU_DIRTITLE}	/{$board.name}/ - {/if}{$board.desc}</{if $replythread > 0}a{else}div{/if}>
 </td><td align="right"></td></tr></tbody></table>
 <hr />
