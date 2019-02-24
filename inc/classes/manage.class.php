@@ -2090,7 +2090,21 @@ class Manage {
 				$queryextra = "`boardid` IN (" . $tc_db->GetOne("SELECT HIGH_PRIORITY `id` FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($_GET['board']) . "") . ") AND";
 			}
 
-			$results = $tc_db->GetAll("SELECT `" . KU_DBPREFIX . "posts`.`id` AS id, `" . KU_DBPREFIX . "posts`.`parentid` AS parentid, `" . KU_DBPREFIX . "posts`.`ip` AS ip, `" . KU_DBPREFIX . "posts`.`message` AS message, `" . KU_DBPREFIX . "posts`.`file` AS file, `" . KU_DBPREFIX . "posts`.`file_type` AS file_type, `" . KU_DBPREFIX . "boards`.`name` AS boardname FROM `" . KU_DBPREFIX . "posts`, `" . KU_DBPREFIX . "boards` WHERE ".$queryextra." `ipmd5` = '" . md5($_GET['ip']) . "' AND `IS_DELETED` = 0 AND `" . KU_DBPREFIX . "boards`.`id` = `" . KU_DBPREFIX . "posts`.`boardid` ORDER BY `boardid`");
+			$results = $tc_db->GetAll("SELECT 
+			  `" . KU_DBPREFIX . "postembeds`.`id` AS id, 
+			  `" . KU_DBPREFIX . "postembeds`.`parentid` AS parentid, 
+			  `" . KU_DBPREFIX . "postembeds`.`ip` AS ip, 
+			  `" . KU_DBPREFIX . "postembeds`.`message` AS message, 
+			  `" . KU_DBPREFIX . "postembeds`.`file` AS file, 
+			  `" . KU_DBPREFIX . "postembeds`.`file_type` AS file_type, 
+			  `" . KU_DBPREFIX . "boards`.`name` AS boardname 
+			FROM `" . KU_DBPREFIX . "postembeds`, `" . KU_DBPREFIX . "boards` 
+			WHERE 
+			  ".$queryextra." `ipmd5` = '" . md5($_GET['ip']) . "' 
+			  AND `IS_DELETED` = 0 
+			  AND `" . KU_DBPREFIX . "boards`.`id` = `" . KU_DBPREFIX . "postembeds`.`boardid` 
+			ORDER BY `boardid`");
+			
 			if (count($results) > 0) {
 				foreach ($results as $line) {
 					$tpl_page .= '<table border="1" width="100%">'. "\n" .
