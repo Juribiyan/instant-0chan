@@ -410,8 +410,26 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 		// ← Emoji registration
 
 		// $upload_class->file_name, $upload_class->original_file_name, $filetype_withoutdot, $upload_class->file_md5, $upload_class->imgWidth, $upload_class->imgHeight, $upload_class->file_size, $upload_class->imgWidth_thumb, $upload_class->imgHeight_thumb
+		$post_time = time();
 		$post_class = new Post(0, $board_class->board['name'], $board_class->board['id'], true);
-		$post_id = $post_class->Insert($thread_replyto, $post['name'], $post['tripcode'], $post['email'], $post['subject'], addslashes($post['message']), $upload_class->attachments, $post_passwordmd5, time(), time(), $posting_class->user_id, $user_authority_display, $sticky, $lock, $board_class->board['id'], $post['country'], $posting_class->is_new_user, $post_del_timestamp);
+		$post_id = $post_class->Insert($thread_replyto, $post['name'], $post['tripcode'], $post['email'], $post['subject'], addslashes($post['message']), $upload_class->attachments, $post_passwordmd5, $post_time, $post_time, $posting_class->user_id, $user_authority_display, $sticky, $lock, $board_class->board['id'], $post['country'], $posting_class->is_new_user, $post_del_timestamp);
+
+		// Update user activity stats in full anonymity mode
+		if (I0_FULL_ANONYMITY_MODE) {
+			$fields = "`idmd5`, `latest_post`, `post_count`".($post_isreply ? "" : ", `latest_thread`");
+			$values = array($posting_class->user_id_md5_salted, $post_time, 1);
+			if (!$post_isreply) {
+				$values [] = $post_time;
+				$lt = ",`latest_thread`=?";
+			}
+			$values []= $post_time;
+			if (!$post_isreply) {
+				$values []= $post_time;
+			}
+			$qms = "?,?,?".(!$post_isreply ? ",?" : '');
+			$tc_db->Execute("INSERT INTO `user_activity` (".$fields.") VALUES (".$qms.")
+				ON DUPLICATE KEY UPDATE `latest_post`=?,`post_count`=`post_count`+1".$lt, $values);
+		}
 
 		if ($user_authority > 0 && $user_authority != 3) {
 		  $modpost_message = 'Modposted #<a href="' . KU_BOARDSFOLDER . $board_class->board['name'] . '/res/';
@@ -594,6 +612,15 @@ elseif (
 								$post_action->succ(_gettext('Thread successfully deleted.').(!$isownpost ? _gettext('(By mod)') : '').' '.($delres-1)._gettext('replies deleted').'.');
 							}
 							$regenerate_all_pages = true; // TODO: possibly optimize
+
+							if (I0_FULL_ANONYMITY_MODE && $isownpost) {
+								$latest_thread = $post_class->post['parentid'] == '0' ? ", `latest_thread`=1" : "";
+								$tc_db->Execute("UPDATE `user_activity` SET 
+									`latest_post`=1" .
+									$latest_thread .
+									", `post_count`=IF(`post_count`>0, `post_count`-1, 0)
+									WHERE `idmd5`=?", array($posting_class->user_id_md5_salted)	);
+							}
 						}
 						else {
 							$post_action->succ(_gettext('Post is already deleted.'));

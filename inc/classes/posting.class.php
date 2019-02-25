@@ -46,46 +46,75 @@ class Posting {
 			$this->user_id = $_SERVER['REMOTE_ADDR'];
 		}
 		$this->user_id_md5 = md5($this->user_id);
-		
-		if (I0_GLOBAL_NEWTHREADDELAY > 0 && !$this->is_new_user) {
-			// Check if the user has created any threads on this board
-			$any_threads = $tc_db->GetOne("SELECT COUNT(*) FROM `" . KU_DBPREFIX . "posts` WHERE `boardid`=? AND `parentid`='0' AND `ipmd5`=? LIMIT 1",
-				array($board_class->board['id'], $this->user_id_md5));
-			if ($any_threads)
-				$this->is_new_user = false;
-			elseif (I0_REPLIES_TO_RECOGNIZE) { // Check if the user has created a sufficient number of posts on this board
-				$post_count = $tc_db->GetOne("SELECT COUNT(*) FROM `" . KU_DBPREFIX . "posts` WHERE `boardid`=? AND `ipmd5`=? LIMIT ?",
-					array($board_class->board['id'], $this->user_id_md5, I0_REPLIES_TO_RECOGNIZE));
-				$this->is_new_user = ($post_count < I0_REPLIES_TO_RECOGNIZE);
+		if (I0_FULL_ANONYMITY_MODE) {
+			$this->user_id_md5_salted = md5($this->user_id . $board_class->board['id'] . KU_RANDOMSEED);
+			$user_stats = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "user_activity` WHERE `idmd5`=?", array($this->user_id_md5_salted));
+			if (count($user_stats)) {
+				$this->user_stats = $user_stats[0];
 			}
 			else
 				$this->is_new_user = true;
 		}
-
+		if (I0_GLOBAL_NEWTHREADDELAY > 0 && !$this->is_new_user) {
+			if (I0_FULL_ANONYMITY_MODE) {
+				$this->is_new_user = !(
+					$this->user_stats['latest_thread'] > 0
+					||
+					(
+						I0_REPLIES_TO_RECOGNIZE
+						&&
+						$this->user_stats['post_count'] >= I0_REPLIES_TO_RECOGNIZE
+					)
+				);
+			}
+			else {
+				// Check if the user has created any threads on this board
+				$any_threads = $tc_db->GetOne("SELECT COUNT(*) FROM `" . KU_DBPREFIX . "posts` WHERE `boardid`=? AND `parentid`='0' AND `ipmd5`=? LIMIT 1",
+					array($board_class->board['id'], $this->user_id_md5));
+				if ($any_threads)
+					$this->is_new_user = false;
+				elseif (I0_REPLIES_TO_RECOGNIZE) { // Check if the user has created a sufficient number of posts on this board
+					$post_count = $tc_db->GetOne("SELECT COUNT(*) FROM `" . KU_DBPREFIX . "posts` WHERE `boardid`=? AND `ipmd5`=? LIMIT ?",
+						array($board_class->board['id'], $this->user_id_md5, I0_REPLIES_TO_RECOGNIZE));
+					$this->is_new_user = ($post_count < I0_REPLIES_TO_RECOGNIZE);
+				}
+				else
+					$this->is_new_user = true;
+			}
+		}
 		$this->now = time();
 	}
 
 	function CheckReplyTime() {
 		global $tc_db, $board_class;
-		/* Get the timestamp of the last time a reply was made by this IP address */
-		$result = $tc_db->GetOne("SELECT MAX(timestamp) 
-			FROM `" . KU_DBPREFIX . "posts` 
-			WHERE 
-				`boardid` = " . $board_class->board['id'] . " 
-				AND 
-				`ipmd5` = '" . $this->user_id_md5 . "' 
-				AND
-				NOT `IS_DELETED`
-				AND 
-				`timestamp` > " . ($this->now - KU_REPLYDELAY));
-		if ($result) {
-			exitWithErrorPage(sprintf(_gettext('Please wait %d s before posting again.'), KU_REPLYDELAY - ($this->now - $result)), 
+		if (I0_FULL_ANONYMITY_MODE) {
+			$delta = KU_REPLYDELAY - ($this->now - $this->user_stats['latest_post']);
+		}
+		else {
+			/* Get the timestamp of the last time a reply was made by this IP address */
+			$result = $tc_db->GetOne("SELECT MAX(timestamp) 
+				FROM `" . KU_DBPREFIX . "posts` 
+				WHERE 
+					`boardid` = " . $board_class->board['id'] . " 
+					AND 
+					`ipmd5` = '" . $this->user_id_md5 . "' 
+					AND
+					NOT `IS_DELETED`
+					AND 
+					`timestamp` > " . ($this->now - KU_REPLYDELAY));
+			if ($result) {
+				$delta = KU_REPLYDELAY - ($this->now - $result);
+			}
+		}
+		if ($delta > 0) {
+			exitWithErrorPage(sprintf(_gettext('Please wait %d s before posting again.'), $delta), 
 				_gettext('You are currently posting faster than the configured minimum post delay allows.'));
 		}
 	}
 
 	function CheckNewThreadTime() {
 		global $tc_db, $board_class;
+
 		/* Check the global new thread delay */
 		if (I0_GLOBAL_NEWTHREADDELAY > 0 && $this->is_new_user) {
 			$result = $tc_db->GetOne("SELECT MAX(timestamp) 
@@ -107,20 +136,28 @@ class Posting {
 		}
 		else {
 			/* Get the timestamp of the last time a new thread was made by this IP address */
-			$result = $tc_db->GetOne("SELECT MAX(timestamp) 
-				FROM `" . KU_DBPREFIX . "posts` 
-				WHERE 
-					`boardid` = " . $board_class->board['id'] . " 
-					AND 
-					`parentid` = 0 
-					AND 
-					`ipmd5` = '" . $this->user_id_md5 . "' 
-					AND
-					NOT `IS_DELETED`
-					AND 
-					`timestamp` > " . ($this->now - KU_NEWTHREADDELAY));
-			if ($result) {
-				exitWithErrorPage(sprintf(_gettext('Please wait %d s before posting again.'), KU_NEWTHREADDELAY - ($this->now - $result)), 
+			if (I0_FULL_ANONYMITY_MODE) {
+				$delta = KU_NEWTHREADDELAY - ($this->now - $this->user_stats['latest_thread']);
+			}
+			else {
+				$result = $tc_db->GetOne("SELECT MAX(timestamp) 
+					FROM `" . KU_DBPREFIX . "posts` 
+					WHERE 
+						`boardid` = " . $board_class->board['id'] . " 
+						AND 
+						`parentid` = 0 
+						AND 
+						`ipmd5` = '" . $this->user_id_md5 . "' 
+						AND
+						NOT `IS_DELETED`
+						AND 
+						`timestamp` > " . ($this->now - KU_NEWTHREADDELAY));
+				if ($result) {
+					$delta = KU_NEWTHREADDELAY - ($this->now - $result);
+				}
+			}
+			if ($delta > 0) {
+				exitWithErrorPage(sprintf(_gettext('Please wait %d s before posting again.'), $delta), 
 					_gettext('You are currently posting faster than the configured minimum post delay allows.'));
 			}
 		}

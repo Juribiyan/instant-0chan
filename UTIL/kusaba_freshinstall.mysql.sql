@@ -441,6 +441,20 @@ CREATE TABLE `PREFIX_wordfilter` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=KU_DBCHARSET;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_activity`
+--
+
+CREATE TABLE `PREFIX_user_activity` (
+  `idmd5` VARCHAR(50) NOT NULL,
+  `latest_post` INT UNSIGNED NULL DEFAULT '0',
+  `latest_thread` INT UNSIGNED NULL DEFAULT '0',
+  `post_count` INT UNSIGNED NULL DEFAULT '0',
+  PRIMARY KEY (`idmd5`)
+) ENGINE=MyISAM DEFAULT CHARSET=KU_DBCHARSET;
+
 INSERT INTO `PREFIX_sections` (`id`, `order`, `hidden`, `name`, `abbreviation`) VALUES
 (1, 1, 0, 'all', 'all'),
 (2, 2, 0, 'geek', 'geek'),
