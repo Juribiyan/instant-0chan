@@ -1,0 +1,1 @@
+<?php echo (string) round($_SERVER['REQUEST_TIME_FLOAT'] * 1000);
