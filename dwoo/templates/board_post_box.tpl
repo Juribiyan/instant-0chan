@@ -219,13 +219,11 @@
 					<li>{t}Maximum file size allowed is{/t} {math "round(x/1024)" x=$board.maximagesize} {t}KB{/t}.</li>
 					{/if}
 					<li>{t}Maximum number of files + embeds per post is{/t} {$board.maxfiles}.</li>
-					<li>
 					{if $board.enablenofile}
-						{t}No file or embed required for a new thread on this board{/t}.
+						<li>{t}No file or embed required for a new thread on this board{/t}.</li>
 					{else}
-						{t}A file or embed ID is required for a new thread.{/t}
+						<li>{t}A file or embed ID is required for a new thread.{/t}</li>
 					{/if}
-					</li>
 					{if $board.duplication}
 						<li>{t}File end embed duplication is allowed{/t}.</li>
 					{/if}
