@@ -404,7 +404,7 @@ function collect_dead() {
       $thread_rebuild = false;
       foreach($posts as $post_id) {
         $post_class = new Post($post_id, $board_name, $boardid);
-        $delres = $post_class->Delete();
+        $delres = $post_class->Delete(false, I0_ERASE_DELETED);
         if ($delres && $delres !== 'already_deleted') {
           $thread_rebuild = true;
           if ($post_id == $thread_id) {

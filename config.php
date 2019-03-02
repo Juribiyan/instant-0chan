@@ -97,6 +97,7 @@ if (!$cache_loaded) {
 		$cf['I0_CURL_PROXY'] = false; // Proxy to use when fetching external resources, for example 'socks5h://127.0.0.1:9050' — to connect through TOR
 
 		$cf['I0_DELPASS_SALTING'] = true; // Whether or not the delpass should be hashed to prevent poster identification
+		$cf['I0_ERASE_DELETED'] = false; // Whether or not the contents of posts deleted by user should be erased
 
 	// Database
 		$cf['KU_DBTYPE']          = 'mysqli';	// Database type. Valid values are mysql and mysqli (reccomended for mysql).

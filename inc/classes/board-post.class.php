@@ -867,8 +867,11 @@ class Board {
     if (!$ismod && $postfile['password'] != $pass) {
       return array('error' => _gettext('Incorrect password.'));
     }
+    $erase = !$ismod && I0_ERASE_DELETED;
     clearPostCache($postfile['id'], $this->board['name']);
-    $tc_db->Execute("UPDATE `".KU_DBPREFIX."files` SET `file`='removed' WHERE `file_id`=".$tc_db->qstr($file_id));
+    $tc_db->Execute("UPDATE `".KU_DBPREFIX."files` SET `file`='removed'".
+      ($erase ? $this::FILE_ERASE : '').
+      " WHERE `file_id`=".$tc_db->qstr($file_id));
     $this->EraseFileAndThumbs($postfile);
     if ($ismod) {
       $parentid = $postfile['parentid']=='0' ? $postfile['id'] : $postfile['parentid'];
@@ -881,6 +884,17 @@ class Board {
       'parentid' => $postfile['parentid']==0 ? $postfile['id'] : $postfile['parentid']
     );
   }
+
+  const FILE_ERASE = ",
+    `file_md5` = '',
+    `file_original` = '',
+    `file_size` = 0,
+    `file_size_formatted` = '',
+    `image_w` = 0,
+    `image_h` = 0,
+    `thumb_w` = 0,
+    `thumb_h` = 0,
+    `spoiler` = 0";
 }
 
 /**
@@ -923,7 +937,16 @@ class Post extends Board {
 		}
 	}
 
-	function Delete($allow_archive = false) {
+  const POST_ERASE = ",
+    `name` = '',
+    `tripcode` = '',
+    `email` = '',
+    `subject` = '',
+    `message` = '',
+    `country` = '',
+    `password` = ''";
+
+	function Delete($allow_archive = false, $erase = false) {
     global $tc_db;
     if ($this->post['IS_DELETED'])
       return 'already_deleted';
@@ -976,7 +999,8 @@ class Post extends Board {
       if (!empty($file_ids))
         $tc_db->Execute("UPDATE `".KU_DBPREFIX."files`
          SET
-          `file`='removed'
+          `file`='removed'".
+          ($erase ? $this::FILE_ERASE : '')."
          WHERE
           `boardid` = '" . $boardid . "'
           AND
@@ -985,7 +1009,8 @@ class Post extends Board {
       $tc_db->Execute("UPDATE `".KU_DBPREFIX."posts`
        SET
         `IS_DELETED` = 1 ,
-        `deleted_timestamp` = '" . time() . "'
+        `deleted_timestamp` = '" . time() . "'".
+        ($erase ? $this::POST_ERASE : '')."
        WHERE
         `boardid` = '" . $boardid . "'
         AND
@@ -1014,7 +1039,8 @@ class Post extends Board {
       $tc_db->Execute("UPDATE `".KU_DBPREFIX."posts`
        SET
         `IS_DELETED` = 1 ,
-        `deleted_timestamp` = '" . time() . "'
+        `deleted_timestamp` = '" . time() . "'".
+        ($erase ? $this::POST_ERASE : '')."
        WHERE
         `boardid` = '" . $boardid . "'
         AND
@@ -1023,7 +1049,8 @@ class Post extends Board {
         // Mark files as removed in db
         $tc_db->Execute("UPDATE `".KU_DBPREFIX."files`
          SET
-          `file`='removed'
+          `file`='removed'".
+          ($erase ? $this::FILE_ERASE : '')."
          WHERE
           `boardid` = '" . $boardid . "'
           AND

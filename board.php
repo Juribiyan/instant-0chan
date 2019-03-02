@@ -578,7 +578,7 @@ elseif (
 				}
 				$isownpost = ($pass && $pass_for_this_post == $post_class->post['password']);
 				if ($isownpost || $ismod) {
-					$delres = $post_class->Delete();
+					$delres = $post_class->Delete(false, $isownpost && I0_ERASE_DELETED);
 					if ($delres) {
 						if ($delres !== 'already_deleted') { // Skip the unneeded rebuild if the post is already deleted
 							$thread_id = $post_class->post['parentid'] != '0' ? $post_class->post['parentid'] : $post_class->post['id'];
