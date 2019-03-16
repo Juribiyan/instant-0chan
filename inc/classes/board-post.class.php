@@ -1107,7 +1107,7 @@ class Post extends Board {
       $boardid,
       $name,
       $tripcode,
-      $mail,
+      $email,
       $subject,
       $message,
       $password,
