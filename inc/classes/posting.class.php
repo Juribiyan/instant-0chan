@@ -447,8 +447,8 @@ class Posting {
 			exitWithErrorPage(sprintf(_gettext('Sorry, the resulting HTML of your message is too long. HTML length: %d, maximum allowed length: %d'), $msglength, $maxlength));
 		}
 
-		$cyr = array('А', 'а', 'В', 'Е', 'е', 'К', 'М', 'Н', 'О', 'о', 'Р', 'р', 'С', 'с', 'Т', 'Х', 'х');
-		$lat = array('A', 'a', 'B', 'E', 'e', 'K', 'M', 'H', 'O', 'o', 'P', 'p', 'C', 'c', 'T', 'X', 'x');
+		$cyr = array('А', 'а', 'В', 'Е', 'е', 'К', 'М', 'Н', 'О', 'о', 'Р', 'р', 'С', 'с', 'Т', 'у', 'Х', 'х');
+		$lat = array('A', 'a', 'B', 'E', 'e', 'K', 'M', 'H', 'O', 'o', 'P', 'p', 'C', 'c', 'T', 'y', 'X', 'x');
 
 		$msg = mb_strtolower(strip_tags(str_replace($cyr, $lat, $msg)));
 
