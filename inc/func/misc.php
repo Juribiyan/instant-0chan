@@ -151,7 +151,7 @@ function check_css($css) {
  * '/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/'
  */
 function ISO8601_callback($matches) {
-  return 60*(60*($matches[1]) + $matches[2]) + $matches[3];
+  return 60*(60*((int)$matches[1]) + (int)$matches[2]) + (int)$matches[3];
 }
 
 // For debugging
