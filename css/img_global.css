@@ -2995,6 +2995,8 @@ figure .post-menu {
   display: inline-block;
   vertical-align: middle;
   font-size: 40px;
+  line-height: 1;
+  height: 100%;
 }
 .fda-form-full .add-files {
   display: none;
