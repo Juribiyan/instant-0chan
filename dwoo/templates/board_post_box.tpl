@@ -90,40 +90,49 @@
 				{t}File{/t}<a href="#" onclick="togglePassword(); return false;" style="text-decoration: none;" accesskey="x">&nbsp;</a>
 			</td>
 			<td>
-			{for embcnt 1 $board.maxfiles}
-				<div class="multiembedwrap" data-pos="file-{$embcnt}">
-					<input type="file" multiple name="imagefile[]" size="35" accesskey="f" />
-					<button class="remove-file icon-wraping-button yesscript" title="{t}Remove file{/t}"><svg class="icon b-icon">
-					  <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-x"></use>
-					</svg></button>
-					<label class="icon-checkbox-wrap" title="{t}Hide filename{/t}" for="hidename-{$embcnt-1}">
-						<input type="checkbox" name="hidename-{$embcnt-1}" id="hidename-{$embcnt-1}" value="1">
-						<span class="icon-with-fallback">
-							<noscript class="b-icon"><strike>N</strike></noscript>
-							<svg class="icon b-icon yesscript">
-							  <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-hide-name"></use>
-							</svg>
-						</span>
-					</label>
-					<label class="icon-checkbox-wrap" title="{t}Spoiler{/t}" for="spoiler-{$embcnt-1}">
-						<input type="checkbox" name="spoiler-{$embcnt-1}" id="spoiler-{$embcnt-1}" value="1">
-						<span class="icon-with-fallback">
-							<noscript class="b-icon">S</noscript>
-							<svg class="icon b-icon yesscript">
-							  <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-spoiler"></use>
-							</svg>
-						</span>
-					</label>
+				<div class="noscript">
+					{for embcnt 1 $board.maxfiles}
+						<div class="multiembedwrap" data-pos="file-{$embcnt}">
+							<input type="file" multiple name="imagefile[]" size="35" accesskey="f" />
+							<label class="icon-checkbox-wrap" title="{t}Hide filename{/t}" for="hidename-{$embcnt-1}">
+								<input type="checkbox" name="hidename-{$embcnt-1}" id="hidename-{$embcnt-1}" value="1">
+								<span class="icon-with-fallback">
+									<noscript class="b-icon"><strike>N</strike></noscript>
+									<svg class="icon b-icon yesscript">
+									  <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-hide-name"></use>
+									</svg>
+								</span>
+							</label>
+							<label class="icon-checkbox-wrap" title="{t}Spoiler{/t}" for="spoiler-{$embcnt-1}">
+								<input type="checkbox" name="spoiler-{$embcnt-1}" id="spoiler-{$embcnt-1}" value="1">
+								<span class="icon-with-fallback">
+									<noscript class="b-icon">S</noscript>
+									<svg class="icon b-icon yesscript">
+									  <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-spoiler"></use>
+									</svg>
+								</span>
+							</label>
+							<button class="remove-file remove-file-legacy icon-wraping-button yesscript" title="{t}Remove file{/t}"><svg class="icon b-icon">
+							  <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-x"></use>
+							</svg></button>
+						</div>
+						{if $embcnt < $board.maxfiles}
+							<input type="checkbox" name="addfile-{$embcnt}" id="addfile-{$embcnt}" class="add-embed">
+							<label for="addfile-{$embcnt}" title="{t}Add file{/t}" class="add-embed-button b-icon">+</label>
+							<br>
+						{/if}
+						{* if $replythread eq 0 && $board.enablenofile eq 1 }
+							[<input type="checkbox" name="nofile" id="nofile" accesskey="q" /><label for="nofile"> {t}No File{/t}</label>]
+						{/if *}
+					{/for}
+				</div class="noscript">
+				<div class="yesscript drop-area">
+					<div class="fe-sort-wrapper"></div>
+					<button class="add-files" title="{t}Add files{/t}">
+						<span class="add-files-text">{t}Add files{/t}...</span>
+						<div class="add-files-plus">+</div>
+					</button>
 				</div>
-				{if $embcnt < $board.maxfiles}
-					<input type="checkbox" name="addfile-{$embcnt}" id="addfile-{$embcnt}" class="add-embed">
-					<label for="addfile-{$embcnt}" title="{t}Add file{/t}" class="add-embed-button b-icon">+</label>
-					<br>
-				{/if}
-				{* if $replythread eq 0 && $board.enablenofile eq 1 }
-					[<input type="checkbox" name="nofile" id="nofile" accesskey="q" /><label for="nofile"> {t}No File{/t}</label>]
-				{/if *}
-			{/for}
 			</td>
 		</tr>
 	{/if}

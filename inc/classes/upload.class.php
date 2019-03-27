@@ -43,7 +43,6 @@ class Upload {
 		global $board_class;
 
 		if ($_POST['legacy-posting']) { // no-js file input (implemented first)
-
 		  $attachments = array();
 
 		  // 1) Collect uploaded files
@@ -95,7 +94,12 @@ class Upload {
 		  			$file_entry = array(
 		  				'attachmenttype' => 'file',
 		  				'spoiler' => $_POST['spoiler-'.$i] || '0',
-		  				'file_original' => $_POST['hidename-'.$i]==1 ? '/hidden' : preg_replace('/(.*)\..+/','\1', $filename),
+		  				'file_original' => $_POST['hidename-'.$i]==1 
+		  					? '/hidden' 
+		  					: ( $_POST['filename-'.$i]
+		  							? htmlspecialchars($_POST['filename-'.$i])
+		  							: preg_replace('/(.*)\..+/','\1', $filename)
+		  						),
 		  				'tmp_name' => $_FILES['imagefile']['tmp_name'][$i],
 		  				'type' => $_FILES['imagefile']['type'][$i],
 		  				'size' => $_FILES['imagefile']['size'][$i],

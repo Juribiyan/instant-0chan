@@ -14,7 +14,9 @@
 	var locale = '{$locale}';
 	var this_board_defaultName = '{$board.anonymous}';
 	var boardid = '{$board.id}';
-	var force_html_nocache = !!'{%I0_FORCE_HTML_NOCACHE}'
+	var force_html_nocache = !!'{%I0_FORCE_HTML_NOCACHE}';
+	var allowed_filetypes = [{foreach name=files item=filetype from=$board.filetypes_allowed}"{$filetype}"{if $.foreach.files.last}{else}, {/if}{/foreach}];
+	var maxfiles = {$board.maxfiles};
 {if $replythread > 0}
 	var ispage = false;
 {else}
@@ -50,6 +52,7 @@
 <script src="{$cwebpath}lib/javascript/jquery-1.11.1.min.js"></script>
 <script src="{$cwebpath}lib/javascript/lodash.min.js"></script>
 <script src="{$cwebpath}lib/javascript/prettify/prettify.js"></script>
+<script src="{%KU_WEBPATH}/lib/javascript/Sortable.min.js"></script>
 <script src="{%KU_WEBPATH}/lib/javascript/kusaba.new.js?v={%KU_JSVER}"></script>
 <script>var hiddenthreads = getCookie('hiddenthreads').split('!');</script>
 {if %KU_LIVEUPD_ENA}

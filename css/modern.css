@@ -407,3 +407,31 @@ figure {
   background: rgba(199, 225, 255, 0.53);
   color: rgba(0, 0, 0, 0.5);
 }
+
+.drop-area {
+  color: #616161;
+}
+.add-files:hover {
+  color: #000000;
+}
+.fe-noimg {
+  background: linear-gradient(to bottom, #4481c3 -100%, transparent 150%);
+  color: white;
+}
+.fe-pop-button svg {
+  background: #729bc7;
+  color: white;
+}
+.fe-pop-button:hover svg {
+  background-color: #486380;
+  color: white;
+}
+.file-entry:hover, .fe-expanded  {
+  background: rgba(97, 138, 182, 0.09);
+}
+.file-entry {
+  box-shadow: inset 0 0 0 1px rgba(59, 78, 99, 0.23);
+}
+.fe-info {
+  color: rgba(0, 0, 0, 0.45);
+}

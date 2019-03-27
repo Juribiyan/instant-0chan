@@ -2760,6 +2760,7 @@ figure .post-menu {
   width: 16px;
   height: 16px;
   margin: 0 2px;
+  vertical-align: middle;
 }
 .icon-wraping-button .b-icon {
   margin: 0;
@@ -2940,4 +2941,247 @@ figure .post-menu {
 
 .logo {
   text-decoration: none;
+}
+
+.remove-file-legacy {
+  display: none;
+}
+.non-empty-file-input + label + label + .remove-file-legacy {
+  display: initial;
+}
+.debug-show {
+  display: block!important;
+}
+.drop-area {
+  max-width: 530px;
+  -webkit-transition: width .2s, height .2s;
+  -o-transition: width .2s, height .2s;
+  transition: width .2s, height .2s;
+}
+.DRAGENTER.drop-area {
+  padding: 16px 4px;
+}
+.add-files {
+  background: none;
+  border: none;
+  color: currentColor;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  display: block;
+  border: 1px dashed currentColor;
+  padding: 6px;
+  -webkit-transition: color .2s;
+  -o-transition: color .2s;
+  transition: color .2s;
+}
+.fda-non-empty .add-files {
+  display: inline-block;
+  width: 50px;
+  margin: 10px;
+  border-radius: 80px;
+  height: 50px;
+  box-sizing: border-box;
+  vertical-align: middle;
+  outline: none;
+  padding: 0;
+}
+
+.fda-non-empty .add-files-text,
+.add-files-plus {
+  display: none;
+}
+.fda-non-empty .add-files-plus {
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 40px;
+}
+.fda-form-full .add-files {
+  display: none;
+}
+.file-entry {
+  margin: 0 4px 4px 0;
+  display: inline-block;
+  width: 70px;
+  height: 70px;
+  -webkit-transition: width .3s, height .3s, background-color .3s, line-height .3s;
+  -o-transition: width .3s, height .3s, background-color .3s, line-height .3s;
+  transition: width .3s, height .3s, background-color .3s, line-height .3s;
+  font-size: 0;
+  line-height: 33px;
+  position: relative;
+  text-align: center;
+  padding: 4px;
+  border-radius: 6px;
+  line-height: 70px;
+  overflow: hidden;
+  vertical-align: middle;
+}
+.fe-expanded {
+  width: 200px;
+  height: 200px;
+  line-height: 150px;
+}
+.fe-thumb {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle;
+  position: relative;
+  text-align: center;
+  border-radius: 4px;
+  -webkit-transition: width .3s, height .3s;
+  -o-transition: width .3s, height .3s;
+  transition: width .3s, height .3s;
+}
+.fe-expanded .fe-thumb {
+  width: 100%;
+  height: 158px;
+}
+.fe-noimg {
+  height: 70px;
+  width: 70px;
+  border-radius: 200px;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 70px;
+  text-transform: uppercase;
+  background: -webkit-linear-gradient(top, currentColor -150%, transparent 150%);
+  background: -o-linear-gradient(top, currentColor -150%, transparent 150%);
+  background: linear-gradient(to bottom, currentColor -150%, transparent 150%);
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  -webkit-transition: font-size .3s, padding .3s;
+  -o-transition: font-size .3s, padding .3s;
+  transition: font-size .3s, padding .3s;
+  display: inline-block;
+}
+.fe-expanded .fe-noimg {
+  padding: 40px;
+  font-size: 20px;
+}
+.fe-thumb img {
+  max-height: 100%;
+  max-width: 100%;
+  vertical-align: middle;
+  display: inline-block;
+}
+.fe-spoiler img {
+  -webkit-filter: blur(3px);
+          filter: blur(3px);
+}
+
+.fe-edit-mode .file-entry {
+  display: block;
+  width: 100%;
+  margin-right: 50px;
+}
+.file-entry button:not(.fe-pop-button) {
+  display: none;
+}
+.fe-fn {
+  display: block;
+  width: calc(100% - 22px);
+  vertical-align: middle;
+  box-sizing: border-box;
+  margin-top: 4px;
+  visibility: hidden;
+  height: 20px;
+}
+.fe-expanded .fe-fn {
+  visibility: visible;
+  visibility: hidden;
+  -webkit-animation: fe-appear 0s .3s ease 1 normal forwards;
+       -o-animation: fe-appear 0s .3s ease 1 normal forwards;
+          animation: fe-appear 0s .3s ease 1 normal forwards;
+  text-align: center;
+} 
+.fe-pop-button {
+  margin: 0;
+  position: absolute;
+  width: auto;
+  height: auto;
+  -webkit-transform: scale(0);
+      -ms-transform: scale(0);
+       -o-transform: scale(0);
+          transform: scale(0);
+  -webkit-transition: -webkit-transform .2s;
+  transition: -webkit-transform .2s;
+  -o-transition: -o-transform .2s;
+  transition: transform .2s;
+  transition: transform .2s, -webkit-transform .2s, -o-transform .2s;
+  z-index: 2;
+}
+.file-entry:hover .fe-pop-button,
+.fe-spoiler .spoiler-file,
+.fe-name-hidden .clear-filename,
+.fe-expanded .clear-filename {
+  -webkit-transform: scale(1);
+      -ms-transform: scale(1);
+       -o-transform: scale(1);
+          transform: scale(1);
+}
+.fe-pop-button.remove-file {
+  right: 0;
+  top: 0;
+}
+.fe-pop-button.spoiler-file {
+  bottom: 0;
+  left: 0;
+}
+.fe-pop-button.clear-filename {
+  bottom: 0px;
+  right: 0px;
+}
+.fe-expanded .fe-pop-button.clear-filename {
+  bottom: 23px;
+  right: 5px;
+  -webkit-transition: none;
+  -o-transition: none;
+  transition:none;
+  visibility: hidden;
+  -webkit-animation: fe-appear 0s .3s ease 1 normal forwards;
+       -o-animation: fe-appear 0s .3s ease 1 normal forwards;
+          animation: fe-appear 0s .3s ease 1 normal forwards;
+}
+@-webkit-keyframes fe-appear {
+  from {visibility: hidden}
+  to {visibility: visible}
+}
+@-o-keyframes fe-appear {
+  from {visibility: hidden}
+  to {visibility: visible}
+}
+@keyframes fe-appear {
+  from {visibility: hidden}
+  to {visibility: visible}
+}
+.fe-pop-button svg {
+  padding: 1px;
+}
+.fe-sort-wrapper {
+  font-size: 0;
+  white-space: normal;
+}
+.fda-non-empty .fe-sort-wrapper {
+  display: inline;
+}
+.fe-info {
+  font-size: 12px;
+  line-height: 21px;
+  position: absolute;
+  bottom: 0;
+  right: 8px;
+  font-style: italic;
+  height: 21px;
+  display: none;
+  overflow: hidden;
+}
+.fe-expanded .fe-info {
+  display: block;
 }
