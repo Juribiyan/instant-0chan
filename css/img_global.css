@@ -59,6 +59,10 @@ body {
   margin-bottom: auto;
 }
 
+span[id^=unhidethread] {
+	display: none;
+}
+
 blockquote blockquote {
   margin-left: 0em;
 }
@@ -2748,7 +2752,9 @@ figure .post-menu {
   display: initial;
 }
 .select-multiple .post-menu-toggle,
-.select-multiple .file-menu-toggle {
+.select-multiple .file-menu-toggle,
+.post-hidden .menu-hide,
+.postnode:not(.post-hidden) .menu-unhide {
   display: none;
 }
 .icon-wraping-button {

@@ -8,11 +8,11 @@
 {* PRE-POSTHEAD SECTION *}
  {if $post.parentid eq 0} {* If OP → *}
   {if not $isthread}
-   <span id="unhidethread{$post.id}{$board.name}" style="display: none;">
+   <span id="unhidethread{$post.id}{$board.name}">
     {t}Thread{/t} 
     <a href="{%KU_BOARDSFOLDER}{$board.name}/res/{$post.id}.html">{$post.id}</a> 
     {t}hidden.{/t}
-    <a href="#" onclick="javascript:togglethread('{$post.id}');return false;" title="{t}Un-Hide Thread{/t}">
+    <a href="#" onclick="javascript:HiddenItems.unhideThread('{$post.id}');return false;" title="{t}Un-Hide Thread{/t}">
      <svg class="icon b-icon"><use xlink:href="#i-unhide"></use></svg>
     </a>
    </span>
@@ -20,18 +20,10 @@
   <div id="thread{$post.id}{$board.name}" data-threadid="{$post.id}"{if $isthread} class="replies"{/if}> {* #thread → *}
    {if $isthread}<div class="i0svcel">!i0-pd:{$post.id}</div>{/if} {* post delimiter for quick parsing *}
    <div class="postnode op" data-id="{$post.id}" data-board="{$board.name}"> {* .postnode.op → *}
-    {if not $isthread}
-     <script type="text/javascript">
-      if (localStorage['hiddenThreads.' + '{$board.name}'] && in_array('{$post.id}', localStorage['hiddenThreads.' + '{$board.name}'].split(',') ) ) {
-       document.getElementById('unhidethread{$post.id}{$board.name}').style.display = 'inline-block';
-       document.getElementById('thread{$post.id}{$board.name}').style.display = 'none';
-      }
-     </script>
-    {/if}
     <a name="s{$.foreach.thread.iteration}"></a>
  {else} {* If reply → *}
   {if $isthread}<div class="i0svcel">!i0-pd:{$post.id}</div>{/if} {* post delimiter for quick parsing *}
-  <table class="postnode" data-id="{$post.id}" data-board="{$board.name}"><tbody>
+  <table id="postnode{$post.id}{$board.name}" class="postnode" data-id="{$post.id}" data-board="{$board.name}"><tbody>
    <tr>
     <td class="doubledash">&gt;&gt;</td>
     <td class="reply" id="reply{$post.id}"> {* td.reply → *}
@@ -88,7 +80,7 @@
     {/if}
     {if not $isthread}
      <span id="hide{$post.id}">
-      <a href="#" onclick="javascript:togglethread('{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}');return false;" title="Hide Thread">
+      <a href="#" onclick="javascript:HiddenItems.hideThread('{$post.id}');return false;" title="Hide Thread">
        <svg class="icon b-icon"><use xlink:href="#i-hide"></use></svg>
       </a>
      </span>
@@ -137,7 +129,7 @@
 {* / POSTHEAD SECTION *}
 
 {* POSTBODY+POSTBUTT SECTION *}
- <div class="postbody{if $post.parentid neq 0 && !$post.message} pb-empty{/if}{if $post.parentid eq 0 && mb_strlen($post.message) > 1000} pb-long{/if}" data-htmlength="{mb_strlen($post.message)}">
+ <div id="postbody{$post.id}{$board.name}" class="postbody{if $post.parentid neq 0 && !$post.message} pb-empty{/if}{if $post.parentid eq 0 && mb_strlen($post.message) > 1000} pb-long{/if}" data-htmlength="{mb_strlen($post.message)}">
   {if $post.embeds}
    <div class="embedgroup">
     {foreach item=embed from=$post.embeds name=embeds}
@@ -161,6 +153,7 @@
          {assign var="filename" value=get_embed_filename($embed)}
          <figcaption class="filesize">
           {strip}<a {if %KU_NEWWINDOW}target="_blank"{/if} href="{$file_path}/src/{$embed.file}.{$embed.file_type}" title="{$filename}{if $embed.id3.comments_html.title.0 eq ''}.{$embed.file_type}{/if}">
+           {if is_from_sosach($filename)}<img class="sosach_indicator" src="/images/2chfav.ico">{/if}
            <span class="fc-filename"{set_max_filename_width($embed.thumb_w, $embed.id3.comments_html.title.0)}>
             {$filename}
            </span>
