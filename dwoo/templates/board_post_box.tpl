@@ -130,7 +130,7 @@
 					<div class="fe-sort-wrapper"></div>
 					<button class="add-files" title="{t}Add files{/t}">
 						<span class="add-files-text">{t}Add files{/t}...</span>
-						<div class="add-files-plus">+</div>
+						<div class="add-files-plus"></div>
 					</button>
 				</div>
 			</td>

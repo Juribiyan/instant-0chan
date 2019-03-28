@@ -47,6 +47,7 @@ class Upload {
 
 		  // 1) Collect uploaded files
 		  $file_hashes = array();
+      if (is_array($_FILES['imagefile']['name']))
 		  foreach($_FILES['imagefile']['name'] as $i => $filename) {
 		  	if ($_FILES['imagefile']['error'][$i] != UPLOAD_ERR_NO_FILE) {
 		  		switch ($_FILES['imagefile']['error'][$i]) {

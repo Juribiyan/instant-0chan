@@ -2958,9 +2958,6 @@ figure .post-menu {
   -o-transition: width .2s, height .2s;
   transition: width .2s, height .2s;
 }
-.DRAGENTER.drop-area {
-  padding: 16px 4px;
-}
 .add-files {
   background: none;
   border: none;
@@ -2977,14 +2974,15 @@ figure .post-menu {
 }
 .fda-non-empty .add-files {
   display: inline-block;
-  width: 50px;
+  width: 51px;
   margin: 10px;
   border-radius: 80px;
-  height: 50px;
+  height: 51px;
   box-sizing: border-box;
   vertical-align: middle;
   outline: none;
   padding: 0;
+  font-size: 0;
 }
 
 .fda-non-empty .add-files-text,
@@ -2993,10 +2991,29 @@ figure .post-menu {
 }
 .fda-non-empty .add-files-plus {
   display: inline-block;
-  vertical-align: middle;
-  font-size: 40px;
-  line-height: 1;
+  font-size: 0;
   height: 100%;
+  width: 100%;
+  position: relative;
+}
+.add-files-plus:before,
+.add-files-plus:after {
+  content: '';
+  position: absolute;
+  background: currentColor;
+  display: inline-block;
+}
+.add-files-plus:before {
+  height: 23px;
+  width: 3px;
+  left: 23px;
+  top: 13px;
+}
+.add-files-plus:after {
+  width: 23px;
+  height: 3px;
+  left: 13px;
+  top: 23px;
 }
 .fda-form-full .add-files {
   display: none;
