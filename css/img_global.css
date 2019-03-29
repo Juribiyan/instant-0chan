@@ -3210,3 +3210,8 @@ figure .post-menu {
 .fe-expanded .fe-info {
   display: block;
 }
+.sosach_indicator {
+  height: 16px;
+  float: left;
+  margin-left: -4px;
+}

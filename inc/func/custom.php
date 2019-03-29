@@ -65,6 +65,10 @@ function rainbow ($string)
   return base64_encode ($image_data);
 }
 
+function is_from_sosach($filename) {
+  return preg_match('/^[0-9]{14}$/m', $filename);
+}
+
 function omitted_syntax($posts, $images) {
   $pd = declense($posts); $id = declense($images);
   if($pd == 0) $pw = 'постов';

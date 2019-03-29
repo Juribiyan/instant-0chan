@@ -99,6 +99,8 @@ if (!$cache_loaded) {
 		$cf['I0_DELPASS_SALTING'] = true; // Whether or not the delpass should be hashed to prevent poster identification
 		$cf['I0_ERASE_DELETED'] = false; // Whether or not the contents of posts deleted by user should be erased
 
+		$cf['I0_DETECT_SOSACH'] = false; // Detect pictures from particular website
+
 	// Database
 		$cf['KU_DBTYPE']          = 'mysqli';	// Database type. Valid values are mysql and mysqli (reccomended for mysql).
 							// PostgreSQL is also supported. Supported values are postgres64, postgres7 and postgres8. Only postgres8 is tested.
