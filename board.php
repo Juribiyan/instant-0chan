@@ -409,10 +409,13 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 		}
 		// ← Emoji registration
 
+		$post['sound'] = in_array($_POST['sound'], array('chpok','w10e','wxpe','tada','telegram','squeal','icq','knock','vk','discord','oof','perd','pezd','quack','alert','click','woah','grunt','throat','spit','steam')) ? $_POST['sound'] : null;
+
 		// $upload_class->file_name, $upload_class->original_file_name, $filetype_withoutdot, $upload_class->file_md5, $upload_class->imgWidth, $upload_class->imgHeight, $upload_class->file_size, $upload_class->imgWidth_thumb, $upload_class->imgHeight_thumb
 		$post_time = time();
 		$post_class = new Post(0, $board_class->board['name'], $board_class->board['id'], true);
-		$post_id = $post_class->Insert($thread_replyto, $post['name'], $post['tripcode'], $post['email'], $post['subject'], addslashes($post['message']), $upload_class->attachments, $post_passwordmd5, $post_time, $post_time, $posting_class->user_id, $user_authority_display, $sticky, $lock, $board_class->board['id'], $post['country'], $posting_class->is_new_user, $post_del_timestamp);
+		// var_dump($_POST['sound'], $post['sound']);
+		$post_id = $post_class->Insert($thread_replyto, $post['name'], $post['tripcode'], $post['email'], $post['subject'], addslashes($post['message']), $upload_class->attachments, $post_passwordmd5, $post_time, $post_time, $posting_class->user_id, $user_authority_display, $sticky, $lock, $board_class->board['id'], $post['country'], $posting_class->is_new_user, $post_del_timestamp, $post['sound']);
 
 		// Update user activity stats in full anonymity mode
 		if (I0_FULL_ANONYMITY_MODE) {
@@ -489,11 +492,11 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 		if ($thread_replyto == '0') {
 			// Regenerate the thread
 			$board_class->RegenerateThreads($post_id);
-			notify($board_class->board['name'].':threads', array('action' => 'new_thread', 'new_thread_id' => $post_id));
+			notify($board_class->board['name'].':threads', array('action' => 'new_thread', 'new_thread_id' => $post_id, 'sound' => $post['sound']));
 		} else {
 			// Regenerate the thread
 			$board_class->RegenerateThreads($thread_replyto);
-			notify($board_class->board['name'].':'.$thread_replyto, array('action' => 'new_reply', 'reply_id' => $post_id));
+			notify($board_class->board['name'].':'.$thread_replyto, array('action' => 'new_reply', 'reply_id' => $post_id, 'sound' => $post['sound']));
 		}
 	} 
 	else {

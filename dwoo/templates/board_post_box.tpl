@@ -196,7 +196,37 @@
 			</td>
 		</tr>
 		<tr id="passwordbox" style="display: none;"><td></td><td></td></tr>
-
+		<tr>
+			<td class="postblock">Звук</td>
+			<td>
+				<label for="sound" style="vertical-align: middle"><select name="sound" id="sound">
+					<option value="chpok">Chpok</option>
+					<option value="w10e">Win 10 error</option>
+					<option value="wxpe">Win XP error</option>
+					<option value="tada">Tada</option>
+					<option value="telegram">Telegram message</option>
+					<option value="squeal">Pig squeal</option>
+					<option value="icq">ICQ message</option>
+					<option value="knock">Knock</option>
+					<option value="vk">VK message</option>
+					<option value="discord">Discord message</option>
+					<option value="oof">Oof</option>
+					<option value="perd">Long fart</option>
+					<option value="pezd">Short fart</option>
+					<option value="quack">Duck quack</option>
+					<option value="alert">MGS alert</option>
+					<option value="click">Click</option>
+					<option value="woah">Woah</option>
+					<option value="grunt">Pig grunt</option>
+					<option value="throat">Throat gathering</option>
+					<option value="spit">Spit</option>
+					<option value="steam">Steam iron</option>
+				</select></label>
+				<button class="sound-test icon-wraping-button">
+					<svg class="icon b-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-sound"></use></svg>
+				</button>
+			</td>
+		</tr>
 		<tr>
 			<td colspan="2" class="blotter">
 				<div class="blotterhead">[<a href="#" onclick="toggleblotter();return false;" class="xlink"><b>{t}Info{/t}</b></a>{if $board.enablecatalog eq 1}  | <a href="{%KU_BOARDSFOLDER}{$board.name}/catalog.html"><b>{t}Catalog{/t}</b></a>{/if}]</div>

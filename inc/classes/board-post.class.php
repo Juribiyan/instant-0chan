@@ -1100,7 +1100,7 @@ class Post extends Board {
     }
   }
 
-	function Insert($parentid, $name, $tripcode, $email, $subject, $message, $attachments, $password, $timestamp, $bumped, $ip, $posterauthority, $stickied, $locked, $boardid, $country, $is_new_user, $deleted_timestamp) {
+	function Insert($parentid, $name, $tripcode, $email, $subject, $message, $attachments, $password, $timestamp, $bumped, $ip, $posterauthority, $stickied, $locked, $boardid, $country, $is_new_user, $deleted_timestamp, $sound) {
 		global $tc_db;
     $post_fields = array(
       $parentid,
@@ -1120,7 +1120,8 @@ class Post extends Board {
       $locked,
       $country,
       $is_new_user ? 1 : 0,
-      $deleted_timestamp
+      $deleted_timestamp,
+      $sound
     );
     foreach($post_fields as &$pf) {
       $pf = $tc_db->qstr($pf);
@@ -1143,7 +1144,8 @@ class Post extends Board {
       `locked`, 
       `country`, 
       `by_new_user`,
-      `deleted_timestamp` )
+      `deleted_timestamp`,
+      `sound` )
 			VALUES ( ".implode(', ', $post_fields)." )";
     $tc_db->Execute($query);
 		$id = $tc_db->Insert_Id();

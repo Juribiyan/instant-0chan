@@ -102,6 +102,9 @@
    {if $board.balls}
     <img class="_country_" src="{%KU_WEBPATH}/images/flags/{$post.country}.png">
    {/if}
+   {if $post.sound}
+    <svg class="icon b-icon" onclick="soundSprite.play('{$post.sound}')"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-sound"></use></svg>
+   {/if}
   </span>
   {if $post.parentid eq 0}
    {if not $isthread}
