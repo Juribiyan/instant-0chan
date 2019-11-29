@@ -20,7 +20,7 @@
  */
 
 // Include the main Dwoo class
-include KU_ROOTDIR.'lib/dwoo/Dwoo.compiled.php'; 
+include KU_ROOTDIR.'lib/dwoo/dwooAutoload.php'; 
 $dwoo = new Dwoo();
 $dwoo_data = new Dwoo_Data();
 
