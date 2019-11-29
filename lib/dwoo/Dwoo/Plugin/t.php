@@ -35,24 +35,26 @@
  * @param	mixed	Arguments, can be passed in an array or through single variables.
  * @returns	string	Modified string
  */
-function smarty_gettext_strarg($str)
-{
-	$tr = array();
-	$p = 0;
+if(!function_exists('smarty_gettext_strarg')) {
+	function smarty_gettext_strarg($str)
+	{
+		$tr = array();
+		$p = 0;
 
-	for ($i=1; $i < func_num_args(); $i++) {
-		$arg = func_get_arg($i);
+		for ($i=1; $i < func_num_args(); $i++) {
+			$arg = func_get_arg($i);
 
-		if (is_array($arg)) {
-			foreach ($arg as $aarg) {
-				$tr['%'.++$p] = $aarg;
+			if (is_array($arg)) {
+				foreach ($arg as $aarg) {
+					$tr['%'.++$p] = $aarg;
+				}
+			} else {
+				$tr['%'.++$p] = $arg;
 			}
-		} else {
-			$tr['%'.++$p] = $arg;
 		}
-	}
 
-	return strtr($str, $tr);
+		return strtr($str, $tr);
+	}
 }
 
 /**
@@ -70,68 +72,70 @@ function smarty_gettext_strarg($str)
  * - plural - The plural version of the text (2nd parameter of ngettext())
  * - count - The item count for plural mode (3rd parameter of ngettext())
  */
-function smarty_block_t($params, $text, &$smarty)
-{
-	$text = stripslashes($text);
-	$params['escape'] = 'off';
-	$lower = false;
-	// set escape mode
-	if (isset($params['escape'])) {
-		$escape = $params['escape'];
-		unset($params['escape']);
-	}
-
-	// set lowercase
-	if (isset($params['lower'])) {
-		$lower = true;
-		unset($params['lower']);
-	}
-
-	// set plural version
-	if (isset($params['plural'])) {
-		$plural = $params['plural'];
-		unset($params['plural']);
-
-		// set count
-		if (isset($params['count'])) {
-			$count = $params['count'];
-			unset($params['count']);
+if(!function_exists('smarty_block_t')) {
+	function smarty_block_t($params, $text, &$smarty)
+	{
+		$text = stripslashes($text);
+		$params['escape'] = 'off';
+		$lower = false;
+		// set escape mode
+		if (isset($params['escape'])) {
+			$escape = $params['escape'];
+			unset($params['escape']);
 		}
-	}
 
-	// use plural if required parameters are set
-	if (isset($count) && isset($plural)) {
-		$text = ngettext($text, $plural, $count);
-	} else { // use normal
-		$text = _gettext($text);
-	}
-
-	// run strarg if there are parameters
-	if (count($params)) {
-		$text = smarty_gettext_strarg($text, $params);
-	}
-	if ($lower === true) {
-		$text = strtolower($text);
-	}
-	if (isset($escape)) {
-		switch ($escape) {
-			case 'javascript':
-			case 'js':
-				// javascript escape
-				$text = str_replace('\'', '\\\'', stripslashes($text));
-				break;
-			case 'url':
-				// url escape
-				$text = urlencode($text);
-				break;
-			case 'html':
-				//html escape
-				$text = nl2br(htmlspecialchars($text));
-				break;
+		// set lowercase
+		if (isset($params['lower'])) {
+			$lower = true;
+			unset($params['lower']);
 		}
-	}
 
-	return $text;
+		// set plural version
+		if (isset($params['plural'])) {
+			$plural = $params['plural'];
+			unset($params['plural']);
+
+			// set count
+			if (isset($params['count'])) {
+				$count = $params['count'];
+				unset($params['count']);
+			}
+		}
+
+		// use plural if required parameters are set
+		if (isset($count) && isset($plural)) {
+			$text = ngettext($text, $plural, $count);
+		} else { // use normal
+			$text = _gettext($text);
+		}
+
+		// run strarg if there are parameters
+		if (count($params)) {
+			$text = smarty_gettext_strarg($text, $params);
+		}
+		if ($lower === true) {
+			$text = strtolower($text);
+		}
+		if (isset($escape)) {
+			switch ($escape) {
+				case 'javascript':
+				case 'js':
+					// javascript escape
+					$text = str_replace('\'', '\\\'', stripslashes($text));
+					break;
+				case 'url':
+					// url escape
+					$text = urlencode($text);
+					break;
+				case 'html':
+					//html escape
+					$text = nl2br(htmlspecialchars($text));
+					break;
+			}
+		}
+
+		return $text;
+	}
 }
 
 ?>
