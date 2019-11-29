@@ -399,7 +399,7 @@ class Dwoo_Core
     {
         if ($this->compileDir === null)
         {
-            $this->setCacheDir(KU_ROOTDIR . 'dwoo' . DIRECTORY_SEPARATOR . 'templates_c');
+            $this->setCompileDir(KU_ROOTDIR . 'dwoo' . DIRECTORY_SEPARATOR . 'templates_c');
         }
         return $this->compileDir;
     }
