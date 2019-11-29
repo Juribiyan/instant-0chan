@@ -338,14 +338,4 @@ function stripslashes_deep($value)
 	return $value;
 }
 
-// Thanks Z
-if (get_magic_quotes_gpc()) {
-	$_POST = array_map('stripslashes_deep', $_POST);
-	$_GET = array_map('stripslashes_deep', $_GET);
-	$_COOKIE = array_map('stripslashes_deep', $_COOKIE);
-}
-if (get_magic_quotes_runtime()) {
-	set_magic_quotes_runtime(0);
-}
-
 ?>
