@@ -84,7 +84,7 @@
 
 	{* <noscript> *}
 	<input type="hidden" name="legacy-posting" value="1" />
-	{if sizeof($board.filetypes_allowed)}
+	{if $board.filetypes_allowed}
 		<tr>
 			<td class="postblock">
 				{t}File{/t}<a href="#" onclick="togglePassword(); return false;" style="text-decoration: none;" accesskey="x">&nbsp;</a>
