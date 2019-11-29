@@ -23,7 +23,13 @@ class Dwoo_Plugin_smartyinterface extends Dwoo_Block_Plugin implements Dwoo_ICom
 		$params = $compiler->getCompiledParams($params);
 		$func = $params['__funcname'];
 		$pluginType = $params['__functype'];
-		$params = $params['*'];
+		$paramsOut = '';
+		if(isset($params['*'])) {
+			$params = $params['*'];
+			foreach ($params as $i=>$p) {
+					$paramsOut .= var_export($i, true).' => '.$p.',';
+				}
+		}
 
 		if ($pluginType & Dwoo_Core::CUSTOM_PLUGIN) {
 			$customPlugins = $compiler->getDwoo()->getCustomPlugins();
@@ -39,11 +45,6 @@ class Dwoo_Plugin_smartyinterface extends Dwoo_Block_Plugin implements Dwoo_ICom
 			}
 		} else {
 			$callback = 'smarty_block_'.$func.'(';
-		}
-
-		$paramsOut = '';
-		foreach ($params as $i=>$p) {
-			$paramsOut .= var_export($i, true).' => '.$p.',';
 		}
 
 		$curBlock =& $compiler->getCurrentBlock();
