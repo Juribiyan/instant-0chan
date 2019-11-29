@@ -136,7 +136,7 @@
 			</td>
 		</tr>
 	{/if}
-	{if sizeof($board.embeds_allowed)}
+	{if $board.embeds_allowed}
 		<tr>
 			<td class="postblock">
 				{t}Embed{/t}
