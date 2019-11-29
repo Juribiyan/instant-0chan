@@ -1,4 +1,5 @@
 <?php
+
 include dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Dwoo'. DIRECTORY_SEPARATOR . 'Core.php';
 
 function dwooAutoload($class)

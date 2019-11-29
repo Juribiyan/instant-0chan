@@ -8,13 +8,11 @@
  * In no event will the authors be held liable for any damages arising from the use of this software.
  *
  * @author     Jordi Boggiano <j.boggiano@seld.be>
- * @author     David Sanchez <david38sanchez@gmail.com>
- * @copyright  2008-2013 Jordi Boggiano
- * @copyright  2013-2016 David Sanchez
+ * @copyright  Copyright (c) 2008, Jordi Boggiano
  * @license    http://dwoo.org/LICENSE   Modified BSD License
  * @link       http://dwoo.org/
- * @version    1.2.3
- * @date       2016-10-15
+ * @version    1.0.0
+ * @date       2008-10-23
  * @package    Dwoo
  */
 class Dwoo_Data implements Dwoo_IDataProvider
@@ -175,8 +173,8 @@ class Dwoo_Data implements Dwoo_IDataProvider
 		}
 
    		if ($merge === true && is_array($val)) {
-   			foreach ($val as $key => &$value) {
-   				$this->data[$name][$key] =& $value;
+   			foreach ($val as $key => &$val) {
+   				$this->data[$name][$key] =& $val;
    			}
    		} else {
    			$this->data[$name][] =& $val;
@@ -193,12 +191,12 @@ class Dwoo_Data implements Dwoo_IDataProvider
    	{
    		return isset($this->data[$name]);
    	}
-
-	/**
-	 * supports calls to isset($dwooData->var)
-	 * @param string $name the variable name
-	 * @return bool
-	 */
+   	
+   	/**
+   	 * supports calls to isset($dwooData->var)
+   	 * 
+   	 * @param string $name the variable name
+   	 */
    	public function __isset($name)
    	{
    		return isset($this->data[$name]);
@@ -235,12 +233,12 @@ class Dwoo_Data implements Dwoo_IDataProvider
    		return $this->__get($name);
    	}
 
-	/**
-	 * allows to read variables using the object syntax
-	 * @param string $name the variable name
-	 * @return mixed
-	 * @throws Dwoo_Exception
-	 */
+   	/**
+   	 * allows to read variables using the object syntax
+   	 * 
+   	 * @param string $name the variable name
+   	 * @return mixed
+   	 */
    	public function __get($name)
    	{
    		if (isset($this->data[$name])) {

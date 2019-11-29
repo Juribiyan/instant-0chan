@@ -242,7 +242,7 @@ class Dwoo_Adapters_ZendFramework_View extends Zend_View_Abstract
 	public function setEngine($engine)
 	{
 		// if param given as an object
-		if ($engine instanceof Dwoo_Core) {
+		if ($engine instanceof Dwoo) {
 			$this->_engine = $engine;
 		}
 		//
@@ -329,7 +329,7 @@ class Dwoo_Adapters_ZendFramework_View extends Zend_View_Abstract
 	/**
 	 * Return the Dwoo compiler object
 	 *
-	 * @return Dwoo_Compiler
+	 * @return Dwoo_Data
 	 */
 	public function getCompiler()
 	{
@@ -343,7 +343,7 @@ class Dwoo_Adapters_ZendFramework_View extends Zend_View_Abstract
 	/**
 	 * Initializes Dwoo_ITemplate type of class and sets properties from _templateFileSettings
 	 *
-	 * @param  string Dwoo_ITemplate $template
+	 * @param  string Template location
 	 * @return Dwoo_ITemplate
 	 */
 	public function getTemplateFile($template) {
@@ -404,6 +404,7 @@ class Dwoo_Adapters_ZendFramework_View extends Zend_View_Abstract
 	 * Clears all variables assigned to Zend_View either via {@link assign()} or
 	 * property overloading ({@link __get()}/{@link __set()}).
 	 *
+	 * @return void
 	 * @return Dwoo_Adapters_ZendFramework_View
 	 */
 	public function clearVars()
