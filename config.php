@@ -67,7 +67,8 @@ if (!$cache_loaded) {
 		$cf['KU_JSVER'] = '001';
 		$cf['KU_SVGVER'] = '001';
 		$cf['KU_CAPTCHALANG'] = 'ru'; // Default captcha language to be used if no captchalang cookie is present. Supported values: ru, en, num (numeric)
-		$cf['KU_CAPTCHALIFE'] = 150;		// Captcha time-to-live in seconds
+		$cf['KU_CAPTCHALIFE'] = 150; // Captcha time-to-live in seconds
+		$cf['KU_CAPTCHALENGTH'] = rand(4, 7); // Captcha length in letters, rand(a, b) can be used to create random length from a to b.
 		$cf['KU_20_BOARDSLIMIT'] = 5;	// How many 2.0 boards a user can create
 		$cf['KU_20_CLOUDTIME'] = "-24 hours";
 		$cf['KU_20MAXLOGINPASS'] = 50; // Maximum login and password size for 2.0

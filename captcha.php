@@ -165,7 +165,7 @@ if (isset($_GET['switch'])) {
 }
 
 // Generate the word
-$ltrs = rand(4, 7);
+$ltrs = KU_CAPTCHALENGTH;
 if($captchalang == 'en') 
 	$captcha = english_word($ltrs);
 elseif($captchalang == 'ru')
