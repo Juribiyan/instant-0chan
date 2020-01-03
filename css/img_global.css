@@ -570,6 +570,10 @@ img.latex, object.latex  {
   color: #333333;
 }
 
+.unkfunc, .rquote {
+  background: inherit; /* No idea why */
+}
+
 .dice {
   color: white;
 background: rgb(135, 106, 172);
@@ -844,6 +848,10 @@ border-radius: 5px;
   top: 0;
   text-align: center;
   overflow: hidden;
+}
+.opt-exp {
+  position: relative;
+  padding: 0 8px;
 }
 
 #interface-notifier {
@@ -1580,7 +1588,7 @@ svg {
   font-family: sans-serif;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.09);
 }
-.code_markup {
+.markup-popup {
   position: absolute;
   display: inline-block;
   top: 0;
@@ -1595,12 +1603,16 @@ svg {
   transition: max-height .3s, top .3s;
   overflow: hidden;
 }
-.expandee select {
+.code_markup_select {
   height: 150px;
 }
-.expanded.expandee {
+.expanded.code_markup {
   max-height: 200px;
   top: -40px;
+}
+.expanded.quote_markup {
+  max-height: 200px;
+  top: -18px;
 }
 textarea {
   z-index: 1;

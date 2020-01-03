@@ -103,6 +103,9 @@ a:hover {
 .unkfunc {
   color:#117743;
 }
+.rquote {
+  color: #e0727f;
+}
 .filesize {
   font-size:12px;
   font-family:sans-serif;

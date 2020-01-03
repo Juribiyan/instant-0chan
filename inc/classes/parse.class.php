@@ -49,8 +49,9 @@ class Parse {
       '`\[lination\](.+?)\[/lination\]`is',
       '`\[caps\](.+?)\[/caps\]`is',
       '`&quot;(.+?)&quot;`is',
-      '`&gt;(.+?)&lt;`'
-      );
+      '`\[q\][ \t]{0,}(.*)\[/q\]`',
+      '`\[rq\][ \t]{0,}(.*)\[/rq\]`'
+    );
     $replaces =  array(
       '<b>\\1</b>',
       '<i>\\1</i>',
@@ -65,9 +66,10 @@ class Parse {
       '<table class="lination"><tr><td><img src="/images/lina.png"></td><td><div class="bubble">\\1</div></td></tr></table>',
       '<span style="text-transform: uppercase;">\\1</span>',
       '«\\1»',
-      '<span class="unkfunc">&gt;\\1</span>'
-      );
-		$string = preg_replace($patterns, $replaces , $string);
+      '<span class="unkfunc">&gt;\\1</span>',
+      '<span class="rquote">&lt;\\1</span>'
+    );
+		$string = preg_replace($patterns, $replaces, $string);
 		return $string;
 	}
 
@@ -205,18 +207,12 @@ class Parse {
 	}
 
 	function ColoredQuote($buffer) {
-		/* Add a \n to keep regular expressions happy */
-		if (substr($buffer, -1, 1)!="\n") {
-			$buffer .= "\n";
-		}
+		return preg_replace_callback('/^(&(g|l)t;)[ \t]{0,}(.*)$/m', array(&$this, 'ColoredQuoteCallback'), $buffer);
+	}
 
-		/* The css for imageboards use 'unkfunc' (???) as the class for quotes */
-		$class = 'unkfunc';
-		$linechar = "\n";
-
-		$buffer = preg_replace('/^(&gt;[^>](.*))\n/m', '<span class="'.$class.'">\\1</span>' . $linechar, $buffer);
-
-		return $buffer;
+	function ColoredQuoteCallback($matches) {
+		$class = ($matches[2]=='g') ? 'unkfunc' : 'rquote';
+		return '<span class="'.$class.'">'.$matches[1].' '.$matches[3].'</span>';
 	}
 
 	function ClickableQuote($buffer, $board, $parentid, $boardid, $ispage = false) {

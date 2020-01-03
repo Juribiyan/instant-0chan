@@ -85,8 +85,10 @@ a:visited {
 	color:#002244;
 }
 .unkfunc {
-	background:inherit;
 	color: #5fce3c;
+}
+.rquote {
+  color: #d86ca8;
 }
 .reflink {
 	font-size: .8em;

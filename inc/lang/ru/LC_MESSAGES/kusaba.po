@@ -2118,3 +2118,12 @@ msgstr "Превышено допустимое число вложений."
 
 msgid "Add files"
 msgstr "Приложить файлы"
+
+msgid "Green quotes"
+msgstr "Зеленые стрелки"
+
+msgid "Red quotes"
+msgstr "Красные стрелки"
+
+msgid "Alternating quotes"
+msgstr "Перекрестное цитирование"
