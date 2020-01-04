@@ -60,7 +60,7 @@ body {
 }
 
 span[id^=unhidethread] {
-	display: none;
+  display: none;
 }
 
 blockquote blockquote {
@@ -1646,9 +1646,6 @@ input:disabled {
   padding: 9px 15px;
   text-shadow: none;
 }
-td > .bubble {
-  display: inline-block;
-}
 .bubble:after {
   content: "";
   position: absolute;
@@ -1669,6 +1666,18 @@ td > .bubble {
   z-index: 0;
   border-width: 7px 12px 7px 0;
 }
+.reverse-caption-bubble:after {
+  content: "";
+  position: absolute;
+  top: 14px;
+  left: auto;
+  right: -11px;
+  display: block;
+  width: 0;
+  z-index: 1;
+  border-width: 6px 0 6px 11px;
+}
+
 .bubble:not(.thought-bubble):after, .bubble:not(.thought-bubble):before {
   border-style: solid;
 }
@@ -1676,17 +1685,30 @@ td > .bubble {
   left: 10px;
   margin-right: 10px!important;
 }
+.reverse-caption-bubble.thought-bubble {
+  left: auto;
+  right: 10px;
+  margin: 0 20px 0 10px!important;
+}
 .thought-bubble:after {
   height: 14px;
   width: 14px;
   left: -17px;
   top: 4px;
 }
+.reverse-caption-bubble.thought-bubble:after {
+  left: auto;
+  right: -17px;
+}
 .thought-bubble:before {
   height: 9px;
   width: 9px;
   left: -29px;
   top: 5px;
+}
+.reverse-caption-bubble.thought-bubble:before {
+  left: auto;
+  right: -29px;
 }
 .thought-bubble, .thought-bubble:after, .thought-bubble:before {
   border-radius: 20px;
@@ -1702,7 +1724,20 @@ td > .bubble {
 .lination td, .caption td {
   vertical-align: top;
 }
-.caption td:first-child {
+.reverse-caption {
+  float: right;
+}
+.reverse-caption + br {
+  clear: both;
+}
+.reverse-caption img {
+  -webkit-transform: scaleX(-1);
+      -ms-transform: scaleX(-1);
+       -o-transform: scaleX(-1);
+          transform: scaleX(-1);
+}
+.caption:not(.reverse-caption) td:first-child,
+.reverse-caption td:last-child {
   font-size: 0;
 }
 .bubble:not(.thought-bubble):before {
@@ -1867,7 +1902,8 @@ blockquote ol + br {
   display: none;
 }
 
-.prettyprint, .caption, .lination, .code_part, .bubble,
+.prettyprint, .caption, .lination, .code_part, 
+/* .bubble, */
 blockquote ul,
 blockquote ol {
   margin: 8px 0;
@@ -1887,6 +1923,10 @@ td > .bubble {
   display: inline-block;
   margin: 0;
   margin-left: 20px;
+}
+td > .reverse-caption-bubble {
+  margin-right: 20px;
+  margin-left: 0;
 }
 .embedgroup {
   float: left;

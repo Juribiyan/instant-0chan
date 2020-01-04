@@ -295,6 +295,11 @@ a:hover {
   z-index: 0;
   border-width: 7px 13px 7px 0;
 }
+.reverse-caption-bubble.bubble:not(.thought-bubble):before {
+  left: auto;
+  right: -13px;
+  border-width: 7px 0 7px 13px ;
+}
 .bubble, .thought-bubble:after, .bubble:before {
   border-color: transparent #666699;
 }

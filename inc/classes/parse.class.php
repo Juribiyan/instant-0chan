@@ -74,16 +74,17 @@ class Parse {
 	}
 
 	function SaysThinks($string) {
-		$string = preg_replace_callback('/\[says(?:=(?:(\:)?(.+?)\:?))?\](.+?)\[\/(?:says)\]/is', array(&$this, 'caption_callback'), $string);
-		$string = preg_replace_callback('/\[thinks(?:=(?:(\:)?(.+?)\:?))?\](.+?)\[\/(?:thinks)\]/is', array(&$this, 'caption_callback'), $string);
+		$string = preg_replace_callback('/\[says(?:(?:(?:&(l)t;=?(?:&gt;)?)|=?(?:&gt;)|=)(?:(\:)?(.+?)\:?))?\](.+?)\[\/(says)\]/is', array(&$this, 'caption_callback'), $string);
+		$string = preg_replace_callback('/\[thinks(?:(?:(?:&(l)t;=?(?:&gt;)?)|=?(?:&gt;)|=)(?:(\:)?(.+?)\:?))?\](.+?)\[\/(thinks)\]/is', array(&$this, 'caption_callback'), $string);
 		return $string;
 	}
 
 	function caption_callback($matches) {
-		$sayer = strtolower($matches[2]);
-		$thought_bubble = strtolower($matches[4])=='thinks' ? ' thought-bubble' : '';
-		$is_emoji = ($matches[1]==':');
-		$content = $matches[3];
+		$sayer = strtolower($matches[3]);
+		$thought_bubble = strtolower($matches[5])=='thinks' ? ' thought-bubble' : '';
+		$is_emoji = ($matches[2]==':');
+		$content = $matches[4];
+		$reverse = ($matches[1]=='l');
 
 		$sayer_exists = false;
 		if ($sayer) {
@@ -104,9 +105,20 @@ class Parse {
 		}
 		
 		$colon = $is_emoji ? '&colon;' : '';
-		return ($sayer_exists ? '<table class="caption"><tr><td><img src="'.$src.'" title="'.$colon.$sayer.$colon.'"></td><td>' : '') .
+		$bubble = '<div class="bubble'.$thought_bubble.($reverse ? ' reverse-caption-bubble' : '').'">'.$content.'</div>';
+		if ($sayer_exists) {
+			$table_start = '<table class="caption'.($reverse ? ' reverse-caption' : '').'"><tr>';
+			$img = '<td><img src="'.$src.'" title="'.$colon.$sayer.$colon.'"></td>';
+			$table_end = '</td></tr></table>';
+			$bubble = '<td>'.$bubble.'</td>';
+		}
+		
+		return $sayer_exists ? $table_start.($reverse ? $bubble.$img : $img.$bubble).$table_end : $bubble;
+		
+
+		/*return ($sayer_exists ? '<table class="caption"><tr><td><img src="'.$src.'" title="'.$colon.$sayer.$colon.'"></td><td>' : '') .
 			'<div class="bubble'.$thought_bubble.'">'.$content.'</div>' . 
-			($sayer_exists ? '</td></tr></table>' : '');
+			($sayer_exists ? '</td></tr></table>' : '');*/
 	}
 
 	function bullet_list($matches) {

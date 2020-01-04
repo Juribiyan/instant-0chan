@@ -390,6 +390,9 @@ input[type="text"]:focus, input[type="number"]:focus, input[type="password"]:foc
 	background: rgba(255, 255, 255, 0.2);
 	box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.19);
 }
+.reverse-caption-bubble.bubble, .reverse-caption-bubble.thought-bubble:after, .reverse-caption-bubble.thought-bubble:before {
+	box-shadow: -1px 1px 1px rgba(0, 0, 0, 0.19);
+}
 .bubble:after {
 	border-color: transparent rgba(255, 255, 255, 0.2);
 }
