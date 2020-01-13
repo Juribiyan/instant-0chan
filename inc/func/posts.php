@@ -118,17 +118,17 @@ function createThumbnail($name, $filename, $new_w, $new_h) {
 
 		if (preg_match("/png/", $system[0])) {
 			if (!imagepng($dst_img,$filename,0,PNG_ALL_FILTERS) ) {
-				echo 'unable to imagepng.';
+				exitWithErrorPage('unable to imagepng.');
 				return false;
 			}
 		} else if (preg_match("/jpg|jpeg/", $system[0])) {
 			if (!imagejpeg($dst_img, $filename, 70)) {
-				echo 'unable to imagejpg.';
+				exitWithErrorPage('unable to imagejpg.');
 				return false;
 			}
 		} else if (preg_match("/gif/", $system[0])) {
 			if (!imagegif($dst_img, $filename)) {
-				echo 'unable to imagegif.';
+				exitWithErrorPage('unable to imagegif.');
 				return false;
 			}
 		}
