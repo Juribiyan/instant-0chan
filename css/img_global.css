@@ -3304,7 +3304,7 @@ a.logo:hover::after {
 .simplified-send-row .icon.next-to-text {
   margin-right: 4px;
 }
-.sage-icon use {
+.sage-icon {
   -webkit-transform: scale(1,-1);
           transform: scale(1,-1);
   -webkit-transform-origin: 0;

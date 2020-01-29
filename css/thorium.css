@@ -559,6 +559,10 @@ figure:hover {
   -webkit-filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.33));
           filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.33));
 }
+.sage-icon {
+  -webkit-filter: drop-shadow(0 -1px 0 rgba(0, 0, 0, 0.33))!important;
+          filter: drop-shadow(0 -1px 0 rgba(0, 0, 0, 0.33))!important;
+}
 .primary.styled-button {
   background: -webkit-gradient(linear, left top, left bottom, from(#7c4a94), to(#5a366b));
   background: linear-gradient(to bottom, #7c4a94 0%, #5a366b 100%);

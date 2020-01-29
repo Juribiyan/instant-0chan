@@ -554,6 +554,10 @@ color: rgb(36, 218, 226);
   -webkit-filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.33));
           filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.33));
 }
+.sage-icon {
+  -webkit-filter: drop-shadow(0 -1px 0 rgba(0, 0, 0, 0.33))!important;
+          filter: drop-shadow(0 -1px 0 rgba(0, 0, 0, 0.33))!important;
+}
 .primary.styled-button {
   background: -webkit-gradient(linear, left top, left bottom, from(#288488), to(#145b5f));
   background: linear-gradient(to bottom, #288488 0%, #145b5f 100%);
