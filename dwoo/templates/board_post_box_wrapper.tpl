@@ -1,10 +1,6 @@
-<div class="postarea"><p></p>
+<div class="postarea">
 <a id="postbox"></a>
-<form name="postform" id="postform" action="{%KU_CGIPATH}/board.php" method="post" enctype="multipart/form-data">
-<!-- formbody -->
-</form>
-<form name="postform" id="postclone" action="{%KU_CGIPATH}/board.php" method="post" enctype="multipart/form-data"
-class="reflinkpreview content-background qreplyform" style="display:none">
+<form name="postform" id="postform" action="{%KU_CGIPATH}/board.php" method="post" enctype="multipart/form-data" class="main-reply-form">
 <!-- formbody -->
 </form>
 <hr />
@@ -17,7 +13,4 @@ class="reflinkpreview content-background qreplyform" style="display:none">
 	<hr />
 {/if}
 </div>
-<script type="text/javascript">
-set_inputs("postform");
-set_inputs("postclone");
-</script>
+<script type="text/javascript">set_inputs("postform");</script>

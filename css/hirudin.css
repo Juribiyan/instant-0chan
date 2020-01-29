@@ -1,295 +1,293 @@
 html, body, .captchawrap img {
-	background-color: #393A1E;
-	background-image: url(images/leech.png);
+  background-color: #393A1E;
 }
 
 html, body {
-	color: rgba(255, 255, 255, 0.77);
-	font-family: "Roboto", "Open Sans", "Trebuchet MS",Trebuchet,sans-serif;
-	font-size: 15px;
+  color: rgba(255, 255, 255, 0.77);
+  font-family: "Roboto", "Open Sans", "Trebuchet MS",Trebuchet,sans-serif;
+  font-size: 15px;
 }
 
 a {
-	color: rgb(255, 27, 27);
+  color: rgb(255, 27, 27);
 }
 a:visited {
-	color: rgb(255, 27, 27);
+  color: rgb(255, 27, 27);
 }
  a:hover {
-	color: rgb(187, 19, 19);
+  color: rgb(187, 19, 19);
 } 
 .adminbar {
-	clear:both;
-	float:right;
-	font-size: .8em;
+  clear:both;
+  float:right;
+  font-size: .8em;
 }
 .adminbar a {
-	font-weight: bold;
+  font-weight: bold;
 }
 .logo {
-	clear:both;
-	text-align:left;
-	font-size:2em;
-	font-weight: bold;
-	color: rgb(255, 27, 27);
+  clear:both;
+  text-align:left;
+  font-size:2em;
+  font-weight: bold;
+  color: rgb(255, 27, 27);
 }
 .replymode, .passvalid, .catalogmode {
-	background: rgba(0, 0, 0, 0.17);
-	text-align: center;
-	padding: 2px;
-	clear: both;
-	font-weight: bold;
-	margin-bottom: .5em;
+  background: rgba(0, 0, 0, 0.17);
+  text-align: center;
+  padding: 2px;
+  clear: both;
+  font-weight: bold;
+  margin-bottom: .5em;
 }
 
 .postblock {
-	background:transparent;
-	color:rgba(255, 255, 255, 0.44);
-	font-weight:bold;
+  background:transparent;
+  color:rgba(255, 255, 255, 0.44);
+  font-weight:bold;
 }
 .footer {
-	text-align:center;
-	font-size:12px;
-	font-family:serif;
-	margin: 2em 0 0 0;
+  text-align:center;
+  font-size:12px;
+  font-family:serif;
+  margin: 2em 0 0 0;
 }
 .dellist {
-	font-weight: bold;
-	text-align:center;
+  font-weight: bold;
+  text-align:center;
 }
 .delbuttons {
-	text-align:center;
-	padding-bottom:4px;
+  text-align:center;
+  padding-bottom:4px;
 }
 .managehead {
-	background:#DDDDDD;
-	color:#002244;
-	padding:0px;
+  background:#DDDDDD;
+  color:#002244;
+  padding:0px;
 }
 .postlists {
-	background:#FFFFFF;
-	width:100%;
-	padding:0px;
-	color:#800000;
+  background:#FFFFFF;
+  width:100%;
+  padding:0px;
+  color:#800000;
 }
 .row1 {
-	background:#DDDDDD;
-	color:#002244;
+  background:#DDDDDD;
+  color:#002244;
 }
 .row2 {
-	background:#CCCCCC;
-	color:#002244;
+  background:#CCCCCC;
+  color:#002244;
 }
 .unkfunc {
-	color: #26AF4C;
+  color: #26AF4C;
 }
 .rquote {
   color: #b582ff;
 }
 .reflink {
-	font-size: .8em;
-	font-weight: bold;
-	padding-right: 6px;
-	/* color: #fff; */
+  font-size: .8em;
+  font-weight: bold;
+  padding-right: 6px;
+  /* color: #fff; */
 }
 .filesize {
-	text-decoration:none;
-	color: rgba(255, 255, 255, 0.38);
-	font-size: .8em;
+  text-decoration:none;
+  color: rgba(255, 255, 255, 0.38);
+  font-size: .8em;
 }
 .filetitle {
-	background:inherit;
-	font-size:1.2em;
-	color:#7CA4CA;
-	font-weight:bold;
+  background:inherit;
+  font-size:1.2em;
+  color:#7CA4CA;
+  font-weight:bold;
 }
 .postername {
-	color:#92984F;
-	font-weight:bold;
+  color:#92984F;
+  font-weight:bold;
 }
 .postertrip {
-	color:#FF3300;
+  color:#FF3300;
 }
 .oldpost {
-	color:#CC1105;
-	font-weight:bold;
+  color:#CC1105;
+  font-weight:bold;
 }
 .omittedposts, .omittedposts a, .xlink {
-	color:#CCCCCC !important;
+  color:#CCCCCC !important;
 }
 .reply {
-	background: rgba(0, 0, 0, 0.14);
-	padding: 0;
-	padding-right: 2px;
-	border-radius: 3px;
-	-webkit-box-shadow: inset 0 -1px rgba(255, 255, 255, 0.12), inset 0 1px rgba(0, 0, 0, 0.31), inset 0 2px 5px rgba(0, 0, 0, 0.47);
-	        box-shadow: inset 0 -1px rgba(255, 255, 255, 0.12), inset 0 1px rgba(0, 0, 0, 0.31), inset 0 2px 5px rgba(0, 0, 0, 0.47);
+  background: rgba(0, 0, 0, 0.14);
+  padding: 0;
+  padding-right: 2px;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px rgba(255, 255, 255, 0.12), inset 0 1px rgba(0, 0, 0, 0.31), inset 0 2px 5px rgba(0, 0, 0, 0.47);
 }
 blockquote {
-	margin: .5em .5em .5em 1em;
+  margin: .5em .5em .5em 1em;
 }
 blockquote p {
-	margin: 0;
-	padding: 0;
+  margin: 0;
+  padding: 0;
 }
 .reply blockquote {
-	margin: .5em;
+  margin: .5em;
 }
 .doubledash {
-	display: none;
- 	vertical-align:top;
-	clear:both;
-	float:left;
+  display: none;
+  vertical-align:top;
+  clear:both;
+  float:left;
 }
 .replytitle {
-	font-size: 1.2em;
-	color:#002244;
-	font-weight:bold;
+  font-size: 1.2em;
+  color:#002244;
+  font-weight:bold;
 }
 .commentpostername {
-	color:#004A99;
-	font-weight:800;
+  color:#004A99;
+  font-weight:800;
 }
 .thumbnailmsg {
-	font-size: .8em;
-	color:#666666;
+  font-size: .8em;
+  color:#666666;
 }
 hr {
-	border-style: solid none none none;
-	border-width: 1px;
-	border-color: rgba(255, 255, 255, 0.11);
-	-webkit-box-shadow: 0 -1px rgba(0, 0, 0, 0.39);
-	        box-shadow: 0 -1px rgba(0, 0, 0, 0.39);
+  border-style: solid none none none;
+  border-width: 1px;
+  border-color: rgba(255, 255, 255, 0.11);
+  box-shadow: 0 -1px rgba(0, 0, 0, 0.39);
 }
 table {
-	border-style: none;
+  border-style: none;
 }
 .bottom-center, .bottom-left, .bottom-right {
-	height: 0px;
+  height: 0px;
 }
 table td {
-	border-style: none;
+  border-style: none;
 }
 .nothumb {
-	background-color: #FFFFFF;
-	border-style: dotted;
-	margin: .3em .5em;
+  background-color: #FFFFFF;
+  border-style: dotted;
+  margin: .3em .5em;
 }
 
 .abbrev {
-	color:#666666;
+  color:#666666;
 }
 .highlight {
-	border: 1px dashed #EE6600;
+  border: 1px dashed #EE6600;
 }
 
 .b-icon {
-	fill: rgb(255, 255, 255);
-	background: rgb(106, 111, 43);
-	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.09);
-	        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.09);
+  color: rgb(255, 255, 255);
+  background: rgb(106, 111, 43);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.09);
 }
 .b-icon:hover {
-	background-color: rgb(255, 27, 27);
-	-webkit-box-shadow: 0 1px 5px rgb(255, 27, 27);
-	        box-shadow: 0 1px 5px rgb(255, 27, 27);
+  background-color: rgb(255, 27, 27);
+  box-shadow: 0 1px 5px rgb(255, 27, 27);
+}
+.b-icon.pressed,
+.icon-checkbox-wrap input[type=checkbox]:checked + .icon-with-fallback .b-icon {
+  background-color: rgba(0, 0, 0, 0.32);
+  color: rgb(255, 86, 86);
+}
+.button-with-reminder::after {
+  background-color: rgb(255, 27, 27);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.33);
 }
 .topbar-left {
-	height: 0px;
+  height: 0px;
 }
 
 .topbar-right {
-	height: 0px;
+  height: 0px;
 }
 
 .topbar-center {
-	height: 0;
-	/* background: rgba(0, 0, 0, 0.06); */
+  height: 0;
+  /* background: rgba(0, 0, 0, 0.06); */
 }
 
 .maintable {
-	width: 100%;
-	table-layout: fixed;
+  width: 100%;
+  table-layout: fixed;
 }
 #overlay_menu {
-	-webkit-transition: box-shadow 0.2s, background-color 0.2s;
-	-webkit-transition: background-color 0.2s, -webkit-box-shadow 0.2s;
-	transition: background-color 0.2s, -webkit-box-shadow 0.2s;
-	transition: box-shadow 0.2s, background-color 0.2s;
-	transition: box-shadow 0.2s, background-color 0.2s, -webkit-box-shadow 0.2s;
-	-o-transition: box-shadow 0.2s, background-color 0.2s;
-	-moz-transition: box-shadow 0.2s, background-color 0.2s;
-	-webkit-box-shadow: none;
-	        box-shadow: none;
-	border-radius: 0;
-	border-color: #272815;
-	background: #31321A;
+  -webkit-transition: box-shadow 0.2s, background-color 0.2s;
+  -webkit-transition: background-color 0.2s, -webkit-box-shadow 0.2s;
+  transition: box-shadow 0.2s, background-color 0.2s;
+  -o-transition: box-shadow 0.2s, background-color 0.2s;
+  -moz-transition: box-shadow 0.2s, background-color 0.2s;
+  box-shadow: none;
+  border-radius: 0;
+  border-color: #272815;
+  background: #31321A;
 }
 
 #overlay_menu:hover {
-	-webkit-box-shadow: 0 0 20px #272815;
-	        box-shadow: 0 0 20px #272815;
-	background: rgb(80, 82, 36);
+  box-shadow: 0 0 20px #272815;
+  background: rgb(80, 82, 36);
 }
 
 .replies table {
-	border-spacing: 2px 4px;
+  /* border-spacing: 2px 4px; */
 }
 
 .menu-item {
-	margin: 0 -3px 0 -3px;
-	padding: 2px 5px;
-	border-radius: 0px;
+  margin: 0 -3px 0 -3px;
+  padding: 2px 5px;
+  border-radius: 0px;
 }
 
 .menu-item:last-child {
-	margin-bottom: -3px;
+  margin-bottom: -3px;
 }
 
 .menu-item:hover {
-	background: rgba(0, 0, 0, 0.28);
+  background: rgba(0, 0, 0, 0.28);
 }
 
 .maintable hr {
-	margin-left: -9px;
+  margin-left: -9px;
 margin-right: -9px;
 }
-
-.reflinkpreview {
-	border: 1px #272815 solid;
-	border-radius: 0;
-	background: rgb(80, 82, 36);
-  -webkit-box-shadow: #272815 0px 5px 10px, inset 0 1px rgba(255, 255, 255, 0.11);
-          box-shadow: #272815 0px 5px 10px, inset 0 1px rgba(255, 255, 255, 0.11);
+.qrf-floating, .quick-reply-form {
+  border: 1px #272815 solid;
+  border-radius: 0;
+  background: rgb(80, 82, 36);
+  
 }
-
+.qrf-floating, .reflinkpreview {
+  box-shadow: #272815 0px 5px 10px, inset 0 1px rgba(255, 255, 255, 0.11);
+}
 input[type="text"], textarea, input[type="password"] {
-	border: none;
-	background: rgba(0, 0, 0, 0.14);
-	-webkit-box-shadow: inset 0 -1px rgba(255, 255, 255, 0.12), inset 0 1px rgba(0, 0, 0, 0.31), inset 0 2px 5px rgba(0, 0, 0, 0.47);
-	        box-shadow: inset 0 -1px rgba(255, 255, 255, 0.12), inset 0 1px rgba(0, 0, 0, 0.31), inset 0 2px 5px rgba(0, 0, 0, 0.47);
-	color: white;
-	padding: 4px;
-	border-radius: 3px;
+  border: none;
+  background: rgba(0, 0, 0, 0.14);
+  box-shadow: inset 0 -1px rgba(255, 255, 255, 0.12), inset 0 1px rgba(0, 0, 0, 0.31), inset 0 2px 5px rgba(0, 0, 0, 0.47);
+  color: white;
+  padding: 4px;
+  border-radius: 3px;
 }
 input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
-	background: rgba(0, 0, 0, 0.4);
-	outline-color: #FF1B1B;
+  background: rgba(0, 0, 0, 0.4);
+  outline-color: #FF1B1B;
 } 
 
 .reflinkpreview .reply {
-	-webkit-box-shadow: none;
-	box-shadow: none;
-	border: none;
+  box-shadow: none;
+  border: none;
 }
 
 .prettyprint {
-	background: rgba(0, 0, 0, 0.23);
+  background: rgba(0, 0, 0, 0.23);
 }
 
 .omittedposts a, .xlink {
-	text-decoration: inherit;
-	border-bottom: 1px dashed rgb(133, 133, 133);
+  text-decoration: inherit;
+  border-bottom: 1px dashed rgb(133, 133, 133);
 }
 
 .postinfo {
@@ -305,37 +303,36 @@ text-decoration: none;
 color: #FF1B1B;
 }
 .uibutton {
-	border-radius: 0;
-	background: none;
-	border-color: rgba(0, 0, 0, 0.19);
-	color: rgba(255, 255, 255, 0.68);
+  border: 1px solid;
+  border-radius: 2px;
+  background: #505224;
+  border-color: rgba(0, 0, 0, 0.22);
+  /* color: black!important; */
+  box-shadow: inset 0 1px 1px #ffffff3d;
 }
 .uibutton:hover {
-	/* color: red; */
-	border-color: rgba(0, 0, 0, 0.19);
-	background: rgba(0, 0, 0, 0.19);
-	color: rgb(255, 255, 255);
+  border-color: rgba(0, 0, 0, 0.19);
+  background: rgba(255, 255, 255, 0.17);
+  color: rgb(255, 255, 255);
 }
 
 /* catalog */
 .cat-card {
-	-webkit-box-shadow: inset 0 1px rgba(0, 0, 0, 0.31), inset 0 2px 5px rgba(0, 0, 0, 0.47);
-	        box-shadow: inset 0 1px rgba(0, 0, 0, 0.31), inset 0 2px 5px rgba(0, 0, 0, 0.47);
-	border-radius: 3px;
-	background: rgba(0, 0, 0, 0.14);
+  box-shadow: inset 0 1px rgba(0, 0, 0, 0.31), inset 0 2px 5px rgba(0, 0, 0, 0.47);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.14);
 }
 .cat-entry:hover .cat-card {
   background: #414224;
-  -webkit-box-shadow: 0 2px 7px rgba(0, 0, 0, 0.78), 0 4px 17px rgba(0, 0, 0, 0.68), inset 0 1px 0 rgba(255, 255, 255, 0.12);
-          box-shadow: 0 2px 7px rgba(0, 0, 0, 0.78), 0 4px 17px rgba(0, 0, 0, 0.68), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.78), 0 4px 17px rgba(0, 0, 0, 0.68), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 .nofile-removed {
-	border: 2px dashed #A6A7A9;
-	color: #A6A7A9;
+  border: 2px dashed #A6A7A9;
+  color: #A6A7A9;
 }
 .hidden-on {
-	background: #D51F1A;
-	color: black!important;
+  background: #D51F1A;
+  color: black!important;
 }
 .hidden-on:hover {
   background: #FF2822;
@@ -344,28 +341,24 @@ color: #FF1B1B;
   color: rgb(255, 27, 27);
 }
 .cat-entry:after {
-	border-radius: 2px;
-	background: -webkit-gradient(linear, left top, left bottom, from(rgba(135,224,253,0)),to(rgb(48, 49, 25)));
-	background: -webkit-linear-gradient(top, rgba(135,224,253,0) 0%,rgb(48, 49, 25) 100%);
-	background: linear-gradient(to bottom, rgba(135,224,253,0) 0%,rgb(48, 49, 25) 100%);
-	bottom: 0;
-	-webkit-box-shadow: inset 0 -1px rgba(255, 255, 255, 0.12);
-	        box-shadow: inset 0 -1px rgba(255, 255, 255, 0.12);
+  border-radius: 2px;
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(135,224,253,0)),to(rgb(48, 49, 25)));
+  background: linear-gradient(to bottom, rgba(135,224,253,0) 0%,rgb(48, 49, 25) 100%);
+  bottom: 0;
+  box-shadow: inset 0 -1px rgba(255, 255, 255, 0.12);
 }
 .thumbExpanded .bigThumb {
-	 background: rgba(50, 51, 27, 0.88);
-	 -webkit-backdrop-filter: none;
-	         backdrop-filter: none;
-	 border-radius: 3px;
+  background: rgba(50, 51, 27, 0.88);
+  -webkit-backdrop-filter: none;
+          backdrop-filter: none;
+  border-radius: 3px;
 }
-.button-group {
-	background: rgba(255, 255, 255, 0.15);
-	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-	        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+.button-group, .refresh-catalog {
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
-.button-group:hover {
-  -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
-          box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+.button-group:hover, .refresh-catalog:hover {
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
   background: rgba(255, 255, 255, 0.25);
 }
 .bg-button:hover {
@@ -375,16 +368,15 @@ color: #FF1B1B;
 .bgb-selected, .bgb-selected:hover {
   background: #FF1B1B;
   color: #2C333D;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.46);
-          box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.46);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.46);
 }
 ::-moz-selection {
-	background: rgb(187, 19, 19);
+  background: rgb(187, 19, 19);
   text-shadow: 0 1px 0 rgba(0,0,0,0.5);
   color: white;
 }
 ::selection {
-	background: rgb(187, 19, 19);
+  background: rgb(187, 19, 19);
   text-shadow: 0 1px 0 rgba(0,0,0,0.5);
   color: white;
 }
@@ -399,18 +391,47 @@ color: #FF1B1B;
 }
 .reply:hover::-webkit-scrollbar-track,
 .reply:hover .prettyprint::-webkit-scrollbar-corner {
-	background: rgba(0, 0, 0, 0.21);
+  background: rgba(0, 0, 0, 0.21);
 }
 .reply:hover::-webkit-scrollbar-thumb {
-	background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.2);
 }
 .reply::-webkit-scrollbar-thumb:active {
-	background: rgb(255, 27, 27) !important;
+  background: rgb(255, 27, 27) !important;
 }
 .reply::-webkit-scrollbar-track,
 .reply::-webkit-scrollbar-thumb {
     border-radius: 4px;
 }
 .reply::-webkit-scrollbar-corner {
-	background: #31321a;
+  background: #31321a;
+}
+
+.mm-brd::after {
+  box-shadow: inset 0 0 0 1px #00000099;
+  background: rgba(44, 51, 61, 0.3);
+}
+.mm-cat::after {
+  background: #2c333d;
+}
+.mm-cat:not(.mmc-expanded)::after {
+  box-shadow: 1px 1px 0 #6a6f2b, 2px 2px 0 rgba(44, 51, 61, 0.82), 3px 3px 0 #6a6f2b, 4px 4px 0 rgba(44, 51, 61, 0.45);
+}
+.mmc-expanded::after {
+  background: #393a1f66;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.72), inset -1px -1px 0 0 rgb(139, 146, 56);
+}
+#mm-circle, .mm-expanded-full {
+  background: #6a6f2b;
+}
+#mm-circle {
+  overflow: visible;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+  -webkit-transition-property: box-shadow, -webkit-transform;
+  transition-property: box-shadow, -webkit-transform;
+  transition-property: transform, box-shadow;
+  transition-property: transform, box-shadow, -webkit-transform;
+}
+.mm-bars {
+  color: rgba(255, 255, 255, 0.76);
 }

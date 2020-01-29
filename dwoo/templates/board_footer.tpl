@@ -9,7 +9,7 @@
 	</tr>
 	<tr>
 	<td>
-	<input name="deletepost" value="{t}Delete post{/t}" type="submit" />{if $board.enablereporting eq 1}&nbsp;<input name="reportpost" value="{t}Report{/t}" type="submit" />{/if}
+	<input name="deletepost" value="{t}Delete post{/t}" type="submit" class="styled-button bad-button" />{if $board.enablereporting eq 1}&nbsp;<input name="reportpost" value="{t}Report{/t}" type="submit" class="styled-button" />{/if}
 	</td>
 	</tr>
 	</tbody>

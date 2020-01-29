@@ -13,6 +13,9 @@ a {
 a:visited {
 	color: #FF6600;
 }
+.uib-spoiler:before {
+  line-height: 18px;
+}
 a:hover {
 	color: #0066FF;
 }
@@ -135,17 +138,20 @@ a:hover {
 .omittedposts {
 	color:#666666;
 }
-.reply {
-	padding-right: 3px;
+.reply, .quick-reply-form {
 	background:#DDDDDD;
 	border: solid 1px #CCCCCC;
+	border-radius: 5px;
+}
+.qrf-active.quick-reply-form {
+	background: #e0c4b2;
+}
+.qrf-floating {
+	border: 1px dashed black;
+}
+.reply {
 	padding: 0;
 	padding-right: 2px;
-	-moz-border-radius: 5px;
-	-webkit-border-bottom-left-radius: 5px;
-	-webkit-border-bottom-right-radius: 5px;
-	-webkit-border-top-left-radius: 5px;
-	-webkit-border-top-right-radius: 5px;
 }
 blockquote {
 	margin: .5em .5em .5em 1em;
@@ -209,7 +215,10 @@ table td {
 .b-icon:hover {
 	background-color: #AA7755;
 }
-
+.icon-checkbox-wrap input[type=checkbox]:checked + .icon-with-fallback .b-icon,
+.b-icon.pressed {
+	background-color: #a04000;
+}
 .topbar-left {
   background: url('images/photon/topbar-left.png');
 }
@@ -264,8 +273,7 @@ table td {
 }
 .cat-entry:hover .cat-card {
   background: #ECECEC;
-  -webkit-box-shadow: 0 4px 7px rgba(0, 0, 0, 0.18);
-          box-shadow: 0 4px 7px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 4px 7px rgba(0, 0, 0, 0.18);
 }
 .nofile-removed {
 	border: 2px dashed #A6A7A9;
@@ -283,7 +291,6 @@ table td {
 }
 .cat-entry:after {
 	background: -webkit-gradient(linear, left top, left bottom, from(rgba(135,224,253,0)),to(rgb(221, 221, 221)));
-	background: -webkit-linear-gradient(top, rgba(135,224,253,0) 0%,rgb(221, 221, 221) 100%);
 	background: linear-gradient(to bottom, rgba(135,224,253,0) 0%,rgb(221, 221, 221) 100%);
 	border-radius: 0 0 4px 4px;
 }
@@ -293,12 +300,10 @@ table td {
 }
 .button-group {
 	background: rgba(255, 255, 255, 0.3);
-	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-	        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 .button-group:hover {
-  -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
-          box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
   background: rgba(255, 255, 255, 0.43);
   color: #fff;
 }
@@ -328,4 +333,129 @@ table td {
 }
 .reply::-webkit-scrollbar-corner {
 	background: #dddddd;
+}
+/* --------------------------------------- Styled buttons --------------------------------------- */
+.styled-button {
+  border: none;
+  background: -webkit-gradient(linear, left top, left bottom, from(#f6f6f6), to(#dcdcdc));
+  background: linear-gradient(to bottom, #f6f6f6 0%, #dcdcdc 100%);
+  border-radius: 1.66px;
+  padding: 3px 8px;
+}
+.simplified-send-row .styled-button {
+  padding: 4px 0;
+}
+.styled-button:hover {
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.44);
+}
+.styled-button, 
+.styled-button:active {
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.33);
+}
+.styled-button:active {
+  background: -webkit-gradient(linear, left bottom, left top, from(#f6f6f6), to(#dcdcdc));
+  background: linear-gradient(to top, #f6f6f6 0%, #dcdcdc 100%);
+}
+.styled-button:active,
+.styled-button:focus {
+  outline: none;
+}
+.primary.styled-button {
+  color: white;
+  background-image: /* yay technology */
+  	repeating-linear-gradient(-45.5deg, transparent 0px, transparent .6px, #79797917 2px, transparent 3.4px, transparent 4px), 
+  	-webkit-gradient(linear, left bottom, left top, from(#df7a29), to(#d8c25b));
+  background-image: /* yay technology */
+  	repeating-linear-gradient(-45.5deg, transparent 0px, transparent .6px, #79797917 2px, transparent 3.4px, transparent 4px), 
+  	linear-gradient(to top, #df7a29 0%, #d8c25b 100%);
+  text-shadow: 0 1px 2px #243e0e;
+  -webkit-transition: -webkit-filter .15s;
+  transition: -webkit-filter .15s;
+  transition: filter .15s;
+  transition: filter .15s, -webkit-filter .15s;
+}
+.primary.styled-button svg {
+  -webkit-filter: drop-shadow( 0 1px 1px #243e0e);
+          filter: drop-shadow( 0 1px 1px #243e0e);
+}
+.primary.styled-button:hover {
+  -webkit-filter: brightness(1.1);
+          filter: brightness(1.1);
+}
+.primary.styled-button:active {
+  -webkit-filter: brightness(.9);
+          filter: brightness(.9);
+}
+.bad-button.styled-button {
+  background: -webkit-gradient(linear, left top, left bottom, from(#d88585), to(#a76767));
+  background: linear-gradient(to bottom, #d88585 0%, #a76767 100%);
+  color: white;
+}
+.bad-button.styled-button:active {
+  background: -webkit-gradient(linear, left bottom, left top, from(#d88585), to(#a76767));
+  background: linear-gradient(to top, #d88585 0%, #a76767 100%);
+}
+/* -------------------------------------- /Styled buttons --------------------------------------- */
+
+.mm-brd::after {
+  box-shadow: inset 0 0 0 1px #2a2a2a;
+  background: rgba(42, 42, 42, 0.24);
+}
+.mm-cat::after {
+  background: #2a2a2a;
+}
+.mm-cat:not(.mmc-expanded)::after {
+  box-shadow: 1px 1px 0 #df832f, 2px 2px 0 rgba(42, 42, 42, 0.75), 3px 3px 0 #df832f, 4px 4px 0 rgba(42, 42, 42, 0.39);
+}
+.mmc-expanded::after {
+  background: #9c2a0f;
+  box-shadow: inset 0 2px 8px rgb(88, 62, 43), inset -1px -1px 0 0 rgb(156, 62, 34);
+}
+#mm-circle, .mm-expanded-full {
+  background: #df832f;
+}
+#mm-circle {
+	overflow: visible;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+	-webkit-transition-property: box-shadow, -webkit-transform;
+	transition-property: box-shadow, -webkit-transform;
+	transition-property: transform, box-shadow;
+	transition-property: transform, box-shadow, -webkit-transform;
+}
+#mm-circle:hover {
+	-webkit-filter: brightness(1.1);
+	        filter: brightness(1.1);
+}
+.mm-bars, #mmb-_options a, #mmb-_options a:visited {
+  color: rgb(255, 255, 255);
+}
+.mm-toggle-options, #mmb-_options {
+  color: rgba(255, 255, 255, 0.66) !important;
+}
+#mmb-_options a:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+.mm-item, .mm-item:visited {
+	color: #ffa756;
+}
+.mm-item:hover, .mm-item:visited:hover {
+	color: #ffc917;
+}
+
+.uibutton {
+	background: #f5f5f5;
+	border: 1px solid rgba(0, 0, 0, 0.3);
+	border-radius: 4px 4px 0 0;
+	border-bottom-style: none;
+	padding: 1.5px 10px 0.5px 10px;
+}
+@media only screen and (max-width: 666px) {
+  .uibutton {
+    border-radius: 4px;
+    border-bottom-style: solid;
+  }
+}
+.uibutton:hover {
+	background: rgb(255, 255, 255);
+	border-color: rgba(0, 0, 0, 0.44);
 }

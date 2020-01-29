@@ -81,6 +81,7 @@
     	{include file='disclaimer.tpl'}
     {/if}
 <div class="adminbar">
+{if $board.enablecatalog eq 1}[<a href="{%KU_BOARDSFOLDER}{$board.name}/catalog.html"><b>{t}Catalog{/t}</b></a>]{/if}
 [<a href="{%KU_WEBPATH}/kusaba.php" target="_top">{t}Frames{/t}</a>]&nbsp;[<a href="{%KU_CGIPATH}/manage.php" target="_top">{t}Manage{/t}</a>]
 <svg class="icon b-icon history-toggle yesscript" onclick="pups.historyToggle()"><use title="{t}Show alert history{/t}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-bell"></use></svg>
 </div>
@@ -156,6 +157,6 @@
 </div>
 <table style="width:100%" border="0">
 <tbody><tr><td valign="center">
-	<{if $replythread > 0}a href="{%KU_WEBFOLDER}{$board.name}/"{else}div{/if} class="logo">{if %KU_DIRTITLE}	/{$board.name}/ - {/if}{$board.desc}</{if $replythread > 0}a{else}div{/if}>
+	<{if $replythread > 0 || $is_catalog}a href="{%KU_WEBFOLDER}{$board.name}/"{else}div{/if} class="logo">{if %KU_DIRTITLE}/{$board.name}/ - {/if}{$board.desc}</{if $replythread > 0}a{else}div{/if}>
 </td><td align="right"></td></tr></tbody></table>
 <hr />

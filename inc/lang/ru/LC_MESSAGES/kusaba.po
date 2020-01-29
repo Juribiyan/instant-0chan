@@ -432,6 +432,9 @@ msgstr "Номер первого поста"
 msgid "Forced anonymous"
 msgstr "Форсированная анонимность"
 
+msgid "Frames"
+msgstr "Фреймы"
+
 msgid "Frames removed"
 msgstr "Фреймы убраны"
 
@@ -987,6 +990,9 @@ msgstr "Ответов, отображаемых в треде (в листе т
 
 msgid "Reply"
 msgstr "Ответ"
+
+msgid "Post reply"
+msgstr "Ответить"
 
 msgid "Report"
 msgstr "Пожаловаться"

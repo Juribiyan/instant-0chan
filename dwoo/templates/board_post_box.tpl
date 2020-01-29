@@ -1,4 +1,3 @@
-<input type="hidden" name="ffdata_savedon" value="" />
 <input type="hidden" name="board" value="{$board.name}" />
 <input type="hidden" name="replythread" value="<!sm_threadid>" />
 <input type="hidden" name="makepost" value="1" />
@@ -9,7 +8,7 @@
 <table class="postform">
 	<tbody>
 	{if $board.forcedanon neq 1}
-		<tr>
+		<tr class="name-row">
 			<td class="postblock">
 				{t}Name{/t}</td>
 			<td>
@@ -20,7 +19,7 @@
 			</td>
 		</tr>
 	{/if}
-	<tr>
+	<tr class="sage-row">
 		<td class="postblock">
 			Sage</td>
 		<td>
@@ -30,36 +29,29 @@
 		</td>
 	</tr>
 	{if $board.enablecaptcha eq 1}
-	<tr>
+	<tr class="captcha-row">
 		<td class="postblock"></td>
 		<td><nobr class="captcharow">
-			<input type="text" onfocus="return Captcha.refreshOnce()" name="captcha" placeholder="{t}Captcha{/t}" size="28" accesskey="c" style="vertical-align: middle" autocomplete="off">
+			<input type="text" name="captcha" placeholder="{t}Captcha{/t}" size="28" accesskey="c" style="vertical-align: middle" autocomplete="off">
 			<script>document.write('<div class="captchawrap cw-initial" title="{t}Refresh captcha{/t}"><div class="captcha-show msg">{t}Show captcha{/t}</div><img class="captchaimage" valign="middle" border="0" alt="Captcha image"><div class="rotting-indicator"></div><div class="rotten-msg msg">{t}Captcha has expired{t}.</div></div>')</script>
 			<noscript><iframe class="captchawrap" src="{%KU_BOARDSFOLDER}nojscaptcha.php" frameborder="0" width="150" height="32" style="vertical-align: middle;"></iframe></noscript>
 		</nobr></td>
 	</tr>
 	{/if}
-	<tr>
+	<tr class="subject-send-row">
 		<td class="postblock">
 			{t}Subject{/t}
 		</td>
 		<td class="subject-submit">
-			{strip}<input type="text" name="subject" placeholder="{t}Subject{/t}" size="35" maxlength="{%KU_MAXSUBJLENGTH}" accesskey="s" />&nbsp;<br class="onsmall-show"><input type="submit" value="
-			{if %KU_QUICKREPLY && $replythread eq 0}
-				{t}Submit{/t}" accesskey="z" />&nbsp;<small class="posttypeindicator">({t}new thread{/t})</small>
-			{elseif %KU_QUICKREPLY && $replythread neq 0}
-				{t}Reply{/t}" accesskey="z" />&nbsp;<small class="posttypeindicator">({t}reply to{/t} <!sm_threadid>)</small>
-			{else}
-				{t}Submit{/t}" accesskey="z" />
-			{/if}{/strip}
+			{strip}<input type="text" name="subject" placeholder="{t}Subject{/t}" size="35" maxlength="{%KU_MAXSUBJLENGTH}" accesskey="s" />&nbsp;<input class="primary styled-button" type="submit" value="{if $replythread eq 0}{t}Submit{/t}{else}{t}Post reply{/t}{/if}" accesskey="z" />{/strip}
 		</td>
 	</tr>
-	<tr>
+	<tr class="message-row">
 		<td class="postblock">
 			{t}Message{/t}
 		</td>
 		<td>
-			<div class="markupbtns yesscript"><nobr style="font-size: 2px;">
+			<div class="markupbtns yesscript">{* <nobr style="font-size: 2px;"> *}
 				<a title="{t}Bold{/t}" href="#" class="uibutton uib-mup" data-mups="**" data-mupe="**"><b>{t}B{/t}</b></a>
 				<a title="{t}Italic{/t}" href="#" class="uibutton uib-mup" data-mups="*" data-mupe="*"><i>{t}I{/t}</i></a>
 				<a title="{t}Undeline{/t}" href="#" class="uibutton uib-mup" data-mups="[u]" data-mupe="[/u]"><u>{t}U{/t}</u></a>
@@ -79,23 +71,16 @@
 				<a title="{t}Numbered list{/t}" href="#" class="uibutton uib-bul" data-bul="# "><span>#</span></a>
 				<a title="{t}Open LaTex editor{/t}" href="#" class="uibutton uib-tx">TeX</a>
 				<a title="Cut" href="#" class="uibutton uib-mup" data-mups="[cut]" data-mupe="">Cut</a>
-			</nobr></div>
+			<!-- </nobr> --></div>
 			<textarea name="message" cols="50" rows="4" accesskey="m"></textarea>
 		</td>
 	</tr>
-	{* if $board.enablecaptcha eq 1}
-		<tr>
-			<td class="postblock">{t}Captcha{/t}</td>
-			<td colspan="2">{$recaptcha}</td>
-		</tr>
-	{/if *}
-
-	{* <noscript> *}
 	<input type="hidden" name="legacy-posting" value="1" />
 	{if $board.filetypes_allowed}
-		<tr>
+		<tr class="file-row">
 			<td class="postblock">
-				{t}File{/t}<a href="#" onclick="togglePassword(); return false;" style="text-decoration: none;" accesskey="x">&nbsp;</a>
+				<span class="file-count">{t}File{/t}</span>
+				<a href="#" onclick="togglePassword(); return false;" style="text-decoration: none;" accesskey="x">&nbsp;</a>
 			</td>
 			<td>
 				<div class="noscript">
@@ -129,9 +114,6 @@
 							<label for="addfile-{$embcnt}" title="{t}Add file{/t}" class="add-embed-button b-icon">+</label>
 							<br>
 						{/if}
-						{* if $replythread eq 0 && $board.enablenofile eq 1 }
-							[<input type="checkbox" name="nofile" id="nofile" accesskey="q" /><label for="nofile"> {t}No File{/t}</label>]
-						{/if *}
 					{/for}
 				</div class="noscript">
 				<div class="yesscript drop-area">
@@ -145,7 +127,7 @@
 		</tr>
 	{/if}
 	{if $board.embeds_allowed}
-		<tr>
+		<tr class="embed-row">
 			<td class="postblock">
 				{t}Embed{/t}
 			</td>
@@ -172,16 +154,15 @@
 			</td>
 		</tr>
 	{/if}
-	{* </noscript> *}
-		<tr>
+		<tr class="password-row">
 			<td class="postblock">
 				{t}Password{/t}
 			</td>
 			<td>
-				<input class="make-me-readonly" type="password" name="postpassword" size="8" accesskey="p" />&nbsp;{t}(for post and file deletion){/t}
+				<input class="make-me-readonly" type="password" placeholder="{t}Password{/t}" name="postpassword" size="8" accesskey="p" /><div><span>{t}(for post and file deletion){/t}</span></div>
 			</td>
 		</tr>
-		<tr>
+		<tr class="ttl-row">
 			<td class="postblock">
 				<abbr title="{t}Time to live{/t}">TTL</abbr>
 			</td>
@@ -193,7 +174,7 @@
 				<input type="number" value="0" name="ttl" min="0" style="width: 7ch">&nbsp;{t}hours{/t}
 			</td>
 		</tr>
-		<tr>
+		<tr class="noko-row">
 			<td class="postblock">
 				{t}Go to thread{/t}
 			</td>
@@ -203,11 +184,25 @@
 			</label>
 			</td>
 		</tr>
-		<tr id="passwordbox" style="display: none;"><td></td><td></td></tr>
-
-		<tr>
+		<tr class="fake-password-row" id="passwordbox" style="display: none;"><td></td><td></td></tr>
+		<tr class="simplified-send-row">
+		  <td colspan="2">
+		  	<button class="styled-button s-file" title="{t}Add files{/t}...">
+		  	  <svg class="icon next-to-text"><use xlink:href="#i-clip"></use></svg>
+		  	</button>
+		    <button class="styled-button primary" type="submit">
+		      <svg class="icon next-to-text"><use xlink:href="#i-send"></use></svg>
+		      Отправить
+		    </button>
+		    <button class="styled-button" type="submit" title="Sage" name="sagebtn" value="1">
+		    	<noscript>Sage</noscript>
+		      <svg class="icon sage-icon"><use xlink:href="#i-send"></use></svg>
+		    </button>
+		  </td>
+		</tr>
+		<tr class="blotter-row">
 			<td colspan="2" class="blotter">
-				<div class="blotterhead">[<a href="#" onclick="toggleblotter();return false;" class="xlink"><b>{t}Info{/t}</b></a>{if $board.enablecatalog eq 1}  | <a href="{%KU_BOARDSFOLDER}{$board.name}/catalog.html"><b>{t}Catalog{/t}</b></a>{/if}]</div>
+				<div class="blotterhead yesscript">[<a href="#" onclick="toggleblotter();return false;" class="xlink"><b>{t}Info{/t}</b></a>]</div>
 				<ul style="margin-left: 0; margin-top: 0; margin-bottom: 0; padding-left: 0;" class="blotter-entries">
 					<li>{t}Supported file types are{/t}: {strip}
 					{if $board.filetypes_allowed neq ''}

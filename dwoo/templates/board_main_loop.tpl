@@ -63,7 +63,7 @@
     {$post.timestamp_formatted}
    </span>
   </label>
-  <span class="reflink">{$post.reflink}</span>
+  <span class="reflink" data-id="{$post.id}" data-b="{$board.name}">{$post.reflink}</span>
   {if $post.ttl}
     <span class="post-ttl" data-deleted-timestamp="{$post.deleted_timestamp}" title="{t}To be deleted on{/t} {$post.deleted_timestamp_formatted}">{$post.ttl}</span>
   {/if}
@@ -94,7 +94,7 @@
    class="qrl" 
    title="{strip}{t}Quick Reply{/t}
     {if $post.parentid neq 0}
-     {t}in thread{/t} {$post.parentid}
+     &nbsp;{t}in thread{/t} {$post.parentid}
     {/if}
    {/strip}">
     <svg class="icon b-icon"><use xlink:href="#i-qr"></use></svg>

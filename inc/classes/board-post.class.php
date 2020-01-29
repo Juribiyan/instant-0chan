@@ -318,11 +318,11 @@ class Board {
     // build catalog →
     if ($this->board['enablecatalog'] == 1) {
       $executiontime_start_catalog = microtime_float();
-      $catalog_head = $this->PageHeader().
+      $catalog_head = $this->PageHeader(0,0,-1,1).
       '<script src="'.KU_BOARDSFOLDER.'lib/javascript/lodash.min.js"></script>'.
       '<script> is_catalog=true; </script>'.
-      '&#91;<a href="' . KU_BOARDSFOLDER . $this->board['name'] . '/">'._gettext('Return').'</a>&#93; '.
-      '&#91;<a href="#" id="refresh_catalog">'._gettext('Refresh').'</a>&#93;'.
+      /*'&#91;<a href="' . KU_BOARDSFOLDER . $this->board['name'] . '/">'._gettext('Return').'</a>&#93; '.
+      '&#91;<a href="#" id="refresh_catalog">'._gettext('Refresh').'</a>&#93;'.*/
       '<div class="catalogmode">'.
       _gettext('Catalog Mode').'<div id="catalog-controls"></div></div>' . "\n".
       '<div id="catalog-contents"></div>';
@@ -642,7 +642,7 @@ class Board {
 	 * @param integer $liststooutput The number of list pages which will be generated (text boards only)
 	 * @return string The built header
 	 */
-	function PageHeader($replythread = '0', $liststart = '0', $liststooutput = '-1') {
+	function PageHeader($replythread = '0', $liststart = '0', $liststooutput = '-1', $is_catalog = '0') {
 		global $tc_db, $CURRENTLOCALE;
 
 		$tpl = Array();
@@ -668,6 +668,7 @@ class Board {
 		$this->dwoo_data->assign('ad_right', $ad_right);
 		$this->dwoo_data->assign('board', $this->board);
 		$this->dwoo_data->assign('replythread', $replythread);
+    $this->dwoo_data->assign('is_catalog', $is_catalog);
 		$topads = $tc_db->GetOne("SELECT code FROM `" . KU_DBPREFIX . "ads` WHERE `position` = 'top' AND `disp` = '1'");
     $this->dwoo_data->assign('topads', $topads);
     // #snivystuff include alien style
