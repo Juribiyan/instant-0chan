@@ -519,8 +519,8 @@ class Upload {
 						if ($video_data['error'])
 							$this->exitWithUploadErrorPage($video_data['error'], $atype, $i, $filename);
 						$embed_filename = $attachment['embedtype'].'-'.$attachment['embed'].'-';
-						$attachment['file_thumb_location'] = KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $embed_filename . 's.jpg';
-						$attachment['file_thumb_cat_location'] = KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $embed_filename . 'c.jpg';
+						$attachment['file_thumb_location'] = KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . urlencode($embed_filename) . 's.jpg';
+						$attachment['file_thumb_cat_location'] = KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . urlencode($embed_filename) . 'c.jpg';
 						// Copy or create thumbnail
 						$metaData = stream_get_meta_data($thumb_tmpfile);
 						$thumbfile = $metaData['uri'];
