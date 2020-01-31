@@ -2319,7 +2319,7 @@ figure:not(.unwrapped):hover .playable-thumb {
   width: 450px;
   display: none;
 }
-.vertical-video {
+.vertical-video, .soundcloud-embed {
   width: 250px;
 }
 .unwrapped .embed-wrap .emb-iframe-wrapper {
