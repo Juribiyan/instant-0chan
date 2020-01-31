@@ -219,15 +219,23 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
     curl_setopt($ch, CURLOPT_PROXY, I0_CURL_PROXY);
 
   // Getting a URL
-  if ($site == 'cob')
-    $url = "http://coub.com/api/v2/coubs/".$code.".json";
-  if ($site == 'vim')
-    $url = 'http://vimeo.com/api/v2/video/'.$code.'.json';
-  if ($site == 'you')
-    $url = 'https://www.googleapis.com/youtube/v3/videos?part=contentDetails%2Csnippet&id='.$code.'&key='.KU_YOUTUBE_APIKEY;
-  if ($site == 'scl')
-    $url = 'https://soundcloud.com/oembed?url=https%3A%2F%2F' . urlencode($code) . '&format=json';
-  curl_setopt($ch, CURLOPT_URL,$url);
+  switch ($site) {
+    case 'cob':
+      $url = "https://coub.com/api/v2/coubs/".$code.".json";
+      break;
+    case 'vim':
+      $url = 'https://vimeo.com/api/v2/video/'.$code.'.json';
+      break;
+    case 'you':
+      $url = 'https://www.googleapis.com/youtube/v3/videos?part=contentDetails%2Csnippet&id='.$code.'&key='.KU_YOUTUBE_APIKEY;
+      break;
+    case 'scl':
+      $url = 'https://soundcloud.com/oembed?url=https%3A%2F%2F' . urlencode($code) . '&format=json';
+      break;
+    default:
+      return array('error' => _gettext('No JSON URL specified.'));
+  }
+  curl_setopt($ch, CURLOPT_URL, $url);
 
   // Fetching data
   $result = curl_exec($ch);
@@ -254,12 +262,14 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
           'med' => 640,
           'big' => 1280
       );
+      break;
     case 'vim':
       $widths_available = array(
           'small' => 100,
           'medium' => 200,
           'large' => 640
       );
+      break;
     case 'you':
       $widths_available = array(
           'default' => 120,
@@ -268,10 +278,14 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
           'standard' => 640,
           'maxres' => 1280
       );
+      break;
     case 'scl':
       $widths_available = array(
           'default' => 500
       );
+      break;
+    default:
+      return array('error' => _gettext('No thumbnails available.'));
   }
   $i = 0; 
   $options_available = count($widths_available);
@@ -288,12 +302,16 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
   switch ($site) {
     case 'cob':
       $thumb_url = preg_replace('/%{version}/', $chosen_preset, $data['image_versions']['template']);
+      break;
     case 'vim':
       $thumb_url = preg_replace('/\.webp/', '.jpg', $data[0]['thumbnail_'.$chosen_preset]);
+      break;
     case 'you':
       $thumb_url = $data['items'][0]['snippet']['thumbnails'][$chosen_preset]['url'];
+      break;
     case 'scl':
       $thumb_url = $data['thumbnail_url'];
+      break;
     default:
       return array('error' => _gettext('No thumb URL specified.'));
   }
@@ -326,20 +344,24 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
       $r['height'] = (int)$data['dimensions']['big'][1];
       $r['title'] = $data['title'];
       $duration = $data['duration'];
+      break;
     case 'vim':
       $r['width'] = (int)$data[0]['width'];
       $r['height'] = (int)$data[0]['height'];
       $r['title'] = $data[0]['title'];
       $duration = $data[0]['duration'];
+      break;
     case 'you':
       $r['width'] = 1920;
       $r['height'] = 1080;
       $r['title'] = $data['items'][0]['snippet']['title'];
       $duration = preg_replace_callback('/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/', 'ISO8601_callback', $data['items'][0]['contentDetails']['duration']);
+      break;
     case 'scl':
       $r['width'] = 500;
       $r['height'] = 500;
       $r['title'] = $data['title'];
+      break;
     default:
       return array('error' => _gettext('API returned invalid data.'));
   }
