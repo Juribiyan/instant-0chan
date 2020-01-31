@@ -181,9 +181,9 @@
          <div class="embed-wrap">
           <div class="emb-iframe-wrapper" data-w="{$embed.image_w}" data-h="{$embed.image_h}" data-code="{$embed.file}" data-site="{$embed.site_name}"{if $embed.start} data-start="{$embed.start}" data-startraw="{$embed.file_size}"{/if}></div>
           <div class="embed-overlay"></div>
-          <img class="embed-thumbnail" src="{$file_path}/thumb/{$embed.thumbnail}" alt="">
+          <img class="embed-thumbnail" src="{$file_path}/thumb/{urlencode($embed.thumbnail)}" alt="">
           <div class="embed-title">
-           <a href="{$embed.videourl}" target="_blank" title="{urlencode($embed.file_original)} — {t}Watch on{/t} {$embed.site_name}">{$embed.file_original}</a>
+           <a href="{$embed.videourl}" target="_blank" title="{$embed.file_original} — {t}Watch on{/t} {$embed.site_name}">{$embed.file_original}</a>
           </div>
           {if $embed.file_size_formatted neq '0'}<div class="embed-duration">{$embed.file_size_formatted}</div>{/if}
           <img src="{%KU_BOARDSFOLDER}images/site-logos/{strtolower($embed.site_name)}.png" alt="" class="embed-logo">

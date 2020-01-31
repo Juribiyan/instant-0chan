@@ -281,7 +281,7 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
       break;
     case 'scl':
       $widths_available = array(
-          'default' => 500
+          'default' => 250
       );
       break;
     default:
