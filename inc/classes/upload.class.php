@@ -489,7 +489,7 @@ class Upload {
 			}
 			// Handle Embed
 			else {
-				$attachment['embed'] = strip_tags(substr($attachment['embed'], 0, 20));
+				$attachment['embed'] = ($attachment['embedtype'] == 'scl') ? strip_tags(($attachment['embed'])) : strip_tags(substr($attachment['embed'], 0, 20));
 				$video_id = $attachment['embed'];
 				$attachment['file_name'] = $video_id;
 
