@@ -166,7 +166,8 @@ class Upload {
 		$sites = array(
 			'you' => "/(?:youtu(?:\.be|be\.com)\/(?:.*v(?:\/|=)|(?:.*\/)?)(?P<code>[\w'-]+))(?:[?#&]t=(?:(?P<h>[0-9]{1,2})h)?(?:(?P<m>[0-9]{1,2})m)?(?:(?P<s>[0-9]{1,2})s)?)?/i",
 			'vim' => "/[\w\W]*vimeo\.com\/(?:.*?)(?P<code>[0-9]+)(?:#t=(?:(?P<h>[0-9]{1,2})h)?(?:(?P<m>[0-9]{1,2})m)?(?:(?P<s>[0-9]{1,2})s)?)?/i",
-			'cob' => "/[\w\W]*coub\.com\/view\/(?P<code>[\w\W]*)[\w\W]*/i"
+			'cob' => "/[\w\W]*coub\.com\/view\/(?P<code>[\w\W]*)[\w\W]*/i",
+			'scl' => "/[\w\W]*soundcloud.com\/(?P<code>[\w\W]*)[\w\W]*/i",
 		);
 		foreach ($sites as $s => $rx) {
 			preg_match($rx, $url, $matches);
