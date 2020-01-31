@@ -230,7 +230,7 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
       $url = 'https://www.googleapis.com/youtube/v3/videos?part=contentDetails%2Csnippet&id='.$code.'&key='.KU_YOUTUBE_APIKEY;
       break;
     case 'scl':
-      $url = 'https://soundcloud.com/oembed?url=https%3A%2F%2F' . urlencode($code) . '&format=json';
+      $url = 'https://soundcloud.com/oembed?url=https%3A%2F%2Fsoundcloud.com%2F' . urlencode($code) . '&format=json';
       break;
     default:
       return array('error' => _gettext('No JSON URL specified.'));
