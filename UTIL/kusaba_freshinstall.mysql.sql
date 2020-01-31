@@ -478,9 +478,10 @@ INSERT INTO `PREFIX_filetypes`
 INSERT INTO `PREFIX_events` (`name`, `at`) VALUES ('pingback', 0), ('sitemap', 0);
 
 INSERT INTO `PREFIX_embeds` (`id`, `filetype`, `name`, `videourl`) VALUES
-  (1, 'you', 'Youtube', 'http://www.youtube.com/watch?v='),
-  (2, 'vim', 'Vimeo', 'http://vimeo.com/'),
-  (3, 'cob', 'Coub', 'http://coub.com/view/');
+  (1, 'you', 'Youtube', 'https://www.youtube.com/watch?v='),
+  (2, 'vim', 'Vimeo', 'https://vimeo.com/'),
+  (3, 'cob', 'Coub', 'https://coub.com/view/');
+  (3, 'scl', 'Soundcloud', 'https://soundcloud.com/');
 
 INSERT INTO `PREFIX_boards` 
 (`section`, `order`, `name`, `desc`,                    `maximagesize`, `maxpages`, `createdon`,           `anonymous`, `forcedanon`, `enablenofile`, `dice`, `useragent` ) VALUES

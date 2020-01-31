@@ -195,7 +195,7 @@ function fastImageCopyResampled(&$dst_image, &$src_image, $dst_x, $dst_y, $src_x
 /**
  * Fetch information about the video from hosting's API
  *
- * @param string $site Website name (you=Youtube, vim=Vimeo, cob=Coub)
+ * @param string $site Website name (you=Youtube, vim=Vimeo, cob=Coub, scl=Soundcloud)
  * @param string $code Video code
  * @param integer $maxwidth Maximum thumbnail width in pixels
  * @return array(
@@ -207,8 +207,9 @@ function fastImageCopyResampled(&$dst_image, &$src_image, $dst_x, $dst_y, $src_x
  	 )
  */
 function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
-  if (! in_array($site, array('you', 'vim', 'cob')))
+  if (!in_array($site, array('you', 'vim', 'cob', 'scl')))
     return array('error' => 'unsupported_site');
+
   // Pre-setup
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -216,6 +217,7 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
   curl_setopt ($ch, CURLOPT_TIMEOUT, 10);
   if (I0_CURL_PROXY)
     curl_setopt($ch, CURLOPT_PROXY, I0_CURL_PROXY);
+
   // Getting a URL
   if ($site == 'cob')
     $url = "http://coub.com/api/v2/coubs/".$code.".json";
@@ -223,9 +225,12 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
     $url = 'http://vimeo.com/api/v2/video/'.$code.'.json';
   if ($site == 'you')
     $url = 'https://www.googleapis.com/youtube/v3/videos?part=contentDetails%2Csnippet&id='.$code.'&key='.KU_YOUTUBE_APIKEY;
+  if ($site == 'scl')
+    $url = 'https://soundcloud.com/oembed?url=https%3A%2F%2F' . urlencode($code) . '&format=json';
   curl_setopt($ch, CURLOPT_URL,$url);
+
   // Fetching data
-  $result=curl_exec($ch);
+  $result = curl_exec($ch);
   switch (curl_getinfo($ch, CURLINFO_HTTP_CODE)) {
     case 404: return array('error' => _gettext('Unable to connect to')); break;
     case 303: return array('error' => _gettext('Invalid video ID.')); break;
@@ -238,31 +243,35 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
   $data = json_decode($result, true);
   if ($data == NULL)
     return array('error' => _gettext('API returned invalid data.'));
+
   // Find needed thumbnail width
-  if ($site == 'cob') {
-    $widths_available = array(
-      'micro' => 70,
-      'tiny' => 112,
-      'small' => 400,
-      'med' => 640,
-      'big' => 1280
-    );
-  }
-  if ($site == 'vim') {
-    $widths_available = array(
-      'small' => 100,
-      'medium' => 200,
-      'large' => 640
-    );
-  }
-  if ($site == 'you') {
-    $widths_available = array(
-      'default' => 120,
-      'medium' => 320,
-      'high' => 480,
-      'standard' => 640,
-      'maxres' => 1280
-    );
+  switch ($site) {
+    case 'cob':
+       widths_available = array(
+          'micro' => 70,
+          'tiny' => 112,
+          'small' => 400,
+          'med' => 640,
+          'big' => 1280
+      );
+    case 'vim':
+      $widths_available = array(
+          'small' => 100,
+          'medium' => 200,
+          'large' => 640
+      );
+    case 'you':
+      $widths_available = array(
+          'default' => 120,
+          'medium' => 320,
+          'high' => 480,
+          'standard' => 640,
+          'maxres' => 1280
+      );
+    case 'scl':
+      $widths_available = array(
+          'default' => 500
+      );
   }
   $i = 0; 
   $options_available = count($widths_available);
@@ -274,18 +283,23 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
       break;
     }
   }
+
   // Get thumbnail URL
-  if ($site == 'cob') {
-    $thumb_url = preg_replace('/%{version}/', $chosen_preset, $data['image_versions']['template']);
+  switch ($site) {
+    case 'cob':
+      $thumb_url = preg_replace('/%{version}/', $chosen_preset, $data['image_versions']['template']);
+    case 'vim':
+      $thumb_url = preg_replace('/\.webp/', '.jpg', $data[0]['thumbnail_'.$chosen_preset]);
+    case 'you':
+      $thumb_url = $data['items'][0]['snippet']['thumbnails'][$chosen_preset]['url'];
+    case 'scl':
+      $thumb_url = $data['thumbnail_url'];
+    default:
+      return array('error' => _gettext('No thumb URL specified.'));
   }
-  if ($site == 'vim') {
-    $thumb_url = preg_replace('/\.webp/', '.jpg', $data[0]['thumbnail_'.$chosen_preset]);
-  }
-  if ($site == 'you') {
-    $thumb_url = $data['items'][0]['snippet']['thumbnails'][$chosen_preset]['url'];
-  }
-  if (! $thumb_url)
+  if (!$thumb_url)
     return array('error' => _gettext('API returned invalid data.'));
+
   // Download thumbnail to temporary directory
   $ch = curl_init($thumb_url);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -303,32 +317,38 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
     default:  return array('error' => _gettext('Invalid response code ').' (Thumb)'); break;
   }
   curl_close($ch);
+
   // Get the rest of the data
   $r = array('width' => $thumbwidth);
-  if ($site == 'cob') {
-  	$r['width'] = (int)$data['dimensions']['big'][0];
-  	$r['height'] = (int)$data['dimensions']['big'][1];
-    $r['title'] = $data['title'];
-    $duration = $data['duration'];
-  }
-  if ($site == 'vim') {
-  	$r['width'] = (int)$data[0]['width'];
-  	$r['height'] = (int)$data[0]['height'];
-    $r['title'] = $data[0]['title'];
-    $duration = $data[0]['duration'];
-  }
-  if ($site == 'you') {
-  	$r['width'] = 1920;
-  	$r['height'] = 1080;
-    $r['title'] = $data['items'][0]['snippet']['title'];
-    $duration = preg_replace_callback('/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/', 'ISO8601_callback', $data['items'][0]['contentDetails']['duration']);
+  switch ($site) {
+    case 'cob':
+      $r['width'] = (int)$data['dimensions']['big'][0];
+      $r['height'] = (int)$data['dimensions']['big'][1];
+      $r['title'] = $data['title'];
+      $duration = $data['duration'];
+    case 'vim':
+      $r['width'] = (int)$data[0]['width'];
+      $r['height'] = (int)$data[0]['height'];
+      $r['title'] = $data[0]['title'];
+      $duration = $data[0]['duration'];
+    case 'you':
+      $r['width'] = 1920;
+      $r['height'] = 1080;
+      $r['title'] = $data['items'][0]['snippet']['title'];
+      $duration = preg_replace_callback('/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/', 'ISO8601_callback', $data['items'][0]['contentDetails']['duration']);
+    case 'scl':
+      $r['width'] = 500;
+      $r['height'] = 500;
+      $r['title'] = $data['title'];
+    default:
+      return array('error' => _gettext('API returned invalid data.'));
   }
   if ($r['width'] <= 0 || $r['height'] <= 0) {
     // var_dump($r);
   	return array('error' => _gettext('API returned invalid data.'));
   }
   // Convert duration into readable string
-  $r['duration'] = preg_replace('/^00:/m', '', gmdate("H:i:s", round($duration, 0)));
+  $r['duration'] = isset($duration) ? preg_replace('/^00:/m', '', gmdate("H:i:s", round($duration, 0))) : 0;
   $r['error'] = false;
   return $r;
 }
