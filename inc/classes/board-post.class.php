@@ -1005,7 +1005,7 @@ class Post extends Board {
          WHERE
           `boardid` = '" . $boardid . "'
           AND
-          `file_id` IN (".implode($file_ids, ',').")");
+          `file_id` IN (".implode(',', $file_ids).")");
       // Mark posts as deleted
       $tc_db->Execute("UPDATE `".KU_DBPREFIX."posts`
        SET
@@ -1015,7 +1015,7 @@ class Post extends Board {
        WHERE
         `boardid` = '" . $boardid . "'
         AND
-        `id` IN (".implode($post_ids, ',').")");
+        `id` IN (".implode(',', $post_ids).")");
       // Physically delete all files
       foreach($files as $file) {
         if ($file['file'] != 'removed' && $file['file_size'] > 0)
@@ -1026,7 +1026,7 @@ class Post extends Board {
        WHERE
         `boardid` = '" . $boardid . "'
         AND
-        `id` IN (".implode($post_ids, ',').")");
+        `id` IN (".implode(',', $post_ids).")");
 
       return (count($post_ids)+1).' '; // huh?
     }

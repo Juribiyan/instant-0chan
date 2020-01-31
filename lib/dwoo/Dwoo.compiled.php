@@ -1410,6 +1410,8 @@ class Dwoo_Security_Policy
         'sizeof' => true,
         'in_array' => true,
         'is_array' => true,
+        'urlencode' => true,
+        'urldecode' => true
     );
     protected $allowedMethods = array();
     protected $allowedDirectories = array();

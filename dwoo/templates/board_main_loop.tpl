@@ -183,9 +183,9 @@
           <div class="embed-overlay"></div>
           <img class="embed-thumbnail" src="{$file_path}/thumb/{$embed.thumbnail}" alt="">
           <div class="embed-title">
-           <a href="{$embed.videourl}" target="_blank" title="{$embed.file_original} — {t}Watch on{/t} {$embed.site_name}">{$embed.file_original}</a>
+           <a href="{$embed.videourl}" target="_blank" title="{urlencode($embed.file_original)} — {t}Watch on{/t} {$embed.site_name}">{$embed.file_original}</a>
           </div>
-          {if $embed.file_size_formatted neq '00:00'}<div class="embed-duration">{$embed.file_size_formatted}</div>{/if}
+          {if $embed.file_size_formatted neq '0'}<div class="embed-duration">{$embed.file_size_formatted}</div>{/if}
           <img src="{%KU_BOARDSFOLDER}images/site-logos/{strtolower($embed.site_name)}.png" alt="" class="embed-logo">
           <button type="submit" class="emb-button yesscript file-control file-menu-toggle emb-button" value="{$embed.file_id}">
            <svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-dots"></use></svg>
