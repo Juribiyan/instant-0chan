@@ -1411,7 +1411,8 @@ class Dwoo_Security_Policy
         'in_array' => true,
         'is_array' => true,
         'urlencode' => true,
-        'urldecode' => true
+        'urldecode' => true,
+        'str_replace' => true
     );
     protected $allowedMethods = array();
     protected $allowedDirectories = array();
