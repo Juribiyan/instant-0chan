@@ -247,7 +247,7 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
   // Find needed thumbnail width
   switch ($site) {
     case 'cob':
-       widths_available = array(
+      $widths_available = array(
           'micro' => 70,
           'tiny' => 112,
           'small' => 400,
