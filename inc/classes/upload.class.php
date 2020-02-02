@@ -518,6 +518,9 @@ class Upload {
 						$video_data = fetch_video_data($attachment['embedtype'], $attachment['embed'], KU_VIDEOTHUMBWIDTH, $thumb_tmpfile);
 						if ($video_data['error'])
 							$this->exitWithUploadErrorPage($video_data['error'], $atype, $i, $filename);
+						if ($video_data['code']) {
+							$attachment['embed'] = $video_data['code'];
+						}
 						$embed_filename = $attachment['embedtype'].'-'.$attachment['embed'].'-';
 						$attachment['file_thumb_location'] = KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . str_replace("/", "_", $embed_filename) . 's.jpg';
 						$attachment['file_thumb_cat_location'] = KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . str_replace("/", "_", $embed_filename) . 'c.jpg';

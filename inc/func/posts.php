@@ -361,6 +361,10 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
       $r['width'] = 500;
       $r['height'] = 500;
       $r['title'] = $data['title'];
+      preg_match('/tracks\/([0-9]+)&/m', urldecode($data['html']), $matches);
+      if ($matches) {
+        $r['code'] = $matches[1];
+      }
       break;
     default:
       return array('error' => _gettext('API returned invalid data.'));
