@@ -28,16 +28,6 @@
  			</label>
 		</td>
 	</tr>
-	{if $board.enablecaptcha eq 1}
-	<tr class="captcha-row">
-		<td class="postblock"></td>
-		<td><nobr class="captcharow">
-			<input type="text" name="captcha" placeholder="{t}Captcha{/t}" size="28" accesskey="c" style="vertical-align: middle" autocomplete="off">
-			<script>document.write('<div class="captchawrap cw-initial" title="{t}Refresh captcha{/t}"><div class="captcha-show msg">{t}Show captcha{/t}</div><img class="captchaimage" valign="middle" border="0" alt="Captcha image"><div class="rotting-indicator"></div><div class="rotten-msg msg">{t}Captcha has expired{t}.</div></div>')</script>
-			<noscript><iframe class="captchawrap" src="{%KU_BOARDSFOLDER}nojscaptcha.php" frameborder="0" width="150" height="32" style="vertical-align: middle;"></iframe></noscript>
-		</nobr></td>
-	</tr>
-	{/if}
 	<tr class="subject-send-row">
 		<td class="postblock">
 			{t}Subject{/t}
@@ -75,6 +65,16 @@
 			<textarea name="message" cols="50" rows="4" accesskey="m"></textarea>
 		</td>
 	</tr>
+	{if $board.enablecaptcha eq 1}
+	<tr class="captcha-row">
+		<td class="postblock"></td>
+		<td><nobr class="captcharow">
+			<input type="text" name="captcha" placeholder="{t}Captcha{/t}" size="28" accesskey="c" style="vertical-align: middle" autocomplete="off">
+			<script>document.write('<div class="captchawrap cw-initial" title="{t}Refresh captcha{/t}"><div class="captcha-show msg">{t}Show captcha{/t}</div><img class="captchaimage" valign="middle" border="0" alt="Captcha image"><div class="rotting-indicator"></div><div class="rotten-msg msg">{t}Captcha has expired{t}.</div></div>')</script>
+			<noscript><iframe class="captchawrap" src="{%KU_BOARDSFOLDER}nojscaptcha.php" frameborder="0" width="150" height="32" style="vertical-align: middle;"></iframe></noscript>
+		</nobr></td>
+	</tr>
+	{/if}
 	<input type="hidden" name="legacy-posting" value="1" />
 	{if $board.filetypes_allowed}
 		<tr class="file-row">
