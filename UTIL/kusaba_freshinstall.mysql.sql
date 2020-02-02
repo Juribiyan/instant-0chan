@@ -481,7 +481,7 @@ INSERT INTO `PREFIX_embeds` (`id`, `filetype`, `name`, `videourl`) VALUES
   (1, 'you', 'Youtube', 'https://www.youtube.com/watch?v='),
   (2, 'vim', 'Vimeo', 'https://vimeo.com/'),
   (3, 'cob', 'Coub', 'https://coub.com/view/'),
-  (3, 'scl', 'Soundcloud', 'https://soundcloud.com/');
+  (4, 'scl', 'Soundcloud', 'https://soundcloud.com/');
 
 INSERT INTO `PREFIX_boards` 
 (`section`, `order`, `name`, `desc`,                    `maximagesize`, `maxpages`, `createdon`,           `anonymous`, `forcedanon`, `enablenofile`, `dice`, `useragent` ) VALUES
