@@ -66,15 +66,4 @@
 {if $boardlist_prebuilt}
 	<div id="boardlist_footer" class="navbar boardlist">{$boardlist_prebuilt}</div>
 {/if}
-</td>
-<td width="13" class="border-right"></td>
-</tr></tbody></table>
-<table width="98%" border="0" align="center" cellpadding="0" cellspacing="0" class="maintable">
-	<tbody>
-		<tr>
-	    <td width="20" height="84" class="bottom-left"></td>
-	    <td height="84" class="bottom-center">&nbsp;</td>
-	    <td width="19" height="84" class="bottom-right"></td>
-		</tr>
-	</tbody>
-</table>
+</div><!-- /.content -->

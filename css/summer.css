@@ -1,8 +1,10 @@
+html {
+  background-color: #F6FFEC;
+  background-image: repeating-linear-gradient(-45.5deg, transparent 0px, transparent .6px, #00000017 2px, transparent 3.4px, transparent 4px), linear-gradient(to top, #e6ffcc 0%, #e7ffcf 90px, #e7ffcf 140px, #f6ffed 200px, #f6ffed 100%);
+}
 body {
   font-size:10pt !important;
   font-family:"Trebuchet MS",Trebuchet,serif;
-  background: url(images/summer/bg_bottom.png) bottom repeat-x;
-  background-color: #F6FFEC;
   margin-left: 0px;
   margin-top: 0px;
   margin-right: 0px;
@@ -274,7 +276,8 @@ icon-checkbox-wrap input[type=checkbox]:checked + .icon-with-fallback .b-icon,
 }
 
 .bubble, .thought-bubble:after, .thought-bubble:before {
-  background: -webkit-gradient(linear, left top, left bottom, from(#f6ffec), to(#e7ffce));
+  background: -webkit-linear-gradient(top, #f6ffec 0%, #e7ffce 100%);
+  background: -o-linear-gradient(top, #f6ffec 0%, #e7ffce 100%);
   background: linear-gradient(to bottom, #f6ffec 0%, #e7ffce 100%);
   color: black;
 }
@@ -318,7 +321,6 @@ icon-checkbox-wrap input[type=checkbox]:checked + .icon-with-fallback .b-icon,
 /* --------------------------------------- Styled buttons --------------------------------------- */
 .styled-button {
   border: none;
-  background: -webkit-gradient(linear, left top, left bottom, from(#f6f6f6), to(#dcdcdc));
   background: linear-gradient(to bottom, #f6f6f6 0%, #dcdcdc 100%);
   border-radius: 1.66px;
   padding: 3px 8px;
@@ -334,7 +336,6 @@ icon-checkbox-wrap input[type=checkbox]:checked + .icon-with-fallback .b-icon,
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.33);
 }
 .styled-button:active {
-  background: -webkit-gradient(linear, left bottom, left top, from(#f6f6f6), to(#dcdcdc));
   background: linear-gradient(to top, #f6f6f6 0%, #dcdcdc 100%);
 }
 .styled-button:active,
@@ -343,29 +344,22 @@ icon-checkbox-wrap input[type=checkbox]:checked + .icon-with-fallback .b-icon,
 }
 .primary.styled-button {
   color: white;
-  background: url(images/summer/topbar-center.png);
-  background-size: 12px;
   text-shadow: 0 1px 2px #243e0e;
 }
 .primary.styled-button svg {
-  -webkit-filter: drop-shadow( 0 1px 1px #243e0e);
-          filter: drop-shadow( 0 1px 1px #243e0e);
+  filter: drop-shadow( 0 1px 1px #243e0e);
 }
 .primary.styled-button:hover {
-  -webkit-filter: brightness(1.1);
-          filter: brightness(1.1);
+  filter: brightness(1.1);
 }
 .primary.styled-button:active {
-  -webkit-filter: brightness(.9);
-          filter: brightness(.9);
+  filter: brightness(.9);
 }
 .bad-button.styled-button {
-  background: -webkit-gradient(linear, left top, left bottom, from(#d88585), to(#a76767));
   background: linear-gradient(to bottom, #d88585 0%, #a76767 100%);
   color: white;
 }
 .bad-button.styled-button:active {
-  background: -webkit-gradient(linear, left bottom, left top, from(#d88585), to(#a76767));
   background: linear-gradient(to top, #d88585 0%, #a76767 100%);
 }
 /* -------------------------------------- /Styled buttons --------------------------------------- */
@@ -375,12 +369,6 @@ icon-checkbox-wrap input[type=checkbox]:checked + .icon-with-fallback .b-icon,
   border-radius: 4px 4px 0 0;
   border-bottom-style: none;
   padding: 1.5px 10px 0.5px 10px;
-}
-@media only screen and (max-width: 666px) {
-  .uibutton {
-    border-radius: 4px;
-    border-bottom-style: solid;
-  }
 }
 .uibutton:hover {
   background: rgb(255, 255, 255);
@@ -414,14 +402,10 @@ icon-checkbox-wrap input[type=checkbox]:checked + .icon-with-fallback .b-icon,
 #mm-circle {
   overflow: visible;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
-  -webkit-transition-property: box-shadow, -webkit-transform;
-  transition-property: box-shadow, -webkit-transform;
   transition-property: transform, box-shadow;
-  transition-property: transform, box-shadow, -webkit-transform;
 }
 #mm-circle:hover {
-  -webkit-filter: brightness(1.1);
-          filter: brightness(1.1);
+  filter: brightness(1.1);
 }
 .mm-bars, #mmb-_options a, #mmb-_options a:visited {
   color: rgb(255, 255, 255);
@@ -434,4 +418,53 @@ icon-checkbox-wrap input[type=checkbox]:checked + .icon-with-fallback .b-icon,
 }
 .mm-item, .mm-item:visited {
   color: #427b1b;
+}
+
+.content {
+  padding: 9px;
+  z-index: 0;
+  box-shadow: 0 0px 5px 1px rgba(0, 0, 0, 0.8), 0 8px 5px #0000009e;
+  padding-top: 47px;
+  margin: 0 8px;
+  border-radius: 0 0 8px 8px;
+  position: relative;
+  margin-bottom: 83px;
+  padding-top: 0;
+}
+.content::before {
+  content:'';
+  height: 30px;
+  box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.8);
+  width: calc(100% + 18px);
+  display: block;
+  margin: 0 -9px 17px -9px;
+}
+.content::before, .styled-button.primary {
+  background-image: repeating-linear-gradient(-45.5deg, transparent 0px, transparent .6px, #79797917 2px, transparent 3.4px, transparent 4px), linear-gradient(to bottom, #b3d928 0%, #5aa52a 100%);
+}
+.content::after {
+  content:'';
+  height: 80px;
+  border-radius: 8px 8px 0 0;
+  background: linear-gradient(to bottom, #fff 0%, #d8d8d8 100%);
+  opacity: 0.5;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  bottom: -83px;
+  box-shadow: 0 0 6px black;
+}
+@media only screen and (max-width: 666px) {
+  .uibutton {
+    border-radius: 4px;
+    border-bottom-style: solid;
+  }
+  .content {
+    margin: 0;
+    padding-bottom: 16px!important;
+  }
+  .content::before {
+    width: 100%;
+    margin: 0 0 17px 0;
+  }
 }
