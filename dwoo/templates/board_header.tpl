@@ -68,10 +68,18 @@
 	  document.body.insertBefore(div, document.body.childNodes[0]);
 	});
 </script>
-<div class="content-background content">
-{if %KU_DISCLAIMER}
-	{include file='disclaimer.tpl'}
-{/if}
+<table width="98%" border="0" align="center" cellpadding="0" cellspacing="0" class="maintable">
+  <tbody><tr>
+    <td width="13" height="38" class="topbar-left"></td>
+    <td height="38" class="topbar-center"></td>
+    <td width="13" height="38" class="topbar-right"></td>
+  </tr>
+  <tr>
+    <td width="13" class="border-left"></td>
+    <td class="content-background" style="padding:9px">
+    {if %KU_DISCLAIMER}
+    	{include file='disclaimer.tpl'}
+    {/if}
 <div class="adminbar">
 {if $board.enablecatalog eq 1}[<a href="{%KU_BOARDSFOLDER}{$board.name}/catalog.html"><b>{t}Catalog{/t}</b></a>]{/if}
 [<a href="{%KU_WEBPATH}/kusaba.php" target="_top">{t}Frames{/t}</a>]&nbsp;[<a href="{%KU_CGIPATH}/manage.php" target="_top">{t}Manage{/t}</a>]

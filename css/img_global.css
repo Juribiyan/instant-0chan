@@ -1503,10 +1503,6 @@ input:-moz-placeholder {opacity: 0; }
     margin:0;
     padding:0!important;
   }
-  .content::before {
-    width: 100%;
-    margin: 0 0 17px 0;
-  }
   body {
     font-size: 0.8em!important;
   }

@@ -1,8 +1,6 @@
-html {
+html, body {
+	background: url(images/photon/bg_bottom.png) bottom  repeat-x;
 	background-color: #BBBBBB;
-	background-image: repeating-linear-gradient(-45.5deg, transparent 0px, transparent .6px, #00000017 2px, transparent 3.4px, transparent 4px), linear-gradient(to top, #949495 0%, #7f7f7f 90px, #7f7f7f 140px, #bbbbbb 200px, #bbbbbb 100%);
-}
-body {
 	color: #333333;
 	font-size:10pt !important;
 	font-family: "Trebuchet MS",Trebuchet,serif;
@@ -14,6 +12,9 @@ a {
 }
 a:visited {
 	color: #FF6600;
+}
+.uib-spoiler:before {
+  line-height: 18px;
 }
 a:hover {
 	color: #0066FF;
@@ -218,40 +219,40 @@ table td {
 .b-icon.pressed {
 	background-color: #a04000;
 }
+.topbar-left {
+  background: url('images/photon/topbar-left.png');
+}
+
+.topbar-center {
+  background: url('images/photon/topbar-center.png');
+}
+
+.topbar-right {
+  background: url('images/photon/topbar-right.png');
+}
+
+.border-left {
+  background: url('images/photon/border-left.png');
+}
+
+.border-right {
+  background: url('images/photon/border-right.png');
+}
+
+.bottom-left {
+  background: url('images/photon/bottom-left.png');
+}
+
+.bottom-right {
+  background: url('images/photon/bottom-right.png');
+}
+
+.bottom-center {
+  background: url('images/photon/bottom-center.png');
+}
 
 .content-background {
   background-color: #EEEEEE;
-}
-.content {
-  padding: 9px;
-  z-index: 0;
-  box-shadow: 0 0px 5px 1px rgba(0, 0, 0, 0.8), 0 8px 5px #0000009e;
-  padding-top: 47px;
-  margin: 0 8px;
-  border-radius: 0 0 8px 8px;
-  position: relative;
-  margin-bottom: 83px;
-  padding-top: 0;
-}
-.content::before {
-	content:'';
-	height: 30px;
-	box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.8);
-	background-image: repeating-linear-gradient(-45.5deg, transparent 0px, transparent .6px, #79797917 2px, transparent 3.4px, transparent 4px), linear-gradient(to bottom, #df7a29 0%, #d8c25b 100%);
-	width: calc(100% + 18px);
-	display: block;
-	margin: 0 -9px 17px -9px;
-}
-.content::after {
-	content:'';
-	height: 80px;
-	border-radius: 8px 8px 0 0;
-	background: linear-gradient(to bottom, #fff 0%, #d8d8d8 100%);
-	opacity: 0.5;
-	width: 100%;
-	position: absolute;
-	left: 0;
-	bottom: -83px;
 }
 
 .maintable {
@@ -272,8 +273,7 @@ table td {
 }
 .cat-entry:hover .cat-card {
   background: #ECECEC;
-  -webkit-box-shadow: 0 4px 7px rgba(0, 0, 0, 0.18);
-          box-shadow: 0 4px 7px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 4px 7px rgba(0, 0, 0, 0.18);
 }
 .nofile-removed {
 	border: 2px dashed #A6A7A9;
@@ -291,7 +291,6 @@ table td {
 }
 .cat-entry:after {
 	background: -webkit-gradient(linear, left top, left bottom, from(rgba(135,224,253,0)),to(rgb(221, 221, 221)));
-	background: -webkit-linear-gradient(top, rgba(135,224,253,0) 0%,rgb(221, 221, 221) 100%);
 	background: linear-gradient(to bottom, rgba(135,224,253,0) 0%,rgb(221, 221, 221) 100%);
 	border-radius: 0 0 4px 4px;
 }
@@ -301,12 +300,10 @@ table td {
 }
 .button-group {
 	background: rgba(255, 255, 255, 0.3);
-	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-	        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 .button-group:hover {
-  -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
-          box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
   background: rgba(255, 255, 255, 0.43);
   color: #fff;
 }
@@ -340,6 +337,7 @@ table td {
 /* --------------------------------------- Styled buttons --------------------------------------- */
 .styled-button {
   border: none;
+  background: -webkit-gradient(linear, left top, left bottom, from(#f6f6f6), to(#dcdcdc));
   background: linear-gradient(to bottom, #f6f6f6 0%, #dcdcdc 100%);
   border-radius: 1.66px;
   padding: 3px 8px;
@@ -355,6 +353,7 @@ table td {
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.33);
 }
 .styled-button:active {
+  background: -webkit-gradient(linear, left bottom, left top, from(#f6f6f6), to(#dcdcdc));
   background: linear-gradient(to top, #f6f6f6 0%, #dcdcdc 100%);
 }
 .styled-button:active,
@@ -365,24 +364,35 @@ table td {
   color: white;
   background-image: /* yay technology */
   	repeating-linear-gradient(-45.5deg, transparent 0px, transparent .6px, #79797917 2px, transparent 3.4px, transparent 4px), 
+  	-webkit-gradient(linear, left bottom, left top, from(#df7a29), to(#d8c25b));
+  background-image: /* yay technology */
+  	repeating-linear-gradient(-45.5deg, transparent 0px, transparent .6px, #79797917 2px, transparent 3.4px, transparent 4px), 
   	linear-gradient(to top, #df7a29 0%, #d8c25b 100%);
   text-shadow: 0 1px 2px #243e0e;
+  -webkit-transition: -webkit-filter .15s;
+  transition: -webkit-filter .15s;
   transition: filter .15s;
+  transition: filter .15s, -webkit-filter .15s;
 }
 .primary.styled-button svg {
-  filter: drop-shadow( 0 1px 1px #243e0e);
+  -webkit-filter: drop-shadow( 0 1px 1px #243e0e);
+          filter: drop-shadow( 0 1px 1px #243e0e);
 }
 .primary.styled-button:hover {
-  filter: brightness(1.1);
+  -webkit-filter: brightness(1.1);
+          filter: brightness(1.1);
 }
 .primary.styled-button:active {
-  filter: brightness(.9);
+  -webkit-filter: brightness(.9);
+          filter: brightness(.9);
 }
 .bad-button.styled-button {
+  background: -webkit-gradient(linear, left top, left bottom, from(#d88585), to(#a76767));
   background: linear-gradient(to bottom, #d88585 0%, #a76767 100%);
   color: white;
 }
 .bad-button.styled-button:active {
+  background: -webkit-gradient(linear, left bottom, left top, from(#d88585), to(#a76767));
   background: linear-gradient(to top, #d88585 0%, #a76767 100%);
 }
 /* -------------------------------------- /Styled buttons --------------------------------------- */
@@ -407,10 +417,14 @@ table td {
 #mm-circle {
 	overflow: visible;
 	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+	-webkit-transition-property: box-shadow, -webkit-transform;
+	transition-property: box-shadow, -webkit-transform;
 	transition-property: transform, box-shadow;
+	transition-property: transform, box-shadow, -webkit-transform;
 }
 #mm-circle:hover {
-	filter: brightness(1.1);
+	-webkit-filter: brightness(1.1);
+	        filter: brightness(1.1);
 }
 .mm-bars, #mmb-_options a, #mmb-_options a:visited {
   color: rgb(255, 255, 255);
@@ -439,14 +453,6 @@ table td {
   .uibutton {
     border-radius: 4px;
     border-bottom-style: solid;
-  }
-  .content {
-    margin: 0;
-    padding-bottom: 16px!important;
-  }
-  .content::before {
-    width: 100%;
-    margin: 0 0 17px 0;
   }
 }
 .uibutton:hover {

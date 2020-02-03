@@ -1,10 +1,9 @@
-html {
-  background-color: #ECF1FF;
-  background-image: repeating-linear-gradient(-45.5deg, transparent 0px, transparent .6px, #00000017 2px, transparent 3.4px, transparent 4px), linear-gradient(to top, #cdd9ff 0%, #cfdbff 90px, #cedbff 140px, #ffffff 200px, #ffffff 100%);
-}
 body {
   font-size:10pt !important;
   font-family:"Trebuchet MS",Trebuchet,serif;
+
+  background: url(images/winter/bg_bottom.png) bottom  repeat-x;
+  background-color: #ECF1FF;
   margin-left: 0px;
   margin-top: 0px;
   margin-right: 0px;
@@ -229,6 +228,37 @@ icon-checkbox-wrap input[type=checkbox]:checked + .icon-with-fallback .b-icon,
   background: #b7d9ff;
   box-shadow: 0 1px 2px black;
 }
+.topbar-left {
+  background: url('images/winter/topbar-left.png');
+}
+
+.topbar-center {
+  background: url('images/winter/topbar-center.png');
+}
+
+.topbar-right {
+  background: url('images/winter/topbar-right.png');
+}
+
+.border-left {
+  background: url('images/winter/border-left.png');
+}
+
+.border-right {
+  background: url('images/winter/border-right.png');
+}
+
+.bottom-left {
+  background: url('images/winter/bottom-left.png');
+}
+
+.bottom-right {
+  background: url('images/winter/bottom-right.png');
+}
+
+.bottom-center {
+  background: url('images/winter/bottom-center.png');
+}
 
 .content-background {
   background-color: #FCFDFF;
@@ -249,8 +279,7 @@ icon-checkbox-wrap input[type=checkbox]:checked + .icon-with-fallback .b-icon,
 }
 
 .bubble, .thought-bubble:after, .thought-bubble:before {
-  background: -webkit-linear-gradient(top, #ecf1ff 0%, #cedbff 100%);
-  background: -o-linear-gradient(top, #ecf1ff 0%, #cedbff 100%);
+  background: -webkit-gradient(linear, left top, left bottom, from(#ecf1ff), to(#cedbff));
   background: linear-gradient(to bottom, #ecf1ff 0%, #cedbff 100%);
   color: black;
 }
@@ -293,6 +322,7 @@ icon-checkbox-wrap input[type=checkbox]:checked + .icon-with-fallback .b-icon,
 /* --------------------------------------- Styled buttons --------------------------------------- */
 .styled-button {
   border: none;
+  background: -webkit-gradient(linear, left top, left bottom, from(#f6f6f6), to(#dcdcdc));
   background: linear-gradient(to bottom, #f6f6f6 0%, #dcdcdc 100%);
   border-radius: 1.66px;
   padding: 3px 8px;
@@ -308,6 +338,7 @@ icon-checkbox-wrap input[type=checkbox]:checked + .icon-with-fallback .b-icon,
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.33);
 }
 .styled-button:active {
+  background: -webkit-gradient(linear, left bottom, left top, from(#f6f6f6), to(#dcdcdc));
   background: linear-gradient(to top, #f6f6f6 0%, #dcdcdc 100%);
 }
 .styled-button:active,
@@ -316,22 +347,29 @@ icon-checkbox-wrap input[type=checkbox]:checked + .icon-with-fallback .b-icon,
 }
 .primary.styled-button {
   color: white;
+  background: url(images/winter/topbar-center.png);
+  background-size: 12px;
   text-shadow: 0 1px 2px #404040;
 }
 .primary.styled-button svg {
-  filter: drop-shadow( 0 1px 1px #404040);
+  -webkit-filter: drop-shadow( 0 1px 1px #404040);
+          filter: drop-shadow( 0 1px 1px #404040);
 }
 .primary.styled-button:hover {
-  filter: brightness(1.1);
+  -webkit-filter: brightness(1.1);
+          filter: brightness(1.1);
 }
 .primary.styled-button:active {
-  filter: brightness(.9);
+  -webkit-filter: brightness(.9);
+          filter: brightness(.9);
 }
 .bad-button.styled-button {
+  background: -webkit-gradient(linear, left top, left bottom, from(#d88585), to(#a76767));
   background: linear-gradient(to bottom, #d88585 0%, #a76767 100%);
   color: white;
 }
 .bad-button.styled-button:active {
+  background: -webkit-gradient(linear, left bottom, left top, from(#d88585), to(#a76767));
   background: linear-gradient(to top, #d88585 0%, #a76767 100%);
 }
 /* -------------------------------------- /Styled buttons --------------------------------------- */
@@ -359,10 +397,14 @@ icon-checkbox-wrap input[type=checkbox]:checked + .icon-with-fallback .b-icon,
 #mm-circle {
   overflow: visible;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+  -webkit-transition-property: box-shadow, -webkit-transform;
+  transition-property: box-shadow, -webkit-transform;
   transition-property: transform, box-shadow;
+  transition-property: transform, box-shadow, -webkit-transform;
 }
 #mm-circle:hover {
-  filter: brightness(1.1);
+  -webkit-filter: brightness(1.1);
+          filter: brightness(1.1);
 }
 .mm-bars, #mmb-_options a, #mmb-_options a:visited {
   color: rgb(255, 255, 255);
@@ -384,7 +426,12 @@ icon-checkbox-wrap input[type=checkbox]:checked + .icon-with-fallback .b-icon,
   border-bottom-style: none;
   padding: 1.5px 10px 0.5px 10px;
 }
-
+@media only screen and (max-width: 666px) {
+  .uibutton {
+    border-radius: 4px;
+    border-bottom-style: solid;
+  }
+}
 .uibutton:hover {
   background: rgb(255, 255, 255);
   border-color: rgba(0, 0, 0, 0.44);
@@ -392,53 +439,4 @@ icon-checkbox-wrap input[type=checkbox]:checked + .icon-with-fallback .b-icon,
 }
 .uib-spoiler:before {
   line-height: 18px;
-}
-
-.content {
-  padding: 9px;
-  z-index: 0;
-  box-shadow: 0 0px 5px 1px rgba(0, 0, 0, 0.8), 0 8px 5px #0000009e;
-  padding-top: 47px;
-  margin: 0 8px;
-  border-radius: 0 0 8px 8px;
-  position: relative;
-  margin-bottom: 83px;
-  padding-top: 0;
-}
-.content::before {
-  content:'';
-  height: 30px;
-  box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.8);
-  width: calc(100% + 18px);
-  display: block;
-  margin: 0 -9px 17px -9px;
-}
-.content::before, .styled-button.primary {
-  background-image: repeating-linear-gradient(-45.5deg, transparent 0px, transparent .6px, #4e4e4e3b 2px, transparent 3.4px, transparent 4px), linear-gradient(to bottom, #2185D8 0%, #2A3DA2 100%);
-}
-.content::after {
-  content:'';
-  height: 80px;
-  border-radius: 8px 8px 0 0;
-  background: linear-gradient(to bottom, #fff 0%, #d8d8d8 100%);
-  opacity: 0.5;
-  width: 100%;
-  position: absolute;
-  left: 0;
-  bottom: -83px;
-  box-shadow: 0 0 6px black;
-}
-@media only screen and (max-width: 666px) {
-  .uibutton {
-    border-radius: 4px;
-    border-bottom-style: solid;
-  }
-  .content {
-    margin: 0;
-    padding-bottom: 16px!important;
-  }
-  .content::before {
-    width: 100%;
-    margin: 0 0 17px 0;
-  }
 }
