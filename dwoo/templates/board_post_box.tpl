@@ -187,9 +187,11 @@
 		<tr class="fake-password-row" id="passwordbox" style="display: none;"><td></td><td></td></tr>
 		<tr class="simplified-send-row">
 		  <td colspan="2">
+		  	{if $board.filetypes_allowed}
 		  	<button class="styled-button s-file" title="{t}Add files{/t}...">
 		  	  <svg class="icon next-to-text"><use xlink:href="#i-clip"></use></svg>
 		  	</button>
+		  	{/if}
 		    <button class="styled-button primary" type="submit">
 		      <svg class="icon next-to-text"><use xlink:href="#i-send"></use></svg>
 		      Отправить

@@ -3328,12 +3328,14 @@ a.logo:hover::after {
   flex-grow: 1;
   height: 24px;
 }
-.simplified-send-row button.primary {
-  margin-right: 16px;
+.simplified-send-row button {
+  margin-right: 3%;
+}
+.simplified-send-row button:last-child {
+  margin-right: 0px;
 }
 .postform-simplified .simplified-send-row button.primary {
   flex-grow: 2;
-  margin: 0 3%;
 }
 .postform-simplified .message-row {
   font-size: 0;
