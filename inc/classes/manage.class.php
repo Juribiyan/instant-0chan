@@ -3071,17 +3071,16 @@ class Manage {
 							$set []= "`$prop` = ".$tc_db->qstr(isset($_POST[$prop]) ? '1' : '0');
 						}
 						if(in_array($_POST['locale'], explode('|', KU_SUPPORTED_LOCALES))) {
-							// $tpl_page .= '<script>console.log('.json_encode($_POST).')</script>';
-							if(count($_POST['allowedembeds']) > 0) {
-								$allowedembeds = array();
-								$embeds = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `filetype`, `name` FROM `" . KU_DBPREFIX . "embeds` ORDER BY `filetype` ASC");
-								foreach ($embeds as $e) {
-									if(in_array($e['filetype'], $_POST['allowedembeds'])) {
-										$allowedembeds []= $e['filetype'];
-									}
+							if (!$_POST['allowedembeds'] || !count($_POST['allowedembeds']))
+								$_POST['allowedembeds'] = array(); // prevent warnings
+							$allowedembeds = array();
+							$embeds = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `filetype`, `name` FROM `" . KU_DBPREFIX . "embeds` ORDER BY `filetype` ASC");
+							foreach ($embeds as $e) {
+								if(in_array($e['filetype'], $_POST['allowedembeds'])) {
+									$allowedembeds []= $e['filetype'];
 								}
-								$set []= "`embeds_allowed` = ".$tc_db->qstr(implode(',', $allowedembeds));
 							}
+							$set []= "`embeds_allowed` = ".$tc_db->qstr(implode(',', $allowedembeds));
 							foreach(array( // string properties
 								'desc',
 								'locale',
@@ -3506,16 +3505,16 @@ class Manage {
 						$set []= "`$prop` = ".$tc_db->qstr(isset($_POST[$prop]) ? '1' : '0');
 					}
 					if(in_array($_POST['locale'], explode('|', KU_SUPPORTED_LOCALES))) {
-						if(count($_POST['allowedembeds']) > 0) {
-							$allowedembeds = array();
-							$embeds = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `filetype`, `name` FROM `" . KU_DBPREFIX . "embeds` ORDER BY `filetype` ASC");
-							foreach ($embeds as $e) {
-								if(in_array($e['filetype'], $_POST['allowedembeds'])) {
-									$allowedembeds []= $e['filetype'];
-								}
+						if (!$_POST['allowedembeds'] || !count($_POST['allowedembeds']))
+							$_POST['allowedembeds'] = array();
+						$allowedembeds = array();
+						$embeds = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `filetype`, `name` FROM `" . KU_DBPREFIX . "embeds` ORDER BY `filetype` ASC");
+						foreach ($embeds as $e) {
+							if(in_array($e['filetype'], $_POST['allowedembeds'])) {
+								$allowedembeds []= $e['filetype'];
 							}
-							$set []= "`embeds_allowed` = ".$tc_db->qstr(implode(',', $allowedembeds));
 						}
+						$set []= "`embeds_allowed` = ".$tc_db->qstr(implode(',', $allowedembeds));
 						foreach(array( // string properties
 							'desc',
 							'locale',
