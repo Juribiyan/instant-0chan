@@ -10,7 +10,8 @@ a {
 h1, h2 {
 	background: #DAF0D6;
 	text-align: left;
-	background-image: url(images/summer/topbar-center.png);
+  background-image: repeating-linear-gradient(-45.5deg, transparent 0px, transparent .6px, #79797936 2px, transparent 3.4px, transparent 4px), -webkit-gradient(linear, left top, left bottom, from(#b3d928), color-stop(150%, #5aa52a));
+  background-image: repeating-linear-gradient(-45.5deg, transparent 0px, transparent .6px, #79797936 2px, transparent 3.4px, transparent 4px), linear-gradient(to bottom, #b3d928 0%, #5aa52a 150%);
 	background-repeat: repeat-x;
 }
 
@@ -31,9 +32,7 @@ h2 {
 	font-weight: normal;
 	padding: 1px 4px 2px 4px;
 	margin: 0px 0px;
-	background: #88FF88;
-	background-image: url(images/summer/topbar-center.png);
-	background-repeat: repeat-x;
+	background: transparent;
 	color: #000;
 	border: 1px solid #117743;
 	cursor: hand;
@@ -41,8 +40,8 @@ h2 {
 }
 
 .plus:hover {
-	background: #da8;
-	border: 1px solid #c97;
+	background: #a4d028;
+	border: 1px solid #99c72b;
 }
 
 ul {

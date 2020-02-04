@@ -1,8 +1,8 @@
 body {
 	font-family: sans-serif;
 	font-size: 75%;
-	background: fixed url(images/winter/bg_bottom.png) bottom  repeat-x;
 	background-color: #ECF1FF;
+	background: fixed linear-gradient(to top, #cdd9ff 0%, #cfdbff 90px, #cedbff 140px, #ffffff 200px, #ecf1ff 100%) bottom repeat-x;
 	color: #000000;
 	margin: 0;
 	width: 90%;
@@ -17,8 +17,8 @@ h2 {
 	padding: 2px;
 	color: #00137F;
 	font-size: 100%;
-	background-image: url(images/winter/topbar-center.png);
-        background-repeat: repeat-x;
+  background-image: repeating-linear-gradient(-45.5deg, transparent 0px, transparent .6px, #4e4e4e3b 2px, transparent 3.4px, transparent 4px), -webkit-gradient(linear, left top, left bottom, from(#2185D8), to(#2A3DA2));
+  background-image: repeating-linear-gradient(-45.5deg, transparent 0px, transparent .6px, #4e4e4e3b 2px, transparent 3.4px, transparent 4px), linear-gradient(to bottom, #2185D8 0%, #2A3DA2 100%);
 	color:#EEEEEE;
 }
 
@@ -61,9 +61,6 @@ h3 {
 .newssub {
 	padding: 2px;
 	position: absolute;
-	background-color: #FCFDFF;
-	background-image: url(images/winter/topbar-center.png);
-        background-repeat: repeat-x;
 }
 
 .permalink {

@@ -1,8 +1,8 @@
 body {
 	font-family: sans-serif;
 	font-size: 75%;
-	background: fixed url(images/photon/bg_bottom.png) bottom  repeat-x;
 	background-color: #BBBBBB;
+	background: fixed linear-gradient(to top, #949495 0%, #7f7f7f 90px, #7f7f7f 140px, #bbbbbb 200px, #bbbbbb 100%) bottom repeat-x;
 	color: #000000;
 	margin: 0;
 	width: 90%;
@@ -16,8 +16,8 @@ h2 {
 	margin: 0px;
 	padding: 2px;
 	font-size: 100%;
-	background-image: url(images/photon/topbar-center.png);
-        background-repeat: repeat-x;
+	background-image: repeating-linear-gradient(-45.5deg, transparent 0px, transparent .6px, #79797917 2px, transparent 3.4px, transparent 4px), -webkit-gradient(linear, left top, left bottom, from(#df7a29), to(#d8c25b));
+	background-image: repeating-linear-gradient(-45.5deg, transparent 0px, transparent .6px, #79797917 2px, transparent 3.4px, transparent 4px), linear-gradient(to bottom, #df7a29 0%, #d8c25b 100%);
 	color: #333333;
 }
 
@@ -60,9 +60,6 @@ h3 {
 .newssub {
 	padding: 2px;
 	position: absolute;
-	background-color: #EEEEEE;
-	background-image: url(images/photon/topbar-center.png);
-        background-repeat: repeat-x;
 }
 
 .permalink {

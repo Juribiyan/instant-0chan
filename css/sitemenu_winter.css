@@ -10,7 +10,8 @@ a {
 h1, h2 {
 	background: #DDDDEE;
 	text-align: left;
-	background-image: url(images/winter/topbar-center.png);
+  background-image: repeating-linear-gradient(-45.5deg, transparent 0px, transparent .6px, #4e4e4e3b 2px, transparent 3.4px, transparent 4px), -webkit-gradient(linear, left top, left bottom, from(#2185D8), color-stop(150%, #2A3DA2));
+  background-image: repeating-linear-gradient(-45.5deg, transparent 0px, transparent .6px, #4e4e4e3b 2px, transparent 3.4px, transparent 4px), linear-gradient(to bottom, #2185D8 0%, #2A3DA2 150%);
 	background-repeat: repeat-x;
 }
 
@@ -31,9 +32,7 @@ h2 {
 	font-weight: normal;
 	padding: 1px 4px 2px 4px;
 	margin: 0px 0px;
-	background: #8888FF;
-	background-image: url(images/winter/topbar-center.png);
-	background-repeat: repeat-x;
+	background: transparent;
 	color: #000;
 	border: 1px solid #00137F;
 	cursor: hand;
