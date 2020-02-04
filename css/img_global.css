@@ -2104,6 +2104,7 @@ figure > a {
 }
 blockquote {
   margin: 0;
+  word-break: break-word;
 }
 .posthead {
     position: relative;
