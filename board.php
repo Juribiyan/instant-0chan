@@ -34,9 +34,8 @@
 if (isset($_POST['email']) && !empty($_POST['email'])) {
 	exitWithErrorPage('Spam bot detected');
 }
-if(isset($_POST['sagebtn']))
-	if($_POST['sagebtn'] == 1)
-		$_POST['em'] = 'sage';	// dirty deeds done dirt cheap
+if($_POST['sagebtn'] == 1)
+	$_POST['em'] = 'sage';	// dirty deeds done dirt cheap
 
 // Start the session
 session_start();
