@@ -205,7 +205,7 @@
          </a>
         {elseif $embed.nonstandard_file neq ''}
          <a 
-         {if $embed.file_type eq 'webm'} class="movie" data-id="{$post.id}" data-thumb="{$embed.nonstandard_file}" data-width="{$embed.image_w}" data-height="{$embed.image_h}"{/if}
+         {if $embed.file_type eq 'webm' or $embed.file_type eq 'mp4'} class="movie" data-id="{$post.id}" data-thumb="{$embed.nonstandard_file}" data-width="{$embed.image_w}" data-height="{$embed.image_h}"{/if}
          {if $embed.file_type eq 'mp3' or $embed.file_type eq 'ogg'} class="audiowrap" {/if}
          {if $embed.file_type eq 'css'} class="csswrap" {/if}
          {if %KU_NEWWINDOW}target="_blank"{/if}        

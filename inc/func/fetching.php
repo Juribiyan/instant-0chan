@@ -182,7 +182,7 @@ function GetFileAndThumbs($file) {
       $res []= '/thumb/'.$file['file'].'c.png';
       $res []= '/thumb/'.$file['file'].'c.gif';
     }
-    if ($file['file_type'] == 'webm') {
+    if ($file['file_type'] == 'webm' || $file['file_type'] == 'mp4') {
       $res []= '/thumb/'.$file['file'].'s.jpg';
       $res []= '/thumb/'.$file['file'].'c.jpg';
     }

@@ -240,19 +240,19 @@ class Upload {
 						$this->exitWithUploadErrorPage(sprintf(_gettext('Please make sure your file is smaller than %d KB'), round($board_class->board['maximagesize']) / 1024), $atype, $i, $filename);
 					}
 				}
-
 				$pass = true;
 				if (!is_file($attachment['tmp_name']) || !is_readable($attachment['tmp_name'])) {
 					$pass = false;
 				}
 				else {
+					$attachment['is_video'] = ($attachment['file_type'] == '.webm' || $attachment['file_type'] == '.mp4');
 					if(in_array($attachment['file_type'], array('.jpg', '.gif', '.png'))) {
 						if (!@getimagesize($attachment['tmp_name'])) {
 							$pass = false;
 						}
 					}
-					elseif($attachment['file_type'] == '.webm') {
-						$pass = $this->webmCheck($attachment['tmp_name']);
+					elseif($attachment['is_video']) {
+						$pass = $this->ffProbe($attachment['tmp_name']);
 					}
 				}
 				if (!$pass) {
@@ -284,10 +284,10 @@ class Upload {
 					$attachment['imgWidth'] = $svg->width;
 					$attachment['imgHeight'] = $svg->height;
 				}
-				elseif($attachment['file_type'] == '.webm') {
-					$webminfo = $pass;
-					$attachment['imgWidth'] = $webminfo['width'];
-					$attachment['imgHeight'] = $webminfo['height'];
+				elseif($attachment['is_video']) {
+					$videoinfo = $pass;
+					$attachment['imgWidth'] = $videoinfo['width'];
+					$attachment['imgHeight'] = $videoinfo['height'];
 				}
 				else {
 					$imageDim = getimagesize($attachment['tmp_name']);
@@ -328,8 +328,8 @@ class Upload {
 						} else {
 							$attachment['file_location'] = KU_BOARDSDIR . $board_class->board['name'] . '/src/' . $attachment['file_name'] . $attachment['file_type'];
 
-							if($attachment['file_type'] == '.webm') {
-								$thumbs = $this->webmThumb($attachment['tmp_name'], KU_BOARDSDIR . $board_class->board['name'] . '/thumb/', $attachment['file_name'], $webminfo['midtime']);
+							if($attachment['is_video']) {
+								$thumbs = $this->ffThumb($attachment['tmp_name'], KU_BOARDSDIR . $board_class->board['name'] . '/thumb/', $attachment['file_name'], $videoinfo['midtime']);
 								if($thumbs) {
 									$attachment['imgWidth_thumb'] = $thumbs['thumbwidth'];
 									$attachment['imgHeight_thumb'] = $thumbs['thumbheight'];
@@ -467,7 +467,8 @@ class Upload {
 							/* Check if the filetype provided comes with a MIME restriction */
 							if ($filetype_required_mime != '') {
 								/* Check if the MIMEs don't match up */
-								if (finfo_file( finfo_open( FILEINFO_MIME_TYPE ), $attachment['file_location']) != $filetype_required_mime) {
+								$finfo = finfo_open( FILEINFO_MIME_TYPE );
+								if (finfo_file($finfo, $attachment['file_location']) != $filetype_required_mime) {
 									/* Delete the file we just uploaded and kill the script */
 									unlink($attachment['file_location']);
 									$this->exitWithUploadErrorPage(_gettext('Invalid MIME type for this filetype.'), $atype, $i, $filename);
@@ -577,23 +578,21 @@ class Upload {
 		} unset($i);
 	}
 
-	function webmCheck($filepath) {
+	function ffProbe($filepath) {
     if(KU_FFMPEGPATH) putenv('PATH=' . KU_FFMPEGPATH . PATH_SEPARATOR . getenv('PATH'));
-		exec("ffprobe -i ".$filepath." 2>&1", $finfo, $x);
-    if($x !== 0) return false;
-    $finfo = implode('<br>', $finfo);
-		preg_match('/Duration: (\d\d\:\d\d\:\d\d\.\d\d)/', $finfo, $duration);
-		preg_match('/(\d+)x(\d+)/', $finfo, $dimensions);
-		$hhmmss = explode(':', $duration[1]);
-		if(count($duration) == 2 && count($dimensions) == 3) return array(
-			'width' => $dimensions[1],
-			'height' => $dimensions[2],
-			'midtime' => gmdate("H:i:s", ($hhmmss[0]*3600 + $hhmmss[1]*60+ round($hhmmss[2]))/2)
+		exec("ffprobe -v error -show_entries format=duration:stream=width,height -of default=noprint_wrappers=1:nokey=1 ".$filepath." 2>&1", $finfo, $x);
+    if($x !== 0 || count($finfo) !== 3) return false;
+    $w = (int)$finfo[0];
+    $h = (int)$finfo[1];
+    $s = (float)$finfo[2];
+		return array(
+			'width' => $w,
+			'height' => $h,
+			'midtime' => gmdate("H:i:s", $s/2)
 		);
-		else return false;
 	}
 
-	function webmThumb($filepath, $thumbpath, $filename, $midtime) {
+	function ffThumb($filepath, $thumbpath, $filename, $midtime) {
     if(KU_FFMPEGPATH) putenv('PATH=' . KU_FFMPEGPATH . PATH_SEPARATOR . getenv('PATH'));
 		$scale = "w=".KU_THUMBWIDTH.":h=".KU_THUMBHEIGHT;
 		$scalecat = "w=".KU_CATTHUMBWIDTH.":h=".KU_CATTHUMBHEIGHT;

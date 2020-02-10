@@ -377,7 +377,7 @@ class Board {
             $file_found = false;
             foreach ($thread['embeds'] as $embed) {
               if ($embed['file'] != 'removed') {
-                if (in_array($embed['file_type'], array('jpg', 'png', 'gif', 'webm'))) {
+                if (in_array($embed['file_type'], array('jpg', 'png', 'gif', 'webm', 'mp4'))) {
                   $file_found = $embed;
                   break;
                 }
@@ -392,7 +392,7 @@ class Board {
 
             if ($file_found) {
               if ($file_found['file'] !== 'removed') {
-                if ($file_found['file_type'] == 'webm')
+                if ($file_found['file_type'] == 'webm' || $file_found['file_type'] == 'mp4')
                   $file_found['file_type'] = 'jpg';
                 if (in_array($file_found['file_type'], array('jpg', 'png', 'gif'))) {
                   $file_path = getCLBoardPath($this->board['name'], $this->board['loadbalanceurl_formatted'], $this->archive_dir);

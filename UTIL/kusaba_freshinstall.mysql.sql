@@ -472,6 +472,7 @@ INSERT INTO `PREFIX_filetypes`
 (   'mp3',                   '',                  'mp3.png',      36,        48,          1),
 (   'ogg',                   '',                  'ogg.png',      36,        48,          1),
 (   'webm',              'video/webm',               '',          0,         0,           0),
+(   'mp4',               'video/mp4',                '',          0,         0,           0),
 (   'css',                   '',                  'css.png',      36,        48,          1),
 (   'swf',     'application/x-shockwave-flash', 'flash.png',      36,        48,          1);
 

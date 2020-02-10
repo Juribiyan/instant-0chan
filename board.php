@@ -315,7 +315,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 
 		foreach($upload_class->attachments as $attachment) {
 			if ($attachment['attachmenttype'] == 'file') {
-				$thumbfiletype = ($attachment['filetype_withoutdot'] == 'webm')	? '.jpg' : $attachment['file_type'];
+				$thumbfiletype = ($attachment['filetype_withoutdot'] == 'webm' || $attachment['filetype_withoutdot'] == 'mp4')	? '.jpg' : $attachment['file_type'];
 				if ($attachment['emoji_candidate']) {
 					$emoji_candidates []= $attachment;
 				}
