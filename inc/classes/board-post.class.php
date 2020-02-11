@@ -145,14 +145,45 @@ class Board {
 		$this->RegenerateThreads();
 	}
 
+  /**
+   * Determine the page the thread is on, and the total number of pages
+   */
+  function GetPageNumber($threadid) {
+    global $tc_db;
+    $tc_db->SetFetchMode(ADODB_FETCH_ASSOC);
+
+    $threads = $tc_db->GetAll("SELECT 
+      (`id`='".$threadid."') AS `the_one`
+      FROM `".KU_DBPREFIX."posts` 
+      WHERE
+       `boardid`='".$this->board['id']."'
+       AND
+       `IS_DELETED`=0
+       AND
+       `parentid`=0
+      ORDER BY `bumped` DESC");
+    $i = 0; 
+    $found = false;
+    $count = count($threads);
+    for ($i=0; $i < $count; $i++) { 
+      if ($threads[$i]['the_one']==1) {
+        $found = floor($i / KU_THREADS);
+        break;
+      }
+    }
+    return array(
+      'page' => $found,
+      'n_pages' => ceil($count / KU_THREADS)
+    );
+  }
+
 	/**
-	 * Regenerate pages
+	 * Regenerate pages ($from #page $to #page)
 	 */
-	function RegeneratePages($startpage=-1, $direction="all") {
+	function RegeneratePages($from=-1, $to=INF, $singles=array()) {
     global $tc_db, $CURRENTLOCALE;
     $tc_db->SetFetchMode(ADODB_FETCH_ASSOC);
     $this->InitializeDwoo();
-    $do_all = ($startpage==-1 || $direction=="all");
 
     $ftypes = $tc_db->GetAll("SELECT `filetype` FROM `" . KU_DBPREFIX . "embeds`");
     foreach ($ftypes as $line) {
@@ -205,7 +236,6 @@ class Board {
 
     // rebuild pages needing to be rebuilt →
     $page = 0;
-    $starter_page_passed = false;
     $totalpages = count($pages);
     if (!$totalpages) {
       $pages []= array();
@@ -213,11 +243,7 @@ class Board {
     $this->dwoo_data->assign('numpages', $totalpages-1);
 
     foreach ($pages as $pagethreads) {
-      $is_starter_page = ($page == $startpage);
-      if ($is_starter_page) {
-        $starter_page_passed = true;
-      }
-      if ($do_all || $is_starter_page || ($direction=="down" && $starter_page_passed) || ($direction=="up" && !$starter_page_passed)) {
+      if (($page >= $from && $page <= $to) || in_array($page, $singles)) {
         // page must be rebuilt
         $executiontime_start_page = microtime_float();
         $newposts = array();
@@ -1062,42 +1088,40 @@ class Post extends Board {
         }
       }
       // Un-bump threda
-      $tc_db->Execute('UPDATE
-       `'.KU_DBPREFIX.'posts` AS t1,
-       (SELECT
-         `timestamp`
-        FROM
-         `'.KU_DBPREFIX.'posts`
+      $bumped = $tc_db->GetOne("SELECT `bumped`
+        FROM `".KU_DBPREFIX."posts`
         WHERE
-         (`id`=?
-          OR (
-           `parentid`=?
-           AND
-           `email`!="sage"
-          )
-         )
+         `boardid`=".$boardid." 
          AND
-         `IS_DELETED`="0"
+         `id`=".$this->post['parentid']);
+      $bump = $tc_db->GetOne("SELECT `timestamp`
+        FROM `".KU_DBPREFIX."posts`
+        WHERE
+         `boardid`=".$boardid." 
          AND
-         `boardid`=? 
-        ORDER BY TIMESTAMP DESC
-        LIMIT 1
-        ) AS t2
-       SET
-        t1.`bumped` = t2.`timestamp`
-       WHERE
-        t1.`id`=?
-        AND
-        `boardid`=?', array(
-        $this->post['parentid'],
-        $this->post['parentid'],
-        $boardid,
-        $this->post['parentid'],
-        $boardid));
-
+         (`id`=".$this->post['parentid']." 
+          OR 
+          `parentid`=".$this->post['parentid'].")
+         AND
+         `email`!='sage' 
+         AND
+         `IS_DELETED`=0
+        ORDER BY `timestamp` DESC");
+      $unbumped = 1;
+      if ($bumped != $bump) {
+        $unbumped = 'unbumped';
+        $tc_db->Execute("UPDATE `".KU_DBPREFIX."posts`
+         SET `bumped`=?
+         WHERE
+          `boardid`=? 
+          AND
+          `id`=?",
+        array($bump, $boardid, $this->post['parentid']) );
+      }
+      
       clearPostCache($postid, $boardname);
 
-      return 1;
+      return $unbumped;
     }
   }
 

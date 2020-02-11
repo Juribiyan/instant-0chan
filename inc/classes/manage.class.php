@@ -2045,8 +2045,7 @@ class Manage {
       }
       foreach($boards_to_regenerate as $b) {
         $board_class = new Board($b);
-        $board_class->RegenerateThreads();
-        $board_class->RegeneratePages();
+        $board_class->RegenerateAll();
         unset($b);
       }
 
@@ -4754,7 +4753,7 @@ class Manage {
 					foreach($regenerated as $thread) {
 						$board_class->RegenerateThreads($thread);
 					}
-					$board_class->RegeneratePages();
+					$board_class->RegeneratePages(); // TODO: optimize (maybe in another life)
 					unset($board_class);
 				}
 
