@@ -17,6 +17,7 @@
 	var force_html_nocache = !!'{%I0_FORCE_HTML_NOCACHE}';
 	var allowed_filetypes = [{foreach name=files item=filetype from=$board.filetypes_allowed}"{$filetype}"{if $.foreach.files.last}{else}, {/if}{/foreach}];
 	var maxfiles = {$board.maxfiles};
+	var opmod = '{$board.opmod}';
 {if $replythread > 0}
 	var ispage = false;
 {else}

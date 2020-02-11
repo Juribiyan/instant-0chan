@@ -2659,8 +2659,20 @@ figure:not(.unwrapped):hover .playable-thumb {
 .deleted.reply, figure.deleted {
   box-shadow: inset 0 0 59px rgba(255, 15, 15, 0.33);
 }
+.mod-deleted.reply, figure.mod-deleted {
+  box-shadow: inset 0 0 59px rgba(255, 195, 15, 0.22);
+}
+.op-deleted.reply, figure.op-deleted {
+  box-shadow: inset 0 0 59px rgba(15, 252, 255, 0.22);
+}
 .deleted.reply {
   border: 1px solid rgba(255, 15, 15, 0.51);
+}
+.mod-deleted.reply {
+  border: 1px solid rgba(255, 195, 15, 0.33);
+}
+.op-deleted.reply {
+  border: 1px solid rgba(15, 252, 255, 0.33);
 }
 figure.deleted {
   position: relative;
@@ -2674,6 +2686,12 @@ figure.deleted:after {
   top: 0;
   left: 0;
   pointer-events: none;
+}
+figure.mod-deleted:after {
+  box-shadow: inset 0 0 0 1px rgba(255, 195, 15, 0.33);
+}
+figure.op-deleted:after {
+  box-shadow: inset 0 0 0 1px rgba(15, 252, 255, 0.33);
 }
 .deleted[id^=thread] .op .posthead {
   position: relative;

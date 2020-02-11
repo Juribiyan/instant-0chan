@@ -532,6 +532,11 @@ elseif (
 		&&
 		Manage::CurrentUserIsModeratorOfBoard($board_class->board['name'], $_SESSION['manageusername'])
 	);
+	$isop = ( 
+		$_POST['opdelete']=="true"
+		&&
+		$board_class->board['opmod']=='1'
+	);
 
 	// Post-related actions
 	if (isset($_POST['post'])) foreach ($_POST['post'] as $val) {
@@ -560,10 +565,19 @@ elseif (
 		// Post deleting
 		if (isset($_POST['deletepost'])) {
 			$post_action->action = 'delete';
+			if ($isop && $post_class->post['parentid'] != '0') {
+				$op_post_class = new Post($post_class->post['parentid'], $board_class->board['name'], $board_class->board['id']);
+				// TODO: check if not deleted, check if not empty
+				$pwd_ref_post = $op_post_class;
+			}
+			else {
+				$isop = false;
+				$pwd_ref_post = $post_class;
+			}
 			if ($pass) {
-				$passtype = $post_class->post['password'] [0];
+				$passtype = $pwd_ref_post->post['password'] [0];
 				if ($passtype == '+') { // modern hash with salt: +md5(password+postid+boardid+randomseed)
-				  $pass_for_this_post = '+'.md5($pass . $post_class->post['id'] . $board_class->board['id'] . KU_RANDOMSEED);
+				  $pass_for_this_post = '+'.md5($pass . $pwd_ref_post->post['id'] . $board_class->board['id'] . KU_RANDOMSEED);
 				}
 				elseif ($passtype == '-') { // modern hash w/o salt: -md5(password+randomseed)
 					if (!$passmd5_new)
@@ -576,9 +590,9 @@ elseif (
 					$pass_for_this_post = $passmd5_old;
 				}
 			}
-			$pwd_ok = ($pass && $pass_for_this_post == $post_class->post['password']);
+			$pwd_ok = ($pass && $pass_for_this_post == $pwd_ref_post->post['password']);
 			if ($pwd_ok || $ismod) {
-				$isownpost = !$ismod;
+				$isownpost = !$ismod && !$isop;
 				$thread_id = $post_class->post['parentid'] != '0' ? $post_class->post['parentid'] : $post_class->post['id'];
 				$before = $board_class->GetPageNumber($thread_id);
 				$delres = $post_class->Delete(false, $isownpost && I0_ERASE_DELETED);
@@ -590,7 +604,9 @@ elseif (
 						$notifications[$room_id] []= array(
 							'action' => 'delete_post',
 							'id' => $post_class->post['id'],
-							'thread_id' => $thread_id
+							'thread_id' => $thread_id,
+							'by_mod' => $ismod,
+							'by_op' => $isop
 						);
 						if ($post_class->post['parentid'] != '0') { // Deleting a reply
 							if (! in_array($thread_id, $threads_to_regenerate)) {
@@ -621,7 +637,8 @@ elseif (
 								}
 							}
 							$post_action->succ(_gettext('Post successfully deleted.')
-								.($ismod ? ' '._gettext('(By mod)') : ''));
+								.($ismod ? ' '._gettext('(By mod)') : '')
+								.($isop ? ' '._gettext('(By OP)') : ''));
 						}
 						else { // Deleting a threda
 							$page_to = INF;
@@ -639,13 +656,16 @@ elseif (
 								$notifications[$room_id] = array();
 							$notifications[$room_id] []= array(
 								'action' => 'delete_thread',
-								'id' => $thread_id
+								'id' => $thread_id,
+								'by_mod' => $ismod,
+								'by_op' => $isop
 							);
 							if ($ismod) {
 								management_addlogentry(_gettext('Deleted thread') . ' #<a href="?action=viewthread&thread='. $thread_id . '&board='. $board_class->board['name'] . '">'. $val . '</a> ('. ($delres-1) . ' replies) - /'. $board_class->board['name'] . '/', 7);
 							}
 							$post_action->succ(_gettext('Thread successfully deleted.')
 								.($ismod ? ' '._gettext('(By mod)') : '')
+								.($isop ? ' '._gettext('(By OP)') : '')
 								.' '.($delres-1)._gettext('replies deleted').'.');
 						}
 

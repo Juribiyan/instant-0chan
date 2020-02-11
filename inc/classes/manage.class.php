@@ -3065,7 +3065,8 @@ class Manage {
 							'balls',
 							'dice',
 							'useragent',
-							'duplication'
+							'duplication',
+							'opmod'
 						) as $prop) {
 							$set []= "`$prop` = ".$tc_db->qstr(isset($_POST[$prop]) ? '1' : '0');
 						}
@@ -3334,6 +3335,15 @@ class Manage {
 					$tpl_page .= ' />'. "\n" .
 					'<div class="desc">'. _gettext('Enable file and embed duplication') .'</div><br />';
 
+					/* OP moderation */
+					$tpl_page .= '<label for="opmod">'. _gettext('OP moderation') .':</label>
+					<input type="checkbox" name="opmod"';
+					if ($lineboard['opmod'] == '1') {
+						$tpl_page .= ' checked';
+					}
+					$tpl_page .= ' />'. "\n" .
+					'<div class="desc">'. _gettext('Allow thread starters to delete replies') .'</div><br />';
+
 					/* Enable captcha */
 					$tpl_page .= '<label for="enablecaptcha">'. _gettext('Enable captcha') .':</label>
 					<input type="checkbox" name="enablecaptcha"';
@@ -3499,7 +3509,8 @@ class Manage {
 						'balls',
 						'dice',
 						'useragent',
-						'duplication'
+						'duplication',
+						'opmod'
 					) as $prop) {
 						$set []= "`$prop` = ".$tc_db->qstr(isset($_POST[$prop]) ? '1' : '0');
 					}
@@ -3673,6 +3684,15 @@ class Manage {
 					}
 					$tpl_page .= ' />'. "\n" .
 					'<div class="desc">'. _gettext('Enable file and embed duplication') .'</div><br />';
+
+					/* OP moderation */
+					$tpl_page .= '<label for="opmod">'. _gettext('OP moderation') .':</label>
+					<input type="checkbox" name="opmod"';
+					if ($lineboard['opmod'] == '1') {
+						$tpl_page .= ' checked';
+					}
+					$tpl_page .= ' />'. "\n" .
+					'<div class="desc">'. _gettext('Allow thread starters to delete replies') .'</div><br />';
 
 					/* Enable "no file" posting */
 					$tpl_page .= '<label for="enablenofile">'. _gettext('Enable \'no file\' posting') .':</label>

@@ -241,6 +241,9 @@
 					{if $board.duplication}
 						<li>{t}File end embed duplication is allowed{/t}.</li>
 					{/if}
+					{if $board.opmod}
+						<li>{t}OP moderation is enabled{/t}.</li>
+					{/if}
 				</ul>
 			<script>
 				if (getCookie('ku_showblotter') != '1') {

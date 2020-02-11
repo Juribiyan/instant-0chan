@@ -2133,3 +2133,12 @@ msgstr "Красные стрелки"
 
 msgid "Alternating quotes"
 msgstr "Перекрестное цитирование"
+
+msgid "OP moderation"
+msgstr "ОП-модерация"
+
+msgid "Allow thread starters to delete replies"
+msgstr "Разрешить создателям тредов удалять ответы"
+
+msgid "OP moderation is enabled"
+msgstr "ОП-модерация включена"
