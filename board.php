@@ -724,6 +724,8 @@ elseif (
 	foreach($threads_to_regenerate as $id) {
 		$board_class->RegenerateThreads($id);
 	}
+	if ($page_from === false) $page_from = INF;
+	if ($page_to === false) $page_to = -1;
 	$out_of_range = array();
 	foreach($pages_to_regenerate as $page) {
 		if ($page < $page_from || $page > $page_to) {
@@ -731,12 +733,10 @@ elseif (
 		}
 	}
 	if (
-		($page_from !== false && $page_to !== false) 
+		($page_from < INF && $page_to > $page_from) 
 		|| 
 		count($out_of_range) != 0
 	) {
-		if ($page_from === false) $page_from = INF;
-		if ($page_to === false) $page_from = -1;
 		$board_class->RegeneratePages($page_from, $page_to, $out_of_range);
 	}
 	// Finish
