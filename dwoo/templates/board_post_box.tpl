@@ -194,7 +194,7 @@
 		  	{/if}
 		    <button class="styled-button primary" type="submit">
 		      <svg class="icon next-to-text"><use xlink:href="#i-send"></use></svg>
-		      Отправить
+		      <span>{if $replythread eq 0}{t}Submit{/t}{else}{t}Post reply{/t}{/if}</span>
 		    </button>
 		    <button class="styled-button" type="submit" title="Sage" name="sagebtn" value="1">
 		    	<noscript>Sage</noscript>
