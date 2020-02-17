@@ -99,6 +99,7 @@ if (!$cache_loaded) {
 
 		$cf['I0_DELPASS_SALTING'] = true; // Whether or not the delpass should be hashed to prevent poster identification
 		$cf['I0_ERASE_DELETED'] = false; // Whether or not the contents of posts deleted by user should be erased
+		$cf['I0_MAX_ACCESS_ATTEMPTS'] = 3; // How many attempts at deleting a post are allowed before it gets locked with catpcha
 
 		$cf['I0_DETECT_SOSACH'] = false; // Detect pictures from particular website
 

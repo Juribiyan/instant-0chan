@@ -83,45 +83,47 @@ function notify($room, $data=array()) {
 }
 
 class PolymorphicReporter {
-  function __construct($itemtype, $id, $is_ajax) {
-  	$this->itemtype = $itemtype;
-    $this->id = $id;
-    $this->is_ajax = $is_ajax;
-  }
+	function __construct($itemtype, $id, $is_ajax) {
+		$this->itemtype = $itemtype;
+		$this->id = $id;
+		$this->is_ajax = $is_ajax;
+	}
 
-  function fail($msg="") {
-    if ($this->is_ajax) {
-      $this->success = false;
-      $this->message = $msg;
-    }
-    else
-      echo $this->itemtype . ' #' . $this->id . ': ' . $msg . '<br />';
-  }
+	function fail($msg="", $special_error=false) {
+		$this->special_error = $special_error;
+		if ($this->is_ajax) {
+			$this->success = false;
+			$this->message = $msg;
+		}
+		else
+			echo $this->itemtype . ' #' . $this->id . ': ' . $msg . '<br />';
+	}
 
-  function succ($msg="") {
-    if ($this->is_ajax) {
-      $this->success = true;
-      $this->message = $msg;
-    }
-    else
-      echo $this->itemtype . ' #' . $this->id . ': ' . $msg . '<br />';
-  }
+	function succ($msg="") {
+		if ($this->is_ajax) {
+			$this->success = true;
+			$this->message = $msg;
+		}
+		else
+			echo $this->itemtype . ' #' . $this->id . ': ' . $msg . '<br />';
+	}
 
-  function report() {
-    return array(
-      'id' => $this->id,
-      'itemtype' => $this->itemtype,
-      'action' => $this->action,
-      'success' => $this->success,
-      'message' => $this->message
-    );
-  }
+	function report() {
+		return array(
+			'id' => $this->id,
+			'itemtype' => $this->itemtype,
+			'action' => $this->action,
+			'success' => $this->success,
+			'message' => $this->message,
+			'special_error' => $this->special_error
+		);
+	}
 }
 
 function error_redirect($url, $message) {
 	if ($_POST['AJAX']) {
 		exit(json_encode(array(
-		  'error' => $message
+			'error' => $message
 		)));
 	}
 	else {
@@ -159,8 +161,8 @@ $posting_class = new Posting();
 $ban_result = $bans_class->BanCheck($posting_class->user_id, $board_class->board['name']);
 if ($ban_result && is_array($ban_result) && $_POST['AJAX']) {
 	exit(json_encode(array(
-	  'error' => _gettext('YOU ARE BANNED'),
-	  'error_type' => 'ban'
+		'error' => _gettext('YOU ARE BANNED'),
+		'error_type' => 'ban'
 	)));
 }
 
@@ -357,9 +359,9 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 		// First array is the converted form of the japanese characters meaning sage, second meaning age
 		$ords_email = unistr_to_ords($post_email);
 		if (strtolower($_POST['em']) != 'sage' && $ords_email != array(19979, 12370) && strtolower($_POST['em']) != 'age' && $ords_email != array(19978, 12370) && $_POST['em'] != 'return' && $_POST['em'] != 'noko') {
-		  $post['email_save'] = true;
+			$post['email_save'] = true;
 		} else {
-		  $post['email_save'] = false;
+			$post['email_save'] = false;
 		}
 		$post['subject'] = mb_substr($post_subject, 0, KU_MAXSUBJLENGTH);
 		$post['message'] = $post_message;
@@ -368,13 +370,13 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 
 		// I never knew this weird shit exists in Kusaba
 		if ($thread_replyto != '0') {
-		  if ($post['message'] == '' && KU_NOMESSAGEREPLY != '') {
-		    $post['message'] = KU_NOMESSAGEREPLY;
-		  }
+			if ($post['message'] == '' && KU_NOMESSAGEREPLY != '') {
+				$post['message'] = KU_NOMESSAGEREPLY;
+			}
 		} else {
-		  if ($post['message'] == '' && KU_NOMESSAGETHREAD != '') {
-		    $post['message'] = KU_NOMESSAGETHREAD;
-		  }
+			if ($post['message'] == '' && KU_NOMESSAGETHREAD != '') {
+				$post['message'] = KU_NOMESSAGETHREAD;
+			}
 		}
 
 		// Emoji registration
@@ -407,7 +409,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 			}
 			// Reparse post
 			if ($any_new)
-			  $post['message'] = $parse_class->Smileys($post['message']);
+				$post['message'] = $parse_class->Smileys($post['message']);
 		}
 		// ← Emoji registration
 
@@ -434,14 +436,14 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 		}
 
 		if ($user_authority > 0 && $user_authority != 3) {
-		  $modpost_message = 'Modposted #<a href="' . KU_BOARDSFOLDER . $board_class->board['name'] . '/res/';
-		  if ($post_isreply) {
-		    $modpost_message .= $thread_replyto;
-		  } else {
-		    $modpost_message .= $post_id;
-		  }
-		  $modpost_message .= '.html#' . $post_id . '">' . $post_id . '</a> in /'.$_POST['board'].'/ with flags: ' . $flags . '.';
-		  management_addlogentry($modpost_message, 1, md5_decrypt($_POST['modpassword'], KU_RANDOMSEED));
+			$modpost_message = 'Modposted #<a href="' . KU_BOARDSFOLDER . $board_class->board['name'] . '/res/';
+			if ($post_isreply) {
+				$modpost_message .= $thread_replyto;
+			} else {
+				$modpost_message .= $post_id;
+			}
+			$modpost_message .= '.html#' . $post_id . '">' . $post_id . '</a> in /'.$_POST['board'].'/ with flags: ' . $flags . '.';
+			management_addlogentry($modpost_message, 1, md5_decrypt($_POST['modpassword'], KU_RANDOMSEED));
 		}
 
 		// Give persistent cookie
@@ -449,11 +451,11 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 			setcookie('I0_persistent_id', $posting_class->user_id, time() + 31556926, '/'/*, KU_DOMAIN*/);
 
 		if ($post['name_save'] && isset($_POST['name'])) {
-		  setcookie('name', $_POST['name'], time() + 31556926, '/', KU_DOMAIN);
+			setcookie('name', $_POST['name'], time() + 31556926, '/', KU_DOMAIN);
 		}
 
 		if ($post['email_save']) {
-		  setcookie('email', $post['email'], time() + 31556926, '/', KU_DOMAIN);
+			setcookie('email', $post['email'], time() + 31556926, '/', KU_DOMAIN);
 		}
 
 		setcookie('postpassword', $_POST['postpassword'], time() + 31556926, '/');
@@ -525,6 +527,7 @@ elseif (
 	$pages_to_regenerate = array(); // single pages to regenerate
 	$page_from = false;
 	$page_to = false;
+	$captcha_ok = false;
 
 	// Check rights
 	$pass = (isset($_POST['postpassword']) && $_POST['postpassword']!="") ? $_POST['postpassword'] : null;
@@ -575,10 +578,32 @@ elseif (
 				$isop = false;
 				$pwd_ref_post = $post_class;
 			}
-			if ($pass) {
+			// Determine if post is locked due to many access attempts
+			$locked = !$ismod && $post_class->CheckAccessLocked();
+			$unlocked = !$locked;
+			if ($locked) {
+				if ($captcha_ok === false) {
+					if ($_POST['captcha']) {
+						$captcha_ok = $posting_class->CheckCaptcha(true);
+						if (!$captcha_ok) {
+							$post_action->fail(_gettext('Incorrect captcha entered.'), 'captchalocked');
+						}
+						else {
+							$unlocked = true;
+						}
+					}
+					else {
+						$post_action->fail(_gettext('Insert captcha.'), 'captchalocked');
+					}
+				}
+				else {
+					$unlocked = $captcha_ok;
+				}
+			}
+			if ($pass && $unlocked) {
 				$passtype = $pwd_ref_post->post['password'] [0];
 				if ($passtype == '+') { // modern hash with salt: +md5(password+postid+boardid+randomseed)
-				  $pass_for_this_post = '+'.md5($pass . $pwd_ref_post->post['id'] . $board_class->board['id'] . KU_RANDOMSEED);
+					$pass_for_this_post = '+'.md5($pass . $pwd_ref_post->post['id'] . $board_class->board['id'] . KU_RANDOMSEED);
 				}
 				elseif ($passtype == '-') { // modern hash w/o salt: -md5(password+randomseed)
 					if (!$passmd5_new)
@@ -591,7 +616,7 @@ elseif (
 					$pass_for_this_post = $passmd5_old;
 				}
 			}
-			$granted = ($ismod || ($pass && $pass_for_this_post == $pwd_ref_post->post['password']));
+			$granted = $unlocked && ($ismod || ($pass && $pass_for_this_post == $pwd_ref_post->post['password']));
 			if ($granted) {
 				$thread_id = $post_class->post['parentid'] != '0' ? $post_class->post['parentid'] : $post_class->post['id'];
 				$room_id = $board_class->board['name'].':'.$thread_id;
@@ -611,6 +636,9 @@ elseif (
 								'by_mod' => $ismod,
 								'by_op' => $isop
 							);
+							if ($locked) {
+								$post_class->Unlock();
+							}
 							if (! in_array($thread_id, $threads_to_regenerate)) {
 								$threads_to_regenerate []= $thread_id;
 							}
@@ -631,7 +659,7 @@ elseif (
 				if (isset($_POST['deletepost'])) {
 					$post_action->action = 'delete';
 					$isownpost = !$ismod && !$isop;
-					$delres = $post_class->Delete(false, $isownpost && I0_ERASE_DELETED);
+					$delres = $post_class->Delete(false, $isownpost && I0_ERASE_DELETED, $ismod);
 					if ($delres) {
 						if ($delres !== 'already_deleted') { // Skip the unneeded rebuild if the post is already deleted
 							if (! isset($notifications_del[$room_id]))
@@ -721,7 +749,7 @@ elseif (
 					}
 				}
 			}
-			else {
+			elseif ($post_action->special_error !== 'captchalocked') {
 				$post_action->fail(_gettext('Incorrect password.'));
 			}
 		}
@@ -783,8 +811,8 @@ elseif (
 	}
 	if ($_POST['AJAX'])
 		exit(json_encode(array(
-		  'action' => 'multi_post_action',
-		  'data' => $items_affected
+			'action' => 'multi_post_action',
+			'data' => $items_affected
 		)));
 	else
 		do_redirect(KU_BOARDSPATH . '/' . $board_class->board['name'] . '/');
@@ -818,10 +846,10 @@ if( $_POST['redirecttothread'] == 1 || $_POST['em'] == 'return' || $_POST['em'] 
 
 if ($_POST['AJAX']) {
 	exit(json_encode(array(
-	  'error' => false,
-	  'action' => 'post',
-	  'thread_replyto' => $thread_replyto,
-	  'post_id' => $post_id,
-	  'board' => $board_class->board['name']
+		'error' => false,
+		'action' => 'post',
+		'thread_replyto' => $thread_replyto,
+		'post_id' => $post_id,
+		'board' => $board_class->board['name']
 	)));
 }

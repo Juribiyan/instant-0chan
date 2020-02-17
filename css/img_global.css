@@ -2810,6 +2810,22 @@ figure .post-menu {
 .post-menu li .icon {
   margin-right: 5px;
 }
+.menu-captcha {
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+          flex-direction: column;
+  -webkit-box-align: center;
+          align-items: center;
+}
+.menu-captcha .captchawrap, .menu-captcha input {
+  margin-bottom: 2px;
+}
+.menu-captcha input {
+  margin-bottom: 2px;
+  width: 100%;
+}
 .select-multiple .multidel {
   display: initial;
 }

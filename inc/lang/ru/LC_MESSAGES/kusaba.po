@@ -2148,3 +2148,6 @@ msgstr "Отменить таймер"
 
 msgid "as OP"
 msgstr "как ОП"
+
+msgid "Insert captcha."
+msgstr "Введите капчу."

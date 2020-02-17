@@ -208,22 +208,26 @@ class Posting {
 		}
 	}
 
-	function CheckCaptcha() {
+	function CheckCaptcha($for_access=false) {
 		global $board_class;
 		mb_internal_encoding("UTF-8");
 		/* If the board has captcha's enabled... */
-		if ($board_class->board['enablecaptcha'] == 1) {
+		if ($for_access || $board_class->board['enablecaptcha'] == 1) {
+			$code = $_SESSION['security_code'];
+			unset($_SESSION['security_code']);
 			$submit_time = time();
 			if($submit_time - $_SESSION['captchatime'] > KU_CAPTCHALIFE) {
+				if ($for_access) return false;
 				exitWithErrorPage(_gettext('Captcha has expired.'));
 			}
 			/* Check if they entered the correct code. If not... */
-			if ($_SESSION['security_code'] != mb_strtoupper($_POST['captcha']) || empty($_SESSION['security_code'])) {
+			if ($code != mb_strtoupper($_POST['captcha']) || empty($code)) {
+				if ($for_access) return false;
 				/* Kill the script, stopping the posting process */
 				exitWithErrorPage(_gettext('Incorrect captcha entered.'));
 			}
 		}
-		unset($_SESSION['security_code']);
+		if ($for_access) return true;
 	}
 
 	function CheckRecaptcha() {	//just backup

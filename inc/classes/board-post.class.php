@@ -973,7 +973,37 @@ class Post extends Board {
     `country` = '',
     `password` = ''";
 
-	function Delete($allow_archive = false, $erase = false) {
+	function CheckAccessLocked() {
+    global $tc_db;
+
+    $attempts = $tc_db->GetOne("SELECT `attempts`
+     FROM `".KU_DBPREFIX."posts`
+     WHERE 
+      `id` = ".$this->post['id']." AND
+      `boardid` = ".$this->board['id']);
+    if ((int)$attempts >= I0_MAX_ACCESS_ATTEMPTS) {
+      return true;
+    }
+    else {
+      $tc_db->Execute("UPDATE `".KU_DBPREFIX."posts`
+       SET `attempts` = `attempts`+1
+       WHERE 
+        `id` = ".$this->post['id']." AND
+        `boardid` = ".$this->board['id']);
+      return false;
+    }
+  }
+
+  function Unlock() {
+    global $tc_db;
+    $tc_db->Execute("UPDATE `".KU_DBPREFIX."posts`
+     SET `attempts` = 0
+     WHERE 
+      `id` = ".$this->post['id']." AND
+      `boardid` = ".$this->board['id']);
+  }
+
+  function Delete($allow_archive = false, $erase = false) {
     global $tc_db;
     if ($this->post['IS_DELETED'])
       return 'already_deleted';

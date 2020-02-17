@@ -3,6 +3,11 @@
 	<tr><td>
 		<input placeholder="{t}Password{/t}" type="password" name="postpassword" size="8" class="make-me-readonly"/>
 	</td></tr>
+	<noscript><tr><td><details>
+		<summary>{t}Captcha{/t}</summary>
+		<iframe class="captchawrap" src="{%KU_BOARDSFOLDER}nojscaptcha.php" frameborder="0" width="150" height="32" style="vertical-align: middle;"></iframe><br>
+		<input type="text" name="captcha" placeholder="{t}Captcha{/t}" style="margin-top:4px" accesskey="c" style="vertical-align: middle" autocomplete="off">
+	</details></td></tr></noscript>
 	<tr><td>
 	<input name="deletepost" value="{t}Delete post{/t}" type="submit" class="styled-button bad-button" />{if $board.opmod}<label for="opmod">(<input type="checkbox" id="opmod" name="opdelete" value="1">{t}as OP{/t})</label>
 	{/if}
@@ -16,7 +21,6 @@
 		<input name="cancel_timer" value="{t}Cancel timer{/t}" type="submit" class="styled-button" />
 	</td></tr>
 	</tbody></table>
-
 	</form>
 
 	<script type="text/javascript"><!--
