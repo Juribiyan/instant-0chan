@@ -508,6 +508,8 @@ elseif (
 			isset($_POST['deletepost'])
 			||
 			isset($_POST['reportpost'])
+			||
+			isset($_POST['cancel_timer'])
 		)
 		&&
 		isset($_POST['post'])
@@ -518,7 +520,8 @@ elseif (
 		$items_affected = array();
 
 	$threads_to_regenerate = array(); // to prevent possible repeated regeneration
-	$notifications = array();
+	$notifications_del = array();
+	$notifications_deltimer = array();
 	$pages_to_regenerate = array(); // single pages to regenerate
 	$page_from = false;
 	$page_to = false;
@@ -533,7 +536,7 @@ elseif (
 		Manage::CurrentUserIsModeratorOfBoard($board_class->board['name'], $_SESSION['manageusername'])
 	);
 	$isop = ( 
-		$_POST['opdelete']=="true"
+		$_POST['opdelete']
 		&&
 		$board_class->board['opmod']=='1'
 	);
@@ -562,9 +565,7 @@ elseif (
 				$post_action->fail(_gettext('This board does not allow post reporting.'));
 			}
 		}
-		// Post deleting
-		if (isset($_POST['deletepost'])) {
-			$post_action->action = 'delete';
+		else { // Actions that require password
 			if ($isop && $post_class->post['parentid'] != '0') {
 				$op_post_class = new Post($post_class->post['parentid'], $board_class->board['name'], $board_class->board['id']);
 				// TODO: check if not deleted, check if not empty
@@ -590,100 +591,134 @@ elseif (
 					$pass_for_this_post = $passmd5_old;
 				}
 			}
-			$pwd_ok = ($pass && $pass_for_this_post == $pwd_ref_post->post['password']);
-			if ($pwd_ok || $ismod) {
-				$isownpost = !$ismod && !$isop;
+			$granted = ($ismod || ($pass && $pass_for_this_post == $pwd_ref_post->post['password']));
+			if ($granted) {
 				$thread_id = $post_class->post['parentid'] != '0' ? $post_class->post['parentid'] : $post_class->post['id'];
-				$before = $board_class->GetPageNumber($thread_id);
-				$delres = $post_class->Delete(false, $isownpost && I0_ERASE_DELETED);
-				if ($delres) {
-					if ($delres !== 'already_deleted') { // Skip the unneeded rebuild if the post is already deleted
-						$room_id = $board_class->board['name'].':'.$thread_id;
-						if (! isset($notifications[$room_id]))
-							$notifications[$room_id] = array();
-						$notifications[$room_id] []= array(
-							'action' => 'delete_post',
-							'id' => $post_class->post['id'],
-							'thread_id' => $thread_id,
-							'by_mod' => $ismod,
-							'by_op' => $isop
-						);
-						if ($post_class->post['parentid'] != '0') { // Deleting a reply
-							if (! in_array($thread_id, $threads_to_regenerate)) {
-								$threads_to_regenerate []= $thread_id;
-							}
-							if ($ismod) {
-								management_addlogentry(_gettext('Deleted post') . ' #<a href="?action=viewthread&thread='. $thread_id . '&board='. $board_class->board['name'] . '#'. $val . '">'. $val . '</a> - /'. $board_class->board['name'] . '/', 7);
-							}
-							if ($delres == 'unbumped') { // thread may move down some pages
-								$after = $board_class->GetPageNumber($thread_id);
-								if ($before['page'] == $after['page']) { // (or maybe not)
-									if (!in_array($after['page'], $pages_to_regenerate)) {
-										$pages_to_regenerate []= $after['page'];
-									}
-								}
-								else {
-									if ($page_from===false || $before['page'] < $page_from) {
-										$page_from = $before['page'];
-									}
-									if ($page_to===false || $after['page'] > $page_to) {
-										$page_to = $after['page'];
-									}
-								}
-							}
-							else { // If there were no changes in threda order, only one page needs to be regenerated
-								if (!in_array($before['page'], $pages_to_regenerate)) {
-									$pages_to_regenerate []= $before['page'];
-								}
-							}
-							$post_action->succ(_gettext('Post successfully deleted.')
-								.($ismod ? ' '._gettext('(By mod)') : '')
-								.($isop ? ' '._gettext('(By OP)') : ''));
-						}
-						else { // Deleting a threda
-							$page_to = INF;
-							$after = $board_class->GetPageNumber($thread_id);
-							if ($before['n_pages'] == $after['n_pages']) {
-								if ($page_from===false || $before['page'] < $page_from) {
-									$page_from = $before['page'];
-								}
-							}
-							else {
-								$page_from = -1;
-							}
-							$room_id = $board_class->board['name'].':threads';
-							if (! isset($notifications[$room_id]))
-								$notifications[$room_id] = array();
-							$notifications[$room_id] []= array(
-								'action' => 'delete_thread',
-								'id' => $thread_id,
+				$room_id = $board_class->board['name'].':'.$thread_id;
+				$origin_page = $board_class->GetPageNumber($thread_id);
+				// Timer cancelling
+				if (isset($_POST['cancel_timer'])) {
+					$post_action->action = 'cancel_timer';
+					$cancelres = $post_class->CancelTimer();
+					if ($cancelres) {
+						if ($cancelres === true) {
+							if (! isset($notifications_deltimer[$room_id]))
+								$notifications_deltimer[$room_id] = array();
+							$notifications_deltimer[$room_id] []= array(
+								'action' => 'cancel_timer',
+								'id' => $post_class->post['id'],
+								'thread_id' => $thread_id,
 								'by_mod' => $ismod,
 								'by_op' => $isop
 							);
-							if ($ismod) {
-								management_addlogentry(_gettext('Deleted thread') . ' #<a href="?action=viewthread&thread='. $thread_id . '&board='. $board_class->board['name'] . '">'. $val . '</a> ('. ($delres-1) . ' replies) - /'. $board_class->board['name'] . '/', 7);
+							if (! in_array($thread_id, $threads_to_regenerate)) {
+								$threads_to_regenerate []= $thread_id;
 							}
-							$post_action->succ(_gettext('Thread successfully deleted.')
-								.($ismod ? ' '._gettext('(By mod)') : '')
-								.($isop ? ' '._gettext('(By OP)') : '')
-								.' '.($delres-1)._gettext('replies deleted').'.');
+							if (!in_array($origin_page['page'], $pages_to_regenerate)) {
+								$pages_to_regenerate []= $origin_page['page'];
+							}
+							$post_action->succ(_gettext('Timer removed'));
 						}
-
-						if (I0_FULL_ANONYMITY_MODE && $isownpost) {
-							$latest_thread = $post_class->post['parentid'] == '0' ? ", `latest_thread`=1" : "";
-							$tc_db->Execute("UPDATE `user_activity` SET 
-								`latest_post`=1" .
-								$latest_thread .
-								", `post_count`=IF(`post_count`>0, `post_count`-1, 0)
-								WHERE `idmd5`=?", array($posting_class->user_id_md5_salted)	);
+						else {
+							$post_action->succ(_gettext($cancelres)); // ← $cancelres must contain message text
 						}
 					}
 					else {
-						$post_action->succ(_gettext('Post is already deleted.'));
+						$post_action->fail(_gettext('There was an error in trying to remove a timer from your post')); // will never occur
 					}
 				}
-				else {
-					$post_action->fail(_gettext('There was an error in trying to delete your post'));
+				// Post deleting
+				if (isset($_POST['deletepost'])) {
+					$post_action->action = 'delete';
+					$isownpost = !$ismod && !$isop;
+					$delres = $post_class->Delete(false, $isownpost && I0_ERASE_DELETED);
+					if ($delres) {
+						if ($delres !== 'already_deleted') { // Skip the unneeded rebuild if the post is already deleted
+							if (! isset($notifications_del[$room_id]))
+								$notifications_del[$room_id] = array();
+							$notifications_del[$room_id] []= array(
+								'action' => 'delete_post',
+								'id' => $post_class->post['id'],
+								'thread_id' => $thread_id,
+								'by_mod' => $ismod,
+								'by_op' => $isop
+							);
+							if ($post_class->post['parentid'] != '0') { // Deleting a reply
+								if (! in_array($thread_id, $threads_to_regenerate)) {
+									$threads_to_regenerate []= $thread_id;
+								}
+								if ($ismod) {
+									management_addlogentry(_gettext('Deleted post') . ' #<a href="?action=viewthread&thread='. $thread_id . '&board='. $board_class->board['name'] . '#'. $val . '">'. $val . '</a> - /'. $board_class->board['name'] . '/', 7);
+								}
+								if ($delres == 'unbumped') { // thread may move down some pages
+									$destination_page = $board_class->GetPageNumber($thread_id);
+									if ($origin_page['page'] == $destination_page['page']) { // (or maybe not)
+										if (!in_array($destination_page['page'], $pages_to_regenerate)) {
+											$pages_to_regenerate []= $destination_page['page'];
+										}
+									}
+									else {
+										if ($page_from===false || $origin_page['page'] < $page_from) {
+											$page_from = $origin_page['page'];
+										}
+										if ($page_to===false || $destination_page['page'] > $page_to) {
+											$page_to = $destination_page['page'];
+										}
+									}
+								}
+								else { // If there were no changes in threda order, only one page needs to be regenerated
+									if (!in_array($origin_page['page'], $pages_to_regenerate)) {
+										$pages_to_regenerate []= $origin_page['page'];
+									}
+								}
+								$post_action->succ(_gettext('Post successfully deleted.')
+									.($ismod ? ' '._gettext('(By mod)') : '')
+									.($isop ? ' '._gettext('(By OP)') : ''));
+							}
+							else { // Deleting a threda
+								$page_to = INF;
+								$destination_page = $board_class->GetPageNumber($thread_id);
+								if ($origin_page['n_pages'] == $destination_page['n_pages']) {
+									if ($page_from===false || $origin_page['page'] < $page_from) {
+										$page_from = $origin_page['page'];
+									}
+								}
+								else {
+									$page_from = -1;
+								}
+								$room_id = $board_class->board['name'].':threads';
+								if (! isset($notifications_del[$room_id]))
+									$notifications_del[$room_id] = array();
+								$notifications_del[$room_id] []= array(
+									'action' => 'delete_thread',
+									'id' => $thread_id,
+									'by_mod' => $ismod,
+									'by_op' => $isop
+								);
+								if ($ismod) {
+									management_addlogentry(_gettext('Deleted thread') . ' #<a href="?action=viewthread&thread='. $thread_id . '&board='. $board_class->board['name'] . '">'. $val . '</a> ('. ($delres-1) . ' replies) - /'. $board_class->board['name'] . '/', 7);
+								}
+								$post_action->succ(_gettext('Thread successfully deleted.')
+									.($ismod ? ' '._gettext('(By mod)') : '')
+									.($isop ? ' '._gettext('(By OP)') : '')
+									.' '.($delres-1)._gettext('replies deleted').'.');
+							}
+							if (I0_FULL_ANONYMITY_MODE && $isownpost) {
+								$latest_thread = $post_class->post['parentid'] == '0' ? ", `latest_thread`=1" : "";
+								$tc_db->Execute("UPDATE `user_activity` SET 
+									`latest_post`=1" .
+									$latest_thread .
+									", `post_count`=IF(`post_count`>0, `post_count`-1, 0)
+									WHERE `idmd5`=?", array($posting_class->user_id_md5_salted)	);
+							}
+						}
+						else {
+							$post_action->succ(_gettext('Post is already deleted.'));
+						}
+					}
+					else {
+						$post_action->fail(_gettext('There was an error in trying to delete your post'));
+					}
 				}
 			}
 			else {
@@ -701,9 +736,9 @@ elseif (
 			$file_action->fail($fdres['error']);
 		else {
 			$room_id = $board_class->board['name'].':'.$fdres['parentid'];
-			if (! isset($notifications[$room_id]))
-				$notifications[$room_id] = array();
-			$notifications[$room_id] []= array(
+			if (! isset($notifications_del[$room_id]))
+				$notifications_del[$room_id] = array();
+			$notifications_del[$room_id] []= array(
 				'action' => 'delete_file',
 				'id' => $file
 			);
@@ -740,8 +775,11 @@ elseif (
 		$board_class->RegeneratePages($page_from, $page_to, $out_of_range);
 	}
 	// Finish
-	foreach ($notifications as $room=>$data) {
+	foreach ($notifications_del as $room=>$data) {
 		notify($room, array('action' => 'delete', 'items' => $data));
+	}
+	foreach ($notifications_deltimer as $room=>$data) {
+		notify($room, array('action' => 'cancel_timer', 'items' => $data));
 	}
 	if ($_POST['AJAX'])
 		exit(json_encode(array(

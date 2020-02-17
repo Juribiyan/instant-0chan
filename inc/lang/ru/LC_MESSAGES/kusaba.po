@@ -2142,3 +2142,9 @@ msgstr "Разрешить создателям тредов удалять от
 
 msgid "OP moderation is enabled"
 msgstr "ОП-модерация включена"
+
+msgid "Cancel timer"
+msgstr "Отменить таймер"
+
+msgid "as OP"
+msgstr "как ОП"

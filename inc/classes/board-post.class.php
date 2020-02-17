@@ -1249,6 +1249,32 @@ class Post extends Board {
 
 		return $tc_db->Execute("INSERT INTO `".KU_DBPREFIX."reports` ( `board` , `postid` , `when` , `ip`, `reason` ) VALUES ( " . $tc_db->qstr($this->board['name']) . " , " . $tc_db->qstr($this->post['id']) . " , ".time()." , '" . md5_encrypt($_SERVER['REMOTE_ADDR'], KU_RANDOMSEED) . "', " . $tc_db->qstr($_POST['reportreason']) . " )");
 	}
+
+  function CancelTimer() {
+    global $tc_db;
+    $boardid = $tc_db->qstr($this->board['id']);
+    $postid = $tc_db->qstr($this->post['id']);
+
+    $times = $tc_db->GetAll("SELECT `timestamp`, `deleted_timestamp`, `IS_DELETED`
+      FROM `".KU_DBPREFIX."posts`
+      WHERE 
+       `boardid` = ".$boardid." AND 
+       `id` = ".$postid);
+    if (!$times) return false;
+    if ($times[0]['IS_DELETED'] == 1) {
+      return 'Post is already deleted.';
+    }
+    if ($times[0]['deleted_timestamp'] == 0) {
+      return 'Post has no timer.';
+    }
+    $result = $tc_db->Execute("UPDATE `".KU_DBPREFIX."posts`
+      SET
+       `deleted_timestamp`=0
+      WHERE
+       `boardid` = ".$boardid." AND 
+       `id` = ".$postid);
+    return $result==false ? false : true;
+  }
 }
 
 ?>

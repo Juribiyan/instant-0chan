@@ -1,19 +1,21 @@
 {if not $isread}
-	<table class="userdelete">
-	<tbody>
-	<tr>
-	<td>
-		{t}Password{/t}
-		<input type="password" name="postpassword" size="8" class="make-me-readonly"/>
-	</td>
-	</tr>
-	<tr>
-	<td>
-	<input name="deletepost" value="{t}Delete post{/t}" type="submit" class="styled-button bad-button" />{if $board.enablereporting eq 1}&nbsp;<input name="reportpost" value="{t}Report{/t}" type="submit" class="styled-button" />{/if}
-	</td>
-	</tr>
-	</tbody>
-	</table>
+	<table class="userdelete"><tbody>
+	<tr><td>
+		<input placeholder="{t}Password{/t}" type="password" name="postpassword" size="8" class="make-me-readonly"/>
+	</td></tr>
+	<tr><td>
+	<input name="deletepost" value="{t}Delete post{/t}" type="submit" class="styled-button bad-button" />{if $board.opmod}<label for="opmod">(<input type="checkbox" id="opmod" name="opdelete" value="1">{t}as OP{/t})</label>
+	{/if}
+	</td></tr>
+	{if $board.enablereporting eq 1}
+	<tr><td>
+		<input name="reportpost" value="{t}Report{/t}" type="submit" class="styled-button" />
+	</td></tr>
+	{/if}
+	<tr><td>
+		<input name="cancel_timer" value="{t}Cancel timer{/t}" type="submit" class="styled-button" />
+	</td></tr>
+	</tbody></table>
 
 	</form>
 
@@ -66,15 +68,4 @@
 {if $boardlist_prebuilt}
 	<div id="boardlist_footer" class="navbar boardlist">{$boardlist_prebuilt}</div>
 {/if}
-</td>
-<td width="13" class="border-right"></td>
-</tr></tbody></table>
-<table width="98%" border="0" align="center" cellpadding="0" cellspacing="0" class="maintable">
-	<tbody>
-		<tr>
-	    <td width="20" height="84" class="bottom-left"></td>
-	    <td height="84" class="bottom-center">&nbsp;</td>
-	    <td width="19" height="84" class="bottom-right"></td>
-		</tr>
-	</tbody>
-</table>
+</div><!-- /.content -->
