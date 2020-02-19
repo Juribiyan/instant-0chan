@@ -3782,3 +3782,14 @@ input[name=postpassword] + div {
 .qrf-builtin:not(.hidden) + .fresh-replies-breaker {
   display: block;
 }
+.isthread .inthread-hide {
+  display: none;
+}
+.actual-reflinkpreview .postnode.op {
+  float: none!important;
+  display: table-cell!important;
+}
+.actual-reflinkpreview .replies, 
+.actual-reflinkpreview .omittedposts {
+  margin-left: 0;
+}

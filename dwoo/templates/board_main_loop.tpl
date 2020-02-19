@@ -7,18 +7,16 @@
 
 {* PRE-POSTHEAD SECTION *}
  {if $post.parentid eq 0} {* If OP → *}
-  {if not $isthread}
-   <span id="unhidethread{$post.id}{$board.name}">
-    {t}Thread{/t} 
-    <a href="{%KU_BOARDSFOLDER}{$board.name}/res/{$post.id}.html">{$post.id}</a> 
-    {t}hidden.{/t}
-    <a href="#" onclick="javascript:HiddenItems.unhideThread('{$post.id}');return false;" title="{t}Un-Hide Thread{/t}">
-     <svg class="icon b-icon"><use xlink:href="#i-unhide"></use></svg>
-    </a>
-   </span>
-  {/if}
+  {if $isthread}<div class="i0svcel">!i0-pd:{$post.id}</div>{/if} {* post delimiter for quick parsing *}
+  <span id="unhidethread{$post.id}{$board.name}">
+   {t}Thread{/t} 
+   <a href="{%KU_BOARDSFOLDER}{$board.name}/res/{$post.id}.html">{$post.id}</a> 
+   {t}hidden.{/t}
+   <a href="#" onclick="javascript:HiddenItems.unhideThread('{$post.id}');return false;" title="{t}Un-Hide Thread{/t}">
+    <svg class="icon b-icon"><use xlink:href="#i-unhide"></use></svg>
+   </a>
+  </span>
   <div id="thread{$post.id}{$board.name}" data-threadid="{$post.id}"{if $isthread} class="replies"{/if}> {* #thread → *}
-   {if $isthread}<div class="i0svcel">!i0-pd:{$post.id}</div>{/if} {* post delimiter for quick parsing *}
    <div class="postnode op" data-id="{$post.id}" data-board="{$board.name}"> {* .postnode.op → *}
     <a name="s{$.foreach.thread.iteration}"></a>
  {else} {* If reply → *}
@@ -78,13 +76,11 @@
     {if $post.stickied eq 1}
      <svg class="icon i-icon i-pin"><use xlink:href="#i-pin"></use></svg>
     {/if}
-    {if not $isthread}
-     <span id="hide{$post.id}">
-      <a href="#" onclick="javascript:HiddenItems.hideThread('{$post.id}');return false;" title="Hide Thread">
-       <svg class="icon b-icon"><use xlink:href="#i-hide"></use></svg>
-      </a>
-     </span>
-    {/if}
+    <span id="hide{$post.id}" class="inthread-hide">
+     <a href="#" onclick="javascript:HiddenItems.hideThread('{$post.id}');return false;" title="Hide Thread">
+      <svg class="icon b-icon"><use xlink:href="#i-hide"></use></svg>
+     </a>
+    </span>
    {/if} {* ← /Extra-buttons related to OP only *}
    <a href="#" 
    data-parent="{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}" 
@@ -104,15 +100,13 @@
    {/if}
   </span>
   {if $post.parentid eq 0}
-   {if not $isthread}
-    {strip}[<a href="{%KU_BOARDSFOLDER}{$board.name}/res/{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}.html">
-     {if $post.locked eq 1}
-      {t}Enter{/t}
-     {else}
-      {t}Reply{/t}
-     {/if}
-    </a>]{/strip}
-   {/if}
+   {strip}<span class="inthread-hide">[<a href="{%KU_BOARDSFOLDER}{$board.name}/res/{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}.html">
+    {if $post.locked eq 1}
+     {t}Enter{/t}
+    {else}
+     {t}Reply{/t}
+    {/if}
+   </a>]</span>{/strip}
    {* Unmaintained firstlast shit → *}
    {if %KU_FIRSTLAST && (($post.stickied eq 1 && $post.replies + %KU_REPLIESSTICKY > 50) || ($post.stickied eq 0 && $post.replies + %KU_REPLIES > 50))}
     {if (($post.stickied eq 1 && $post.replies + %KU_REPLIESSTICKY > 100) || ($post.stickied eq 0 && $post.replies + %KU_REPLIES > 100))}

@@ -18,11 +18,7 @@
 	var allowed_filetypes = [{foreach name=files item=filetype from=$board.filetypes_allowed}"{$filetype}"{if $.foreach.files.last}{else}, {/if}{/foreach}];
 	var maxfiles = {$board.maxfiles};
 	var opmod = '{$board.opmod}';
-{if $replythread > 0}
-	var ispage = false;
-{else}
-	var ispage = true;
-{/if}
+	var ispage = {if $replythread > 0} false {else} true {/if};
 </script>
 <noscript><style>.yesscript { display: none!important; }</style></noscript>
 <link rel="stylesheet" type="text/css" href="{$cwebpath}css/img_global.css?v={%KU_CSSVER}" />
@@ -60,7 +56,7 @@
 {/if}
 <script>if(localStorage['constrainWidth']=='true') document.write('<style id="injector:constrainWidth">body\{max-width:960px;margin:0px auto\}</style>')</script>
 </head>
-<body>
+<body{if $replythread neq 0} class="isthread"{/if}>
 <script>
 	document.body.classList.add('js-supported')
 	$.get("{$cwebpath}css/icons/icons.svg?v={%KU_SVGVER}", function(data) {
