@@ -181,7 +181,7 @@
          <div class="embed-wrap">
           <div class="emb-iframe-wrapper" data-w="{$embed.image_w}" data-h="{$embed.image_h}" data-code="{$embed.file}" data-site="{$embed.site_name}"{if $embed.start} data-start="{$embed.start}" data-startraw="{$embed.file_size}"{/if}></div>
           <div class="embed-overlay"></div>
-          <img class="embed-thumbnail" src="{$file_path}/thumb/{str_replace('/', '_', $embed.thumbnail)}" alt="">
+          <img class="embed-thumbnail" src="{$file_path}/thumb/{str_replace('/', '_', $embed.thumbnail)}" alt="" height="{$embed.thumb_h}" width="{$embed.thumb_w}">
           <div class="embed-title">
            <a href="{$embed.videourl}" target="_blank" title="{$embed.file_original} — {t}Watch on{/t} {$embed.site_name}">{$embed.file_original}</a>
           </div>
