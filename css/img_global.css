@@ -3775,3 +3775,10 @@ input[name=postpassword] + div {
   }
 }
 /* ------------ /Simplify main postform for narrow screens -------------- */
+
+.fresh-replies-breaker {
+  display: none;
+}
+.qrf-builtin:not(.hidden) + .fresh-replies-breaker {
+  display: block;
+}
