@@ -3785,7 +3785,7 @@ class Manage {
 	}
 
 	function validurl($url) {
-		return preg_match('#([^:]|^)(http://|https://|ftp://|gopher://)([^(\s<|\[)]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))#u',$url);
+		return preg_match('#(http:\/\/|https:\/\/|ftp:\/\/|gopher:\/\/)([^\s]+(([^\s\pP]|\/|\]|\pP(?=(\R|$))))+)#u',$url);
 	}
 
 	function updateBannersJSON() {
