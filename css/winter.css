@@ -462,3 +462,21 @@ icon-checkbox-wrap input[type=checkbox]:checked + .icon-with-fallback .b-icon,
     margin: 0;
   }
 }
+.uibutton:hover {
+	background: rgb(255, 255, 255);
+	border-color: rgba(0, 0, 0, 0.44);
+}
+.post-menu {
+	border: 1px solid #cccccc;
+	border-radius: 5px;
+	overflow: hidden;
+}
+.post-menu li:hover {
+	background: #DDDDEE;
+}
+.reply .post-menu {
+	border-radius: 0 5px 5px 5px
+}
+figure .post-menu {
+	border-radius: 0 0 5px 5px;
+}

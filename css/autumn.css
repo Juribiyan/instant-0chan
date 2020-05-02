@@ -479,3 +479,21 @@ table td {
 	background: rgb(255, 255, 255);
 	border-color: rgba(0, 0, 0, 0.44);
 }
+.uibutton:hover {
+	background: rgb(255, 255, 255);
+	border-color: rgba(0, 0, 0, 0.44);
+}
+.post-menu {
+	border: 1px solid #cccccc;
+	border-radius: 5px;
+	overflow: hidden;
+}
+.post-menu li:hover {
+	background: #dddddd;
+}
+.reply .post-menu {
+	border-radius: 0 5px 5px 5px
+}
+figure .post-menu {
+	border-radius: 0 0 5px 5px;
+}
