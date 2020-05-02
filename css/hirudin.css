@@ -435,3 +435,23 @@ color: #FF1B1B;
 .mm-bars {
   color: rgba(255, 255, 255, 0.76);
 }
+.uibutton:hover {
+	background: rgb(255, 255, 255);
+	border-color: rgba(0, 0, 0, 0.44);
+}
+.post-menu {
+  background: rgb(80, 82, 36);
+	box-shadow: 0 0 20px #272815;
+	border-radius: 5px;
+	overflow: hidden;
+}
+.post-menu li:hover {
+	background: rgba(0, 0, 0, 0.4);
+}
+.reply .post-menu {
+	border-radius: 0 5px 5px 5px
+}
+figure .post-menu {
+	border-radius: 0 0 5px 5px;
+}
+
