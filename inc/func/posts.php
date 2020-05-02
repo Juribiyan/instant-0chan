@@ -227,7 +227,7 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
       $url = 'https://vimeo.com/api/v2/video/'.$code.'.json';
       break;
     case 'you':
-      $url = 'https://www.googleapis.com/youtube/v3/videos?part=contentDetails%2Csnippet&id='.$code.'&key='.KU_YOUTUBE_APIKEY;
+      $url = 'https://www.youtube.com/get_video_info?video_id='.$code;
       break;
     case 'scl':
       $url = 'https://soundcloud.com/oembed?url=https%3A%2F%2Fsoundcloud.com%2F' . urlencode($code) . '&format=json';
@@ -248,7 +248,12 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
     default:  return array('error' => _gettext('Invalid response code ').' (JSON)'); break;
   }
   curl_close($ch);
-  $data = json_decode($result, true);
+  if ($site == 'you') {
+    parse_str($result, $ytjson);
+    $data = json_decode($ytjson['player_response'], true);
+  } else {
+    $data = json_decode($result, true);
+  }
   if ($data == NULL)
     return array('error' => _gettext('API returned invalid data.'));
 
@@ -272,10 +277,7 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
       break;
     case 'you':
       $widths_available = array(
-          'default' => 120,
-          'medium' => 320,
-          'high' => 480,
-          'standard' => 640,
+          'hq' => 480,
           'maxres' => 1280
       );
       break;
@@ -307,7 +309,7 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
       $thumb_url = preg_replace('/\.webp/', '.jpg', $data[0]['thumbnail_'.$chosen_preset]);
       break;
     case 'you':
-      $thumb_url = $data['items'][0]['snippet']['thumbnails'][$chosen_preset]['url'];
+      $thumb_url = 'https://i.ytimg.com/vi/'.$code.'/'.$chosen_preset.'default.jpg';
       break;
     case 'scl':
       $thumb_url = $data['thumbnail_url'];
@@ -354,8 +356,8 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
     case 'you':
       $r['width'] = 1920;
       $r['height'] = 1080;
-      $r['title'] = $data['items'][0]['snippet']['title'];
-      $duration = preg_replace_callback('/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/', 'ISO8601_callback', $data['items'][0]['contentDetails']['duration']);
+      $r['title'] = $data['videoDetails']['title'];
+      $duration = $data['videoDetails']['lengthSeconds'];
       break;
     case 'scl':
       $r['width'] = 500;
@@ -432,41 +434,43 @@ function collect_dead() {
       AND 
       `deleted_timestamp`<=UNIX_TIMESTAMP(NOW())");
   $dl_struct = array();
-  foreach ($deathlist as $post) {
-    if (! $dl_struct[$post['boardid']]) {
-      $dl_struct[$post['boardid']] = array();
+  if (isset($deathlist) && $deathlist) {
+    foreach ($deathlist as $post) {
+      if (! $dl_struct[$post['boardid']]) {
+        $dl_struct[$post['boardid']] = array();
+      }
+      $thread_id = $post['parentid'] == 0 ? $post['id'] : $post['parentid'];
+      if (! $dl_struct[$post['boardid']][$thread_id]) {
+        $dl_struct[$post['boardid']][$thread_id] = array();
+      }
+      $dl_struct[$post['boardid']][$thread_id] []= $post['id'];
     }
-    $thread_id = $post['parentid'] == 0 ? $post['id'] : $post['parentid'];
-    if (! $dl_struct[$post['boardid']][$thread_id]) {
-      $dl_struct[$post['boardid']][$thread_id] = array();
-    }
-    $dl_struct[$post['boardid']][$thread_id] []= $post['id'];
-  }
-  foreach ($dl_struct as $boardid => $threads) {
-    $board_name = $tc_db->GetOne("SELECT `name` FROM `".KU_DBPREFIX."boards` WHERE `id`='$boardid'");
-    $board_class = new Board($board_name);
-    $board_rebuild = false;
-    foreach ($threads as $thread_id => $posts) {
-      $thread_rebuild = false;
-      foreach($posts as $post_id) {
-        $post_class = new Post($post_id, $board_name, $boardid);
-        $delres = $post_class->Delete(false, I0_ERASE_DELETED);
-        if ($delres && $delres !== 'already_deleted') {
-          $thread_rebuild = true;
-          if ($post_id == $thread_id) {
-            $thread_deleted = true;
+    foreach ($dl_struct as $boardid => $threads) {
+      $board_name = $tc_db->GetOne("SELECT `name` FROM `".KU_DBPREFIX."boards` WHERE `id`='$boardid'");
+      $board_class = new Board($board_name);
+      $board_rebuild = false;
+      foreach ($threads as $thread_id => $posts) {
+        $thread_rebuild = false;
+        foreach($posts as $post_id) {
+          $post_class = new Post($post_id, $board_name, $boardid);
+          $delres = $post_class->Delete(false, I0_ERASE_DELETED);
+          if ($delres && $delres !== 'already_deleted') {
+            $thread_rebuild = true;
+            if ($post_id == $thread_id) {
+              $thread_deleted = true;
+            }
+          }
+        }
+        if ($thread_rebuild) {
+          $board_rebuild = true;
+          if (! $thread_deleted) {
+            $board_class->RegenerateThreads($thread_id);
           }
         }
       }
-      if ($thread_rebuild) {
-        $board_rebuild = true;
-        if (! $thread_deleted) {
-          $board_class->RegenerateThreads($thread_id);
-        }
+      if ($board_rebuild) {
+        $board_class->RegeneratePages();
       }
-    }
-    if ($board_rebuild) {
-      $board_class->RegeneratePages();
     }
   }
 }
