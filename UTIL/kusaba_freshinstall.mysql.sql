@@ -333,45 +333,45 @@ ENGINE=MyISAM DEFAULT CHARSET=KU_DBCHARSET COLLATE=KU_COLLATION AUTO_INCREMENT=1
 
 CREATE VIEW `PREFIX_postembeds`  
 AS SELECT 
-  `posts`.`id` AS `id`,
-  `posts`.`boardid` AS `boardid`,
-  `posts`.`parentid` AS `parentid`,
-  `posts`.`name` AS `name`,
-  `posts`.`tripcode` AS `tripcode`,
-  `posts`.`email` AS `email`,
-  `posts`.`subject` AS `subject`,
-  `posts`.`message` AS `message`,
-  `posts`.`password` AS `password`,
-  `posts`.`ip` AS `ip`,
-  `posts`.`ipmd5` AS `ipmd5`,
-  `posts`.`tag` AS `tag`,
-  `posts`.`timestamp` AS `timestamp`,
-  `posts`.`stickied` AS `stickied`,
-  `posts`.`locked` AS `locked`,
-  `posts`.`posterauthority` AS `posterauthority`,
-  `posts`.`reviewed` AS `reviewed`,
-  `posts`.`deleted_timestamp` AS `deleted_timestamp`,
-  `posts`.`IS_DELETED` AS `IS_DELETED`,
-  `posts`.`bumped` AS `bumped`,
-  `posts`.`country` AS `country`,
-  `files`.`file` AS `file`,
-  `files`.`file_id` AS `file_id`,
-  `files`.`file_md5` AS `file_md5`,
-  `files`.`file_type` AS `file_type`,
-  `files`.`file_original` AS `file_original`,
-  `files`.`file_size` AS `file_size`,
-  `files`.`file_size_formatted` AS `file_size_formatted`,
-  `files`.`image_w` AS `image_w`,
-  `files`.`image_h` AS `image_h`,
-  `files`.`thumb_w` AS `thumb_w`,
-  `files`.`thumb_h` AS `thumb_h`,
-  `files`.`spoiler` AS `spoiler`
+  `PREFIX_posts`.`id` AS `id`,
+  `PREFIX_posts`.`boardid` AS `boardid`,
+  `PREFIX_posts`.`parentid` AS `parentid`,
+  `PREFIX_posts`.`name` AS `name`,
+  `PREFIX_posts`.`tripcode` AS `tripcode`,
+  `PREFIX_posts`.`email` AS `email`,
+  `PREFIX_posts`.`subject` AS `subject`,
+  `PREFIX_posts`.`message` AS `message`,
+  `PREFIX_posts`.`password` AS `password`,
+  `PREFIX_posts`.`ip` AS `ip`,
+  `PREFIX_posts`.`ipmd5` AS `ipmd5`,
+  `PREFIX_posts`.`tag` AS `tag`,
+  `PREFIX_posts`.`timestamp` AS `timestamp`,
+  `PREFIX_posts`.`stickied` AS `stickied`,
+  `PREFIX_posts`.`locked` AS `locked`,
+  `PREFIX_posts`.`posterauthority` AS `posterauthority`,
+  `PREFIX_posts`.`reviewed` AS `reviewed`,
+  `PREFIX_posts`.`deleted_timestamp` AS `deleted_timestamp`,
+  `PREFIX_posts`.`IS_DELETED` AS `IS_DELETED`,
+  `PREFIX_posts`.`bumped` AS `bumped`,
+  `PREFIX_posts`.`country` AS `country`,
+  `PREFIX_files`.`file` AS `file`,
+  `PREFIX_files`.`file_id` AS `file_id`,
+  `PREFIX_files`.`file_md5` AS `file_md5`,
+  `PREFIX_files`.`file_type` AS `file_type`,
+  `PREFIX_files`.`file_original` AS `file_original`,
+  `PREFIX_files`.`file_size` AS `file_size`,
+  `PREFIX_files`.`file_size_formatted` AS `file_size_formatted`,
+  `PREFIX_files`.`image_w` AS `image_w`,
+  `PREFIX_files`.`image_h` AS `image_h`,
+  `PREFIX_files`.`thumb_w` AS `thumb_w`,
+  `PREFIX_files`.`thumb_h` AS `thumb_h`,
+  `PREFIX_files`.`spoiler` AS `spoiler`
 FROM (
-  `posts` LEFT JOIN `files` ON (
+  `PREFIX_posts` LEFT JOIN `PREFIX_files` ON (
     (
-      (`files`.`post_id` = `posts`.`id`) 
+      (`PREFIX_files`.`post_id` = `PREFIX_posts`.`id`) 
       and 
-      (`files`.`boardid` = `posts`.`boardid`)
+      (`PREFIX_files`.`boardid` = `PREFIX_posts`.`boardid`)
     )
   )
 );
