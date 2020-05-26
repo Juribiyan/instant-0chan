@@ -1,0 +1,2 @@
+ALTER TABLE `boards`
+	ADD COLUMN `hidden` TINYINT(1) NOT NULL DEFAULT '0' AFTER `opmod`;
