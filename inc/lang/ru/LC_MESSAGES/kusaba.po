@@ -2151,3 +2151,15 @@ msgstr "как ОП"
 
 msgid "Insert captcha."
 msgstr "Введите капчу."
+
+msgid "Old thread to be deleted in two hours"
+msgstr "Старый тред (будет удален в течение двух часов)"
+
+msgid "Hidden"
+msgstr "Скрыто"
+
+msgid "If enabled, this board will not appear in the menu"
+msgstr "Если отмечено, доска не будет присутствовать в меню"
+
+msgid "Click to edit board options"
+msgstr "Перейти к настройкам доски"

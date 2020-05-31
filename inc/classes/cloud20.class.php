@@ -4,7 +4,7 @@ class Cloud20 {
 	  global $tc_db;
 
 	  $sections = $tc_db->GetAll('SELECT * FROM `'. KU_DBPREFIX .'sections` ORDER BY `order`');
-	  $allboards = $tc_db->GetAll('SELECT `id`, `name`, `desc`, `section`, `order` FROM `'. KU_DBPREFIX .'boards`');
+	  $allboards = $tc_db->GetAll('SELECT `id`, `name`, `desc`, `section`, `order` FROM `'. KU_DBPREFIX .'boards` WHERE `hidden` != 1');
 	  $section20 = $tc_db->GetOne('SELECT `id` FROM `'. KU_DBPREFIX .'sections` WHERE `abbreviation`="20"');
 
 	  foreach($sections as &$sect) {

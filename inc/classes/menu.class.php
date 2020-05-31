@@ -47,7 +47,7 @@ class Menu {
 		if (count($results_boardsexist) > 0) {
 			$sections = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "sections` ORDER BY `order` ASC");
 			foreach($sections AS $key=>$section) {
-				$results = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "boards` WHERE `section` = '" . $section['id'] . "' ORDER BY `order` ASC, `name` ASC /* MENU.CLASS.PHP */");
+				$results = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "boards` WHERE `section` = '" . $section['id'] . "' AND `hidden` != 1 ORDER BY `order` ASC, `name` ASC /* MENU.CLASS.PHP */");
 				foreach($results AS $line) {
 						$sections[$key]['boards'][] = $line;
 				}

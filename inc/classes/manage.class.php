@@ -1292,13 +1292,15 @@ class Manage {
 		$this->BoardOwnersOnly();
 
 		if (isset($_POST['directory'])) {
-      		$this->CheckToken($_POST['token']);
+      $this->CheckToken($_POST['token']);
 			if (isset($_POST['add'])) {
-				$tpl_page .= $this->addBoard_mod($_POST['directory'], $_POST['desc']);
-			} elseif (isset($_POST['del'])) {
+				$tpl_page .= $this->addBoard_mod($_POST['directory'], $_POST['desc'], isset($_POST['hidden']) ? '1' : '0');
+			} 
+			elseif (isset($_POST['del'])) {
 				if (isset($_POST['confirmation'])) {
 					$tpl_page .= $this->delBoard_mod($_POST['directory'], $_POST['confirmation']);
-				} else {
+				} 
+				else {
 					$tpl_page .= $this->delBoard_mod($_POST['directory']);
 				}
 			}
@@ -1315,6 +1317,10 @@ class Manage {
 		<label for="desc">'. _gettext('Description') . ':</label>
 		<input type="text" name="desc" id="desc" />
 		<div class="desc">'. _gettext('The name of the board.') . '</div><br />
+
+		<label for="hidden">'. _gettext('Hidden') .':</label>
+		<input type="checkbox" name="hidden">
+		<div class="desc">'. _gettext('If enabled, this board will not appear in the menu') .'</div><br>
 
 		<input type="submit" value="'. _gettext('Add Board') .'" />
 
@@ -1390,7 +1396,7 @@ class Manage {
 		return $output;
 	}
 
-	function addBoard_mod($dir, $desc) {
+	function addBoard_mod($dir, $desc, $hidden=0) {
 		global $tc_db;
 		$this->BoardOwnersOnly();
 
@@ -1420,7 +1426,7 @@ class Manage {
 							file_put_contents(KU_BOARDSDIR . $dir . '/src/.htaccess', 'AddType text/plain .ASM .C .CPP .CSS .JAVA .JS .LSP .PHP .PL .PY .RAR .SCM .TXT'. "\n" . 'SetHandler default-handler');
 							$_POST['firstpostid'] = 1;
 							$sect20 = $tc_db->GetOne('SELECT `id` FROM `'. KU_DBPREFIX .'sections` WHERE `abbreviation`="20"');
-							$tc_db->Execute("INSERT INTO `" . KU_DBPREFIX . "boards` ( `name` , `desc` , `createdon`, `start`, `image`, `includeheader`,`section` ) VALUES ( " . $tc_db->qstr($dir) . " , " . $tc_db->qstr($desc) . " , '" . time() . "', " . $_POST['firstpostid'] . ", '', '', ".$sect20." )");
+							$tc_db->Execute("INSERT INTO `" . KU_DBPREFIX . "boards` ( `name` , `desc` , `createdon`, `start`, `image`, `includeheader`,`section`,`hidden`) VALUES ( " . $tc_db->qstr($dir) . " , " . $tc_db->qstr($desc) . " , '" . time() . "', " . $_POST['firstpostid'] . ", '', '', " . $sect20 . ", " . $tc_db->qstr($hidden) . " )");
 							$boardid = $tc_db->Insert_Id();
 							$filetypes = $tc_db->GetAll("SELECT " . KU_DBPREFIX . "filetypes.id FROM " . KU_DBPREFIX . "filetypes WHERE " . KU_DBPREFIX . "filetypes.filetype = 'JPG' OR " . KU_DBPREFIX . "filetypes.filetype = 'GIF' OR " . KU_DBPREFIX . "filetypes.filetype = 'PNG';");
 							foreach ($filetypes AS $filetype) {
@@ -3066,7 +3072,8 @@ class Manage {
 							'dice',
 							'useragent',
 							'duplication',
-							'opmod'
+							'opmod',
+							'hidden'
 						) as $prop) {
 							$set []= "`$prop` = ".$tc_db->qstr(isset($_POST[$prop]) ? '1' : '0');
 						}
@@ -3252,6 +3259,15 @@ class Manage {
 					$tpl_page .= '<label for="anonymous">'. _gettext('Anonymous') .':</label>
 					<input type="text" name="anonymous" value="'. $lineboard['anonymous'] . '" />
 					<div class="desc">'. _gettext('Name to display when a name is not attached to a post.') . ' '. _gettext('Default') .': <strong>'. _gettext('Anonymous') .'</strong></div><br />';
+					
+					/* Hidden */
+					$tpl_page .= '<label for="hidden">'. _gettext('Hidden') .':</label>
+					<input type="checkbox" name="hidden" ';
+					if ($lineboard['hidden'] == '1') {
+						$tpl_page .= 'checked ';
+					}
+					$tpl_page .= ' />
+					<div class="desc">'. _gettext('If enabled, this board will not appear in the menu') .'</div><br />';
 
 					/* Locked */
 					$tpl_page .= '<label for="locked">'. _gettext('Locked') .':</label>
@@ -3510,7 +3526,8 @@ class Manage {
 						'dice',
 						'useragent',
 						'duplication',
-						'opmod'
+						'opmod',
+						'hidden'
 					) as $prop) {
 						$set []= "`$prop` = ".$tc_db->qstr(isset($_POST[$prop]) ? '1' : '0');
 					}
@@ -3611,6 +3628,15 @@ class Manage {
 					$tpl_page .= '<label for="anonymous">'. _gettext('Anonymous') .':</label>
 					<input type="text" name="anonymous" value="'. $lineboard['anonymous'] . '" />
 					<div class="desc">'. _gettext('Name to display when a name is not attached to a post.') . ' '. _gettext('Default') .': <strong>'. _gettext('Anonymous') .'</strong></div><br />';
+					
+					/* Hidden */
+					$tpl_page .= '<label for="hidden">'. _gettext('Hidden') .':</label>
+					<input type="checkbox" name="hidden" ';
+					if ($lineboard['hidden'] == '1') {
+						$tpl_page .= 'checked ';
+					}
+					$tpl_page .= ' />
+					<div class="desc">'. _gettext('If enabled, this board will not appear in the menu') .'</div><br />';
 
 					/* Locked */
 					$tpl_page .= '<label for="locked">'. _gettext('Locked') .':</label>
