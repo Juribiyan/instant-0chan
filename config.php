@@ -238,9 +238,9 @@ if (!$cache_loaded) {
 
 // DO NOT MODIFY BELOW THIS LINE UNLESS YOU KNOW WHAT YOU ARE DOING OR ELSE BAD THINGS MAY HAPPEN
 $modules_loaded = array();
-$required = array(KU_ROOTDIR, KU_WEBFOLDER, KU_WEBPATH);
+$required = array(KU_ROOTDIR, KU_WEBFOLDER);
 if (in_array('CHANGEME', $required) || in_array('', $required)){
-	echo 'You must set KU_ROOTDIR, KU_WEBFOLDER, and KU_WEBPATH before installation will finish!';
+	echo 'You must set KU_ROOTDIR and KU_WEBFOLDER before installation will finish!';
 	die();
 }
 require KU_ROOTDIR . 'lib/gettext/gettext.inc.php';

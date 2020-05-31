@@ -12,7 +12,8 @@ $cf['KU_DBUSERNAME']      = 'root'; // Database username. On SQLite this has no 
 $cf['KU_DBPASSWORD']      = ''; // Database password. On SQLite this has no effect.
 $cf['KU_DBPREFIX']        = ''; // Database table prefix
 
-$cf['KU_WEBPATH']   = '//example.com'; // The path to the index folder of kusaba, without trailing slash. (http://yoursite.com or https://yoursite.com or just //yoursite.com for protocol-agnostic (flexible) behavior)
+$cf['KU_WEBPATH']   = '//example.com';  // The path to the index folder of kusaba, without trailing slash. (http://yoursite.com or https://yoursite.com or just //yoursite.com for protocol-agnostic (flexible) behavior)
+                                        // Set to '' to make the engine domain-agnostic
 $cf['KU_DOMAIN']    = '.example.com'; // Used in cookies for the domain parameter.  Should be a period and then the top level domain, which will allow the cookies to be set for all subdomains.
 
 // Board subdomain/alternate directory (optional, change to enable)
