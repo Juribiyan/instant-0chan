@@ -110,8 +110,9 @@ if (!$cache_loaded) {
 		// Main installation directory
 		$cf['KU_ROOTDIR']   = realpath(dirname(__FILE__))."/"; // Full system path of the folder containing kusaba.php, with trailing slash. The default value set here should be OK.. If you need to change it, you should already know what the full path is anyway.
 		$cf['KU_WEBFOLDER'] = '/'; // The path from the domain of the board to the folder which kusaba is in, including the trailing slash.  Example: "http://www.yoursite.com/misc/kusaba/" would have a $cf['KU_WEBFOLDER'] of "/misc/kusaba/"
-		$cf['KU_WEBPATH']   = '//example.com'; // The path to the index folder of kusaba, without trailing slash. (http://yoursite.com or https://yoursite.com or just //yoursite.com for protocol-agnostic (flexible) behavior)
-		$cf['KU_DOMAIN']    = '.example.com'; // Used in cookies for the domain parameter.  Should be a period and then the top level domain, which will allow the cookies to be set for all subdomains.  For http://www.randomchan.org, the domain would be .randomchan.org; http://zachchan.freehost.com would be zach.freehost.com
+		// Two following values are set this way to make engine domain-agnostic. Change them in instance-config if you do not want to.
+		$cf['KU_WEBPATH']   = ''; // The path to the index folder of kusaba, without trailing slash. (http://yoursite.com or https://yoursite.com or just //yoursite.com for protocol-agnostic (flexible) behavior)
+		$cf['KU_DOMAIN']    = '.' . $_SERVER['HTTP_HOST']; // Used in cookies for the domain parameter.  Should be a period and then the top level domain, which will allow the cookies to be set for all subdomains.  For http://www.randomchan.org, the domain would be .randomchan.org; http://zachchan.freehost.com would be zach.freehost.com
 
 		// Board subdomain/alternate directory (optional, change to enable)
 		// DO NOT CHANGE THESE IF YOU DO NOT KNOW WHAT YOU ARE DOING!!
