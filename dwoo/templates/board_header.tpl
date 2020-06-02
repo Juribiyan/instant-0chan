@@ -29,7 +29,7 @@
 	title="{$|capitalize}" 
 	{if $__.customstyle eq $}data-custom="true"{/if}/>
 {/loop}{/strip}')</script>
-<noscript><link rel="stylesheet" href="{$cwebpath}getpreferredstylesheet.php"></noscript>
+<noscript><link rel="stylesheet" href="{$cwebpath}getpreferredstylesheet.php?allowed={implode(',', $ku_styles)}&default={$__.ku_defaultstyle}&v={%KU_CSSVER}{if $__.customstyle}&custom={$__.customstyle}&cv={$__.csver}{/if}"></noscript>
 <link href="{$cwebpath}css/prettify.css" type="text/css" rel="stylesheet" />
 {if $locale eq 'ja'}
 	{literal}
