@@ -3793,3 +3793,25 @@ input[name=postpassword] + div {
 .actual-reflinkpreview .omittedposts {
   margin-left: 0;
 }
+/* Inline collapsible menus */
+.collapsed-menu-contents, .collapsible-menu input[type=checkbox] {
+  display: none;
+}
+.collapsible-menu input[type=checkbox]:checked + .collapsible-menu-name + .collapsed-menu-contents {
+  display: inline;
+}
+.collapsible-menu input[type=checkbox]:checked + .collapsible-menu-name {
+  text-decoration: none;
+}
+.collapsible-menu input[type=checkbox]:checked + .collapsible-menu-name::after {
+  content: ': ';
+  font-weight: normal;
+}
+.collapsible-menu-name {
+  text-decoration: underline dotted;
+  cursor: pointer;
+}
+.collapsed-menu-contents a {
+  display: inline-block;
+  transform-origin: 0 0;
+}
