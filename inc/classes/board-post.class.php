@@ -765,6 +765,7 @@ class Board {
 				$boards[$line['id']]['nick'] = htmlspecialchars($line['name']);
 				$boards[$line['id']]['abbreviation'] = htmlspecialchars($line['abbreviation']);
 				$results2 = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "boards` WHERE `section` = '" . $line['id'] . "' AND `hidden` != 1 ORDER BY `order` ASC, `name` ASC");
+        $boards[$line['id']]['isempty'] = empty($results2);
 				foreach($results2 AS $line2) {
 					$boards[$line['id']][$line2['id']]['name'] = htmlspecialchars($line2['name']);
 					$boards[$line['id']][$line2['id']]['desc'] = htmlspecialchars($line2['desc']);
