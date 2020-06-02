@@ -1,6 +1,5 @@
 {if %KU_GENERATEBOARDLIST}
 	{foreach name=sections item=sect from=$boardlist}
-		<script>console.log({json_encode($sect)}, {$sect.isempty})</script>
 		{if not $sect.isempty}
 		[<label class="collapsible-menu">
 			<input type="checkbox" {if not $sect.is_20} checked{/if}>
