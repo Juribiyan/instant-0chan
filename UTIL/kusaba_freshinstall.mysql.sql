@@ -133,7 +133,7 @@ CREATE TABLE `PREFIX_boards` (
   `embeds_allowed` varchar(255) NOT NULL DEFAULT 'you,vim,cob',
   `trial` tinyint(1) NOT NULL DEFAULT '0',
   `popular` tinyint(1) NOT NULL DEFAULT '0',
-  `DEFAULTstyle` varchar(50) CHARACTER SET latin1 NOT NULL DEFAULT '',
+  `defaultstyle` varchar(50) CHARACTER SET latin1 NOT NULL DEFAULT '',
   `locale` varchar(30) CHARACTER SET latin1 NOT NULL DEFAULT 'ru',
   `showid` tinyint(1) NOT NULL DEFAULT '0',
   `compactlist` tinyint(1) NOT NULL DEFAULT '0',
