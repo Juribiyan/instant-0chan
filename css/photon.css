@@ -293,6 +293,11 @@ table td {
 	z-index: 0;
 	border-width: 7px 13px 7px 0;
 }
+.reverse-caption-bubble:not(.thought-bubble)::before {
+	right: -13px;
+	left: auto;
+	border-width: 7px 0 7px 13px;
+}
 .bubble, .thought-bubble:after, .bubble:before {
 	border-color: transparent #969696;
 }
