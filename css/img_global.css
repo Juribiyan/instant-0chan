@@ -1994,7 +1994,8 @@ figure {
   text-align: left;
   margin-left: 0;
 }
-figure:first-of-type {
+figcaption {
+  opacity: 1!important;
 }
 .multiembed audio {
   float: left;
