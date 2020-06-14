@@ -733,17 +733,13 @@ class Board {
 	 * @return string The generated postbox
 	 */
 	function Postbox($replythread = 0) {
-		global $tc_db;
-		if (KU_BLOTTER) {
-			$this->dwoo_data->assign('blotter', getBlotter());
-			$this->dwoo_data->assign('blotter_updated', getBlotterLastUpdated());
-		}
-		$postbox = '';
-		$formbody .= $this->dwoo->get(KU_TEMPLATEDIR . '/board_post_box.tpl', $this->dwoo_data);
-    $postbox = $this->dwoo->get(KU_TEMPLATEDIR . '/board_post_box_wrapper.tpl', $this->dwoo_data);
-    $postbox = str_replace("<!-- formbody -->", $formbody, $postbox);
-		return $postbox;
-	}
+    global $tc_db;
+    if (KU_BLOTTER) {
+      $this->dwoo_data->assign('blotter', getBlotter());
+      $this->dwoo_data->assign('blotter_updated', getBlotterLastUpdated());
+    }
+    return $this->dwoo->get(KU_TEMPLATEDIR . '/board_post_box.tpl', $this->dwoo_data);
+  }
 
 	/**
 	 * Display the user-defined list of boards found in boards.html
