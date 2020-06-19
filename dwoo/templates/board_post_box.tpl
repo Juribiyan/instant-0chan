@@ -1,12 +1,9 @@
 <div class="postarea">
 <a id="postbox"></a>
-<form name="postform" id="postform" action="{%KU_CGIPATH}/board.php" method="post" enctype="multipart/form-data" class="main-reply-form">
+{if not $isthread}<div class="i0svcel">!i0-pb</div>{/if}<form name="postform" id="postform" action="{%KU_CGIPATH}/board.php" method="post" enctype="multipart/form-data" class="main-reply-form" data-maxfiles="{$board.maxfiles}" data-allowed-filetypes="{foreach name=files item=filetype from=$board.filetypes_allowed}{$filetype}{if $.foreach.files.last}{else},{/if}{/foreach}">
 	<input type="hidden" name="board" value="{$board.name}" />
 	<input type="hidden" name="replythread" value="<!sm_threadid>" />
 	<input type="hidden" name="makepost" value="1" />
-	{if $board.maximagesize > 0}
-		<input type="hidden" name="MAX_FILE_SIZE" value="{$board.maximagesize}" />
-	{/if}
 	<input type="text" name="email" size="28" maxlength="{%KU_MAXEMAILLENGTH}" value="" style="display: none;" />
 	<table class="postform">
 		<tbody>
@@ -73,7 +70,12 @@
 			<td class="postblock"></td>
 			<td><nobr class="captcharow">
 				<input type="text" name="captcha" placeholder="{t}Captcha{/t}" size="28" accesskey="c" style="vertical-align: middle" autocomplete="off">
-				<script>document.write('<div class="captchawrap cw-initial" title="{t}Refresh captcha{/t}"><div class="captcha-show msg">{t}Show captcha{/t}</div><img class="captchaimage" valign="middle" border="0" alt="{t}Captcha image{/t}"><div class="rotting-indicator"></div><div class="rotten-msg msg">{t}Captcha has expired{t}.</div></div>')</script>
+				<div class="captchawrap cw-initial yesscript" title="{t}Refresh captcha{/t}">
+					<div class="captcha-show msg">{t}Show captcha{/t}</div>
+					<img class="captchaimage" valign="middle" border="0" alt="{t}Captcha image{/t}">
+					<div class="rotting-indicator"></div>
+					<div class="rotten-msg msg">{t}Captcha has expired{t}.</div>
+				</div>
 				<noscript><iframe class="captchawrap" src="{%KU_BOARDSFOLDER}nojscaptcha.php" frameborder="0" width="150" height="32" style="vertical-align: middle;"></iframe></noscript>
 			</nobr></td>
 		</tr>
@@ -258,8 +260,7 @@
 		</tbody>
 	</table>
 	<div class="formsending-overlay"><div class="form-spinner"></div></div>
-
-</form>
+</form>{if not $isthread}<div class="i0svcel">!i0-pb-end</div>{/if}
 <hr />
 {if $topads neq ''}
 	<div class="content ads">
@@ -269,5 +270,5 @@
 	</div>
 	<hr />
 {/if}
-</div>
+</div>{* /postarea *}
 <script type="text/javascript">set_inputs("postform");</script>

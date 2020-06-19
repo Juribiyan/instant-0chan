@@ -65,6 +65,12 @@ body {
 span[id^=unhidethread] {
   display: none;
 }
+.reflinkpreview div[id^=thread], .reflinkpreview .postbody {
+  display: block!important;
+}
+.reflinkpreview span[id^=unhidethread] {
+  display: none!important;
+}
 
 blockquote blockquote {
   margin-left: 0em;
@@ -2836,6 +2842,9 @@ figure .post-menu {
 .postnode:not(.post-hidden) .menu-unhide {
   display: none;
 }
+.post-hidden .posthead {
+  margin-bottom: 0;
+}
 .icon-wraping-button {
   outline: none;
   background: none;
@@ -3815,4 +3824,12 @@ input[name=postpassword] + div {
 .collapsed-menu-contents a {
   display: inline-block;
   transform-origin: 0 0;
+}
+
+.over-boardlabel {
+  font-size: .9em;
+  font-weight: bold;
+  padding: 0 3px;
+  border-radius: 4px;
+  text-decoration: none;
 }

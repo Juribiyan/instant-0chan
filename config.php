@@ -79,6 +79,12 @@ if (!$cache_loaded) {
 		$cf['I0_FORCE_HTML_NOCACHE'] = false; // When AJAX-ing HTML, force no-cache (default: off (server must handle this, recommended for local debugging only))
 		$cf['I0_IPLESS_MODE'] = 'auto'; // Whether or not cookies should be used instead of IP's (typically for TOR hidden services). Supported values: true, false and 'auto'. In auto mode, cookies will be used when client IP is 127.0.0.1 
 		$cf['I0_CURL_PROXY'] = false; // Proxy to use when fetching external resources, for example 'socks5h://127.0.0.1:9050' — to connect through TOR
+		// -------------------------- Overboard --------------------------
+		$cf['I0_OVERBOARD_ENABLED'] = true; // Whether or not an overboard must be generated
+		$cf['I0_OVERBOARD_DIR'] = 'over';   // Overboard directory, default is "over" (/over/)
+		$cf['I0_OVERBOARD_DESCRIPTION'] = 'Overboard';
+		$cf['I0_OVERBOARD_THREADS'] = 15;		// Number of threads to display on an overboard page
+		$cf['I0_OVERBOARD_NUMPAGES'] = 2;   // How many pages an overboard should have
 
 		$cf['I0_DELPASS_SALTING'] = true; // Whether or not the delpass should be hashed to prevent poster identification
 		$cf['I0_ERASE_DELETED'] = false; // Whether or not the contents of posts deleted by user should be erased

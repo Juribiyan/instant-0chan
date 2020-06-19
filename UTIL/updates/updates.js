@@ -20,8 +20,11 @@ app.post('/qr/:site', (req, res) => {
 	}
 	let data = req.body
 	if(typeof data.srvtoken !== 'undefined' || data.srvtoken === srvtoken || typeof data.room !== 'undefined') {
-		let room = site+':'+data.room
-		data.room = data.room.split(':')[1]
+		let rs = data.room.split(':')
+		, room = site+':'+data.room
+		if (!data.board)
+			data.board = rs[0]
+		data.room = rs[1]
 		delete data.srvtoken
 		io.to(room).emit('update', data)
 	}

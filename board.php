@@ -141,35 +141,41 @@ if (isset($_POST['board']) || isset($_GET['board'])) $_POST['board'] = (isset($_
 
 // If the script was called using a board name:
 if (isset($_POST['board'])) {
-	$board_name = $tc_db->GetOne("SELECT `name` FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($_POST['board']) . "");
-	if ($board_name !== false) {
-		$board_class = new Board($board_name);
-		if (!empty($board_class->board['locale'])) {
-			changeLocale($board_class->board['locale']);
+	if ($_POST['board'] == I0_OVERBOARD_DIR)
+		$is_overboard = true;
+	else {
+		$board_name = $tc_db->GetOne("SELECT `name` FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($_POST['board']) . "");
+		if ($board_name !== false) {
+			$board_class = new Board($board_name);
+			if (!empty($board_class->board['locale'])) {
+				changeLocale($board_class->board['locale']);
+			}
+		} else {
+			error_redirect(KU_WEBPATH, _gettext('No board provided'));
 		}
-	} else {
-		error_redirect(KU_WEBPATH, _gettext('No board provided'));
 	}
-} else {
-	// A board being supplied is required for this script to function
-	error_redirect(KU_WEBPATH, _gettext('No board provided'));
 }
+
 // Must be declared after board class
 $posting_class = new Posting();
 
 // Expired ban removal, and then existing ban check on the current user
-$ban_result = $bans_class->BanCheck($posting_class->user_id, $board_class->board['name']);
-if ($ban_result && is_array($ban_result) && $_POST['AJAX']) {
-	exit(json_encode(array(
-		'error' => _gettext('YOU ARE BANNED'),
-		'error_type' => 'ban'
-	)));
+if (isset($board_class)) {
+	$ban_result = $bans_class->BanCheck($posting_class->user_id, $board_class->board['name']);
+	if ($ban_result && is_array($ban_result) && $_POST['AJAX']) {
+		exit(json_encode(array(
+			'error' => _gettext('YOU ARE BANNED'),
+			'error_type' => 'ban'
+		)));
+	}
 }
 
 /* Ensure that UTF-8 is used on some of the post variables */
 $posting_class->UTF8Strings();
 
 if (isset($_POST['makepost'])) { // A more evident way to identify post action, as actual validity will be checked later anyway
+	if (!isset($board_class))
+		error_redirect($is_overboard ? KU_BOARDSPATH . '/' . I0_OVERBOARD_DIR . '/' : KU_WEBPATH, _gettext('No board provided'));
 	$tc_db->Execute("START TRANSACTION");
 	$posting_class->CheckReplyTime();
 	$post_isreply = $posting_class->CheckIsReply();
@@ -490,14 +496,29 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 		$cl20 = new Cloud20();
 		$cl20->rebuild();
 
+		$need_overboard = I0_OVERBOARD_ENABLED && $board_class->board['section'] != '0' && $board_class->board['hidden'] == '0';
+
 		if ($thread_replyto == '0') {
 			// Regenerate the thread
 			$board_class->RegenerateThreads($post_id);
-			notify($board_class->board['name'].':threads', array('action' => 'new_thread', 'new_thread_id' => $post_id));
+			notify($board_class->board['name'].':threads', array(
+				'action' => 'new_thread', 
+				'new_thread_id' => $post_id));
+			if ($need_overboard)
+				notify(I0_OVERBOARD_DIR.':threads', array(
+					'action' => 'new_thread', 
+					'new_thread_id' => $post_id, 
+					'board' => $board_class->board['name'],
+					'board_desc' => $board_class->board['desc']));
 		} else {
 			// Regenerate the thread
 			$board_class->RegenerateThreads($thread_replyto);
 			notify($board_class->board['name'].':'.$thread_replyto, array('action' => 'new_reply', 'reply_id' => $post_id));
+		}
+
+		// Regenerate overboard if it makes sense
+		if ($need_overboard) {
+			RegenerateOverboard($board_class->board['boardlist']);
 		}
 	} 
 	else {
@@ -525,19 +546,13 @@ elseif (
 	$notifications_del = array();
 	$notifications_deltimer = array();
 	$pages_to_regenerate = array(); // single pages to regenerate
-	$page_from = false;
-	$page_to = false;
 	$captcha_ok = false;
 
 	// Check rights
 	$pass = (isset($_POST['postpassword']) && $_POST['postpassword']!="") ? $_POST['postpassword'] : null;
-	$ismod = (
-		$_POST['moddelete']=="true"
-		&&
-		(require_once KU_ROOTDIR . 'inc/classes/manage.class.php')
-		&&
-		Manage::CurrentUserIsModeratorOfBoard($board_class->board['name'], $_SESSION['manageusername'])
-	);
+	$ismod = $_POST['moddelete']=="true";
+	if ($ismod)
+		require_once KU_ROOTDIR . 'inc/classes/manage.class.php';
 	$isop = ( 
 		$_POST['opdelete']
 		&&
@@ -546,12 +561,30 @@ elseif (
 
 	// Post-related actions
 	if (isset($_POST['post'])) foreach ($_POST['post'] as $val) {
-		$post_class = new Post($val, $board_class->board['name'], $board_class->board['id']);
-		$post_action = new PolymorphicReporter('post', $val, (boolean)$_POST['AJAX']);
+		list($post_id, $post_brd) = explode(':', $val);
+		$post_action = new PolymorphicReporter('post', $post_id, (boolean)$_POST['AJAX']);
+		if ($is_overboard || ($post_brd!==NULL && $board_class->board['name'] != $post_brd)) { // is external board
+			if (!isset($external_boards[$post_brd])) {
+				$external_boards[$post_brd] = new Board($post_brd);
+			}
+			$b_class = $external_boards[$post_brd];
+		}
+		elseif (!isset($board_class))
+			$post_action->fail(_gettext('No board provided'));
+		else {
+			$b_class = $board_class;
+			$ismod = $ismod && Manage::CurrentUserIsModeratorOfBoard($b_class->board['name'], $_SESSION['manageusername']);
+		}
+		if (!isset($pages_from[$b_class->board['name']]))
+			$pages_from[$b_class->board['name']] = INF;
+		if (!isset($pages_to[$b_class->board['name']]))
+			$pages_to[$b_class->board['name']] = -1;
+
+		$post_class = new Post($post_id, $b_class->board['name'], $b_class->board['id']);
 		// Post reporting
 		if (isset($_POST['reportpost'])) {
 			$post_action->action = 'report';
-			if ($board_class->board['enablereporting'] == 1) {
+			if ($b_class->board['enablereporting'] == 1) {
 				$post_reported = $post_class->post['isreported'];
 				if ($post_reported === 'cleared') {
 					$post_action->fail(_gettext('That post has been cleared as not requiring any deletion.'));
@@ -570,7 +603,7 @@ elseif (
 		}
 		else { // Actions that require password
 			if ($isop && $post_class->post['parentid'] != '0') {
-				$op_post_class = new Post($post_class->post['parentid'], $board_class->board['name'], $board_class->board['id']);
+				$op_post_class = new Post($post_class->post['parentid'], $b_class->board['name'], $b_class->board['id']);
 				// TODO: check if not deleted, check if not empty
 				$pwd_ref_post = $op_post_class;
 			}
@@ -602,8 +635,8 @@ elseif (
 			}
 			if ($pass && $unlocked) {
 				$passtype = $pwd_ref_post->post['password'] [0];
-				if ($passtype == '+') { // modern hash with salt: +md5(password+postid+boardid+randomseed)
-					$pass_for_this_post = '+'.md5($pass . $pwd_ref_post->post['id'] . $board_class->board['id'] . KU_RANDOMSEED);
+				if ($passtype == '+') { // modern hash with salt: +md5(password+post_id+boardid+randomseed)
+					$pass_for_this_post = '+'.md5($pass . $pwd_ref_post->post['id'] . $b_class->board['id'] . KU_RANDOMSEED);
 				}
 				elseif ($passtype == '-') { // modern hash w/o salt: -md5(password+randomseed)
 					if (!$passmd5_new)
@@ -619,8 +652,8 @@ elseif (
 			$granted = $unlocked && ($ismod || ($pass && $pass_for_this_post == $pwd_ref_post->post['password']));
 			if ($granted) {
 				$thread_id = $post_class->post['parentid'] != '0' ? $post_class->post['parentid'] : $post_class->post['id'];
-				$room_id = $board_class->board['name'].':'.$thread_id;
-				$origin_page = $board_class->GetPageNumber($thread_id);
+				$room_id = $b_class->board['name'].':'.$thread_id;
+				$origin_page = $b_class->GetPageNumber($thread_id);
 				// Timer cancelling
 				if (isset($_POST['cancel_timer'])) {
 					$post_action->action = 'cancel_timer';
@@ -639,11 +672,11 @@ elseif (
 							if ($locked) {
 								$post_class->Unlock();
 							}
-							if (! in_array($thread_id, $threads_to_regenerate)) {
-								$threads_to_regenerate []= $thread_id;
+							if (! in_array($room_id, $threads_to_regenerate)) {
+								$threads_to_regenerate []= $room_id;
 							}
-							if (!in_array($origin_page['page'], $pages_to_regenerate)) {
-								$pages_to_regenerate []= $origin_page['page'];
+							if (!in_array($origin_page['page'], $pages_to_regenerate[$b_class->board['name']])) {
+								$pages_to_regenerate[$b_class->board['name']] []= $origin_page['page'];
 							}
 							$post_action->succ(_gettext('Timer removed'));
 						}
@@ -672,31 +705,31 @@ elseif (
 								'by_op' => $isop
 							);
 							if ($post_class->post['parentid'] != '0') { // Deleting a reply
-								if (! in_array($thread_id, $threads_to_regenerate)) {
-									$threads_to_regenerate []= $thread_id;
+								if (! in_array($room_id, $threads_to_regenerate)) {
+									$threads_to_regenerate []= $room_id;
 								}
 								if ($ismod) {
-									management_addlogentry(_gettext('Deleted post') . ' #<a href="?action=viewthread&thread='. $thread_id . '&board='. $board_class->board['name'] . '#'. $val . '">'. $val . '</a> - /'. $board_class->board['name'] . '/', 7);
+									management_addlogentry(_gettext('Deleted post') . ' #<a href="?action=viewthread&thread='. $thread_id . '&board='. $b_class->board['name'] . '#'. $post_id . '">'. $post_id . '</a> - /'. $b_class->board['name'] . '/', 7);
 								}
 								if ($delres == 'unbumped') { // thread may move down some pages
-									$destination_page = $board_class->GetPageNumber($thread_id);
+									$destination_page = $b_class->GetPageNumber($thread_id);
 									if ($origin_page['page'] == $destination_page['page']) { // (or maybe not)
-										if (!in_array($destination_page['page'], $pages_to_regenerate)) {
-											$pages_to_regenerate []= $destination_page['page'];
+										if (!in_array($destination_page['page'], $pages_to_regenerate[$b_class->board['name']])) {
+											$pages_to_regenerate[$b_class->board['name']] []= $destination_page['page'];
 										}
 									}
 									else {
-										if ($page_from===false || $origin_page['page'] < $page_from) {
-											$page_from = $origin_page['page'];
+										if ($pages_from[$b_class->board['name']]===false || $origin_page['page'] < $pages_from[$b_class->board['name']]) {
+											$pages_from[$b_class->board['name']] = $origin_page['page'];
 										}
-										if ($page_to===false || $destination_page['page'] > $page_to) {
-											$page_to = $destination_page['page'];
+										if ($pages_to[$b_class->board['name']]===false || $destination_page['page'] > $pages_to[$b_class->board['name']]) {
+											$pages_to[$b_class->board['name']] = $destination_page['page'];
 										}
 									}
 								}
 								else { // If there were no changes in threda order, only one page needs to be regenerated
-									if (!in_array($origin_page['page'], $pages_to_regenerate)) {
-										$pages_to_regenerate []= $origin_page['page'];
+									if (!in_array($origin_page['page'], $pages_to_regenerate[$b_class->board['name']])) {
+										$pages_to_regenerate[$b_class->board['name']] []= $origin_page['page'];
 									}
 								}
 								$post_action->succ(_gettext('Post successfully deleted.')
@@ -704,17 +737,17 @@ elseif (
 									.($isop ? ' '._gettext('(By OP)') : ''));
 							}
 							else { // Deleting a threda
-								$page_to = INF;
-								$destination_page = $board_class->GetPageNumber($thread_id);
+								$pages_to[$b_class->board['name']] = INF;
+								$destination_page = $b_class->GetPageNumber($thread_id);
 								if ($origin_page['n_pages'] == $destination_page['n_pages']) {
-									if ($page_from===false || $origin_page['page'] < $page_from) {
-										$page_from = $origin_page['page'];
+									if ($pages_from[$b_class->board['name']]===false || $origin_page['page'] < $pages_from[$b_class->board['name']]) {
+										$pages_from[$b_class->board['name']] = $origin_page['page'];
 									}
 								}
 								else {
-									$page_from = -1;
+									$pages_from[$b_class->board['name']] = -1;
 								}
-								$room_id = $board_class->board['name'].':threads';
+								$room_id = $b_class->board['name'].':threads';
 								if (! isset($notifications_del[$room_id]))
 									$notifications_del[$room_id] = array();
 								$notifications_del[$room_id] []= array(
@@ -724,7 +757,7 @@ elseif (
 									'by_op' => $isop
 								);
 								if ($ismod) {
-									management_addlogentry(_gettext('Deleted thread') . ' #<a href="?action=viewthread&thread='. $thread_id . '&board='. $board_class->board['name'] . '">'. $val . '</a> ('. ($delres-1) . ' replies) - /'. $board_class->board['name'] . '/', 7);
+									management_addlogentry(_gettext('Deleted thread') . ' #<a href="?action=viewthread&thread='. $thread_id . '&board='. $b_class->board['name'] . '">'. $post_id . '</a> ('. ($delres-1) . ' replies) - /'. $b_class->board['name'] . '/', 7);
 								}
 								$post_action->succ(_gettext('Thread successfully deleted.')
 									.($ismod ? ' '._gettext('(By mod)') : '')
@@ -756,14 +789,32 @@ elseif (
 		$items_affected []= $post_action->report();
 	}
 	// File deleting
-	if (isset($_POST['delete-file'])) foreach($_POST['delete-file'] as $file) {
+	if (isset($_POST['delete-file'])) foreach($_POST['delete-file'] as $val) {
+		list($file, $post_brd) = explode(':', $val);
 		$file_action = new PolymorphicReporter('file', $file, (boolean)$_POST['AJAX']);
 		$file_action->action = 'delete-file';
-		$fdres = $board_class->DeleteFile($file, $pass, $ismod, $board_class->board['name']);
+		if ($is_overboard || ($post_brd!==NULL && $board_class->board['name'] != $post_brd)) { // is external board
+			if (!isset($external_boards[$post_brd])) {
+				$external_boards[$post_brd] = new Board($post_brd);
+			}
+			$b_class = $external_boards[$post_brd];
+		}
+		elseif (!isset($board_class))
+			$post_action->fail(_gettext('No board provided'));
+		else {
+			$b_class = $board_class;
+			$ismod = $ismod && Manage::CurrentUserIsModeratorOfBoard($b_class->board['name'], $_SESSION['manageusername']);
+		}
+		if (!isset($pages_from[$b_class->board['name']]))
+			$pages_from[$b_class->board['name']] = INF;
+		if (!isset($pages_to[$b_class->board['name']]))
+			$pages_to[$b_class->board['name']] = -1;
+
+		$fdres = $b_class->DeleteFile($file, $pass, $ismod, $b_class->board['name']);
 		if ($fdres['error'])
 			$file_action->fail($fdres['error']);
 		else {
-			$room_id = $board_class->board['name'].':'.$fdres['parentid'];
+			$room_id = $b_class->board['name'].':'.$fdres['parentid'];
 			if (! isset($notifications_del[$room_id]))
 				$notifications_del[$room_id] = array();
 			$notifications_del[$room_id] []= array(
@@ -772,36 +823,69 @@ elseif (
 			);
 			$file_action->succ(_gettext('Image successfully deleted from your post.'));
 			if (! $fdres['already_deleted']) {
-				if (! in_array($fdres['parentid'], $threads_to_regenerate)) {
-					$threads_to_regenerate []= $fdres['parentid'];
+				if (! in_array($room_id, $threads_to_regenerate)) {
+					$threads_to_regenerate []= $room_id;
 				}
-				$page = $board_class->GetPageNumber($fdres['parentid'])['page'];
-				if (!in_array($page, $pages_to_regenerate)) {
-					$pages_to_regenerate []= $page;
+				$page = $b_class->GetPageNumber($fdres['parentid'])['page'];
+				if (!in_array($page, $pages_to_regenerate[$b_class->board['name']])) {
+					$pages_to_regenerate[$b_class->board['name']] []= $page;
 				}
 			}
 		}
 		$items_affected []= $file_action->report();
 	}
 	// Regeneration
-	foreach($threads_to_regenerate as $id) {
-		$board_class->RegenerateThreads($id);
-	}
-	if ($page_from === false) $page_from = INF;
-	if ($page_to === false) $page_to = -1;
-	$out_of_range = array();
-	foreach($pages_to_regenerate as $page) {
-		if ($page < $page_from || $page > $page_to) {
-			$out_of_range []= $page;
+	$need_overboard = false;
+	foreach($threads_to_regenerate as $room_id) {
+		list($brd, $thread_id) = explode(':', $room_id);
+		if ($is_overboard || $board_class->board['name'] != $brd) {
+			$external_boards[$brd]->RegenerateThreads($thread_id);
+			if (I0_OVERBOARD_ENABLED && !$need_overboard && $external_boards[$brd]->board['section'] != '0' && $external_boards[$brd]->board['hidden'] == '0') {
+				$need_overboard = true;
+				$over_boardlist = $external_boards[$brd]->board['boardlist'];
+			}
+		}
+		else {
+			$board_class->RegenerateThreads($thread_id);
+			if (I0_OVERBOARD_ENABLED && !$need_overboard && $board_class->board['section'] != '0' && $board_class->board['hidden'] == '0') {
+				$need_overboard = true;
+				$over_boardlist = $board_class->board['boardlist'];
+			}
 		}
 	}
-	if (
-		($page_from < INF && $page_to > $page_from) 
-		|| 
-		count($out_of_range) != 0
-	) {
-		$board_class->RegeneratePages($page_from, $page_to, $out_of_range);
+	foreach($pages_to_regenerate as $brd=>$pages) {
+		$out_of_range = array();
+		foreach($pages as $page) {
+			if ($page < $pages_from[$brd] || $page > $pages_to[$brd]) {
+				$out_of_range []= $page;
+			}
+		}
+		if (
+			($pages_from[$brd] < INF && $pages_to[$brd] > $pages_from[$brd]) 
+			|| 
+			count($out_of_range) != 0
+		) {
+			if ($is_overboard || $board_class->board['name'] != $brd) {
+				$external_boards[$brd]->RegeneratePages($pages_from[$brd], $pages_to[$brd], $out_of_range);
+				if (I0_OVERBOARD_ENABLED && !$need_overboard && $external_boards[$brd]->board['section'] != '0' && $external_boards[$brd]->board['hidden'] == '0') {
+					$need_overboard = true;
+					$over_boardlist = $external_boards[$brd]->board['boardlist'];
+				}
+			}
+			else {
+				$board_class->RegeneratePages($pages_from[$brd], $pages_to[$brd], $out_of_range);
+				if (I0_OVERBOARD_ENABLED && !$need_overboard && $board_class->board['section'] != '0' && $board_class->board['hidden'] == '0') {
+					$need_overboard = true;
+					$over_boardlist = $board_class->board['boardlist'];
+				}
+			}
+		}
 	}
+	// Regenerate overboard if it makes sense
+	if ($need_overboard) {
+		RegenerateOverboard($over_boardlist);
+	}
+	
 	// Finish
 	foreach ($notifications_del as $room=>$data) {
 		notify($room, array('action' => 'delete', 'items' => $data));
@@ -815,11 +899,11 @@ elseif (
 			'data' => $items_affected
 		)));
 	else
-		do_redirect(KU_BOARDSPATH . '/' . $board_class->board['name'] . '/');
+		do_redirect(KU_BOARDSPATH . '/' . ($is_overboard ? I0_OVERBOARD_DIR : $board_class->board['name']) . '/');
 	die();
 }
 else {
-	error_redirect(KU_BOARDSPATH . '/' . $board_class->board['name'] . '/', _gettext('Unspecified action'));
+	error_redirect(KU_BOARDSPATH . '/' . ($is_overboard ? I0_OVERBOARD_DIR : $board_class->board['name']) . '/', _gettext('Unspecified action'));
 }
 
 if (KU_RSS) {

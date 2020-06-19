@@ -593,3 +593,12 @@ figure:hover {
   background: -webkit-gradient(linear, left bottom, left top, from(#bf4f4f), to(#792b2b));
   background: linear-gradient(to top, #bf4f4f 0%, #792b2b 100%);
 }
+
+a.over-boardlabel {
+  background: rgb(28, 109, 83);
+  color: rgba(255, 255, 255, 0.85);
+}
+a.over-boardlabel:hover {
+  background: rgb(52, 151, 122);
+  color: rgba(255, 255, 255, 1);
+}

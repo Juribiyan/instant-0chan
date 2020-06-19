@@ -503,3 +503,10 @@ figure {
   background: linear-gradient(to top, #d88585 0%, #a76767 100%);
 }
 /* -------------------------------------- /Styled buttons --------------------------------------- */
+
+a.over-boardlabel {
+  background: rgb(248, 248, 248);
+}
+a.over-boardlabel:hover {
+  background: rgb(255, 255, 255);
+}

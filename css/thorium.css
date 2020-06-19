@@ -589,3 +589,12 @@ figure:hover {
   background: #d379ff;
   box-shadow: 0 1px 2px black;
 }
+
+a.over-boardlabel {
+  background: rgb(152, 68, 193);
+  color: rgba(255, 255, 255, 0.85);
+}
+a.over-boardlabel:hover {
+  background: rgb(187, 88, 234);
+  color: rgba(255, 255, 255, 1);
+}

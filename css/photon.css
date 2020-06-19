@@ -418,3 +418,11 @@ figure .post-menu {
 .fe-info {
 	color: rgba(0, 0, 0, 0.45);
 }
+
+a.over-boardlabel {
+  background: rgb(255, 101, 0);
+  color: #fff;
+}
+a.over-boardlabel:hover {
+  background: #06f;
+}

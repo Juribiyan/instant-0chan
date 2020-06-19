@@ -2707,12 +2707,21 @@ class Manage {
 		$tpl_page .= '<h2>'. _gettext('Rebuild all HTML files') . '</h2><br />';
 		$time_start = time();
 		$results = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `name` FROM `" . KU_DBPREFIX . "boards`");
+		$need_overboard = false;
 		foreach ($results as $line) {
 			$board_class = new Board($line['name']);
-			$board_class->RegenerateAll();
+			$board_class->RegenerateAll(true); // (true = Except boardlist)
+			if (I0_OVERBOARD_ENABLED && !$need_overboard && $board_class->board['section'] != '0' && $board_class->board['hidden'] == '0') {
+				$need_overboard = true;
+				$over_boardlist = $board_class->board['boardlist'];
+			}
 			$tpl_page .= sprintf(_gettext('Regenerated %s'), '/'. $line['name'] . '/') . '<br />';
 			unset($board_class);
 			flush();
+		}
+		if ($need_overboard) {
+			RegenerateOverboard($over_boardlist);
+			$tpl_page .= _gettext('Regenerated Overboard') .'<br />';
 		}
 		require_once KU_ROOTDIR . 'inc/classes/menu.class.php';
 		$menu_class = new Menu();

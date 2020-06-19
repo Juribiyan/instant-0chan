@@ -1,3 +1,6 @@
+{if %I0_OVERBOARD_ENABLED}
+	[<a title="{%I0_OVERBOARD_DESCRIPTION}" href="{%KU_BOARDSFOLDER}{%I0_OVERBOARD_DIR}/">{%I0_OVERBOARD_DIR}</a>]
+{/if}
 {if %KU_GENERATEBOARDLIST}
 	{foreach name=sections item=sect from=$boardlist}
 		{if not $sect.isempty}

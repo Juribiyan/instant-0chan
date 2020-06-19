@@ -150,6 +150,13 @@ Before running this script, make sure that:<br />
 		}
 		else $err = true;
 	}
+	// Add overboard directory
+	if (I0_OVERBOARD_ENABLED) {
+		if (!mkdir(KU_BOARDSDIR . I0_OVERBOARD_DIR, 0777))
+			$err = true;
+		else
+			file_put_contents(KU_BOARDSDIR . I0_OVERBOARD_DIR . '/.htaccess', 'DirectoryIndex '. KU_FIRSTPAGE . '');
+	}
 	if(!$err) {
 		require_once KU_ROOTDIR . 'inc/classes/menu.class.php';
 		require_once KU_ROOTDIR . 'inc/func/paths.php';

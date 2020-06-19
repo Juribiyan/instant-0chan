@@ -12,12 +12,18 @@
 	var ku_cgipath = '{%KU_CGIPATH}';
 	var style_cookie = "kustyle";
 	var locale = '{$locale}';
-	var this_board_defaultName = '{$board.anonymous}';
-	var boardid = '{$board.id}';
+	{if not $for_overboard}
+		var this_board_defaultName = '{$board.anonymous}';
+		var boardid = '{$board.id}';
+		var opmod = '{$board.opmod}';
+	{/if}
+	{if %I0_OVERBOARD_ENABLED}
+		var is_overboard = {if $for_overboard}true{else}false{/if};
+		var overboard_dir = "{%I0_OVERBOARD_DIR}";
+		var overboard_desc = "{%I0_OVERBOARD_DESCRIPTION}";
+		{* var over_board_info = new Object; *}
+	{/if}
 	var force_html_nocache = !!'{%I0_FORCE_HTML_NOCACHE}';
-	var allowed_filetypes = [{foreach name=files item=filetype from=$board.filetypes_allowed}"{$filetype}"{if $.foreach.files.last}{else}, {/if}{/foreach}];
-	var maxfiles = {$board.maxfiles};
-	var opmod = '{$board.opmod}';
 	var ispage = {if $replythread > 0} false {else} true {/if};
 </script>
 <noscript><style>.yesscript { display: none!important; }</style></noscript>
@@ -115,6 +121,7 @@
 	<div id="overlay_menu" class="content-background overlay-menu yesscript">
 		<span style="display: none" class="olm-link mgoback">[<a href="{%KU_CGIPATH}/{$board.name}/"> &lt; </a>]</span>
 		<span class="olm-link">[<a href="{%KU_BOARDSFOLDER}">home</a>]</span>
+		{if %I0_OVERBOARD_ENABLED}<span class="olm-link">[<a title="{%I0_OVERBOARD_DESCRIPTION}" href="{%KU_BOARDSFOLDER}{%I0_OVERBOARD_DIR}/">{%I0_OVERBOARD_DIR}</a>]</span>{/if}
 		{foreach name=sections item=sect from=$boardlist}
 		<b  class="olm-link">[<a href="{if $sect.abbreviation eq '20'}{%KU_BOARDSPATH}/?p=2.0{else}#{/if}" class="sect-exr" data-toexpand="{$sect.abbreviation}">{$sect.nick}</a>]</b>
 		{/foreach}

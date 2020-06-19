@@ -1,6 +1,8 @@
 {* INIT SECTION, STARTING LOOPS *}
+ {if not $for_overboard}
  <form id="delform" action="{%KU_CGIPATH}/board.php" method="post">
  <input type="hidden" name="board" value="{$board.name}" />
+ {/if}
  {foreach name=thread item=posts_in_thread from=$posts}
   {foreach key=postkey item=post from=$posts_in_thread}
 {* / INIT SECTION *}
@@ -8,20 +10,20 @@
 {* PRE-POSTHEAD SECTION *}
  {if $post.parentid eq 0} {* If OP → *}
   {if $isthread}<div class="i0svcel">!i0-pd:{$post.id}</div>{/if} {* post delimiter for quick parsing *}
-  <span id="unhidethread{$post.id}{$board.name}">
+  <span id="unhidethread{$post.id}-{$board.name}">
    {t}Thread{/t} 
-   <a href="{%KU_BOARDSFOLDER}{$board.name}/res/{$post.id}.html">{$post.id}</a> 
+   <a href="{%KU_BOARDSFOLDER}{$board.name}/res/{$post.id}.html" class="ref|{$board.name}|{$post.id}|{$post.id}">{if $for_overboard}/{$board.name}/{/if}{$post.id}</a> 
    {t}hidden.{/t}
-   <a href="#" onclick="javascript:HiddenItems.unhideThread('{$post.id}');return false;" title="{t}Un-Hide Thread{/t}">
+   <a href="#" onclick="javascript:HiddenItems.unhideThread('{$post.id}-{$board.name}');return false;" title="{t}Un-Hide Thread{/t}">
     <svg class="icon b-icon"><use xlink:href="#i-unhide"></use></svg>
    </a>
   </span>
-  <div id="thread{$post.id}{$board.name}" data-threadid="{$post.id}"{if $isthread} class="replies"{/if}> {* #thread → *}
+  <div id="thread{$post.id}-{$board.name}" data-threadid="{$post.id}"{if $isthread} class="replies"{/if} data-boardid="{$board.id}"> {* #thread → *}
    <div class="postnode op" data-id="{$post.id}" data-board="{$board.name}"> {* .postnode.op → *}
     <a name="s{$.foreach.thread.iteration}"></a>
  {else} {* If reply → *}
   {if $isthread}<div class="i0svcel">!i0-pd:{$post.id}</div>{/if} {* post delimiter for quick parsing *}
-  <table id="postnode{$post.id}{$board.name}" class="postnode" data-id="{$post.id}" data-board="{$board.name}"><tbody>
+  <table id="postnode{$post.id}-{$board.name}" class="postnode" data-id="{$post.id}" data-board="{$board.name}"><tbody>
    <tr>
     <td class="doubledash">&gt;&gt;</td>
     <td class="reply" id="reply{$post.id}"> {* td.reply → *}
@@ -31,9 +33,10 @@
 
 {* POSTHEAD SECTION *}
  <div class="posthead{if $post.parentid eq 0}{if $post.locked eq 1} thread-locked{/if}{if $post.stickied eq 1} thread-stickied{/if}{/if}">
+  {if $post.parentid eq 0 and $for_overboard}<a href="/{$board.name}" target="_blank" class="over-boardlabel">/{$board.name}/ — {$board.desc}</a>{/if}
   <label class="postinfo">
    <svg class="icon b-icon post-menu-toggle yesscript"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-dots"></use></svg>
-   <input type="checkbox" name="post[]" class="multidel noscript" value="{$post.id}" />
+   <input type="checkbox" name="post[]" class="multidel noscript" value="{$post.id}:{$board.name}" />
    {if $post.subject neq ''}
     <span class="filetitle">{$post.subject}</span>
    {/if}
@@ -77,16 +80,14 @@
      <svg class="icon i-icon i-pin"><use xlink:href="#i-pin"></use></svg>
     {/if}
     <span id="hide{$post.id}" class="inthread-hide">
-     <a href="#" onclick="javascript:HiddenItems.hideThread('{$post.id}');return false;" title="Hide Thread">
+     <a href="#" onclick="javascript:HiddenItems.hideThread('{$post.id}-{$board.name}');return false;" title="Hide Thread">
       <svg class="icon b-icon"><use xlink:href="#i-hide"></use></svg>
      </a>
     </span>
    {/if} {* ← /Extra-buttons related to OP only *}
    <a href="#" 
-   data-parent="{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}" 
-   {if $post.parentid neq 0}
+   data-parent="{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}-{$board.name}" 
     data-postnum="{$post.id}"
-   {/if} 
    class="qrl" 
    title="{strip}{t}Quick Reply{/t}
     {if $post.parentid neq 0}
@@ -123,7 +124,7 @@
 {* / POSTHEAD SECTION *}
 
 {* POSTBODY+POSTBUTT SECTION *}
- <div id="postbody{$post.id}{$board.name}" class="postbody{if $post.parentid neq 0 && !$post.message} pb-empty{/if}{if $post.parentid eq 0 && mb_strlen($post.message) > 1000} pb-long{/if}" data-htmlength="{mb_strlen($post.message)}">
+ <div id="postbody{$post.id}-{$board.name}" class="postbody{if $post.parentid neq 0 && !$post.message} pb-empty{/if}{if $post.parentid eq 0 && mb_strlen($post.message) > 1000} pb-long{/if}" data-htmlength="{mb_strlen($post.message)}">
   {if $post.embeds}
    <div class="embedgroup">
     {foreach item=embed from=$post.embeds name=embeds}
@@ -169,7 +170,7 @@
           <button type="submit" class="yesscript file-control file-menu-toggle emb-button post-menu-toggle" value="{$embed.file_id}">
            <svg class="icon b-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-dots"></use></svg>
           </button>
-          <input title="{t}Delete file{/t}" type="checkbox" name="delete-file[]" class="file-control emb-button noscript multidel" value="{$embed.file_id}">
+          <input title="{t}Delete file{/t}" type="checkbox" name="delete-file[]" class="file-control emb-button noscript multidel" value="{$embed.file_id}:{$board.name}">
          </figcaption>
         {else}
          <div class="embed-wrap">
@@ -184,7 +185,7 @@
           <button type="submit" class="emb-button yesscript file-control file-menu-toggle emb-button" value="{$embed.file_id}">
            <svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-dots"></use></svg>
           </button>
-          <input title="{t}Delete file{/t}" type="checkbox" name="delete-file[]" class="file-control emb-button noscript multidel" value="{$embed.file_id}">
+          <input title="{t}Delete file{/t}" type="checkbox" name="delete-file[]" class="file-control emb-button noscript multidel" value="{$embed.file_id}:{$board.name}">
           <a href="{$embed.videourl}" class="embed-play-button" title="{t}Play{/t}"></a>
          </div>
         {/if}
@@ -244,7 +245,7 @@
  {if $post.parentid eq 0}
   </div> {* ← /.postnode.op (at least I hope so) *}
   {if not $isthread}
-   <div id="replies{$post.id}{$board.name}" class="replies">
+   <div id="replies{$post.id}-{$board.name}" class="replies">
    {if $post.replies}
     <span class="omittedposts">
      <a href="{%KU_BOARDSFOLDER}{$board.name}/res/{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}.html" onclick="return expandthread('{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}','{$board.name}', event)" title="{t}Expand Thread{/t}">
