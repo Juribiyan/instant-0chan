@@ -185,7 +185,7 @@
 				</td>
 				<td>
 				<label for="gotothread">
-					<input id="gotothread" type="checkbox" name="redirecttothread" value="1" style="vertical-align: middle;">&nbsp;({t}return to thread after posting a message{/t})
+					<input id="gotothread" type="checkbox" name="redirecttothread" value="1" style="vertical-align: middle;" checked>&nbsp;({t}return to thread after posting a message{/t})
 				</label>
 				</td>
 			</tr>
