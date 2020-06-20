@@ -1,6 +1,7 @@
 /instance-config.php
 /*/*.html
 /*/*.json
+/*/rss.xml
 /*/res
 /*/src
 /*/thumb
@@ -14,6 +15,8 @@
 /boards20.json
 /bnrs.json
 /modlogrss.xml
+/menu.html
+/menu_dirs.html
 
 node_modules
 package-lock.json
