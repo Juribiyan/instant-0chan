@@ -143,6 +143,29 @@ form {
 .blotter-entries {
   padding-top: 0.7em;
 }
+.blotter-row summary {
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+}
+@keyframes ul-slidedown {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+.blotter-row ul {
+  margin-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 0;
+  transform-origin: top;
+  animation: ul-slidedown .1s forwards;
+}
+
+
 textarea {
   width: 500px;
   min-width: 500px;

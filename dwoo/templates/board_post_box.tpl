@@ -209,52 +209,49 @@
 			</tr>
 			<tr class="blotter-row">
 				<td colspan="2" class="blotter">
-					<div class="blotterhead yesscript">[<a href="#" onclick="toggleblotter();return false;" class="xlink"><b>{t}Info{/t}</b></a>]</div>
-					<ul style="margin-left: 0; margin-top: 0; margin-bottom: 0; padding-left: 0;" class="blotter-entries">
-						<li>{t}Supported file types are{/t}: {strip}
-						{if $board.filetypes_allowed neq ''}
-							{foreach name=files item=filetype from=$board.filetypes_allowed}
-								{$filetype|upper}{if $.foreach.files.last}{else}, {/if}
-							{/foreach}
-						{else}
-							{t}None{/t}
-						{/if}.{/strip}
-						</li>
-						<li>{t}Supported embed types are{/t}: {strip}
-						{if $board.embeds_allowed neq ''}
-							{foreach name=embs item=emb from=$board.embeds_allowed}
-								{$emb.name}{if $.foreach.embs.last}{else}, {/if}
-							{/foreach}
-						{else}
-							{t}None{/t}
-						{/if}.{/strip}
-						</li>
-						{if not $board.enablenofile}
-						<li>{t}A file or embed ID is required for a new thread.{/t}</li>
-						{/if}
-						{if %KU_FILESIZE_METHOD eq 'sum'}
-						<li>{t}Maximum total size for all files allowed is{/t} {math "round(x/1024)" x=$board.maximagesize} {t}KB{/t}.</li>
-						{else}
-						<li>{t}Maximum file size allowed is{/t} {math "round(x/1024)" x=$board.maximagesize} {t}KB{/t}.</li>
-						{/if}
-						<li>{t}Maximum number of files + embeds per post is{/t} {$board.maxfiles}.</li>
-						{if $board.enablenofile}
-							<li>{t}No file or embed required for a new thread on this board{/t}.</li>
-						{else}
+					<details>
+						<summary style="text-align: center;">[<b class="xlink">{t}Info{/t}</b>]</summary>
+						<ul class="blotter-entries">
+							<li>{t}Supported file types are{/t}: {strip}
+							{if $board.filetypes_allowed neq ''}
+								{foreach name=files item=filetype from=$board.filetypes_allowed}
+									{$filetype|upper}{if $.foreach.files.last}{else}, {/if}
+								{/foreach}
+							{else}
+								{t}None{/t}
+							{/if}.{/strip}
+							</li>
+							<li>{t}Supported embed types are{/t}: {strip}
+							{if $board.embeds_allowed neq ''}
+								{foreach name=embs item=emb from=$board.embeds_allowed}
+									{$emb.name}{if $.foreach.embs.last}{else}, {/if}
+								{/foreach}
+							{else}
+								{t}None{/t}
+							{/if}.{/strip}
+							</li>
+							{if not $board.enablenofile}
 							<li>{t}A file or embed ID is required for a new thread.{/t}</li>
-						{/if}
-						{if $board.duplication}
-							<li>{t}File end embed duplication is allowed{/t}.</li>
-						{/if}
-						{if $board.opmod}
-							<li>{t}OP moderation is enabled{/t}.</li>
-						{/if}
-					</ul>
-				<script>
-					if (getCookie('ku_showblotter') != '1') {
-						hideblotter();
-					}
-				</script>
+							{/if}
+							{if %KU_FILESIZE_METHOD eq 'sum'}
+							<li>{t}Maximum total size for all files allowed is{/t} {math "round(x/1024)" x=$board.maximagesize} {t}KB{/t}.</li>
+							{else}
+							<li>{t}Maximum file size allowed is{/t} {math "round(x/1024)" x=$board.maximagesize} {t}KB{/t}.</li>
+							{/if}
+							<li>{t}Maximum number of files + embeds per post is{/t} {$board.maxfiles}.</li>
+							{if $board.enablenofile}
+								<li>{t}No file or embed required for a new thread on this board{/t}.</li>
+							{else}
+								<li>{t}A file or embed ID is required for a new thread.{/t}</li>
+							{/if}
+							{if $board.duplication}
+								<li>{t}File end embed duplication is allowed{/t}.</li>
+							{/if}
+							{if $board.opmod}
+								<li>{t}OP moderation is enabled{/t}.</li>
+							{/if}
+						</ul>
+					</details>
 				</td>
 			</tr>
 		</tbody>
