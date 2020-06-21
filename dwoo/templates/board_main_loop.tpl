@@ -147,7 +147,7 @@
         {if !$embed.is_embed}
          {assign var="filename" value=get_embed_filename($embed)}
          <figcaption class="filesize">
-          {strip}<a {if %KU_NEWWINDOW}target="_blank"{/if} href="{$file_path}/src/{$embed.file}.{$embed.file_type}" title="{$filename}{if $embed.id3.comments_html.title.0 eq ''}.{$embed.file_type}{/if}">
+          {strip}<a download="{$filename}" {if %KU_NEWWINDOW}target="_blank"{/if} href="{$file_path}/src/{$embed.file}.{$embed.file_type}" title="{$filename}{if $embed.id3.comments_html.title.0 eq ''}.{$embed.file_type}{/if}">
            {if %I0_DETECT_SOSACH}{if is_from_sosach($filename)}<img class="sosach_indicator" src="/images/2chfav.ico">{/if}{/if}
            <span class="fc-filename"{set_max_filename_width($embed.thumb_w, $embed.id3.comments_html.title.0)}>
             {$filename}
