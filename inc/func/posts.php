@@ -327,6 +327,8 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
   curl_setopt($ch, CURLOPT_TIMEOUT, 10);
   curl_setopt($ch, CURLOPT_FILE, $thumb_tmpfile);
   curl_setopt($ch, CURLOPT_HEADER, 0);
+  if (I0_CURL_PROXY)
+    curl_setopt($ch, CURLOPT_PROXY, I0_CURL_PROXY);
   curl_exec($ch);
   switch (curl_getinfo($ch, CURLINFO_HTTP_CODE)) {
     case 404: return array('error' => _gettext('Unable to retrieve thumbnail')); break;
