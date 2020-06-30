@@ -185,7 +185,7 @@ class Board {
 	/**
 	 * Regenerate pages ($from #page $to #page)
 	 */
-	function RegeneratePages($from=-1, $to=INF, $singles=array()) {
+	function RegeneratePages($from=-1, $to=INF, $singles=array(), $on_demand=false) {
 		global $tc_db, $CURRENTLOCALE;
 		$tc_db->SetFetchMode(ADODB_FETCH_ASSOC);
 		$this->InitializeDwoo();
@@ -241,8 +241,13 @@ class Board {
 		}
 		$this->dwoo_data->assign('numpages', $totalpages-1);
 
+		$rebuilt = 0;
 		foreach ($pages as $pagethreads) {
-			if (($page >= $from && $page <= $to) || in_array($page, $singles)) {
+			if (
+				($on_demand || I0_DEFERRED_RENDER_PAGE <=0 || $page < I0_DEFERRED_RENDER_PAGE) &&  // Skip rendering pages beyond limit
+				(($page >= $from && $page <= $to) || in_array($page, $singles))
+			) {
+				$rebuilt++;
 				// page must be rebuilt
 				$executiontime_start_page = microtime_float();
 				$newposts = array();
@@ -325,6 +330,8 @@ class Board {
 			}
 			$page++;
 		} // ← rebuild pages needing to be rebuilt
+
+		if ($on_demand) return $rebuilt;
 
 		// build catalog →
 		if ($this->board['enablecatalog'] == 1) {
@@ -438,6 +445,8 @@ class Board {
 	}
 
 	function DeleteOldPages($totalpages) {
+		if (!$this->is_overboard && I0_DEFERRED_RENDER_PAGE > 0 && $totalpages > (I0_DEFERRED_RENDER_PAGE-1))
+			$totalpages = I0_DEFERRED_RENDER_PAGE-1;
 		$dir = KU_BOARDSDIR.$this->board['name'];
 		$files = glob ("$dir/*.html");
 		if (is_array($files)) {

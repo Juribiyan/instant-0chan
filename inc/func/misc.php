@@ -102,6 +102,7 @@ function sendStaffMail($subject, $message) {
 function do_redirect($url, $useheader=false) {
   if ($useheader) {
     header('Location: ' . $url);
+    exit();
   } else {
     die('<meta http-equiv="refresh" content="1;url=' . $url . '">');
   }
