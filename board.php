@@ -575,6 +575,8 @@ elseif (
 			$b_class = $board_class;
 			$ismod = $ismod && Manage::CurrentUserIsModeratorOfBoard($b_class->board['name'], $_SESSION['manageusername']);
 		}
+		if (!isset($pages_to_regenerate[$b_class->board['name']]))
+			$pages_to_regenerate[$b_class->board['name']] = array();
 		if (!isset($pages_from[$b_class->board['name']]))
 			$pages_from[$b_class->board['name']] = INF;
 		if (!isset($pages_to[$b_class->board['name']]))
