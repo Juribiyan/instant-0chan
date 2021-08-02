@@ -160,7 +160,7 @@ if (!$cache_loaded) {
 		$cf['KU_CUTPOSTS']     = false;
 		$cf['I0_GLOBAL_NEWTHREADDELAY'] = 0; // Minimum time in seconds a NEW user must wait before posting a new thread. Usable for limiting the speed of wipe
 		$cf['I0_REPLIES_TO_RECOGNIZE'] = 10; // Minimum number of replies a user must post to be recognized as not “New”. 0 means a user can lose the “New” status only through creating a new thread. Usable only if I0_GLOBAL_NEWTHREADDELAY is enabled
-		$cf['I0_FULL_ANONYMITY_MODE'] = true; // In full anonymity mode, no information about user will be stored in the posts table. Bans will not work.
+		$cf['I0_FULL_ANONYMITY_MODE'] = false; // In full anonymity mode, no information about user will be stored in the posts table. Bans will not work.
 
 		// Image handling
 		$cf['KU_THUMBWIDTH']       = 200; // Maximum thumbnail width
