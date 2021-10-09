@@ -55,6 +55,7 @@ if (!$cache_loaded) {
 		$cf['KU_CAPTCHALENGTH'] = rand(4, 7); // Captcha length in letters, rand(a, b) can be used to create random length from a to b.
 		$cf['KU_20_BOARDSLIMIT'] = 5;	// How many 2.0 boards a user can create
 		$cf['KU_20_CLOUDTIME'] = "-24 hours";
+		$cf['I0_20_LINK'] = "/?p=2.0"; // A link yo 2.0 boards page. "/?p=2.0" (default) will work with default index page; try "/register" if you use a custom index page (take /register directory from UTIL)
 		$cf['KU_20MAXLOGINPASS'] = 50; // Maximum login and password size for 2.0
 		$cf['KU_SUPPORTED_LOCALES'] = 'ru|en';	//
 		$cf['KU_FFMPEGPATH'] = '/usr/local/bin/ffmpeg'; //path to FFMPEG, for example 'C:\ffmpeg\bin'

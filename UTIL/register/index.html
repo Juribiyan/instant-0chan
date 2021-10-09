@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Регистрация</title>
+  <link rel="stylesheet" href="register.css">
+</head>
+<body>
+  <div id="boards">
+  <table id="boardlist" border="0" align="center" cellpadding="0" cellspacing="0"><tbody><tr><td valign="top">
+  <div class="content">
+  <h2><div class="newssub">$pегистрация</div><div class="permalink"></div></h2>
+  <p>Регистрация позволяет создавать собственные доски и осуществлять полноценную их модерацию. <br />Это никак не отразится на вашей анонимности.</p><br />
+  <form action="/manage_page.php?action=sregister" method="post" id="sregister">
+    <div class="hf fl">
+      Логин:<br>
+      <input type="text" name="username" id="username"><br/>
+      Пароль:<br>
+      <input type="password" name="pass1" id="pass1"><br/>
+      <input type="password" name="pass2" id="pass2" placeholder="Еще раз"><br>
+    </div>
+    <div class="hf">
+      <img src="/captcha.php?color=204,204,204" alt="Капча" onclick="this.src='/captcha.php?color=204,204,204&'+Math.random()" id="captcha"><br/>
+      <input type="text" name="captcha" id="captcha"><br/>
+      <input id="wryyy" type="submit" value="WRYYY!!" />
+    </div>
+  </form>
+      </td></tr></tbody></table>
+  </div>
+  <script>document.querySelector('#captcha').onclick()</script>
+</body>
+</html>
