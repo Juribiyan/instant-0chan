@@ -528,7 +528,7 @@ class Manage {
 					file_put_contents(KU_TEMPLATEDIR . '/'. $file, $_POST['templatedata']);
 					$tpl_page .= '<hr /><h3>'. _gettext('Template edited') .'</h3><hr />';
 					if (isset($_POST['rebuild'])) {
-						$this->rebuildall();
+						$this->rebuildall(true);
 					}
 					unset($_POST['template']);
 					unset($_POST['templatedata']);
@@ -2700,37 +2700,45 @@ class Manage {
 	}
 
 	/* Rebuild all boards */
-	function rebuildall() {
+	function rebuildall($do=false) {
 		global $tc_db, $tpl_page;
 		$this->AdministratorsOnly();
 
 		$tpl_page .= '<h2>'. _gettext('Rebuild all HTML files') . '</h2><br />';
-		$time_start = time();
-		$results = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `name` FROM `" . KU_DBPREFIX . "boards`");
-		$need_overboard = false;
-		foreach ($results as $line) {
-			$board_class = new Board($line['name']);
-			$board_class->RegenerateAll(true); // (true = Except boardlist)
-			if (I0_OVERBOARD_ENABLED && !$need_overboard && $board_class->board['section'] != '0' && $board_class->board['hidden'] == '0') {
-				$need_overboard = true;
-				$over_boardlist = $board_class->board['boardlist'];
+		if (!$do && !isset($_GET['do'])) {
+			$tpl_page .= '<form action="?action=rebuildall&do=rebuildall" method="post">
+				<input type="submit" value="'. _gettext('Execute') .'" /></form>';
+		}
+		else {
+			$time_start = time();
+			$results = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `name` FROM `" . KU_DBPREFIX . "boards`");
+			$need_overboard = false;
+			foreach ($results as $line) {
+				$time_current = time();
+				$board_class = new Board($line['name']);
+				$board_class->RegenerateAll(true); // (true = Except boardlist)
+				if (I0_OVERBOARD_ENABLED && !$need_overboard && $board_class->board['section'] != '0' && $board_class->board['hidden'] == '0') {
+					$need_overboard = true;
+					$over_boardlist = $board_class->board['boardlist'];
+				}
+				$tpl_page .= sprintf(_gettext('Regenerated %s'), '/'. $line['name'] . '/ ') . sprintf(_gettext('in %s seconds.'), time() - $time_current) .'<br />';
+				unset($board_class);
+				flush();
 			}
-			$tpl_page .= sprintf(_gettext('Regenerated %s'), '/'. $line['name'] . '/') . '<br />';
+			if ($need_overboard) {
+				$time_current = time();
+				RegenerateOverboard($over_boardlist);
+				$tpl_page .= sprintf(_gettext('Regenerated overboard') . ' ' . _gettext('in %s seconds.'), time() - $time_current) .'<br />';
+			}
+			require_once KU_ROOTDIR . 'inc/classes/menu.class.php';
+			$menu_class = new Menu();
+			$menu_class->Generate();
+			$tpl_page .=  _gettext('Regenerated menu pages') .'<br />';
+			$tpl_page .= sprintf(_gettext('Rebuild complete. Took <strong>%d</strong> seconds.'), time() - $time_start);
+			$this->rebuild20json();
+			management_addlogentry(_gettext('Rebuilt all boards and threads'), 2);
 			unset($board_class);
-			flush();
 		}
-		if ($need_overboard) {
-			RegenerateOverboard($over_boardlist);
-			$tpl_page .= _gettext('Regenerated Overboard') .'<br />';
-		}
-		require_once KU_ROOTDIR . 'inc/classes/menu.class.php';
-		$menu_class = new Menu();
-		$menu_class->Generate();
-		$tpl_page .=  _gettext('Regenerated menu pages') .'<br />';
-		$tpl_page .= sprintf(_gettext('Rebuild complete. Took <strong>%d</strong> seconds.'), time() - $time_start);
-		$this->rebuild20json();
-		management_addlogentry(_gettext('Rebuilt all boards and threads'), 2);
-		unset($board_class);
 	}
 
 	/*
