@@ -208,47 +208,53 @@ class Posting {
 		}
 	}
 
+	// universal captcha interface
 	function CheckCaptcha($for_access=false) {
 		global $board_class;
 		mb_internal_encoding("UTF-8");
-		/* If the board has captcha's enabled... */
-		if ($for_access || $board_class->board['enablecaptcha'] == 1) {
-			$code = $_SESSION['security_code'];
-			unset($_SESSION['security_code']);
-			$submit_time = time();
-			if($submit_time - $_SESSION['captchatime'] > KU_CAPTCHALIFE) {
-				if ($for_access) return false;
+		if ($for_access || $board_class->board['enablecaptcha'] != 0) {
+			$result = $board_class->board['enablecaptcha']==2 ? $this->CheckHcaptcha() : $this->CheckDefaultCaptcha();
+			if ($for_access) {
+				return ($result == 'ok');
+			}
+			if ($result == 'expired') {
 				exitWithErrorPage(_gettext('Captcha has expired.'));
 			}
-			/* Check if they entered the correct code. If not... */
-			if ($code != mb_strtoupper($_POST['captcha']) || empty($code)) {
-				if ($for_access) return false;
-				/* Kill the script, stopping the posting process */
+			if ($result == 'incorrect') {
 				exitWithErrorPage(_gettext('Incorrect captcha entered.'));
 			}
 		}
-		if ($for_access) return true;
 	}
 
-	function CheckRecaptcha() {	//just backup
-		global $board_class;
-
-		/* If the board has captcha's enabled... */
-		if ($board_class->board['enablecaptcha'] == 1) {
-			require_once(KU_ROOTDIR.'recaptchalib.php');
-			$privatekey = "6LdVg8YSAAAAALayugP2r148EEQAogHPfQOSYow-";
-
-			// was there a reCAPTCHA response?
-			$resp = recaptcha_check_answer ($privatekey, 
-				$_SERVER["REMOTE_ADDR"], 
-				$_POST["recaptcha_challenge_field"], 
-				$_POST["recaptcha_response_field"]
-			);
-			if (!$resp->is_valid) {
-				// Show error and give user opportunity to try again.
-				exitWithErrorPage(_gettext('Incorrect captcha entered.'));
-			}
+	function CheckDefaultCaptcha() {
+		$code = $_SESSION['security_code'];
+		unset($_SESSION['security_code']);
+		$submit_time = time();
+		if($submit_time - $_SESSION['captchatime'] > KU_CAPTCHALIFE) {
+			return 'expired';
 		}
+		if ($code != mb_strtoupper($_POST['captcha']) || empty($code)) {
+			return 'incorrect';
+		}
+		return 'ok';
+	}
+
+	function CheckHcaptcha() {
+		if ($_POST['h-captcha-response']) {
+			$data = array(
+			  'secret' => I0_HCAPTCHA_SECRET,
+			  'response' => $_POST['h-captcha-response']
+			);
+			$verify = curl_init();
+			curl_setopt($verify, CURLOPT_URL, "https://hcaptcha.com/siteverify");
+			curl_setopt($verify, CURLOPT_POST, true);
+			curl_setopt($verify, CURLOPT_POSTFIELDS, http_build_query($data));
+			curl_setopt($verify, CURLOPT_RETURNTRANSFER, true);
+			$response = curl_exec($verify);
+			$responseData = json_decode($response);
+			return ($responseData->success == true) ? 'ok' : 'incorrect';
+		}
+		return 'incorrect';
 	}
 
 	// Check duplicate files and embeds, check banned files

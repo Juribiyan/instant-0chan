@@ -3069,7 +3069,6 @@ class Manage {
 							'enablenofile', 
 							'redirecttothread',
 							'enablereporting',
-							'enablecaptcha',
 							'forcedanon',
 							'trial',
 							'popular',
@@ -3118,7 +3117,8 @@ class Manage {
 							}
 							foreach(array( // numeric properties
 								'order',
-								'section'
+								'section',
+								'enablecaptcha'
 							) as $prop) {
 								$set []= "`$prop` = ".$tc_db->qstr(intval($_POST[$prop]));
 							}
@@ -3369,13 +3369,13 @@ class Manage {
 					$tpl_page .= ' />'. "\n" .
 					'<div class="desc">'. _gettext('Allow thread starters to delete replies') .'</div><br />';
 
-					/* Enable captcha */
-					$tpl_page .= '<label for="enablecaptcha">'. _gettext('Enable captcha') .':</label>
-					<input type="checkbox" name="enablecaptcha"';
-					if ($lineboard['enablecaptcha'] == '1') {
-						$tpl_page .= ' checked';
-					}
-					$tpl_page .= ' />
+					/* Select captcha */
+					$tpl_page .= '<label for="enablecaptcha">'. _gettext('Captcha') .':</label>
+					<select name="enablecaptcha">
+						<option value="1"'.(($lineboard['enablecaptcha'] == '1') ? ' selected="selected"' : '').'>Default</option>
+						<option value="2"'.(($lineboard['enablecaptcha'] == '2') ? ' selected="selected"' : '').'>Hcaptcha</option>
+						<option value="0"'.(($lineboard['enablecaptcha'] == '0') ? ' selected="selected"' : '').'>Off</option>
+					</select>
 					<div class="desc">'. _gettext('Enable/disable captcha system for this board. If captcha is enabled, in order for a user to post, they must first correctly enter the text on an image.') .' '. _gettext('Default') .': <strong>'. _gettext('No') .'</strong></div><br />';
 
 					/* Enable archiving */

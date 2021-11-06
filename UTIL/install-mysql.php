@@ -126,6 +126,10 @@ Before running this script, make sure that:<br />
 				echo "<font color='red'>failed</font>. Enable debugging by setting KU_DEBUG to true to see this error.<br />";
 				die ("Table creation failed. Please rerun this script again or attempt to fix the problem if you know how to solve it.");
 			}
+			if ($tablename == 'boards' && KU_DEFAULT_CAPTCHA_TYPE != 'default') {
+				$ctype = KU_DEFAULT_CAPTCHA_TYPE == 'hcaptcha' ? 2 : 0;
+				$tc_db->Execute("ALTER TABLE `".KU_DBPREFIX."boards` CHANGE COLUMN `enablecaptcha` `enablecaptcha` TINYINT(1) NOT NULL DEFAULT ".$ctype." AFTER `enablereporting`");
+			}
 		}
 	}
 	// All done :)

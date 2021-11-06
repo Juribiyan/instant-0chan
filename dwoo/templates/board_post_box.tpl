@@ -250,12 +250,22 @@
 							{if $board.opmod}
 								<li>{t}OP moderation is enabled{/t}.</li>
 							{/if}
+							{if $board.enablecaptcha eq 2}
+							<li>This site is protected by hCaptcha and its
+								<a href="https://hcaptcha.com/privacy">Privacy Policy</a> and
+								<a href="https://hcaptcha.com/terms">Terms of Service</a> apply.
+							</li>
+							{/if}
 						</ul>
 					</details>
 				</td>
 			</tr>
 		</tbody>
 	</table>
+	{if $board.enablecaptcha eq 2}
+	<div class="h-captcha" data-sitekey="{%I0_HCAPTCHA_SITEKEY}" data-size="invisible"></div>
+	<script src="https://js.hcaptcha.com/1/api.js&recaptchacompat=false" async defer></script>
+	{/if}
 	<div class="formsending-overlay"><div class="form-spinner"></div></div>
 </form>{if not $isthread}<div class="i0svcel">!i0-pb-end</div>{/if}
 <hr />

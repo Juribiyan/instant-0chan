@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "0chan revival kit",
   "scripts": {
-    "build": "cross-env BABEL_ENV=production babel src --out-dir ../ --source-maps"
+    "build": "cross-env BABEL_ENV=production babel src --out-dir ../ --source-maps",
+    "simplebuild": "babel src --out-dir ../"
   },
   "author": "Juribiyan",
   "license": "GPL-2",
