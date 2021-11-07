@@ -52,7 +52,7 @@ if (!$cache_loaded) {
 		$cf['KU_SVGVER'] = '001';
 	// Captcha settings
 		$cf['KU_DEFAULT_CAPTCHA_TYPE'] = 'default'; // ('default'|'hcaptcha'|'off') Default captcha type.
-		// Hcaptcha keys for your site
+		// Hcaptcha keys for your site. Obtain here: https://hCaptcha.com/?r=bcc1116c3b44
 		$cf['I0_HCAPTCHA_SITEKEY'] = '';
 		$cf['I0_HCAPTCHA_SECRET'] = '';
 		// Settings for default captcha
