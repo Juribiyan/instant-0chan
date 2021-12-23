@@ -3209,7 +3209,7 @@ class Manage {
 					foreach ($filetypes as $filetype) {
 						$tpl_page .= '<label for="filetype_'. $filetype['id'] . '">'. strtoupper($filetype['filetype']) . '</label><input type="checkbox" name="filetype_'. $filetype['id'] . '"';
 						$filetype_isenabled = $tc_db->GetOne("SELECT HIGH_PRIORITY COUNT(*) FROM `" . KU_DBPREFIX . "board_filetypes` WHERE `boardid` = '" . $lineboard['id'] . "' AND `typeid` = '" . $filetype['id'] . "' LIMIT 1");
-						if ($filetype_isenabled == 1) {
+						if ($filetype_isenabled > 0) {
 							$tpl_page .= ' checked';
 						}
 						$tpl_page .= ' /><br />';
@@ -3623,7 +3623,7 @@ class Manage {
 					foreach ($filetypes as $filetype) {
 						$tpl_page .= '<label for="filetype_'. $filetype['id'] . '">'. strtoupper($filetype['filetype']) . '</label><input type="checkbox" name="filetype_'. $filetype['id'] . '"';
 						$filetype_isenabled = $tc_db->GetOne("SELECT HIGH_PRIORITY COUNT(*) FROM `" . KU_DBPREFIX . "board_filetypes` WHERE `boardid` = '" . $lineboard['id'] . "' AND `typeid` = '" . $filetype['id'] . "' LIMIT 1");
-						if ($filetype_isenabled == 1) {
+						if ($filetype_isenabled > 0) {
 							$tpl_page .= ' checked';
 						}
 						$tpl_page .= ' /><br />';
