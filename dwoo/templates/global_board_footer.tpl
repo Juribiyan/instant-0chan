@@ -1,5 +1,5 @@
 <a name="bottom"></a>
 <noscript><img src="{%KU_CGIPATH}/board.php" style="display: none"></noscript>
-<script>$(document).ready(readyset);</script>
-{if $executiontime neq ''}<!-- {t}Took{/t} {$executiontime} {t}Seconds{/t} --></body>{/if}
+<script>$(document).ready(readyset); {if $executiontime neq ''}console.info("{t}Took{/t} {$executiontime} {t}seconds{/t}"){/if}</script>
+</body>
 </html>
