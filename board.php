@@ -70,7 +70,7 @@ function notify($room, $data=array()) {
 	$ch = curl_init(KU_LOCAL_LIVEUPD_API.'/qr/'.KU_LIVEUPD_SITENAME);
 	curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 	curl_setopt($ch, CURLOPT_PROXY, "");
-	curl_setopt($ch, CURLOPT_TIMEOUT, 0.5);
+	curl_setopt($ch, CURLOPT_TIMEOUT_MS, KU_LIVEUPD_DEBUG_MODE ? 500 : 1);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
@@ -78,7 +78,7 @@ function notify($room, $data=array()) {
 		'Content-Length: ' . strlen($data_string))
 	);
 	curl_exec($ch);
-	if(curl_errno($ch)) 
+	if(KU_LIVEUPD_DEBUG_MODE && curl_errno($ch)) 
 		error_log('Curl error during Notify: ' . curl_error($ch).' (Error code: '.curl_errno($ch).')');
 }
 

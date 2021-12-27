@@ -43,6 +43,7 @@ if ($cf['KU_APC']) {
 if (!$cache_loaded) {
 	// Custom shit!
 		$cf['KU_LIVEUPD_ENA'] = false;
+		$cf['KU_LIVEUPD_DEBUG_MODE'] = false; // When set to true, cURL will wait for a respons from the live-update service and display errors when something goes wrong. Recommended to set to 'false' in production as in case when live-update service goes down this will cause a big posting delay
 		$cf['KU_LOCAL_LIVEUPD_API'] = 'http://127.0.0.1:1337';
 		$cf['KU_LIVEUPD_SITENAME'] = 'yourchanid';
 		$cf['KU_CLI_LIVEUPD_API'] = 'http://example.com:1337';
@@ -99,6 +100,7 @@ if (!$cache_loaded) {
 		$cf['I0_MAX_ACCESS_ATTEMPTS'] = 3; // How many attempts at deleting a post are allowed before it gets locked with catpcha
 
 		$cf['I0_DEFERRED_RENDER_PAGE'] = 0; // If nonzero, pages starting from this will be rendered upon request. Default is 0 which disables just-in-time rendering.
+		$cf['I0_DEFERRED_RENDER_THREADS'] = true; // If true, all .html files in /res directory won't be built until requested.
 
 		$cf['I0_DETECT_SOSACH'] = false; // Detect pictures from particular website
 
