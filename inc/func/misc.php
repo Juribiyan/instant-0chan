@@ -185,5 +185,3 @@ class TimingReporter {
     }
   }
 }
-
-}
