@@ -168,3 +168,22 @@ function get_console_log() {
   $r = '<script>console.log('.implode(',', $args).')</script>';
   return $r;
 }
+
+class TimingReporter {
+  function __construct() {
+    $this->time = microtime(true);
+    $this->start = $this->time;
+    $this->marks = array();
+  }
+
+  function mark($key, $fin=false) {
+    $now = microtime(true);
+    $this->marks []= array($key => $now - $this->time);
+    $this->time = $now;
+    if ($fin) {
+      $this->marks []= array('TOTAL' => $now - $this->start);
+    }
+  }
+}
+
+}

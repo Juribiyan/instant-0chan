@@ -52,6 +52,8 @@ require KU_ROOTDIR . 'inc/classes/cloud20.class.php';
 $bans_class = new Bans();
 $parse_class = new Parse();
 
+// $timer = new TimingReporter();
+
 function notify($room, $data=array()) {
 	if (!KU_LIVEUPD_ENA) return;
 	if (!KU_LIVEUPD_SITENAME || !KU_LOCAL_LIVEUPD_API) {
@@ -173,6 +175,8 @@ if (isset($board_class)) {
 /* Ensure that UTF-8 is used on some of the post variables */
 $posting_class->UTF8Strings();
 
+// $timer->mark('01_start_post');
+
 if (isset($_POST['makepost'])) { // A more evident way to identify post action, as actual validity will be checked later anyway
 	if (!isset($board_class))
 		error_redirect($is_overboard ? KU_BOARDSPATH . '/' . I0_OVERBOARD_DIR . '/' : KU_WEBPATH, _gettext('No board provided'));
@@ -226,6 +230,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 	// Or, if they are a moderator/administrator...
 	} 
 	else {
+		// $timer->mark('02_authority_check');
 		// If they checked the D checkbox, set the variable to tell the script to display their staff status (Admin/Mod) on the post during insertion
 		if (isset($_POST['displaystaffstatus'])) {
 			$post_displaystaffstatus = true;
@@ -240,6 +245,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 			$post_message = $parse_class->ParsePost($_POST['message'], $board_class->board['name'], $thread_replyto, $board_class->board['id'], false, $ua, $dice, $posting_class->user_id_md5);
 			// (Moved) check against blacklist and detect flood
 		}
+		// $timer->mark('03_parsed');
 
 		// If they checked the L checkbox, set the variable to tell the script to lock the post after insertion
 		if (isset($_POST['lockonpost'])) {
@@ -266,6 +272,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 		}
 
 		$upload_class->HandleUpload();
+		// $timer->mark('04_upload');
 
 		if ($board_class->board['forcedanon'] == '1') {
 			if ($user_authority == 0 || $user_authority == 3) {
@@ -342,6 +349,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 				) exitWithErrorPage(_gettext('Could not copy uploaded image.'));
 			}
 		}
+		// $timer->mark('05_emojis_1');
 
 		$post = array();
 		if (KU_GEOIPMODE == 'flare') {
@@ -418,9 +426,11 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 				$post['message'] = $parse_class->Smileys($post['message']);
 		}
 		// ← Emoji registration
+		// $timer->mark('06_emojis_2');
 
 		// $upload_class->file_name, $upload_class->original_file_name, $filetype_withoutdot, $upload_class->file_md5, $upload_class->imgWidth, $upload_class->imgHeight, $upload_class->file_size, $upload_class->imgWidth_thumb, $upload_class->imgHeight_thumb
 		$post_time = time();
+		// $timer->mark('07_post_time');
 		$post_class = new Post(0, $board_class->board['name'], $board_class->board['id'], true);
 		$post_id = $post_class->Insert($thread_replyto, $post['name'], $post['tripcode'], $post['email'], $post['subject'], addslashes($post['message']), $upload_class->attachments, $post_passwordmd5, $post_time, $post_time, $posting_class->user_id, $user_authority_display, $sticky, $lock, $board_class->board['id'], $post['country'], $posting_class->is_new_user, $post_del_timestamp);
 
@@ -451,6 +461,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 			$modpost_message .= '.html#' . $post_id . '">' . $post_id . '</a> in /'.$_POST['board'].'/ with flags: ' . $flags . '.';
 			management_addlogentry($modpost_message, 1, md5_decrypt($_POST['modpassword'], KU_RANDOMSEED));
 		}
+		// $timer->mark('08_modpost');
 
 		// Give persistent cookie
 		if ($posting_class->ipless_mode && $posting_class->need_cookie)
@@ -465,6 +476,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 		}
 
 		setcookie('postpassword', $_POST['postpassword'], time() + 31556926, '/');
+		// $timer->mark('09_cookies_set');
 
 		$page_from = -1; $page_to = INF;
 
@@ -481,20 +493,25 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 			}
 			else { //...bump the threda
 				$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "posts` SET `bumped` = '" . time() . "' WHERE `boardid` = " . $board_class->board['id'] . " AND `id` = '" . $thread_replyto . "'");
+				// $timer->mark('10_bump_set');
 			}
 		}
 
 		$tc_db->Execute("COMMIT");
+		// $timer->mark('11_commit_sudoku');
 
 		// Trim any threads which have been pushed past the limit, or exceed the maximum age limit
 		TrimToPageLimit($board_class->board);
+		// $timer->mark('12_trim_to_page_limit');
 
 		// Regenerate board pages
 		$board_class->RegeneratePages($page_from, $page_to);
+		// $timer->mark('13_pages_regenerated');
 
 		// Regeneate JSON
 		$cl20 = new Cloud20();
 		$cl20->rebuild();
+		// $timer->mark('14_cloud_rebuilt');
 
 		$need_overboard = I0_OVERBOARD_ENABLED && $board_class->board['section'] != '0' && $board_class->board['hidden'] == '0';
 
@@ -515,10 +532,12 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 			$board_class->RegenerateThreads($thread_replyto);
 			notify($board_class->board['name'].':'.$thread_replyto, array('action' => 'new_reply', 'reply_id' => $post_id));
 		}
+		// $timer->mark('15_regenerated');
 
 		// Regenerate overboard if it makes sense
 		if ($need_overboard) {
 			RegenerateOverboard($board_class->board['boardlist']);
+			// $timer->mark('16_regen_overboard');
 		}
 	} 
 	else {
@@ -913,6 +932,7 @@ if (KU_RSS) {
 	$rss_class = new RSS();
 
 	print_page(KU_BOARDSDIR.$_POST['board'].'/rss.xml',$rss_class->GenerateRSS($_POST['board'], $board_class->board['id']),$_POST['board']);
+	// $timer->mark('17_rss', true); // fin
 }
 
 if( $_POST['redirecttothread'] == 1 || $_POST['em'] == 'return' || $_POST['em'] == 'noko') {
@@ -937,5 +957,6 @@ if ($_POST['AJAX']) {
 		'thread_replyto' => $thread_replyto,
 		'post_id' => $post_id,
 		'board' => $board_class->board['name']
+		// ,'timings' => // $timer->marks
 	)));
 }
