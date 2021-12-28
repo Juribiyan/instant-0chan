@@ -870,7 +870,7 @@ class Board {
 
 		if ($hide_extra || $noboardlist) $this->dwoo_data->assign('boardlist', '');
 
-		if ($executiontime != '') $this->dwoo_data->assign('executiontime', round($executiontime, 2));
+		if ($executiontime != '') $this->dwoo_data->assign('executiontime', $executiontime);
 	
 		$botads = $tc_db->GetOne("SELECT code FROM `" . KU_DBPREFIX . "ads` WHERE `position` = 'bot' AND `disp` = '1'");
 		$this->dwoo_data->assign('botads', $botads);
