@@ -1230,7 +1230,21 @@ class Post extends Board {
 
 	function Insert($parentid, $name, $tripcode, $email, $subject, $message, $attachments, $password, $timestamp, $bumped, $ip, $posterauthority, $stickied, $locked, $boardid, $country, $is_new_user, $deleted_timestamp) {
 		global $tc_db;
+		// Get the ID for manual auto-increment ()
+		$new_id = $tc_db->GetOne("SELECT `id` FROM `posts` WHERE `boardid`= ".$tc_db->qstr($boardid)." ORDER BY `id` DESC LIMIT 1");
+		if (!$new_id) {
+			if ($this->board['start'] > 1) {
+				$new_id = $this->board['start'];
+			}
+			else {
+				$new_id = 1;
+			}
+		}
+		else {
+			$new_id++;
+		}
 		$post_fields = array(
+			$new_id,
 			$parentid,
 			$boardid,
 			$name,
@@ -1254,6 +1268,7 @@ class Post extends Board {
 			$pf = $tc_db->qstr($pf);
 		}
 		$query = "INSERT INTO `".KU_DBPREFIX."posts` (
+			`id`,
 			`parentid`, 
 			`boardid`, 
 			`name` , 
@@ -1274,11 +1289,11 @@ class Post extends Board {
 			`deleted_timestamp` )
 			VALUES ( ".implode(', ', $post_fields)." )";
 		$tc_db->Execute($query);
-		$id = $tc_db->Insert_Id();
+		// $id = $tc_db->Insert_Id();
 		$sqlerr = $tc_db->ErrorNo();
 		if ($sqlerr)
 			exitWithErrorPage('SQL error #'.$sqlerr);
-		if(!$id || KU_DBTYPE == 'sqlite') {
+		/*if(!$id || KU_DBTYPE == 'sqlite') {
 			// Non-mysql installs don't return the insert ID after insertion, we need to manually get it.
 			$id = $tc_db->GetOne("SELECT `id`
 				FROM `".KU_DBPREFIX."posts`
@@ -1286,65 +1301,67 @@ class Post extends Board {
 				AND timestamp = ".$tc_db->qstr($timestamp)."
 				AND `ipmd5` = '".md5($ip)."'
 				LIMIT 1");
-		}
-		if ($id == 1 && $this->board['start'] > 1) {
+		}*/
+		/*if ($id == 1 && $this->board['start'] > 1) {
 			$id = $this->board['start'];
 			$tc_db->Execute("UPDATE `".KU_DBPREFIX."posts`
 				SET `id` = '".$id."'
 				WHERE `boardid` = ".$boardid);
-		}
+		}*/
 
 		// Hash the delpass with id as a salt
 		if (I0_DELPASS_SALTING && $password != '') {
-			$passwordmd5salted = '+'.md5($password . $id . $boardid . KU_RANDOMSEED);
-			$tc_db->Execute("UPDATE `".KU_DBPREFIX."posts` SET `password`=? WHERE `boardid`=? AND `id`=?", array($passwordmd5salted, $boardid, $id));
+			$passwordmd5salted = '+'.md5($password . $new_id . $boardid . KU_RANDOMSEED);
+			$tc_db->Execute("UPDATE `".KU_DBPREFIX."posts` SET `password`=? WHERE `boardid`=? AND `id`=?", array($passwordmd5salted, $boardid, $new_id));
 		}
 
 		// Insert files
-		if (!$attachments) return $id;
-		foreach($attachments as $attachment) {
-			$is_embed = ($attachment['attachmenttype'] == 'embed');
-			$fields = array(
-				//post ID
-				$id,
-				//board ID
-				$boardid,
-				//file
-				($is_embed ? $attachment['embed'] : $attachment['file_name']),
-				//file_original
-				$attachment['file_original'],
-				//file_type
-				$attachment['filetype_withoutdot'],
-				//file_md5
-				$attachment['file_md5'],
-				//image_w
-				intval($attachment['imgWidth']),
-				//image_h
-				intval($attachment['imgHeight']),
-				//file_size
-				($is_embed ? $attachment['start'] : $attachment['file_size']),
-				//file_size_formatted
-				(($is_embed || $attachment['is_duplicate']) ? $attachment['file_size_formatted'] : ConvertBytes($attachment['size'])),
-				//thumb_w
-				intval($attachment['imgWidth_thumb']),
-				//thumb_h
-				intval($attachment['imgHeight_thumb']),
-				//spoiler
-				$attachment['spoiler'] ? '1' : '0'
-			);
-			foreach($fields as &$field) {
-				$field = $tc_db->qstr($field);
+		if ($attachments) {
+			foreach($attachments as $attachment) {
+				$is_embed = ($attachment['attachmenttype'] == 'embed');
+				$fields = array(
+					//post ID
+					$new_id,
+					//board ID
+					$boardid,
+					//file
+					($is_embed ? $attachment['embed'] : $attachment['file_name']),
+					//file_original
+					$attachment['file_original'],
+					//file_type
+					$attachment['filetype_withoutdot'],
+					//file_md5
+					$attachment['file_md5'],
+					//image_w
+					intval($attachment['imgWidth']),
+					//image_h
+					intval($attachment['imgHeight']),
+					//file_size
+					($is_embed ? $attachment['start'] : $attachment['file_size']),
+					//file_size_formatted
+					(($is_embed || $attachment['is_duplicate']) ? $attachment['file_size_formatted'] : ConvertBytes($attachment['size'])),
+					//thumb_w
+					intval($attachment['imgWidth_thumb']),
+					//thumb_h
+					intval($attachment['imgHeight_thumb']),
+					//spoiler
+					$attachment['spoiler'] ? '1' : '0'
+				);
+				foreach($fields as &$field) {
+					$field = $tc_db->qstr($field);
+				}
+				$row_inserts []= '('. implode(', ', $fields) . ')';
 			}
-			$row_inserts []= '('. implode(', ', $fields) . ')';
+			$fquery = "INSERT INTO `".KU_DBPREFIX."files`
+			(`post_id`, `boardid`, `file` , `file_original`, `file_type` , `file_md5` , `image_w` , `image_h` , `file_size` , `file_size_formatted` , `thumb_w` , `thumb_h`, `spoiler`)
+			VALUES " . implode(',', $row_inserts);
+			$tc_db->Execute($fquery);
+			$sqlerr = $tc_db->ErrorNo();
+			if ($sqlerr)
+				exitWithErrorPage('SQL error #'.$sqlerr);
 		}
-		$fquery = "INSERT INTO `".KU_DBPREFIX."files`
-		(`post_id`, `boardid`, `file` , `file_original`, `file_type` , `file_md5` , `image_w` , `image_h` , `file_size` , `file_size_formatted` , `thumb_w` , `thumb_h`, `spoiler`)
-		VALUES " . implode(',', $row_inserts);
-		$tc_db->Execute($fquery);
-		$sqlerr = $tc_db->ErrorNo();
-		if ($sqlerr)
-			exitWithErrorPage('SQL error #'.$sqlerr);
-		return $id;
+		
+		return $new_id;
 	}
 
 	function Report() {

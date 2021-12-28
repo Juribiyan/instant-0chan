@@ -8,7 +8,7 @@ CREATE TABLE `PREFIX_banners` (
   `custom` tinyint(1) NOT NULL DEFAULT '0',
   `version` smallint(6) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=KU_DBCHARSET COLLATE=KU_COLLATION;
+) DEFAULT CHARSET=KU_DBCHARSET COLLATE=KU_COLLATION;
 
 -- #snivystuff : Custom styles
 CREATE TABLE `PREFIX_customstyles` (
@@ -19,7 +19,7 @@ CREATE TABLE `PREFIX_customstyles` (
   `temporary` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=KU_DBCHARSET COLLATE=KU_COLLATION;
+) DEFAULT CHARSET=KU_DBCHARSET COLLATE=KU_COLLATION;
 
 
 --
@@ -32,7 +32,7 @@ CREATE TABLE `PREFIX_ads` (
   `disp` tinyint(1) NOT NULL DEFAULT '0',
   `boards` varchar(255) NOT NULL DEFAULT '',
   `code` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=KU_DBCHARSET;
+) DEFAULT CHARSET=KU_DBCHARSET;
 
 -- --------------------------------------------------------
 
@@ -48,7 +48,7 @@ CREATE TABLE `PREFIX_announcements` (
   `postedby` varchar(75) NOT NULL DEFAULT '',
   `message` text NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=KU_DBCHARSET;
+) DEFAULT CHARSET=KU_DBCHARSET;
 
 -- --------------------------------------------------------
 
@@ -73,7 +73,7 @@ CREATE TABLE `PREFIX_banlist` (
   `appeal` text,
   `appealat` int(20) NOT NULL DEFAULT '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=KU_DBCHARSET;
+) DEFAULT CHARSET=KU_DBCHARSET;
 
 -- --------------------------------------------------------
 
@@ -87,7 +87,7 @@ CREATE TABLE `PREFIX_bannedhashes` (
   `bantime` int(10) NOT NULL DEFAULT '0',
   `description` text,
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=KU_DBCHARSET;
+) DEFAULT CHARSET=KU_DBCHARSET;
 
 -- --------------------------------------------------------
 
@@ -101,7 +101,7 @@ CREATE TABLE `PREFIX_blotter` (
   `at` int(20) NOT NULL DEFAULT '0',
   `message` text NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=KU_DBCHARSET;
+) DEFAULT CHARSET=KU_DBCHARSET;
 
 -- --------------------------------------------------------
 
@@ -151,7 +151,7 @@ CREATE TABLE `PREFIX_boards` (
   `opmod` tinyint(1) NOT NULL DEFAULT '0',
   `hidden` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=KU_DBCHARSET COLLATE=KU_COLLATION;
+) DEFAULT CHARSET=KU_DBCHARSET COLLATE=KU_COLLATION;
 
 -- --------------------------------------------------------
 
@@ -162,7 +162,7 @@ CREATE TABLE `PREFIX_boards` (
 CREATE TABLE `PREFIX_board_filetypes` (
   `boardid` tinyint(5) NOT NULL DEFAULT '0',
   `typeid` mediumint(5) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=KU_DBCHARSET;
+) DEFAULT CHARSET=KU_DBCHARSET;
 
 -- --------------------------------------------------------
 
@@ -177,7 +177,7 @@ CREATE TABLE `PREFIX_embeds` (
   `videourl` varchar(510) NOT NULL,
   `timeprefix` varchar(10) NULL DEFAULT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=KU_DBCHARSET COLLATE=KU_COLLATION;
+) DEFAULT CHARSET=KU_DBCHARSET COLLATE=KU_COLLATION;
 
 -- --------------------------------------------------------
 
@@ -188,7 +188,7 @@ CREATE TABLE `PREFIX_embeds` (
 CREATE TABLE `PREFIX_events` (
   `name` varchar(255) NOT NULL DEFAULT '',
   `at` int(20) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=KU_DBCHARSET;
+) DEFAULT CHARSET=KU_DBCHARSET;
 
 -- --------------------------------------------------------
 
@@ -205,7 +205,7 @@ CREATE TABLE `PREFIX_filetypes` (
   `image_h` int(7) NOT NULL DEFAULT '0',
   `force_thumb` int(1) NOT NULL DEFAULT '1',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=KU_DBCHARSET;
+) DEFAULT CHARSET=KU_DBCHARSET;
 
 -- --------------------------------------------------------
 
@@ -223,7 +223,7 @@ CREATE TABLE `PREFIX_front` (
   `poster` varchar(75) NOT NULL DEFAULT '',
   `email` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=KU_DBCHARSET;
+) DEFAULT CHARSET=KU_DBCHARSET;
 
 -- --------------------------------------------------------
 
@@ -235,7 +235,7 @@ CREATE TABLE `PREFIX_loginattempts` (
   `username` varchar(255) NOT NULL DEFAULT '',
   `ip` varchar(45) NOT NULL DEFAULT '',
   `timestamp` int(20) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=KU_DBCHARSET;
+) DEFAULT CHARSET=KU_DBCHARSET;
 
 -- --------------------------------------------------------
 
@@ -248,7 +248,7 @@ CREATE TABLE `PREFIX_modlog` (
   `user` varchar(255) NOT NULL DEFAULT '',
   `category` tinyint(2) NOT NULL DEFAULT '0',
   `timestamp` int(20) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=KU_DBCHARSET;
+) DEFAULT CHARSET=KU_DBCHARSET;
 
 -- --------------------------------------------------------
 
@@ -261,7 +261,7 @@ CREATE TABLE `PREFIX_module_settings` (
   `key` varchar(255) NOT NULL DEFAULT '',
   `value` text character set KU_DBCHARSET collate KU_COLLATION NOT NULL,
   `type` varchar(255) NOT NULL DEFAULT 'string'
-) ENGINE=MyISAM DEFAULT CHARSET=KU_DBCHARSET;
+) DEFAULT CHARSET=KU_DBCHARSET;
 
 -- --------------------------------------------------------
 
@@ -296,7 +296,7 @@ CREATE TABLE `PREFIX_posts` (
   KEY `parentid` (`parentid`),
   KEY `bumped` (`bumped`),
   KEY `stickied` (`stickied`)
-) ENGINE=MyISAM DEFAULT CHARSET=KU_DBCHARSET COLLATE=KU_COLLATION AUTO_INCREMENT=1;
+) DEFAULT CHARSET=KU_DBCHARSET COLLATE=KU_COLLATION AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------
 
@@ -324,7 +324,7 @@ CREATE TABLE `PREFIX_files` (
   INDEX `file_id` (`file_id`),
   INDEX `post_id` (`post_id`)
 )
-ENGINE=MyISAM DEFAULT CHARSET=KU_DBCHARSET COLLATE=KU_COLLATION AUTO_INCREMENT=1;
+DEFAULT CHARSET=KU_DBCHARSET COLLATE=KU_COLLATION AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------
 
@@ -392,7 +392,7 @@ CREATE TABLE `PREFIX_reports` (
   `ip` varchar(88) NOT NULL DEFAULT '',
   `reason` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=KU_DBCHARSET;
+) DEFAULT CHARSET=KU_DBCHARSET;
 
 -- --------------------------------------------------------
 
@@ -407,7 +407,7 @@ CREATE TABLE `PREFIX_sections` (
   `name` varchar(255) NOT NULL DEFAULT '',
   `abbreviation` varchar(10) NOT NULL DEFAULT '',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=KU_DBCHARSET;
+) DEFAULT CHARSET=KU_DBCHARSET;
 
 -- --------------------------------------------------------
 
@@ -425,7 +425,7 @@ CREATE TABLE `PREFIX_staff` (
   `addedon` int(20) NOT NULL DEFAULT '0',
   `lastactive` int(20) NOT NULL DEFAULT '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=KU_DBCHARSET;
+) DEFAULT CHARSET=KU_DBCHARSET;
 
 -- --------------------------------------------------------
 
@@ -441,7 +441,7 @@ CREATE TABLE `PREFIX_wordfilter` (
   `time` int(20) NOT NULL DEFAULT '0',
   `regex` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=KU_DBCHARSET;
+) DEFAULT CHARSET=KU_DBCHARSET;
 
 -- --------------------------------------------------------
 
@@ -455,7 +455,7 @@ CREATE TABLE `PREFIX_user_activity` (
   `latest_thread` INT UNSIGNED NULL DEFAULT '0',
   `post_count` INT UNSIGNED NULL DEFAULT '0',
   PRIMARY KEY (`idmd5`)
-) ENGINE=MyISAM DEFAULT CHARSET=KU_DBCHARSET;
+) DEFAULT CHARSET=KU_DBCHARSET;
 
 INSERT INTO `PREFIX_sections` (`id`, `order`, `hidden`, `name`, `abbreviation`) VALUES
 (1, 1, 0, 'all', 'all'),
