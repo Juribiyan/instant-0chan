@@ -3856,3 +3856,9 @@ input[name=postpassword] + div {
   border-radius: 4px;
   text-decoration: none;
 }
+
+.cat-loading {
+  font-size: 14px;
+  text-align: center;
+  margin: 40px 0;
+}
