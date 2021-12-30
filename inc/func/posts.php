@@ -227,7 +227,7 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
       $url = 'https://vimeo.com/api/v2/video/'.$code.'.json';
       break;
     case 'you':
-      $url = 'https://www.youtube.com/get_video_info?video_id='.$code;
+      $url = 'https://www.googleapis.com/youtube/v3/videos?part=contentDetails%2Csnippet&id='.$code.'&key='.KU_YOUTUBE_APIKEY;
       break;
     case 'scl':
       $url = 'https://soundcloud.com/oembed?url=https%3A%2F%2Fsoundcloud.com%2F' . urlencode($code) . '&format=json';
@@ -248,12 +248,7 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
     default:  return array('error' => _gettext('Invalid response code ').' (JSON)'); break;
   }
   curl_close($ch);
-  if ($site == 'you') {
-    parse_str($result, $ytjson);
-    $data = json_decode($ytjson['player_response'], true);
-  } else {
-    $data = json_decode($result, true);
-  }
+  $data = json_decode($result, true);
   if ($data == NULL)
     return array('error' => _gettext('API returned invalid data.'));
 
@@ -277,7 +272,10 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
       break;
     case 'you':
       $widths_available = array(
-          'hq' => 480,
+          'default' => 120,
+          'medium' => 320,
+          'high' => 480,
+          'standard' => 640,
           'maxres' => 1280
       );
       break;
@@ -309,7 +307,7 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
       $thumb_url = preg_replace('/\.webp/', '.jpg', $data[0]['thumbnail_'.$chosen_preset]);
       break;
     case 'you':
-      $thumb_url = 'https://i.ytimg.com/vi/'.$code.'/'.$chosen_preset.'default.jpg';
+      $thumb_url = $data['items'][0]['snippet']['thumbnails'][$chosen_preset]['url'];
       break;
     case 'scl':
       $thumb_url = $data['thumbnail_url'];
@@ -358,8 +356,8 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
     case 'you':
       $r['width'] = 1920;
       $r['height'] = 1080;
-      $r['title'] = $data['videoDetails']['title'];
-      $duration = $data['videoDetails']['lengthSeconds'];
+      $r['title'] = $data['items'][0]['snippet']['title'];
+      $duration = preg_replace_callback('/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/', 'ISO8601_callback', $data['items'][0]['contentDetails']['duration']);
       break;
     case 'scl':
       $r['width'] = 500;
