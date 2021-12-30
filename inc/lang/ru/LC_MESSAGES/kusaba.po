@@ -1030,6 +1030,9 @@ msgstr "Поиск постов"
 msgid "Seconds"
 msgstr "cек."
 
+msgid "seconds"
+msgstr "cек."
+
 msgid "Section"
 msgstr "Секция"
 
@@ -2163,3 +2166,6 @@ msgstr "Если отмечено, доска не будет присутств
 
 msgid "Click to edit board options"
 msgstr "Перейти к настройкам доски"
+
+msgid "Register"
+msgstr "Регистрация"
