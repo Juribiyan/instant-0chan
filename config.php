@@ -41,200 +41,230 @@ if ($cf['KU_APC']) {
 }
 
 if (!$cache_loaded) {
-	// Custom shit!
-		$cf['KU_LIVEUPD_ENA'] = false;
-		$cf['KU_LIVEUPD_DEBUG_MODE'] = false; // When set to true, cURL will wait for a respons from the live-update service and display errors when something goes wrong. Recommended to set to 'false' in production as in case when live-update service goes down this will cause a big posting delay
-		$cf['KU_LOCAL_LIVEUPD_API'] = 'http://127.0.0.1:1337';
-		$cf['KU_LIVEUPD_SITENAME'] = 'yourchanid';
-		$cf['KU_CLI_LIVEUPD_API'] = 'http://example.com:1337';
-		$cf['KU_LIVEUPD_SRVTOKEN'] = 'ENTERRANDOMSHIT';
-		$cf['KU_CSSVER'] = '001';
-		$cf['KU_JSVER'] = '001';
-		$cf['KU_SVGVER'] = '001';
-	// Captcha settings
-		$cf['KU_DEFAULT_CAPTCHA_TYPE'] = 'default'; // ('default'|'hcaptcha'|'off') Default captcha type.
-		// Hcaptcha keys for your site. Obtain here: https://hCaptcha.com/?r=bcc1116c3b44
-		$cf['I0_HCAPTCHA_SITEKEY'] = '';
-		$cf['I0_HCAPTCHA_SECRET'] = '';
-		// Settings for default captcha
-		$cf['KU_CAPTCHALANG'] = 'ru'; // Default captcha language to be used if no captchalang cookie is present. Supported values: ru, en, num (numeric)
-		$cf['KU_CAPTCHALIFE'] = 150; // Captcha time-to-live in seconds
-		$cf['KU_CAPTCHALENGTH'] = rand(4, 7); // Captcha length in letters, rand(a, b) can be used to create random length from a to b.
-		
-		$cf['KU_20_BOARDSLIMIT'] = 5;	// How many 2.0 boards a user can create
-		$cf['KU_20_CLOUDTIME'] = "-24 hours";
-		$cf['I0_20_LINK'] = "/?p=2.0"; // A link yo 2.0 boards page. "/?p=2.0" (default) will work with default index page; try "/register" if you use a custom index page (take /register directory from UTIL)
-		$cf['KU_20MAXLOGINPASS'] = 50; // Maximum login and password size for 2.0
-		$cf['KU_SUPPORTED_LOCALES'] = 'ru|en';	//
-		$cf['KU_FFMPEGPATH'] = '/usr/local/bin/ffmpeg'; //path to FFMPEG, for example 'C:\ffmpeg\bin'
-		$cf['KU_MAXNAMELENGTH'] = 75;
-		$cf['KU_MAXEMAILLENGTH'] = 4; 	// do we need more?
-		$cf['KU_MAXSUBJLENGTH'] = 75;
-		$cf['KU_YOUTUBE_APIKEY'] = ''; //Your personal anal probe ID. Can be obtained it Google Dev. Console
-		$cf['KU_USE_GESHI'] = false;	//Use original code highlighter from 0chan.ru like the cargo cultist you are
-		//offsite urls allowed in user submitted CSS (separated by single space (" "))
-		$cf['KU_ALLOWED_OFFSITE_URLS'] = 'http://i.imgur.com/ https://i.imgur.com/ https://fonts.googleapis.com/ https://fonts.gstatic.com/';
-		$cf['KU_MAX_CSS_SIZE'] = 102400; // msximum user submitted CSS size (in bytes)
-		$cf['KU_DISCLAIMER'] = false; // Whether or not a disclaimer (/dwoo/templates/disclaimer.tpl) should be displayed for new visitors.
-		$cf['KU_IMGHASH_UNIQUENESS'] = 'thread'; // ('thread'|'board'|false)
-			// When "Show ID" is on, hash pics will be displayed for each post. 
-			// If IMGHASH_UNIQUENESS is set to 'thread' those pics will be unique per each thread; 
-			// if it is set to 'board' they will be persistent across the board; 
-			// if it is set to false they will be persistent across the whole site.
-		$cf['I0_SAYERS_ENABLED'] = false;
-		// Emoji configuration
-		$cf['I0_SMILES_ENABLED'] = true;
-		$cf['I0_USERSMILES_ENABLED'] = true;
-		$cf['I0_SMILEDIR'] = 'images/smileys/'; // Make sure to set proper write rights to this directory
-		$cf['I0_FORCE_HTML_NOCACHE'] = false; // When AJAX-ing HTML, force no-cache (default: off (server must handle this, recommended for local debugging only))
-		$cf['I0_IPLESS_MODE'] = 'auto'; // Whether or not cookies should be used instead of IP's (typically for TOR hidden services). Supported values: true, false and 'auto'. In auto mode, cookies will be used when client IP is 127.0.0.1 
-		$cf['I0_CURL_PROXY'] = false; // Proxy to use when fetching external resources, for example 'socks5h://127.0.0.1:9050' — to connect through TOR
-		// -------------------------- Overboard --------------------------
-		$cf['I0_OVERBOARD_ENABLED'] = true; // Whether or not an overboard must be generated
-		$cf['I0_OVERBOARD_DIR'] = 'over';   // Overboard directory, default is "over" (/over/)
-		$cf['I0_OVERBOARD_DESCRIPTION'] = 'Overboard';
-		$cf['I0_OVERBOARD_THREADS'] = 15;		// Number of threads to display on an overboard page
-		$cf['I0_OVERBOARD_NUMPAGES'] = 2;   // How many pages an overboard should have
+	// ----------------------------------- Basic credentials ------------------------------------
+		$cf['KU_NAME']       = 'Øchan'; // The name of your site
+		$cf['KU_SLOGAN']     = '<em>Oops! Divided by zero!</em>'; // Site slogan, set to nothing to disable its display
+		$cf['KU_RANDOMSEED'] = 'ENTERANOTHERRANDOMSHIT'; // Type a bunch of random letters/numbers here, any large amount (35+ characters) will do
 
-		$cf['I0_DELPASS_SALTING'] = true; // Whether or not the delpass should be hashed to prevent poster identification
-		$cf['I0_ERASE_DELETED'] = false; // Whether or not the contents of posts deleted by user should be erased
-		$cf['I0_MAX_ACCESS_ATTEMPTS'] = 3; // How many attempts at deleting a post are allowed before it gets locked with catpcha
 
-		// Deferred html rendering. REQUIRES special nginx configureation, refer to UTIL/nginx.snippets.conf
-		$cf['I0_DEFERRED_RENDER'] = false; // If true, HTML files will be rendered upon request. Default is false.
-
-		$cf['I0_DETECT_SOSACH'] = false; // Detect pictures from particular website
-
-	// Database
+	// ---------------------------------------- Database ----------------------------------------
 		$cf['KU_DBTYPE']          = 'mysqli';	// Database type. Valid values are mysql and mysqli (reccomended for mysql).
 							// PostgreSQL is also supported. Supported values are postgres64, postgres7 and postgres8. Only postgres8 is tested.
 							// SQLite is also supported. Set to sqlite to use. SQLite will not use any database software, only a single file.
+							// ↑ disregard that, nothing except mysqli was tested in years and probably won't work
 		$cf['KU_DBHOST']          = 'localhost'; // Database hostname. On SQLite this has no effect.
 		$cf['KU_DBDATABASE']      = '0chan'; // Database... database. On SQLite this will be the path to your database file. Secure this file.
 		$cf['KU_DBUSERNAME']      = 'root'; // Database username. On SQLite this has no effect.
 		$cf['KU_DBPASSWORD']      = ''; // Database password. On SQLite this has no effect.
 		$cf['KU_DBPREFIX']        = ''; // Database table prefix
 		$cf['KU_DBUSEPERSISTENT'] = false; // Use persistent connection to database
-		$cf['KU_DBCHARSET']        = 'utf8mb4';	// Database charset. utfmb4 is recommended, use utf8 if your version of mysql does not support it yet
-		$cf['KU_COLLATION']        = 'utf8mb4_general_ci'; // Database collation. utfmb4_general_ci is recommended, use utf8_general_ci if your version of mysql does not support it yet
+		$cf['KU_DBCHARSET']       = 'utf8mb4';	// Database charset. utfmb4 is recommended, use utf8 if your version of mysql does not support it yet
+		$cf['KU_COLLATION']       = 'utf8mb4_general_ci'; // Database collation. utfmb4_general_ci is recommended, use utf8_general_ci if your version of mysql does not support it yet
+		$cf['KU_DEBUG'] 					= false; // When enabled, debug information will be printed (Warning: all queries will be shown publicly)
 
-	// Imageboard info
-		$cf['KU_NAME']      = 'Øchan'; // The name of your site
-		$cf['KU_SLOGAN']    = '<em>Oops! Divided by zero!</em>'; // Site slogan, set to nothing to disable its display
-		$cf['KU_HEADERURL'] = ''; // Full URL to the header image (or rotation script) to be displayed, can be left blank for no image
-		$cf['KU_IRC']       = ''; // IRC info, which will be displayed in the menu.  Leave blank to remove it
-		$cf['KU_BANREASON']	= ''; // This is the default ban reason that will automatically fill in the ban reason box
 
-	// Paths and URLs
-		// Main installation directory
-		$cf['KU_ROOTDIR']   = realpath(dirname(__FILE__))."/"; // Full system path of the folder containing kusaba.php, with trailing slash. The default value set here should be OK.. If you need to change it, you should already know what the full path is anyway.
-		$cf['KU_WEBFOLDER'] = '/'; // The path from the domain of the board to the folder which kusaba is in, including the trailing slash.  Example: "http://www.yoursite.com/misc/kusaba/" would have a $cf['KU_WEBFOLDER'] of "/misc/kusaba/"
-		// Two following values are set this way to make engine domain-agnostic. Change them in instance-config if you do not want to.
-		$cf['KU_WEBPATH']   = ''; // The path to the index folder of kusaba, without trailing slash. (http://yoursite.com or https://yoursite.com or just //yoursite.com for protocol-agnostic (flexible) behavior)
-		$cf['KU_DOMAIN']    = '.' . $_SERVER['HTTP_HOST']; // Used in cookies for the domain parameter.  Should be a period and then the top level domain, which will allow the cookies to be set for all subdomains.  For http://www.randomchan.org, the domain would be .randomchan.org; http://zachchan.freehost.com would be zach.freehost.com
+	// ---------------------------------- HTML cache settings -----------------------------------
+		// Deferred html rendering. REQUIRES special nginx configureation, refer to UTIL/nginx.snippets.conf
+		$cf['I0_DEFERRED_RENDER'] 	 = false; // If true, HTML files will be rendered upon request. Default is false.
+		$cf['I0_FORCE_HTML_NOCACHE'] = false; // When AJAX-ing HTML, force no-cache (default: off (server must handle this, recommended for local debugging only))
 
-		// Board subdomain/alternate directory (optional, change to enable)
-		// DO NOT CHANGE THESE IF YOU DO NOT KNOW WHAT YOU ARE DOING!!
-		$cf['KU_BOARDSDIR']    = $cf['KU_ROOTDIR'];
-		$cf['KU_BOARDSFOLDER'] = $cf['KU_WEBFOLDER'];
-		$cf['KU_BOARDSPATH']   = $cf['KU_WEBPATH'];
 
-		// CGI subdomain/alternate directory (optional, change to enable)
-		// DO NOT CHANGE THESE IF YOU DO NOT KNOW WHAT YOU ARE DOING!!
-		$cf['KU_CGIDIR']    = $cf['KU_BOARDSDIR'];
-		$cf['KU_CGIFOLDER'] = $cf['KU_BOARDSFOLDER'];
-		$cf['KU_CGIPATH']   = $cf['KU_BOARDSPATH'];
+	// -------------------------------------- Live updates --------------------------------------
+		// REQUIRES node.js running properly configured updates.js (see UTIL/updates)
+		$cf['KU_LIVEUPD_ENA'] = false;
+		$cf['KU_LOCAL_LIVEUPD_API']  = 'http://127.0.0.1:1337'; // A local address that PHP can access
+		$cf['KU_CLI_LIVEUPD_API'] 	 = $cf['KU_LOCAL_LIVEUPD_API']; // A remote address that a browser can access. Default setting is for local testing
+		$cf['KU_LIVEUPD_DEBUG_MODE'] = false; // When set to true, cURL will wait for a respons from the live-update service and display errors when something goes wrong. Recommended to set to 'false' in production as in case when live-update service goes down this will affect the posting delay severely
+		// Your credentials that must match the credentials in updates.js
+		$cf['KU_LIVEUPD_SITENAME'] = 'your_chan_id';
+		$cf['KU_LIVEUPD_SRVTOKEN'] = 'you_chan_token';
 
-		// Coralized URLs (optional, change to enable)
-		$cf['KU_WEBCORAL']    = ''; // Set to the coralized version of your webpath to enable.  If not set to '', URLs which can safely be cached will be coralized, and will use the Coral Content Distribution Network.  Example: http://www.kusaba.org becomes http://www.kusaba.org.nyud.net, http://www.crapchan.org/kusaba becomes http://www.crapchan.org.nyud.net/kusaba
-		$cf['KU_BOARDSCORAL'] = '';
 
-		// Templates
-		$cf['KU_TEMPLATEDIR']       = $cf['KU_ROOTDIR'] . 'dwoo/templates'; // Dwoo templates directory
-		$cf['KU_CACHEDTEMPLATEDIR'] = $cf['KU_ROOTDIR'] . 'dwoo/templates_c'; // Dwoo compiled templates directory.  This folder MUST be writable (you may need to chmod it to 755).  Set to '' to disable template caching
+	// ------------------------------------ Capshka settings ------------------------------------
+		$cf['KU_DEFAULT_CAPTCHA_TYPE'] = 'default'; // ('default'|'hcaptcha'|'off') Default captcha type.
+		// hcaptcha credentials
+		$cf['I0_HCAPTCHA_SITEKEY'] = 'your_site_key';
+		$cf['I0_HCAPTCHA_SECRET'] = 'your_secret_key';
+		// Default captcha settings
+		$cf['KU_CAPTCHALANG'] = 'num'; // Default captcha language to be used if no captchalang cookie is present. Supported values: ru, en, num (numeric)
+		$cf['KU_CAPTCHALIFE'] = 150; // Captcha time-to-live in seconds
+		$cf['KU_CAPTCHALENGTH'] = rand(4, 7); // Captcha length in letters, rand(a, b) can be used to create random length from a to b.
 
-		// CSS styles
-		$cf['KU_STYLES']        = 'modern:newdark:photon'; // Styles which are available to be used for the boards, separated by colons, in lower case.  These will be displayed next to [Home] [Manage] if KU_STYLESWIKUHER is set to true
-		$cf['KU_DEFAULTSTYLE']  = 'newdark'; // If Default is selected in the style list in board options, it will use this style.  Should be lower case
-		$cf['KU_STYLESWITCHER'] = true; // Whether or not to display the different styles in a clickable switcher at the top of the board
-		$cf['KU_DROPSWITCHER']	= false; // Whether or not to use a dropdown style switcher. False is use plaintext switcher, true is dropdown.
 
-		$cf['KU_MENUTYPE']          = 'normal'; // Type of display for the menu.  normal will add the menu styles and such as it normally would, plain will not use the styles, and will look rather boring
-		$cf['KU_MENUSTYLES']        = 'modern:newdark:photon'; // Menu styles
-		$cf['KU_DEFAULTMENUSTYLE']  = 'newdark'; // Default menu style
-		$cf['KU_MENUSTYLESWITCHER'] = true; // Whether or not to display the different styles in a clickable switcher in the menu
+	// ---------------------------------- Userboards (aka 2.0) ----------------------------------
+		$cf['KU_20_BOARDSLIMIT'] = 5;	// How many 2.0 boards a user can create
+		$cf['KU_20_CLOUDTIME'] = "-24 hours";
+		$cf['I0_20_LINK'] = "/?p-2.0"; // A link yo 2.0 boards page. "/?p-2.0" (default) will work with default index page; try "/register" if you use a custom index page
+		$cf['KU_20MAXLOGINPASS'] = 50; // Maximum login and password size for 2.0
+	
 
-		// Limitations
+	// --------------------------------------- Overboard ----------------------------------------
+		$cf['I0_OVERBOARD_ENABLED'] = true; // Whether or not an overboard must be generated
+		$cf['I0_OVERBOARD_DIR'] = 'over';   // Overboard directory, default is "over" (/over/)
+		$cf['I0_OVERBOARD_DESCRIPTION'] = 'Overboard';
+		$cf['I0_OVERBOARD_THREADS'] = 15;		// Number of threads to display on an overboard page
+		$cf['I0_OVERBOARD_NUMPAGES'] = 2;   // How many pages an overboard should have
+
+
+	// ----------------------------- Security and privacy policies ------------------------------
+		$cf['KU_IMGHASH_UNIQUENESS'] = 'thread'; // ('thread'|'board'|false)
+			// When "Show ID" is on, hash pics will be displayed for each post. 
+			// If IMGHASH_UNIQUENESS is set to 'thread' those pics will be unique per each thread; 
+			// if it is set to 'board' they will be persistent across the board; 
+			// if it is set to false they will be persistent across the whole site.
+		$cf['I0_IPLESS_MODE'] = 'auto'; // Whether or not cookies should be used instead of IP's (typically for TOR hidden services). Supported values: true, false and 'auto'. In auto mode, cookies will be used when client IP is 127.0.0.1 
+		$cf['I0_DELPASS_SALTING'] = true; // Whether or not the delpass should be hashed to prevent poster identification
+		$cf['I0_ERASE_DELETED'] = false; // Whether or not the contents of posts deleted by user should be erased
+		$cf['I0_MAX_ACCESS_ATTEMPTS'] = 3; // How many attempts at deleting a post are allowed before it gets locked with catpcha
+		$cf['I0_FULL_ANONYMITY_MODE'] = false; // In full anonymity mode, no information about user will be stored in the posts table. Bans will not work.
+
+
+	// --------------------------------------- CSS styles ---------------------------------------
+		$cf['KU_STYLES'] = 'modern:newdark:photon'; // Styles which are available to be used for the boards, separated by colons, in lower 	case.  These will be displayed next to [Home] [Manage] if KU_STYLESWIKUHER is set to true
+		$cf['KU_DEFAULTSTYLE'] = 'newdark'; // If Default is selected in the style list in board options, it will use this style.  Should be lower 	case
+		$cf['KU_MENUSTYLES'] = $cf['KU_STYLES']; // Menu styles
+		$cf['KU_DEFAULTMENUSTYLE']  = $cf['KU_DEFAULTSTYLE']; // Default menu style
+
+
+	// ---------------------------------------- User CSS ----------------------------------------
+		$cf['KU_ALLOWED_OFFSITE_URLS'] = 'http://i.imgur.com/ https://i.imgur.com/ https://fonts.googleapis.com/ https://fonts.gstatic.com/'; //offsite urls allowed in user submitted CSS (separated by single space (" "))
+		$cf['KU_MAX_CSS_SIZE'] = 102400; // msximum user submitted CSS size (in bytes)
+
+
+	// -------------------------------------- Limitations ---------------------------------------
 		$cf['KU_NEWTHREADDELAY'] = 300; // Minimum time in seconds a user must wait before posting a new thread again
 		$cf['KU_REPLYDELAY']     = 7; // Minimum time in seconds a user must wait before posting a reply again
 		$cf['KU_LINELENGTH']     = 150; // Used when cutting long post messages on pages and placing the message too long notification
 		$cf['KU_CUTPOSTS']     = false;
 		$cf['I0_GLOBAL_NEWTHREADDELAY'] = 0; // Minimum time in seconds a NEW user must wait before posting a new thread. Usable for limiting the speed of wipe
 		$cf['I0_REPLIES_TO_RECOGNIZE'] = 10; // Minimum number of replies a user must post to be recognized as not “New”. 0 means a user can lose the “New” status only through creating a new thread. Usable only if I0_GLOBAL_NEWTHREADDELAY is enabled
-		$cf['I0_FULL_ANONYMITY_MODE'] = false; // In full anonymity mode, no information about user will be stored in the posts table. Bans will not work.
+		$cf['KU_MAXNAMELENGTH'] = 75;
+		$cf['KU_MAXEMAILLENGTH'] = 4; 	// Do not change as e-mail is only used for bot detection (legacy feature); only valid values are "sage" and "noko"
+		$cf['KU_MAXSUBJLENGTH'] = 75;
+	
 
-		// Image handling
-		$cf['KU_THUMBWIDTH']       = 200; // Maximum thumbnail width
-		$cf['KU_THUMBHEIGHT']      = 200; // Maximum thumbnail height
-		$cf['KU_REPLYTHUMBWIDTH']  = 125; // Maximum thumbnail width (reply)
-		$cf['KU_REPLYTHUMBHEIGHT'] = 125; // Maximum thumbnail height (reply)
-		$cf['KU_VIDEOTHUMBWIDTH'] = 250;
-		$cf['KU_CATTHUMBWIDTH']    = 50; // Maximum thumbnail width (catalog)
-		$cf['KU_CATTHUMBHEIGHT']   = 50; // Maximum thumbnail height (catalog)
-		$cf['KU_FILESIZE_METHOD'] = 'sum'; // Method to use when determining the post file size limit. If it is set to 'sum', limit will be applied to the sum of all files in the post. Otherwise, if it is set to 'single', limit will be applied to each file separately.
-		$cf['KU_THUMBMETHOD']      = 'gd'; // Method to use when thumbnailing images in jpg, gif, or png format.  Options available: gd, imagemagick, ffmpeg
+	// ------------------------------------- Page settings --------------------------------------
+		$cf['KU_THREADS']       = 10; // Number of threads to display on a board page
+		$cf['KU_REPLIES']       = 5; 	// Number of replies to display on a board page
+		$cf['KU_REPLIESSTICKY'] = 1; 	// Number of replies to display on a board page when a thread is stickied
+		$cf['KU_BANMSG']        = '(USER WAS BANNED FOR THIS POST)'; // The text to add at the end of a post if a ban is placed and "Add ban message" is checked
+		$cf['KU_DIRTITLE']  = true; // Whether or not to place the board directory in the board's title and at the top of the page.  true would render as "/b/ - Random", false would render as "Random"
+		$cf['KU_FIRSTPAGE'] = 'index.html'; // Filename of the first page of a board.  Only change this if you are willing to maintain the .htaccess files for each board directory (they are created with a DirectoryIndex board.html, change them if you change this)
+
+
+	// ---------------------------------- Attachment handling -----------------------------------
+		$cf['KU_FFMPEGPATH'] = '/usr/local/bin/ffmpeg'; //path to FFMPEG, on windows it's usually 'C:\ffmpeg\bin' (REQUIRED for videos)
+		$cf['KU_YOUTUBE_APIKEY'] = 'your_api_key'; //Your personal anal probe ID. Can be obtained it Google Dev. Console
+		$cf['KU_THUMBWIDTH']       = 200; 	// Maximum thumbnail width
+		$cf['KU_THUMBHEIGHT']      = 200; 	// Maximum thumbnail height
+		$cf['KU_REPLYTHUMBWIDTH']  = 125; 	// Maximum thumbnail width (reply)
+		$cf['KU_REPLYTHUMBHEIGHT'] = 125; 	// Maximum thumbnail height (reply)
+		$cf['KU_VIDEOTHUMBWIDTH']  = 250;		// Video thumbnail width
+		$cf['KU_CATTHUMBWIDTH']    = 50; 		// Maximum thumbnail width (catalog)
+		$cf['KU_CATTHUMBHEIGHT']   = 50; 		// Maximum thumbnail height (catalog)
+		$cf['KU_FILESIZE_METHOD']  = 'sum'; // Method to use when determining the post file size limit. If it is set to 'sum', limit will be applied to the sum of all files in the post. Otherwise, if it is set to 'single', limit will be applied to each file separately.
+		$cf['KU_THUMBMETHOD']      = 'gd'; 	// Method to use when thumbnailing images in jpg, gif, or png format.  Options available: gd, imagemagick, ffmpeg
 		$cf['KU_ANIMATEDTHUMBS']   = false; // Whether or not to allow animated thumbnails (only applies if using ffmpeg or imagemagick)
 		$cf['KU_USEOPTIPNG']       = false; // Whether or not to use optipng for PNG thumbnails optimization. Suitable only when useing imagemagick or ffmpeg
-		$cf['KU_OPTIPNGLV']        = '2'; // Optipng optimization level, from 1 (fastest) to 7 (slowest)
+		$cf['KU_OPTIPNGLV']        = '2'; 	// Optipng optimization level, from 1 (fastest) to 7 (slowest)
+		$cf['KU_YOUTUBEWIDTH']     = 200; 	// Width to display embedded YouTube videos
+		$cf['KU_YOUTUBEHEIGHT']    = 164; 	// Height to display embedded YouTube videos
 
+
+	// ------------------------------------- Misc settings --------------------------------------
+		$cf['I0_CURL_PROXY'] = false; // Proxy to use when fetching external resources, for example 'socks5h://127.0.0.1:9050' — to connect through TOR
+		$cf['KU_USE_GESHI']  = false;	//Use original code highlighter from 0chan.ru like the cargo cultist you are
+		$cf['KU_DISCLAIMER'] = false; // Whether or not a disclaimer (/dwoo/templates/disclaimer.tpl) should be displayed for new visitors.
+		$cf['KU_MODLOGDAYS'] = 7; 		// Days to keep modlog entries before removing them
+
+
+	// ----------------------------------- Bells and whistles -----------------------------------
+		$cf['I0_SMILES_ENABLED'] = true; // Smile is a boomer word that means emoji
+		$cf['I0_SAYERS_ENABLED'] = false; // Funny characters with speech bubbles
+		$cf['I0_USERSMILES_ENABLED'] = true; // Allows uploading and registering custom emojis via "/regemoji :emojiname:" command
+		$cf['I0_SMILEDIR'] = 'images/smileys/'; // Make sure to set proper write rights to this directory
+		$cf['I0_DETECT_SOSACH'] = false; // Detect pictures likely originating from the particular website
+		
+
+	// ---------------------------------- Static file versions ----------------------------------
+		// Increment these when you make changes to CSS, JS or SVG files so the user's cache invalidates
+		$cf['KU_CSSVER'] = '001';
+		$cf['KU_JSVER'] = '001';
+		$cf['KU_SVGVER'] = '001';
+
+
+	// ------------------------------------- Paths and URLs -------------------------------------
+		// Main installation directory
+		$cf['KU_ROOTDIR']   = realpath(dirname(__FILE__))."/"; // Full system path of the folder containing kusaba.php, with trailing slash. The default value set here should be OK.. If you need to change it, you should already know what the full path is anyway.
+		$cf['KU_WEBFOLDER'] = '/'; // The path from the domain of the board to the folder which kusaba is in, including the trailing slash.  Example: "http://www.yoursite.com/misc/kusaba/" would have a $cf['KU_WEBFOLDER'] of "/misc/kusaba/"
+		// Two following values are set this way to make engine domain-agnostic. Change them in instance-config if you do not want to.
+		$cf['KU_WEBPATH']   = ''; // The path to the index folder of kusaba, without trailing slash. (http://yoursite.com or https://yoursite.com or just //yoursite.com for protocol-agnostic (flexible) behavior)
+		$cf['KU_DOMAIN']    = '.' . $_SERVER['HTTP_HOST']; // Used in cookies for the domain parameter.  Should be a period and then the top level domain, which will allow the cookies to be set for all subdomains.  For http://www.randomchan.org, the domain would be .randomchan.org; http://zachchan.freehost.com would be zach.freehost.com
+		// Board subdomain/alternate directory (optional, change to enable)
+		// DO NOT CHANGE THESE IF YOU DO NOT KNOW WHAT YOU ARE DOING!!
+		$cf['KU_BOARDSDIR']    = $cf['KU_ROOTDIR'];
+		$cf['KU_BOARDSFOLDER'] = $cf['KU_WEBFOLDER'];
+		$cf['KU_BOARDSPATH']   = $cf['KU_WEBPATH'];
+		// CGI subdomain/alternate directory (optional, change to enable)
+		// DO NOT CHANGE THESE IF YOU DO NOT KNOW WHAT YOU ARE DOING!!
+		$cf['KU_CGIDIR']    = $cf['KU_BOARDSDIR'];
+		$cf['KU_CGIFOLDER'] = $cf['KU_BOARDSFOLDER'];
+		$cf['KU_CGIPATH']   = $cf['KU_BOARDSPATH'];
+		
+
+	// ------------------------------------- Special Tripcodes ----------------------------------
+		$cf['KU_TRIPS'] = array('#changeme'  => 'changeme',
+		                        '#changeme2' => 'changeme2'); // Special tripcodes which can have a predefined output.  Do not include the initial ! in the output.  Maximum length for the output is 30 characters.  Set to array(); to disable
+
+
+	// ---------------------------------- Location and language ---------------------------------
+		$cf['KU_GEOIPMODE'] = 'flare'; // Method to use when determining country for countryballs mode. Can be 'flare' if you are using CloudFlare or 'php-geoip' if you have GeoIP extension for PHP installed
+		$cf['KU_LOCALE']  = 'ru'; // The locale of kusaba you would like to use.  Locales available: en, de, et, es, fi, pl, nl, nb, ro, ru, it, ja
+		$cf['KU_SUPPORTED_LOCALES'] = 'ru|en';
+		$cf['KU_CHARSET'] = 'UTF-8'; // The character encoding to mark the pages as.  This must be the same in the .htaccess file (AddCharset charsethere .html and AddCharset charsethere .php) to function properly.  Only UTF-8 and Shift_JIS have been tested
+		$cf['KU_TIMEZONE'] = 'Europe/Moscow'; // The time zone which the server resides in
+		$cf['KU_DATEFORMAT'] = 'D Y M d H:i:s';  //'d/m/y(D)H:i';
+
+
+	// ------------------------------------- Extra features -------------------------------------
+		$cf['KU_RSS']       = true; // Whether or not to enable the generation of rss for each board and modlog
+		$cf['KU_FIRSTLAST'] = false; // Whether or not to generate extra files for the first 100 posts/last 50 posts
+		$cf['KU_BLOTTER']   = true; // Whether or not to enable the blotter feature
+		$cf['KU_SITEMAP']   = false; // Whether or not to enable automatic sitemap generation (you will still need to link the search engine sites to the sitemap.xml file)
+		$cf['KU_APPEAL']    = false; // Whether or not to enable the appeals system
+
+	
+	// ------------------------------- Unknown and obsolete stuff -------------------------------
+		$cf['KU_HEADERURL'] = ''; // Full URL to the header image (or rotation script) to be displayed, can be left blank for no image
+		$cf['KU_IRC']       = ''; // IRC info, which will be displayed in the menu.  Leave blank to remove it
+		$cf['KU_BANREASON']	= ''; // This is the default ban reason that will automatically fill in the ban reason box
+		// Coralized URLs (optional, change to enable)
+		$cf['KU_WEBCORAL']    = ''; // Set to the coralized version of your webpath to enable.  If not set to '', URLs which can safely be cached will be coralized, and will use the Coral Content Distribution Network.  Example: http://www.kusaba.org becomes http://www.kusaba.org.nyud.net, http://www.crapchan.org/kusaba becomes http://www.crapchan.org.nyud.net/kusaba
+		$cf['KU_BOARDSCORAL'] = '';
+		// Menu (frames) settings
+		$cf['KU_MENUTYPE']          = 'normal'; // Type of display for the menu.  normal will add the menu styles and such as it normally would, plain will not use the styles, and will look rather boring
+		$cf['KU_MENUSTYLESWITCHER'] = true; // Whether or not to display the different styles in a clickable switcher in the menu
+		$cf['KU_STYLESWITCHER'] = true; // Whether or not to display the different styles in a clickable switcher at the top of the board
+		$cf['KU_DROPSWITCHER']	= false; // Whether or not to use a dropdown style switcher. False is use plaintext switcher, true is dropdown.
 		// Post handling
 		$cf['KU_NEWWINDOW']       = true; // When a user clicks a thumbnail, whether to open the link in a new window or not
 		$cf['KU_MAKELINKS']       = true; // Whether or not to turn http:// links into clickable links
 		$cf['KU_NOMESSAGETHREAD'] = ''; // Text to set a message to if a thread is made with no text
 		$cf['KU_NOMESSAGEREPLY']  = ''; // Text to set a message to if a reply is made with no text
-
-		// Post display
-		$cf['KU_THREADS']         = 10; // Number of threads to display on a board page
-		$cf['KU_REPLIES']         = 5; // Number of replies to display on a board page
-		$cf['KU_REPLIESSTICKY']   = 1; // Number of replies to display on a board page when a thread is stickied
-		$cf['KU_BANMSG']          = '(USER WAS BANNED FOR THIS POST)'; // The text to add at the end of a post if a ban is placed and "Add ban message" is checked
-		$cf['KU_YOUTUBEWIDTH']    = 200; // Width to display embedded YouTube videos
-		$cf['KU_YOUTUBEHEIGHT']   = 164; // Height to display embedded YouTube videos
-
-		// Pages
-		$cf['KU_FIRSTPAGE'] = 'index.html'; // Filename of the first page of a board.  Only change this if you are willing to maintain the .htaccess files for each board directory (they are created with a DirectoryIndex board.html, change them if you change this)
-		$cf['KU_DIRTITLE']  = true; // Whether or not to place the board directory in the board's title and at the top of the page.  true would render as "/b/ - Random", false would render as "Random"
-
-		// Special Tripcodes
-		$cf['KU_TRIPS'] = array('#changeme'  => 'changeme',
-		                        '#changeme2' => 'changeme2'); // Special tripcodes which can have a predefined output.  Do not include the initial ! in the output.  Maximum length for the output is 30 characters.  Set to array(); to disable
-
-		// Extra features
-		$cf['KU_RSS']             = true; // Whether or not to enable the generation of rss for each board and modlog
-		$cf['KU_FIRSTLAST']       = false; // Whether or not to generate extra files for the first 100 posts/last 50 posts
-		$cf['KU_BLOTTER']         = true; // Whether or not to enable the blotter feature
-		$cf['KU_SITEMAP']         = false; // Whether or not to enable automatic sitemap generation (you will still need to link the search engine sites to the sitemap.xml file)
-		$cf['KU_APPEAL']          = false; // Whether or not to enable the appeals system
-
-		// Misc config
-		$cf['KU_MODLOGDAYS']        = 7; // Days to keep modlog entries before removing them
-		$cf['KU_RANDOMSEED']        = 'ENTERANOTHERRANDOMSHIT'; // Type a bunch of random letters/numbers here, any large amount (35+ characters) will do
 		$cf['KU_STATICMENU']        = false; // Whether or not to generate the menu files as static files, instead of linking to menu.php.  Enabling this will reduce load, however some users have had trouble with getting the files to generate
 		$cf['KU_GENERATEBOARDLIST'] = true; // Set to true to automatically make the board list which is displayed ad the top and bottom of the board pages, or false to use the boards.html file
-		$cf['KU_GEOIPMODE'] = 'flare'; // Method to use when determining country for countryballs mode. Can be 'flare' if you are using CloudFlare or 'php-geoip' if you have GeoIP extension for PHP installed
+		$cf['KU_WATCHTHREADS']    = false; // Whether or not to add thread watching capabilities
 
-		// Language / timezone / encoding
-		$cf['KU_LOCALE']  = 'ru'; // The locale of kusaba you would like to use.  Locales available: en, de, et, es, fi, pl, nl, nb, ro, ru, it, ja
-		$cf['KU_CHARSET'] = 'UTF-8'; // The character encoding to mark the pages as.  This must be the same in the .htaccess file (AddCharset charsethere .html and AddCharset charsethere .php) to function properly.  Only UTF-8 and Shift_JIS have been tested
-		putenv('TZ=Europe/Moscow'); // The time zone which the server resides in
-		$cf['KU_DATEFORMAT'] = 'D Y M d H:i:s';  //'d/m/y(D)H:i';
 
-		// Debug
-		$cf['KU_DEBUG'] = false; // When enabled, debug information will be printed (Warning: all queries will be shown publicly)
+	// --------------------------------------- Templates ----------------------------------------
+		$cf['KU_TEMPLATEDIR']       = $cf['KU_ROOTDIR'] . 'dwoo/templates'; // Dwoo templates directory
+		$cf['KU_CACHEDTEMPLATEDIR'] = $cf['KU_ROOTDIR'] . 'dwoo/templates_c'; // Dwoo compiled templates directory.  This folder MUST be writable (you may need to chmod it to 755).  Set to '' to disable template caching
 
+
+	// -------------------------------- Post-config (do not modify) -----------------------------
 		require 'instance-config.php';
+		putenv('TZ='.$cf['KU_TIMEZONE']); 
 
-		// Post-configuration actions, don't modify these
 		$cf['KU_VERSION']    = '0.9.3';
 		$cf['KU_TRIPS']      = serialize($cf['KU_TRIPS']);
 		$cf['KU_LINELENGTH'] = $cf['KU_LINELENGTH'] * 15;

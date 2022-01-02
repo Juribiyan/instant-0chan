@@ -1,33 +1,85 @@
 <?php
 /**
  * This is the file for your custom settings.
- * If you copy settings form config.php, don't forget to check if there are any other settings depending on whatever settings you change.
+ * Settings presenting in instance-config.php override settings in config.php
+ * If you copy settings from config.php, don't forget to check if there are any other settings depending on whatever settings you change.
+ * This example file contains some of the settings that are most likely to be changed
  */
 
-// Database
-$cf['KU_DBTYPE']          = 'mysqli';	// Database type. Valid values are mysql and mysqli (reccomended for mysql).
-$cf['KU_DBHOST']          = 'localhost'; // Database hostname. On SQLite this has no effect.
-$cf['KU_DBDATABASE']      = '0chan'; // Database... database. On SQLite this will be the path to your database file. Secure this file.
-$cf['KU_DBUSERNAME']      = 'root'; // Database username. On SQLite this has no effect.
-$cf['KU_DBPASSWORD']      = ''; // Database password. On SQLite this has no effect.
-$cf['KU_DBPREFIX']        = ''; // Database table prefix
+// ----------------------------------- Basic credentials ------------------------------------
+  $cf['KU_NAME']       = 'Øchan'; // The name of your site
+  $cf['KU_SLOGAN']     = '<em>Oops! Divided by zero!</em>'; // Site slogan, set to nothing to disable its display
+  $cf['KU_RANDOMSEED'] = 'ENTERANOTHERRANDOMSHIT'; // Type a bunch of random letters/numbers here, any large amount (35+ characters) will do
 
-// Uncomment and change the following lines if you don't want the site to be domain-agnostic
-// $cf['KU_WEBPATH']   = '//example.com';  // The path to the index folder of kusaba, without trailing slash. (http://yoursite.com or https://yoursite.com or just //yoursite.com for protocol-agnostic (flexible) behavior)
-// $cf['KU_DOMAIN']    = '.example.com'; // Used in cookies for the domain parameter.  Should be a period and then the top level domain, which will allow the cookies to be set for all subdomains.
 
-// Board subdomain/alternate directory (optional, change to enable)
-// DO NOT CHANGE THESE IF YOU DO NOT KNOW WHAT YOU ARE DOING!!
-$cf['KU_BOARDSDIR']    = $cf['KU_ROOTDIR'];
-$cf['KU_BOARDSFOLDER'] = $cf['KU_WEBFOLDER'];
-$cf['KU_BOARDSPATH']   = $cf['KU_WEBPATH'];
+// ---------------------------------------- Database ----------------------------------------
+  $cf['KU_DBHOST']     = 'localhost';   // Database hostname. On SQLite this has no effect.
+  $cf['KU_DBDATABASE'] = '0chan';       // Database... database. On SQLite this will be the path to your database file. Secure this file.
+  $cf['KU_DBUSERNAME'] = 'root';        // Database username. On SQLite this has no effect.
+  $cf['KU_DBPASSWORD'] = '';            // Database password. On SQLite this has no effect.
 
-// CGI subdomain/alternate directory (optional, change to enable)
-// DO NOT CHANGE THESE IF YOU DO NOT KNOW WHAT YOU ARE DOING!!
-$cf['KU_CGIDIR']    = $cf['KU_BOARDSDIR'];
-$cf['KU_CGIFOLDER'] = $cf['KU_BOARDSFOLDER'];
-$cf['KU_CGIPATH']   = $cf['KU_BOARDSPATH'];
 
-// Misc config
-$cf['KU_MODLOGDAYS']        = 7; // Days to keep modlog entries before removing them
-$cf['KU_RANDOMSEED']        = 'ENTERRANDOMSHIT'; // Type a bunch of random letters/numbers here, any large amount (35+ characters) will do
+// ---------------------------------- HTML cache settings -----------------------------------
+  // Deferred html rendering. REQUIRES special nginx configureation, refer to UTIL/nginx.snippets.conf
+  $cf['I0_DEFERRED_RENDER']    = false; // If true, HTML files will be rendered upon request. Default is false.
+  $cf['I0_FORCE_HTML_NOCACHE'] = false; // When AJAX-ing HTML, force no-cache (default: off (server must handle this, recommended for local debugging only))
+
+
+// -------------------------------------- Live updates --------------------------------------
+  // REQUIRES node.js running properly configured updates.js (see UTIL/updates)
+  $cf['KU_LIVEUPD_ENA']       = false;
+  $cf['KU_LOCAL_LIVEUPD_API'] = 'http://127.0.0.1:1337';     // A local address that PHP can access
+  $cf['KU_CLI_LIVEUPD_API']   = $cf['KU_LOCAL_LIVEUPD_API']; // A remote address that a browser can access. Default setting is for local testing
+  // Your credentials that must match the credentials in updates.js
+  $cf['KU_LIVEUPD_SITENAME'] = 'your_chan_id';
+  $cf['KU_LIVEUPD_SRVTOKEN'] = 'you_chan_token';
+
+
+// ------------------------------------ Capshka settings ------------------------------------
+  $cf['KU_DEFAULT_CAPTCHA_TYPE'] = 'hcaptcha'; // ('default'|'hcaptcha'|'off') Default captcha type.
+  // hcaptcha credentials
+  $cf['I0_HCAPTCHA_SITEKEY'] = 'your_site_key';
+  $cf['I0_HCAPTCHA_SECRET']  = 'your_secret_key';
+  // Default captcha settings
+  $cf['KU_CAPTCHALANG']   = 'num';      // Default captcha language to be used if no captchalang cookie is present. Supported values: ru, en, num (numeric)
+  $cf['KU_CAPTCHALIFE']   = 150;        // Captcha time-to-live in seconds
+  $cf['KU_CAPTCHALENGTH'] = rand(4, 7); // Captcha length in letters, rand(a, b) can be used to create random length from a to b.
+
+
+// --------------------------------------- CSS styles ---------------------------------------
+  $cf['KU_STYLES'] = 'modern:newdark:photon'; // Styles which are available to be used for the boards, separated by colons, in lower  case.  These will be displayed next to [Home] [Manage] if KU_STYLESWIKUHER is set to true
+  $cf['KU_DEFAULTSTYLE'] = 'newdark'; // If Default is selected in the style list in board options, it will use this style.  Should be lower  case
+
+
+// -------------------------------------- Limitations ---------------------------------------
+  $cf['KU_NEWTHREADDELAY'] = 300; // Minimum time in seconds a user must wait before posting a new thread again
+  $cf['KU_REPLYDELAY']     = 7;   // Minimum time in seconds a user must wait before posting a reply again
+
+
+// ------------------------------------- Page settings --------------------------------------
+  $cf['KU_THREADS'] = 10; // Number of threads to display on a board page
+  $cf['KU_REPLIES'] = 5;  // Number of replies to display on a board page
+
+
+// ---------------------------------- Attachment handling -----------------------------------
+  $cf['KU_FFMPEGPATH']     = '/usr/local/bin/ffmpeg'; //path to FFMPEG, on windows it's usually 'C:\ffmpeg\bin' (REQUIRED for videos)
+  $cf['KU_YOUTUBE_APIKEY'] = 'your_api_key';          //Your personal anal probe ID. Can be obtained it Google Dev. Console
+
+
+// ------------------------------------- Misc settings --------------------------------------
+  $cf['I0_CURL_PROXY'] = false; // Proxy to use when fetching external resources, for example 'socks5h://127.0.0.1:9050' — to connect through TOR
+  $cf['KU_USE_GESHI']  = false; //Use original code highlighter from 0chan.ru like the cargo cultist you are
+  $cf['KU_MODLOGDAYS'] = 7;     // Days to keep modlog entries before removing them
+
+
+// ------------------------------------- Paths and URLs -------------------------------------
+  // Uncomment and change the following lines if you don't want the site to be domain-agnostic
+  // $cf['KU_WEBPATH']   = '//example.com';  // The path to the index folder of kusaba, without trailing slash. (http://yoursite.com or https://yoursite.com or just //yoursite.com for protocol-agnostic (flexible) behavior)
+  // $cf['KU_DOMAIN']    = '.example.com'; // Used in cookies for the domain parameter.  Should be a period and then the top level domain, which will allow the cookies to be set for all subdomains.
+
+
+// ---------------------------------- Location and language ---------------------------------
+  $cf['KU_LOCALE']  = 'ru'; // The locale of kusaba you would like to use.  Locales available: en, de, et, es, fi, pl, nl, nb, ro, ru, it, ja
+  $cf['KU_SUPPORTED_LOCALES'] = 'ru|en';
+  $cf['KU_TIMEZONE']   = 'Europe/Moscow';  // The time zone which the server resides in
+  $cf['KU_DATEFORMAT'] = 'D Y M d H:i:s';  // For example: 'd/m/y(D)H:i';

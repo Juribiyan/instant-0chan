@@ -1,6 +1,6 @@
 const node_ip = '127.0.0.1', node_port = '1337'
 , sites = {
-	sitename: 'srvtoken'
+	your_chan_id: 'you_chan_token'
 	// add more sites if you want (sitename: "srvtoken")
 }
 
