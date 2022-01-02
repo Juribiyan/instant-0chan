@@ -185,3 +185,12 @@ class TimingReporter {
     }
   }
 }
+
+function RemoveFiles($path) {
+  $files = glob($path);
+  foreach($files as $file){
+    if(is_file($file)) {
+      unlink($file);
+    }
+  }
+}

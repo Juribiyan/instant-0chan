@@ -142,6 +142,7 @@ Before running this script, make sure that:<br />
 		$bid = $dir['id'];
 		$dir = $dir['name'];
 		if (mkdir(KU_BOARDSDIR . $dir, 0777) && mkdir(KU_BOARDSDIR . $dir . '/res', 0777) && mkdir(KU_BOARDSDIR . $dir . '/src', 0777) && mkdir(KU_BOARDSDIR . $dir . '/thumb', 0777)) {
+			file_put_contents(KU_BOARDSDIR . $dir . '/index.php', '<?php header(\'Location: 0.html\'); exit();');
 			file_put_contents(KU_BOARDSDIR . $dir . '/.htaccess', 'DirectoryIndex '. KU_FIRSTPAGE . '');
 			file_put_contents(KU_BOARDSDIR . $dir . '/src/.htaccess', 'AddType text/plain .ASM .C .CPP .JAVA .JS .LSP .PHP .PL .PY .RAR .SCM .TXT'. "\n" . 'SetHandler default-handler');
 			if(in_array($dir, array('f', 'test', 'r'))) {
@@ -158,8 +159,10 @@ Before running this script, make sure that:<br />
 	if (I0_OVERBOARD_ENABLED) {
 		if (!mkdir(KU_BOARDSDIR . I0_OVERBOARD_DIR, 0777))
 			$err = true;
-		else
+		else {
+			file_put_contents(KU_BOARDSDIR . I0_OVERBOARD_DIR . '/index.php', '<?php header(\'Location: 0.html\'); exit();');
 			file_put_contents(KU_BOARDSDIR . I0_OVERBOARD_DIR . '/.htaccess', 'DirectoryIndex '. KU_FIRSTPAGE . '');
+		}
 	}
 	if(!$err) {
 		require_once KU_ROOTDIR . 'inc/classes/menu.class.php';

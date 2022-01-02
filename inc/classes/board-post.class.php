@@ -145,9 +145,15 @@ class Board {
 	 */
 	function RegenerateAll($except_boardlist=false) {
 		$this->RegeneratePages();
-		$this->RegenerateThreads();
-		if (I0_OVERBOARD_ENABLED && !$except_boardlist && $this->board['section'] != '0' && $this->board['hidden'] == '0')
+		if (I0_DEFERRED_RENDER) {
+			RemoveFiles(KU_BOARDSDIR.$this->board['name'].'/res/*.html');
+		}
+		else {
+			$this->RegenerateThreads();
+		}
+		if (I0_OVERBOARD_ENABLED && !$except_boardlist && $this->board['section'] != '0' && $this->board['hidden'] == '0') {
 			RegenerateOverboard($this->board['boardlist']);
+		}
 	}
 
 	/**
@@ -183,15 +189,36 @@ class Board {
 	}
 
 	/**
-	 * Regenerate pages ($from #page $to #page)
+	 * Regenerate pages ($from #page $to #page, including pages from $singles)
 	 */
 	function RegeneratePages($from=-1, $to=INF, $singles=array(), $on_demand=false) {
 		global $tc_db, $CURRENTLOCALE;
+
+		if ($from == -1)
+			$from = 0;
+
+		// In deferred rendering mode simply delete the pages
+		if (I0_DEFERRED_RENDER && !$on_demand) {
+			$dir = KU_BOARDSDIR.$this->board['name'];
+			@unlink($dir."/catalog.json");
+			@unlink($dir."/catalog.html");
+			if (is_infinite($to)) {
+				RemoveFiles($dir."/*.html");
+			}
+			else {
+				for ($i=$from; $i <= $to; $i++) { 
+					@unlink($dir.'/'.($i==0 ? 'index' : $i).'.html');
+				}
+			}
+			return;
+		}
+
 		$tc_db->SetFetchMode(ADODB_FETCH_ASSOC);
 		$this->InitializeDwoo();
 
-		$maxpages = $this->board['maxpages'];
+		$skip_catalog = $this->board['enablecatalog'] == 0 || (I0_DEFERRED_RENDER && $on_demand!='catalog');
 
+		// get thread list
 		$threads = $tc_db->GetAll("SELECT *
 			FROM `" . KU_DBPREFIX . "postembeds`
 			WHERE `boardid` = " . $this->board['id'] . "
@@ -201,140 +228,140 @@ class Board {
 		$threads = group_embeds($threads, true);
 		$total_threads = count($threads);
 
-		$pages = array();
-
 		// split threads into pages →
+		$pages = array();
 		for ($i=0; $i < $total_threads; $i++) {
-			$current_page = floor($i / KU_THREADS);
-
+			$page = floor($i / KU_THREADS);
+			$thread =& $threads[$i];
 			// fill thread stats →
-			$threads[$i]['page'] = $current_page;
-			$stats = $tc_db->GetAll("SELECT
-				COUNT(DISTINCT `id`) `reply_count`,
-				MAX(`timestamp`) `replied`,
-				MAX(`id`) `last_reply`,
-				SUM(CASE WHEN `file_md5` != '' THEN 1 ELSE 0 END) `images`
-			FROM `".KU_DBPREFIX."postembeds`
-			WHERE `boardid` = '". $this->board['id'] ." '
-				AND `IS_DELETED` = 0
-				AND `parentid` = '". $threads[$i]['id'] ."'");
-			$stats = $stats[0];
-			$threads[$i]['reply_count'] = $stats['reply_count'];
-			$threads[$i]['replied']     = $stats['replied'];
-			$threads[$i]['last_reply']  = $stats['last_reply'];
-			$threads[$i]['images']      = $stats['images'];
-			foreach($threads[$i]['embeds'] as $embed) {
-				if ($embed != '') {
-					$threads[$i]['images']++;
+			if (!$skip_catalog || ($page >= $from && $page <= $to) || in_array($page, $singles)) {
+				$thread['page'] = $page;
+				$stats = $tc_db->GetAll("SELECT
+					COUNT(DISTINCT `id`) `reply_count`,
+					SUM(CASE WHEN `file_md5` != '' THEN 1 ELSE 0 END) `images`".
+					(!$skip_catalog ? 
+						", MAX(`timestamp`) `replied`,
+						MAX(`id`) `last_reply`" : "")
+				." FROM `".KU_DBPREFIX."postembeds`
+				WHERE `boardid` = '". $this->board['id'] ." '
+					AND `IS_DELETED` = 0
+					AND `parentid` = '". $thread['id'] ."'");
+				$stats = $stats[0];
+				$thread['reply_count'] = $stats['reply_count'];
+				$thread['images']      = $stats['images'];
+				if (!$skip_catalog) {
+					$thread['replied']     = $stats['replied'];
+					$thread['last_reply']  = $stats['last_reply'];
 				}
-			}
-			// ← fill thread stats
-
-			$pages[$current_page] []= $threads[$i];
+				foreach($thread['embeds'] as $embed) {
+					if ($embed != '') {
+						$thread['images']++;
+					}
+				}
+			} // ← fill thread stats
+			$pages[$page] []=& $thread;
 		} // ← split thread into pages
+		$totalpages = count($pages);
 
 		// rebuild pages needing to be rebuilt →
-		$page = 0;
-		$totalpages = count($pages);
-		if (!$totalpages) {
-			$pages []= array();
-		}
-		$this->dwoo_data->assign('numpages', $totalpages-1);
-
-		$rebuilt = 0;
-		foreach ($pages as $pagethreads) {
-			if (
-				($on_demand || I0_DEFERRED_RENDER_PAGE <=0 || $page < I0_DEFERRED_RENDER_PAGE) &&  // Skip rendering pages beyond limit
-				(($page >= $from && $page <= $to) || in_array($page, $singles))
-			) {
-				$rebuilt++;
-				// page must be rebuilt
-				$executiontime_start_page = microtime_float();
-				$newposts = array();
-				$this->dwoo_data->assign('thispage', $page);
-				foreach ($pagethreads as $thread) {
-					// Get last posts to render →
-					$posts = $tc_db->GetAll("SELECT * FROM `".KU_DBPREFIX."postembeds`
-						JOIN (
-							SELECT DISTINCT `id`
-							FROM `".KU_DBPREFIX."postembeds`
+		if ($on_demand != 'catalog') {
+			$page = 0;
+			if ($totalpages==0) {
+				$pages []= array();
+			}
+			$this->dwoo_data->assign('numpages', $totalpages-1);
+			$rebuilt = 0;
+			foreach ($pages as $pagethreads) {
+				if (($page >= $from && $page <= $to) || in_array($page, $singles)) {
+					$rebuilt++;
+					// page must be rebuilt
+					$executiontime_start_page = microtime_float();
+					$newposts = array();
+					$this->dwoo_data->assign('thispage', $page);
+					foreach ($pagethreads as &$thread) {
+						// Get last posts to render →
+						$posts = $tc_db->GetAll("SELECT * FROM `".KU_DBPREFIX."postembeds`
+							JOIN (
+								SELECT DISTINCT `id`
+								FROM `".KU_DBPREFIX."postembeds`
+								WHERE `boardid` = '". $this->board['id'] ." '
+									AND `parentid` = ".$thread['id']." 
+									AND `IS_DELETED` = 0
+								ORDER BY `id` DESC
+								LIMIT ".(($thread['stickied'] == 1) ? (KU_REPLIESSTICKY) : (KU_REPLIES))."
+							) `uniq_id` 
+							ON `".KU_DBPREFIX."postembeds`.`id` = `uniq_id`.`id`
 							WHERE `boardid` = '". $this->board['id'] ." '
-								AND `parentid` = ".$thread['id']." 
-								AND `IS_DELETED` = 0
-							ORDER BY `id` DESC
-							LIMIT ".(($thread['stickied'] == 1) ? (KU_REPLIESSTICKY) : (KU_REPLIES))."
-						) `uniq_id` 
-						ON `".KU_DBPREFIX."postembeds`.`id` = `uniq_id`.`id`
-						WHERE `boardid` = '". $this->board['id'] ." '
-						ORDER BY `uniq_id`.`id` desc");
+							ORDER BY `uniq_id`.`id` desc");
 
-					$posts = group_embeds($posts, true);
+						$posts = group_embeds($posts, true);
 
-					$images_shown = 0;
-					foreach ($posts as &$post) {
-						foreach($post['embeds'] as $embed) {
+						$images_shown = 0;
+						foreach ($posts as &$post) {
+							foreach($post['embeds'] as $embed) {
+								if ($embed['file_md5'] != '') {
+									$images_shown++;
+								}
+							}
+							$post = $this->BuildPost($post, true);
+						}
+						$posts = array_reverse($posts);
+						// ← Get last posts to render
+
+						// Calculate omitted posts and images →
+						$omitted_replies = $thread['reply_count'] - count($posts);
+						if ($omitted_replies < 0) $omitted_replies = 0;
+						foreach($thread['embeds'] as $embed) {
 							if ($embed['file_md5'] != '') {
 								$images_shown++;
 							}
 						}
-						$post = $this->BuildPost($post, true);
+						$omitted_images = $thread['images'] - $images_shown;
+						if ($omitted_images < 0) $omitted_images = 0;
+						// ← Calculate omitted posts and images
+
+						$thread = $this->BuildPost($thread, true);
+
+						$thread['replies'] = $omitted_replies;
+						$thread['images'] = $omitted_images;
+
+						$this->dwoo_data->assign('debug_timestring', $timestr);
+
+						array_unshift($posts, $thread);
+						$newposts[] = $posts;
 					}
-					$posts = array_reverse($posts);
-					// ← Get last posts to render
-
-					// Calculate omitted posts and images →
-					$omitted_replies = $thread['reply_count'] - count($posts);
-					if ($omitted_replies < 0) $omitted_replies = 0;
-					foreach($thread['embeds'] as $embed) {
-						if ($embed['file_md5'] != '') {
-							$images_shown++;
-						}
+					if (!isset($embeds)) {
+						$embeds = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "embeds`");
 					}
-					$omitted_images = $thread['images'] - $images_shown;
-					if ($omitted_images < 0) $omitted_images = 0;
-					// ← Calculate omitted posts and images
+					if (!isset($header)){
+						$header = $this->PageHeader();
+						$header = str_replace("<!sm_threadid>", 0, $header);
+					}
+					if (!isset($postbox)) {
+						$postbox = $this->Postbox();
+						$postbox = str_replace("<!sm_threadid>", 0, $postbox);
+					}
+					$this->dwoo_data->assign('posts', $newposts);
+					$this->dwoo_data->assign('file_path', getCLBoardPath($this->board['name'], $this->board['loadbalanceurl_formatted'], ''));
 
-					$thread = $this->BuildPost($thread, true);
+					$content = $this->dwoo->get(KU_TEMPLATEDIR . '/board_main_loop.tpl', $this->dwoo_data);
+					$footer = $this->Footer(false, (microtime_float() - $executiontime_start_page), false);
+					$content = $header.$postbox.$content.$footer;
 
-					$thread['replies'] = $omitted_replies;
-					$thread['images'] = $omitted_images;
+					$content = str_replace("\t", '',$content);
+					$content = str_replace("&nbsp;\r\n", '&nbsp;',$content);
 
-					$this->dwoo_data->assign('debug_timestring', $timestr);
-
-					array_unshift($posts, $thread);
-					$newposts[] = $posts;
+					$filename = KU_BOARDSDIR.$this->board['name'].'/'.($page==0 ? KU_FIRSTPAGE : '/'.$page.'.html');
+					$this->PrintPage($filename, $content, $this->board['name']);
 				}
-				if (!isset($embeds)) {
-					$embeds = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "embeds`");
-				}
-				if (!isset($header)){
-					$header = $this->PageHeader();
-					$header = str_replace("<!sm_threadid>", 0, $header);
-				}
-				if (!isset($postbox)) {
-					$postbox = $this->Postbox();
-					$postbox = str_replace("<!sm_threadid>", 0, $postbox);
-				}
-				$this->dwoo_data->assign('posts', $newposts);
-				$this->dwoo_data->assign('file_path', getCLBoardPath($this->board['name'], $this->board['loadbalanceurl_formatted'], ''));
+				$page++;
+			} // ← rebuild pages needing to be rebuilt
 
-				$content = $this->dwoo->get(KU_TEMPLATEDIR . '/board_main_loop.tpl', $this->dwoo_data);
-				$footer = $this->Footer(false, (microtime_float() - $executiontime_start_page), false);
-				$content = $header.$postbox.$content.$footer;
-
-				$content = str_replace("\t", '',$content);
-				$content = str_replace("&nbsp;\r\n", '&nbsp;',$content);
-
-				$filename = KU_BOARDSDIR.$this->board['name'].'/'.($page==0 ? KU_FIRSTPAGE : '/'.$page.'.html');
-				$this->PrintPage($filename, $content, $this->board['name']);
-			}
-			$page++;
+			if ($on_demand) return $rebuilt;
 		} // ← rebuild pages needing to be rebuilt
 
-		if ($on_demand) return $rebuilt;
-
-		// build catalog →
-		if ($this->board['enablecatalog'] == 1) {
+		// rebuild catalog →
+		if (!$skip_catalog) {
 			$executiontime_start_catalog = microtime_float();
 			$catalog_head = $this->PageHeader(0,0,-1,1).
 			'<script src="'.KU_BOARDSFOLDER.'lib/javascript/lodash.min.js"></script>'.
@@ -358,7 +385,7 @@ class Board {
 				$row = 1;
 				// Calculate the number of rows we will actually output
 				$maxrows = max(1, (($total_threads - ($total_threads % 12)) / 12));
-				foreach ($threads as $thread) {
+				foreach ($threads as &$thread) {
 					// populate JSON object along the way →
 					unset($thread_json);
 					foreach ($json_fields as $field) {
@@ -439,23 +466,25 @@ class Board {
 			$catalog_html = $catalog_head . '<noscript>'.$catalog_nojs.'</noscript>' . $catalog_foot;
 			$this->PrintPage(KU_BOARDSDIR . $this->board['name'] . '/catalog.html', $catalog_html, $this->board['name']);
 			$this->PrintPage(KU_BOARDSDIR . $this->board['name'] . '/catalog.json', json_encode($catalog_json), $this->board['name']);
-		} // ← build catalog
+			
+			if ($on_demand == 'catalog')
+				return true;
+		} // ← rebuild catalog
 
 		$this->DeleteOldPages($totalpages-1);
 	}
 
 	function DeleteOldPages($totalpages) {
-		if (!$this->is_overboard && I0_DEFERRED_RENDER_PAGE > 0 && $totalpages > (I0_DEFERRED_RENDER_PAGE-1))
-			$totalpages = I0_DEFERRED_RENDER_PAGE-1;
 		$dir = KU_BOARDSDIR.$this->board['name'];
 		$files = glob ("$dir/*.html");
 		if (is_array($files)) {
 			foreach ($files as $htmlfile) {
-				if (preg_match("/[0-9+].html/", $htmlfile)) {
-					if (substr(basename($htmlfile), 0, strpos(basename($htmlfile), '.html')) > $totalpages) {
-						unlink($htmlfile);
-					}
-				}
+				if (
+					preg_match("/[0-9+].html/", $htmlfile)
+					&&
+					substr(basename($htmlfile), 0, strpos(basename($htmlfile), '.html')) > $totalpages
+				)
+				unlink($htmlfile);
 			}
 		}
 	}
@@ -544,10 +573,22 @@ class Board {
 	/**
 	 * Regenerate each thread's corresponding html file, starting with the most recently bumped
 	 */
-	function RegenerateThreads($id = 0) {
+	function RegenerateThreads($id = 0, $on_demand=false) {
 		global $tc_db, $CURRENTLOCALE;
-		require_once(KU_ROOTDIR."lib/dwoo.php");
-		if (!isset($this->dwoo)) { $this->dwoo = New Dwoo(); $this->dwoo_data = new Dwoo_Data(); $this->InitializeDwoo(); }
+		// In deferred render mode, simply invalidate html cache
+		if (I0_DEFERRED_RENDER && !$on_demand) {
+			$dir = KU_BOARDSDIR.$this->board['name'].'/res/';
+			if ($id==0) {
+				RemoveFiles($dir."*.html");
+			}
+			else {
+				@unlink($dir.$id.'.html');
+			}
+			return;
+		}
+		$this->InitializeDwoo();
+		// require_once(KU_ROOTDIR."lib/dwoo.php");
+		// if (!isset($this->dwoo)) { $this->dwoo = New Dwoo(); $this->dwoo_data = new Dwoo_Data(); $this->InitializeDwoo(); }
 		// $embeds = Array();
 		$numimages = 0;
 		$embeds = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "embeds`");
@@ -568,18 +609,18 @@ class Board {
 			}
 		}
 		else {
-			$this->BuildThread($id);
+			return $this->BuildThread($id);
 		}
 	}
 
 	function BuildThread($id, $header=null, $postbox=null) {
 		global $tc_db, $CURRENTLOCALE;
-
 		$numimages = 0;
 		$executiontime_start_thread = microtime_float();
-		$posts = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "postembeds` WHERE `boardid` = " . $this->board['id'] . " AND (`id` = " . $id . " OR `parentid` = " . $id . ") AND `IS_DELETED` = 0 ORDER BY `id` ASC");
-		// There might be a chance that the post was deleted during another RegenerateThreads() session, if there are no posts, move on to the next thread.
-		if (count($posts) > 0) {
+		$is_thread = $tc_db->GetOne("SELECT `parentid` FROM `" . KU_DBPREFIX . "posts` WHERE `boardid`='".$this->board['id']."' AND `id`='".$id."' AND `IS_DELETED` = 0");
+		if ($is_thread === "0") {
+			$posts = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "postembeds` WHERE `boardid` = " . $this->board['id'] . " AND (`id` = " . $id . " OR `parentid` = " . $id . ") AND `IS_DELETED` = 0 ORDER BY `id` ASC");
+
 			$posts = group_embeds($posts, true);
 			foreach ($posts as $key=>$post) {
 				foreach($post['embeds'] as $embed) {
@@ -651,7 +692,9 @@ class Board {
 					$this->dwoo_data->assign('modifier', "");
 				} //TODO: add support for firstlast
 			}*/
+			return 1;
 		}
+		return 0;
 	}
 
 	function BuildPost($post, $page) {
@@ -902,6 +945,7 @@ class Board {
 	 * Initialize the instance of smary which will be used for generating pages
 	 */
 	function InitializeDwoo() {
+		if (isset($this->dwoo)) return;
 
 		require_once KU_ROOTDIR . 'lib/dwoo.php';
 		$this->dwoo = new Dwoo();

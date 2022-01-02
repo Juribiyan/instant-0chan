@@ -100,8 +100,8 @@ if (!$cache_loaded) {
 		$cf['I0_ERASE_DELETED'] = false; // Whether or not the contents of posts deleted by user should be erased
 		$cf['I0_MAX_ACCESS_ATTEMPTS'] = 3; // How many attempts at deleting a post are allowed before it gets locked with catpcha
 
-		$cf['I0_DEFERRED_RENDER_PAGE'] = 0; // If nonzero, pages starting from this will be rendered upon request. Default is 0 which disables just-in-time rendering.
-		$cf['I0_DEFERRED_RENDER_THREADS'] = true; // If true, all .html files in /res directory won't be built until requested.
+		// Deferred html rendering. REQUIRES special nginx configureation, refer to UTIL/nginx.snippets.conf
+		$cf['I0_DEFERRED_RENDER'] = false; // If true, HTML files will be rendered upon request. Default is false.
 
 		$cf['I0_DETECT_SOSACH'] = false; // Detect pictures from particular website
 
