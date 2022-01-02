@@ -155,6 +155,7 @@ if (!$cache_loaded) {
 	// ---------------------------------- Attachment handling -----------------------------------
 		$cf['KU_FFMPEGPATH'] = '/usr/local/bin/ffmpeg'; //path to FFMPEG, on windows it's usually 'C:\ffmpeg\bin' (REQUIRED for videos)
 		$cf['KU_YOUTUBE_APIKEY'] = 'your_api_key'; //Your personal anal probe ID. Can be obtained it Google Dev. Console
+		$cf['I0_YOUTUBE_DL_PATH'] = ''; // Path to youtube-dl binary. If not empty, youtube-dl will be used instead of default API (in this case you won't need KU_YOUTUBE_APIKEY)
 		$cf['KU_THUMBWIDTH']       = 200; 	// Maximum thumbnail width
 		$cf['KU_THUMBHEIGHT']      = 200; 	// Maximum thumbnail height
 		$cf['KU_REPLYTHUMBWIDTH']  = 125; 	// Maximum thumbnail width (reply)

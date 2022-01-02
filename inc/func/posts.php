@@ -91,17 +91,20 @@ function createThumbnail($name, $filename, $new_w, $new_h) {
 		$system=explode(".", $filename);
 		$system = array_reverse($system);
 		if (preg_match("/jpg|jpeg/", $system[0])) {
-			$src_img=imagecreatefromjpeg($name);
+			$src_img=@imagecreatefromjpeg($name);
 		} else if (preg_match("/png/", $system[0])) {
-			$src_img=imagecreatefrompng($name);
+			$src_img=@imagecreatefrompng($name);
 		} else if (preg_match("/gif/", $system[0])) {
-			$src_img=imagecreatefromgif($name);
+			$src_img=@imagecreatefromgif($name);
 		} else {
 			return false;
 		}
 
 		if (!$src_img) {
-			exitWithErrorPage(_gettext('Unable to read uploaded file during thumbnailing.'), _gettext('A common cause for this is an incorrect extension when the file is actually of a different type.'));
+    	// Check for the case if the image is actually wrong type
+      list($src_img, $actual_type)=imagecreatefromwhatever($name);
+    	if (!$src_img) 
+				exitWithErrorPage(_gettext('Unable to read uploaded file during thumbnailing.'), _gettext('A common cause for this is an incorrect extension when the file is actually of a different type.'));
 		}
 		$old_x = imageSX($src_img);
 		$old_y = imageSY($src_img);
@@ -116,7 +119,18 @@ function createThumbnail($name, $filename, $new_w, $new_h) {
 		$dst_img = ImageCreateTrueColor($thumb_w, $thumb_h);
 		fastImageCopyResampled($dst_img, $src_img, 0, 0, 0, 0, $thumb_w, $thumb_h, $old_x, $old_y, $system);
 
-		if (preg_match("/png/", $system[0])) {
+		if ($actual_type) {
+			if (($actual_type == 'jpg' || $actual_type == 'webp') && !imagejpeg($dst_img, $filename, 70)) {
+				exitWithErrorPage('unable to imagejpg.');
+				return false;
+			} else if ($actual_type == 'png' && !imagepng($dst_img,$filename,0,PNG_ALL_FILTERS)) {
+				exitWithErrorPage('unable to imagepng.');
+				return false;
+			} else if ($actual_type == 'gif' && !imagegif($dst_img, $filename)) {
+				exitWithErrorPage('unable to imagegif.');
+				return false;
+			}
+		}	else if (preg_match("/png/", $system[0])) {
 			if (!imagepng($dst_img,$filename,0,PNG_ALL_FILTERS) ) {
 				exitWithErrorPage('unable to imagepng.');
 				return false;
@@ -140,6 +154,27 @@ function createThumbnail($name, $filename, $new_w, $new_h) {
 	}
 
 	return false;
+}
+
+// Sometimes the image is of wrong type, particularly thumbnails from Youtube
+function imagecreatefromwhatever($fname) {
+	if ($img = @imagecreatefromjpeg($fname)) {
+		$type = 'jpg';
+		return array($img, $type);
+	}
+	if ($img = @imagecreatefromwebp($fname)) {
+		$type = 'webp';
+		return array($img, $type);
+	}
+	if ($img = @imagecreatefrompng($fname)) {
+		$type = 'png';
+		return array($img, $type);
+	}
+	if ($img = @imagecreatefromgif($fname)) {
+		$type = 'gif';
+		return array($img, $type);
+	}
+	return array(false, false);
 }
 
 /* Author: Tim Eckel - Date: 12/17/04 - Project: FreeRingers.net - Freely distributable. */
@@ -210,94 +245,127 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
   if (!in_array($site, array('you', 'vim', 'cob', 'scl')))
     return array('error' => 'unsupported_site');
 
+  $use_youtube_dl = I0_YOUTUBE_DL_PATH !== '' && $site === 'you';
+
   // Pre-setup
-  $ch = curl_init();
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-  curl_setopt ($ch, CURLOPT_TIMEOUT, 10);
-  if (I0_CURL_PROXY)
-    curl_setopt($ch, CURLOPT_PROXY, I0_CURL_PROXY);
-
-  // Getting a URL
-  switch ($site) {
-    case 'cob':
-      $url = "https://coub.com/api/v2/coubs/".$code.".json";
-      break;
-    case 'vim':
-      $url = 'https://vimeo.com/api/v2/video/'.$code.'.json';
-      break;
-    case 'you':
-      $url = 'https://www.googleapis.com/youtube/v3/videos?part=contentDetails%2Csnippet&id='.$code.'&key='.KU_YOUTUBE_APIKEY;
-      break;
-    case 'scl':
-      $url = 'https://soundcloud.com/oembed?url=https%3A%2F%2Fsoundcloud.com%2F' . urlencode($code) . '&format=json';
-      break;
-    default:
-      return array('error' => _gettext('No JSON URL specified.'));
+  if ($use_youtube_dl) {
+    putenv('PATH=' . I0_YOUTUBE_DL_PATH . PATH_SEPARATOR . getenv('PATH'));
   }
-  curl_setopt($ch, CURLOPT_URL, $url);
-
-  // Fetching data
-  $result = curl_exec($ch);
-  switch (curl_getinfo($ch, CURLINFO_HTTP_CODE)) {
-    case 404: return array('error' => _gettext('Unable to connect to')); break;
-    case 303: return array('error' => _gettext('Invalid video ID.')); break;
-    case 302: break;
-    case 301: break;
-    case 200: break;
-    default:  return array('error' => _gettext('Invalid response code ').' (JSON)'); break;
+  else {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt ($ch, CURLOPT_TIMEOUT, 10);
+    if (I0_CURL_PROXY)
+      curl_setopt($ch, CURLOPT_PROXY, I0_CURL_PROXY);
   }
-  curl_close($ch);
-  $data = json_decode($result, true);
-  if ($data == NULL)
-    return array('error' => _gettext('API returned invalid data.'));
+  
+  // Fetching the data
+  if ($use_youtube_dl) {
+    exec('youtube-dl --dump-json https://www.youtube.com/watch?v='.$code, $json, $er);
+    if (!$er) {
+      $ydl_info = json_decode($json[0]);
+    }
+    else {
+      return array('error' => _gettext('API returned invalid data.'));
+    }
+  }
+  else {
+    // Getting a URL
+    switch ($site) {
+      case 'cob':
+        $url = "https://coub.com/api/v2/coubs/".$code.".json";
+        break;
+      case 'vim':
+        $url = 'https://vimeo.com/api/v2/video/'.$code.'.json';
+        break;
+      case 'you':
+        $url = 'https://www.googleapis.com/youtube/v3/videos?part=contentDetails%2Csnippet&id='.$code.'&key='.KU_YOUTUBE_APIKEY;
+        break;
+      case 'scl':
+        $url = 'https://soundcloud.com/oembed?url=https%3A%2F%2Fsoundcloud.com%2F' . urlencode($code) . '&format=json';
+        break;
+      default:
+        return array('error' => _gettext('No JSON URL specified.'));
+    }
+    curl_setopt($ch, CURLOPT_URL, $url);
+
+    // Fetching data
+    $result = curl_exec($ch);
+    switch (curl_getinfo($ch, CURLINFO_HTTP_CODE)) {
+      case 404: return array('error' => _gettext('Unable to connect to')); break;
+      case 303: return array('error' => _gettext('Invalid video ID.')); break;
+      case 302: break;
+      case 301: break;
+      case 200: break;
+      default:  return array('error' => _gettext('Invalid response code ').' (JSON)'); break;
+    }
+    curl_close($ch);
+    $data = json_decode($result, true);
+    if ($data == NULL)
+      return array('error' => _gettext('API returned invalid data.'));
+  }
 
   // Find needed thumbnail width
-  switch ($site) {
-    case 'cob':
-      $widths_available = array(
+  if ($use_youtube_dl) {
+    $options_available = count($ydl_info->thumbnails);
+    $i = 0; 
+    foreach($ydl_info->thumbnails as &$thumb) {
+      $i++;
+      if ($thumb->width >= $maxwidth || $options_available == $i) {
+        $thumb_url = $thumb->url;
+        $thumbwidth = $thumb->width;
+        break;
+      }
+    }
+  }
+  else {
+    switch ($site) {
+      case 'cob':
+        $widths_available = array(
           'micro' => 70,
           'tiny' => 112,
           'small' => 400,
           'med' => 640,
           'big' => 1280
-      );
-      break;
-    case 'vim':
-      $widths_available = array(
+        );
+        break;
+      case 'vim':
+        $widths_available = array(
           'small' => 100,
           'medium' => 200,
           'large' => 640
-      );
-      break;
-    case 'you':
-      $widths_available = array(
+        );
+        break;
+      case 'you':
+        $widths_available = array(
           'default' => 120,
           'medium' => 320,
           'high' => 480,
           'standard' => 640,
           'maxres' => 1280
-      );
-      break;
-    case 'scl':
-      $widths_available = array(
+        );
+        break;
+      case 'scl':
+        $widths_available = array(
           'default' => 250
-      );
-      break;
-    default:
-      return array('error' => _gettext('No thumbnails available.'));
-  }
-  $i = 0; 
-  $options_available = count($widths_available);
-  foreach ($widths_available as $preset => $width) {
-    $i++;
-    if ($width >= $maxwidth || $options_available == $i) {
-      $chosen_preset = $preset;
-      $thumbwidth = $width;
-      break;
+        );
+        break;
+      default:
+        return array('error' => _gettext('No thumbnails available.'));
+    }
+    $i = 0; 
+    $options_available = count($widths_available);
+    foreach ($widths_available as $preset => $width) {
+      $i++;
+      if ($width >= $maxwidth || $options_available == $i) {
+        $chosen_preset = $preset;
+        $thumbwidth = $width;
+        break;
+      }
     }
   }
-
+  
   // Get thumbnail URL
   switch ($site) {
     case 'cob':
@@ -307,7 +375,9 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
       $thumb_url = preg_replace('/\.webp/', '.jpg', $data[0]['thumbnail_'.$chosen_preset]);
       break;
     case 'you':
-      $thumb_url = $data['items'][0]['snippet']['thumbnails'][$chosen_preset]['url'];
+      if (!$use_youtube_dl) {
+        $thumb_url = $data['items'][0]['snippet']['thumbnails'][$chosen_preset]['url'];
+      }
       break;
     case 'scl':
       $thumb_url = $data['thumbnail_url'];
@@ -356,8 +426,14 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
     case 'you':
       $r['width'] = 1920;
       $r['height'] = 1080;
-      $r['title'] = $data['items'][0]['snippet']['title'];
-      $duration = preg_replace_callback('/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/', 'ISO8601_callback', $data['items'][0]['contentDetails']['duration']);
+      if ($use_youtube_dl) {
+        $r['title'] = $ydl_info->title;
+        $duration = $ydl_info->duration;
+      }
+      else {
+        $r['title'] = $data['items'][0]['snippet']['title'];
+        $duration = preg_replace_callback('/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/', 'ISO8601_callback', $data['items'][0]['contentDetails']['duration']);
+      }
       break;
     case 'scl':
       $r['width'] = 500;
@@ -371,8 +447,8 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
     default:
       return array('error' => _gettext('API returned invalid data.'));
   }
+  
   if ($r['width'] <= 0 || $r['height'] <= 0) {
-    // var_dump($r);
   	return array('error' => _gettext('API returned invalid data.'));
   }
   // Convert duration into readable string
