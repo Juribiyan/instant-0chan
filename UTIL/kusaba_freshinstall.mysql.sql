@@ -270,7 +270,7 @@ CREATE TABLE `PREFIX_module_settings` (
 --
 
 CREATE TABLE `PREFIX_posts` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(10) unsigned NOT NULL,
   `boardid` smallint(5) unsigned NOT NULL DEFAULT '0',
   `parentid` int(10) unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) NOT NULL DEFAULT '',
@@ -296,7 +296,7 @@ CREATE TABLE `PREFIX_posts` (
   KEY `parentid` (`parentid`),
   KEY `bumped` (`bumped`),
   KEY `stickied` (`stickied`)
-) DEFAULT CHARSET=KU_DBCHARSET COLLATE=KU_COLLATION AUTO_INCREMENT=1;
+) DEFAULT CHARSET=KU_DBCHARSET COLLATE=KU_COLLATION;
 
 -- --------------------------------------------------------
 
