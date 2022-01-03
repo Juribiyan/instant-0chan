@@ -59,7 +59,12 @@ Before running this script, make sure that:<br />
 </ul>
 <form action="install-mysql.php" method="post">
 <br />
-<input type="checkbox" name="confirm"> By clicking this check box I agree that the author of this script cannot be held responsible for my own stupidity if something goes wrong.<br /><br /><br />
+<label for="rmdirs" style="color:red"><input type="checkbox" name="rmdirs" id="rmdirs"> Overwrite any existing directories at board creation</label><br />
+<br />
+<label for="droptbls" style="color:red"><input type="checkbox" name="droptbls" id="droptbls"> Drop any existing tables in the database</label><br />
+<br /><br />
+<label for="confirm"><input type="checkbox" name="confirm" id="confirm"> By clicking this check box I agree that the author of this script cannot be held responsible for my own stupidity if something goes wrong.</label><br /><br />
+
 <input type="submit" value="Import the MySQL batch file">
 </form>
 
@@ -67,11 +72,17 @@ Before running this script, make sure that:<br />
 } else {
 	require('config.php');
 	require KU_ROOTDIR . 'inc/func/custom.php';
-	$reqiredtables = array("ads","announcements","banlist","bannedhashes","blotter","boards","board_filetypes","embeds","events","filetypes","front","loginattempts","modlog","module_settings","posts","reports","sections","staff","wordfilter");
+	$reqiredtables = array("banners","customstyles","ads","announcements","banlist","bannedhashes","blotter","boards","board_filetypes","embeds","events","filetypes","front","loginattempts","modlog","module_settings","posts","files","reports","sections","staff","wordfilter","user_activity");
+	$drop_tables = isset($_POST["droptbls"]);
 	foreach ($reqiredtables as $tablename) {
-			if (mysql_table_exists(KU_DBDATABASE,KU_DBPREFIX.$tablename)) {
-					die("Table <strong>".KU_DBPREFIX.$tablename."</strong> already exists in the database! Drop it, and re run this script.");
+		if (mysql_table_exists(KU_DBDATABASE,KU_DBPREFIX.$tablename)) {
+			if ($drop_tables) {
+				$tc_db->Execute("DROP TABLE `".KU_DBPREFIX.$tablename."`");
 			}
+			else {
+				die("Table <strong>".KU_DBPREFIX.$tablename."</strong> already exists in the database! Drop it, and re run this script.");
+			}
+		}
 	}
 	// Lets open the file for reading! :)
 	echo '<h2>SQL Batch File Processing</h2>';
@@ -141,6 +152,10 @@ Before running this script, make sure that:<br />
 	foreach($allboards as $dir) {
 		$bid = $dir['id'];
 		$dir = $dir['name'];
+		if (isset($_POST["rmdirs"])) {
+			rrmdir(KU_BOARDSDIR . $dir);
+			rrmdir(KU_BOARDSDIR . I0_OVERBOARD_DIR);
+		}
 		if (mkdir(KU_BOARDSDIR . $dir, 0777) && mkdir(KU_BOARDSDIR . $dir . '/res', 0777) && mkdir(KU_BOARDSDIR . $dir . '/src', 0777) && mkdir(KU_BOARDSDIR . $dir . '/thumb', 0777)) {
 			file_put_contents(KU_BOARDSDIR . $dir . '/index.php', '<?php header(\'Location: 0.html\'); exit();');
 			file_put_contents(KU_BOARDSDIR . $dir . '/.htaccess', 'DirectoryIndex '. KU_FIRSTPAGE . '');
@@ -198,6 +213,28 @@ function mysql_table_exists($database, $tableName)
 	$tablesResults = $tc_db->GetAll("SHOW TABLES FROM `$database`;");
 	foreach ($tablesResults AS $row) $tables[] = $row[0];
 	return(in_array($tableName, $tables));
+}
+
+function rrmdir($dir) {
+	if (!file_exists($dir)) {
+		return true;
+	}
+
+	if (!is_dir($dir)) {
+		return unlink($dir);
+	}
+
+	foreach (scandir($dir) as $item) {
+		if ($item == '.' || $item == '..') {
+			continue;
+		}
+
+		if (!rrmdir($dir . DIRECTORY_SEPARATOR . $item)) {
+			return false;
+		}
+	}
+
+	return rmdir($dir);
 }
 
 ?>
