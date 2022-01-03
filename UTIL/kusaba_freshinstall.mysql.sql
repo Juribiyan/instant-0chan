@@ -332,7 +332,7 @@ DEFAULT CHARSET=KU_DBCHARSET COLLATE=KU_COLLATION AUTO_INCREMENT=1;
 -- View `postembeds`
 --
 
-CREATE VIEW `PREFIX_postembeds`  
+CREATE OR REPLACE VIEW `PREFIX_postembeds`  
 AS SELECT 
   `PREFIX_posts`.`id` AS `id`,
   `PREFIX_posts`.`boardid` AS `boardid`,
