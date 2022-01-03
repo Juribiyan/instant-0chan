@@ -120,8 +120,9 @@ class Board {
 					$this->board['filetypes_allowed'] []= $filetype['filetype'];
 				}
 				$ftypes = $tc_db->GetAll("SELECT `filetype` FROM `" . KU_DBPREFIX . "embeds`");
+				$this->board['filetypes'] = array();
 				foreach ($ftypes as $line) {
-					$this->board['filetypes'][] .= $line['filetype'];
+					$this->board['filetypes'] []= $line['filetype'];
 				}
 			} // ← /extra
 			$this->board['loadbalanceurl_formatted'] = ($this->board['loadbalanceurl'] != '') ? substr($this->board['loadbalanceurl'], 0, strrpos($this->board['loadbalanceurl'], '/')) : '';
@@ -324,8 +325,6 @@ class Board {
 
 						$thread['replies'] = $omitted_replies;
 						$thread['images'] = $omitted_images;
-
-						$this->dwoo_data->assign('debug_timestring', $timestr);
 
 						array_unshift($posts, $thread);
 						$newposts[] = $posts;
@@ -624,7 +623,7 @@ class Board {
 			$posts = group_embeds($posts, true);
 			foreach ($posts as $key=>$post) {
 				foreach($post['embeds'] as $embed) {
-					if (($embed['file_type'] == 'jpg' || $embed['file_type'] == 'gif' || $embed['file_type'] == 'png') && $embed['parentid'] != 0) {
+					if (($embed['file_type'] == 'jpg' || $embed['file_type'] == 'gif' || $embed['file_type'] == 'png') && (isset($embed['parentid']) && $embed['parentid'] != 0)) {
 						$numimages++;
 					}
 				}
@@ -792,7 +791,7 @@ class Board {
 
 		$tpl = Array();
 
-		$tpl['htmloptions'] = ((KU_LOCALE == 'he' && empty($this->board['locale'])) || $this->board['locale'] == 'he') ? ' dir="rtl"' : '' ;
+		$tpl['htmloptions'] = ((KU_LOCALE == 'he' && (!isset($this->board['locale']) && empty($this->board['locale']))) || (isset($this->board['locale']) && $this->board['locale'] == 'he')) ? ' dir="rtl"' : '' ;
 
 		$tpl['title'] = '';
 
@@ -814,12 +813,12 @@ class Board {
 		$this->dwoo_data->assign('board', $this->board);
 		$this->dwoo_data->assign('replythread', $replythread);
 		$this->dwoo_data->assign('is_catalog', $is_catalog);
-		$this->dwoo_data->assign('filetypes', $this->board['filetypes']);
+		$this->dwoo_data->assign('filetypes', isset($this->board['filetypes']) ? $this->board['filetypes'] : array());
 		$topads = $tc_db->GetOne("SELECT code FROM `" . KU_DBPREFIX . "ads` WHERE `position` = 'top' AND `disp` = '1'");
 		$this->dwoo_data->assign('topads', $topads);
 		// #snivystuff include alien style
 		$styles =  explode(':', KU_STYLES);
-		$defaultstyle = $this->board['defaultstyle'];
+		$defaultstyle = isset($this->board['defaultstyle']) ? $this->board['defaultstyle'] : null;
 		if(!empty($defaultstyle)) {
 			if(!in_array($defaultstyle, $styles)) {
 				$custom_style_version = $tc_db->GetOne("SELECT `version` FROM `customstyles` WHERE `name` = '".$defaultstyle."'");
@@ -1383,7 +1382,7 @@ class Post extends Board {
 					//file_size
 					($is_embed ? $attachment['start'] : $attachment['file_size']),
 					//file_size_formatted
-					(($is_embed || $attachment['is_duplicate']) ? $attachment['file_size_formatted'] : ConvertBytes($attachment['size'])),
+					(($is_embed || (isset($attachment['is_duplicate']) && $attachment['is_duplicate'])) ? $attachment['file_size_formatted'] : ConvertBytes($attachment['size'])),
 					//thumb_w
 					intval($attachment['imgWidth_thumb']),
 					//thumb_h

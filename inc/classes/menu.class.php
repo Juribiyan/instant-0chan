@@ -48,8 +48,9 @@ class Menu {
 			$sections = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "sections` ORDER BY `order` ASC");
 			foreach($sections AS $key=>$section) {
 				$results = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "boards` WHERE `section` = '" . $section['id'] . "' AND `hidden` != 1 ORDER BY `order` ASC, `name` ASC /* MENU.CLASS.PHP */");
+				$sections[$key]['boards'] = array();
 				foreach($results AS $line) {
-						$sections[$key]['boards'][] = $line;
+						$sections[$key]['boards'] []= $line;
 				}
 			}
 		}

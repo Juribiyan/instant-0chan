@@ -1,5 +1,5 @@
 <?php
-$_GLOBALS['skipdb'] = true;
+$GLOBALS['skipdb'] = true;
 define ( 'DOCUMENT_ROOT', dirname ( __FILE__ ) );
 define("img_dir", DOCUMENT_ROOT."/captcha/");
 require 'config.php';

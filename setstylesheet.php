@@ -1,5 +1,5 @@
 <?php
-$_GLOBALS['skipdb'] = true;
+$GLOBALS['skipdb'] = true;
 require 'config.php';
 
 if ($_GET['style']) {

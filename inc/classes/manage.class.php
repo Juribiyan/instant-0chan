@@ -42,7 +42,9 @@ class Manage {
 		$dwoo_data->assign('page', $tpl_page);
 
 		$board_class = new Board('');
-
+		if(!isset($dwoo_data->footer)) {
+			$dwoo_data->footer = '';
+		}
 		$dwoo->output(KU_TEMPLATEDIR . '/manage.tpl', $dwoo_data);
 	}
 
@@ -74,7 +76,7 @@ class Manage {
 		}
 		else {
 			if (!$is_menu) {
-				if ($_POST['AJAX'])
+				if (isset($_POST['AJAX']) && $_POST['AJAX'])
 					exitWithErrorPage(_gettext('Invalid session.'), '<a href="manage_page.php">'. _gettext('Log in again.') . '</a>');
 				$this->LoginForm();
 				die($tpl_page);

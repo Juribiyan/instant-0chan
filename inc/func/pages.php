@@ -13,7 +13,7 @@ print $contents to $filename by using a temporary file and renaming it */
 function print_page($filename, $contents, $board) {
 	global $tc_db;
 
-	$tempfile = tempnam(KU_BOARDSDIR . $board . '/res', 'tmp'); /* Create the temporary file */
+	$tempfile = @tempnam(KU_BOARDSDIR . $board . '/res', 'tmp'); /* Create the temporary file */
 	$fp = fopen($tempfile, 'w');
 	fwrite($fp, $contents);
 	fclose($fp);
@@ -74,6 +74,7 @@ function RegenerateOverboard($boardlist=null, $target_page=null) {
 	}
 	if (count($threads)) {
 		$previous_page = -1;
+		$pages = array();
 		$i = 0; foreach($threads as &$thread) {
 			$current_page = floor($i / I0_OVERBOARD_THREADS);
 			if (I0_DEFERRED_RENDER && $current_page != $target_page) {
@@ -84,7 +85,7 @@ function RegenerateOverboard($boardlist=null, $target_page=null) {
 				$now = microtime_float();
 				$execution_times[$current_page] = $now-$tick;
 				$tick = $now;
-				$pages[$current_page] .= $form_start;
+				$pages[$current_page] = $form_start;
 				$previous_page = $current_page;
 			}
 			// For all the boards involved create a board_class instance

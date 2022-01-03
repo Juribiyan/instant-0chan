@@ -100,6 +100,7 @@ function createThumbnail($name, $filename, $new_w, $new_h) {
 			return false;
 		}
 
+    $actual_type = null;
 		if (!$src_img) {
     	// Check for the case if the image is actually wrong type
       list($src_img, $actual_type)=imagecreatefromwhatever($name);

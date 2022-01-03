@@ -1,5 +1,5 @@
 <?php
-$_GLOBALS['skipdb'] = true;
+$GLOBALS['skipdb'] = true;
 require 'config.php';
 $initial = !$_GET['show'];
 if (in_array($_GET['show'], array('ru', 'en', 'num'))) {

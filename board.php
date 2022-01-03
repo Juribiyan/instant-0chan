@@ -331,14 +331,18 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 		foreach($upload_class->attachments as $attachment) {
 			if ($attachment['attachmenttype'] == 'file') {
 				$thumbfiletype = ($attachment['filetype_withoutdot'] == 'webm' || $attachment['filetype_withoutdot'] == 'mp4')	? '.jpg' : $attachment['file_type'];
-				if ($attachment['emoji_candidate']) {
+				if (isset($attachment['emoji_candidate']) && $attachment['emoji_candidate']) {
 					$emoji_candidates []= $attachment;
 				}
 				if (
 					!file_exists(KU_BOARDSDIR . $board_class->board['name'] . '/src/' . $attachment['file_name'] . $attachment['file_type'])
 					||
 					(
-						!$attachment['file_is_special']
+						(
+							!isset($attachment['file_is_special'])
+							||
+							!$attachment['file_is_special']
+						)
 						&&
 						!(
 							file_exists(KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $attachment['file_name'] . 's' . $thumbfiletype)
@@ -372,7 +376,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 		$post['email'] = mb_substr($post_email, 0, KU_MAXEMAILLENGTH);
 		// First array is the converted form of the japanese characters meaning sage, second meaning age
 		$ords_email = unistr_to_ords($post_email);
-		if (strtolower($_POST['em']) != 'sage' && $ords_email != array(19979, 12370) && strtolower($_POST['em']) != 'age' && $ords_email != array(19978, 12370) && $_POST['em'] != 'return' && $_POST['em'] != 'noko') {
+		if (isset($_POST['em']) && strtolower($_POST['em']) != 'sage' && $ords_email != array(19979, 12370) && strtolower($_POST['em']) != 'age' && $ords_email != array(19978, 12370) && $_POST['em'] != 'return' && $_POST['em'] != 'noko') {
 			$post['email_save'] = true;
 		} else {
 			$post['email_save'] = false;
@@ -483,9 +487,13 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 		if ($thread_replyto != '0') { // If it's a reply...
 			$page_to = $board_class->GetPageNumber($thread_replyto)['page'];
 			if (
-				strtolower($_POST['em']) == 'sage' // normal sage 
-				||
-				unistr_to_ords($_POST['em']) == array(19979, 12370) // japs' sage, if it even works
+				isset($_POST['em'])
+				&&
+				(
+					strtolower($_POST['em']) == 'sage' // normal sage 
+					||
+					unistr_to_ords($_POST['em']) == array(19979, 12370) // japs' sage, if it even works
+				)
 				||
 				$thread_replies > $board_class->board['maxreplies'] // the number of replies already in the thread are less than the maximum thread replies before perma-sage
 			) { //...in case of sage, only one page needs to be regenerated
@@ -935,7 +943,23 @@ if (KU_RSS) {
 	// $timer->mark('17_rss', true); // fin
 }
 
-if( $_POST['redirecttothread'] == 1 || $_POST['em'] == 'return' || $_POST['em'] == 'noko') {
+if(
+	(
+		isset($_POST['redirecttothread']) 
+		&& 
+		$_POST['redirecttothread'] == 1
+	) 
+	|| 
+	(
+		isset($_POST['em'])
+		&&
+		(
+			$_POST['em'] == 'return' 
+			|| 
+			$_POST['em'] == 'noko'
+		)
+	)
+) {
 	setcookie('tothread', 'on', time() + 31556926, '/');
 	if (! $_POST['AJAX']) {
 		if ($thread_replyto == "0") {

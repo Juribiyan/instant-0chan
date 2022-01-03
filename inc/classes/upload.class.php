@@ -47,7 +47,7 @@ class Upload {
 
 		  // 1) Collect uploaded files
 		  $file_hashes = array();
-      if (is_array($_FILES['imagefile']['name']))
+      if (isset($_FILES['imagefile']) && is_array($_FILES['imagefile']['name']))
 		  foreach($_FILES['imagefile']['name'] as $i => $filename) {
 		  	if ($_FILES['imagefile']['error'][$i] != UPLOAD_ERR_NO_FILE) {
 		  		switch ($_FILES['imagefile']['error'][$i]) {
@@ -94,8 +94,8 @@ class Upload {
 		  			}
 		  			$file_entry = array(
 		  				'attachmenttype' => 'file',
-		  				'spoiler' => $_POST['spoiler-'.$i] || '0',
-		  				'file_original' => $_POST['hidename-'.$i]==1 
+		  				'spoiler' => isset($_POST['spoiler-'.$i]) ? $_POST['spoiler-'.$i] : '0',
+		  				'file_original' => isset($_POST['spoiler-'.$i]) && ($_POST['hidename-'.$i]==1)
 		  					? '/hidden' 
 		  					: ( $_POST['filename-'.$i]
 		  							? htmlspecialchars($_POST['filename-'.$i])
@@ -135,7 +135,7 @@ class Upload {
 			  			}
 			  			$attachments []= array(
 			  				'attachmenttype' => 'embed',
-			  				'spoiler' => $_POST['embed-spoiler-'.$i] || '0',
+			  				'spoiler' => isset($_POST['embed-spoiler-'.$i]) ? $_POST['embed-spoiler-'.$i] : '0',
 			  				'embedtype' => $site,
 			  				'embedtime' => $time,
 			  				'embed' => $code,
@@ -169,6 +169,7 @@ class Upload {
 			'cob' => "/[\w\W]*coub\.com\/view\/(?P<code>[\w\W]*)[\w\W]*/i",
 			'scl' => "/[\w\W]*soundcloud.com\/(?P<code>[\w\W]*)[\w\W]*/i",
 		);
+		list($site, $code, $time) = array(null,null,null);
 		foreach ($sites as $s => $rx) {
 			preg_match($rx, $url, $matches);
 			if ($matches) {
@@ -176,7 +177,7 @@ class Upload {
 				$code = $matches['code'];
 				$site = $s;
 				foreach(array('h', 'm', 's') as $u) {
-					$t = (int)$matches[$u];
+					$t = isset($matches[$u]) ? (int)$matches[$u] : 0;
 					if ($t > 0 && $t < 60) {
 						if ($u == 'h')
 							$t *= 60;
@@ -385,6 +386,7 @@ class Upload {
 							FROM `" . KU_DBPREFIX . "filetypes`
 							WHERE `filetype` = " . $tc_db->qstr($attachment['filetype_withoutdot']));
 
+						$attachment['file_is_special'] = false;
 						/* If this board has a load balance url and password configured for it, attempt to use it */
 						if ($board_class->board['loadbalanceurl'] != '' && $board_class->board['loadbalancepassword'] != '') {
 							require_once KU_ROOTDIR . 'inc/classes/loadbalancer.class.php';
@@ -517,9 +519,9 @@ class Upload {
 						$thumbh = $this->isreply ? KU_REPLYTHUMBHEIGHT : KU_THUMBHEIGHT;*/
 						$thumb_tmpfile = tmpfile();
 						$video_data = fetch_video_data($attachment['embedtype'], $attachment['embed'], KU_VIDEOTHUMBWIDTH, $thumb_tmpfile);
-						if ($video_data['error'])
+						if (isset($video_data['error']) && $video_data['error'])
 							$this->exitWithUploadErrorPage($video_data['error'], $atype, $i, $filename);
-						if ($video_data['code']) {
+						if (isset($video_data['code']) && $video_data['code']) {
 							$attachment['embed'] = $video_data['code'];
 						}
 						$embed_filename = $attachment['embedtype'].'-'.$attachment['embed'].'-';

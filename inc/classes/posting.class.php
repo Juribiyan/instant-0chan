@@ -26,6 +26,8 @@ class Posting {
 		$this->ipless_mode = (I0_IPLESS_MODE==true || (I0_IPLESS_MODE=='auto' && $_SERVER['REMOTE_ADDR']=='127.0.0.1'));
 
 		// Set user ID
+		$this->is_new_user = false;
+		$this->need_cookie = false;
 		if ($this->ipless_mode) {
 			if (isset($_COOKIE['I0_persistent_id'])) {
 				$user_id = $_COOKIE['I0_persistent_id'];
@@ -87,6 +89,7 @@ class Posting {
 
 	function CheckReplyTime() {
 		global $tc_db, $board_class;
+		$delta = 0;
 		if (I0_FULL_ANONYMITY_MODE) {
 			$delta = KU_REPLYDELAY - ($this->now - $this->user_stats['latest_post']);
 		}
@@ -135,6 +138,7 @@ class Posting {
 			}
 		}
 		else {
+			$delta = 0;
 			/* Get the timestamp of the last time a new thread was made by this IP address */
 			if (I0_FULL_ANONYMITY_MODE) {
 				$delta = KU_NEWTHREADDELAY - ($this->now - $this->user_stats['latest_thread']);
@@ -329,13 +333,13 @@ class Posting {
 
 	function GetFields() {
 		/* Fetch and process the name, email, and subject fields from the post data */
-		$post_name = isset($_POST['name']) && $_POST['disable_name'] != 1 ? htmlspecialchars($_POST['name'], ENT_QUOTES) : '';
+		$post_name = isset($_POST['name']) && (!isset($_POST['disable_name']) || $_POST['disable_name'] != 1) ? htmlspecialchars($_POST['name'], ENT_QUOTES) : '';
 		$post_email = isset($_POST['em']) ? str_replace('"', '', strip_tags($_POST['em'])) : '';
 		/* If the user used a software function, don't store it in the database */
 		if ($post_email == 'return' || $post_email == 'noko') $post_email = '';
 		$post_subject = isset($_POST['subject']) ? htmlspecialchars($_POST['subject'], ENT_QUOTES) : '';
 		/* Calculate the post's deleted timestamp */
-		$ttl = $_POST['ttl-enable'] ? round(floatval($_POST['ttl'])) : 0;
+		$ttl = (isset($_POST['ttl-enable']) && $_POST['ttl-enable']) ? round(floatval($_POST['ttl'])) : 0;
 		$post_del_timestamp = ($ttl<1) ? 0 : time() + $ttl*3600;
 		return array($post_name, $post_email, $post_subject, $post_del_timestamp);
 	}
@@ -465,9 +469,10 @@ class Posting {
 		if(!strlen($msg)) return;
 
 		$lastmsg = $tc_db->GetAll("SELECT `message` FROM `".KU_DBPREFIX."posts` WHERE  `ipmd5` = '" . $this->user_id_md5 . "' AND `boardid`='".$boardid."' ORDER BY `timestamp` DESC LIMIT 1");
-		$lastmsg = mb_strtolower(strip_tags(str_replace($cyr, $lat, $lastmsg[0][0])));
-
-		if($msg == $lastmsg) exitWithErrorPage(_gettext('Flood Detected'), _gettext('You are posting the same message again.'));
+		if (count($lastmsg)) {
+			$lastmsg = mb_strtolower(strip_tags(str_replace($cyr, $lat, $lastmsg[0]['message'])));
+			if($msg == $lastmsg) exitWithErrorPage(_gettext('Flood Detected'), _gettext('You are posting the same message again.'));
+		}
 
 		$sturl = KU_BOARDSDIR . $board . '/spam.txt';
 

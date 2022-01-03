@@ -28,7 +28,11 @@ class Cloud20 {
 			$boards10 []= $value;
 		}
 
+		if (!isset($boards10))
+			$boards10 = array();
 		file_put_contents(KU_ROOTDIR . '/boards10.json', json_encode($boards10), LOCK_EX);
+		if (!isset($boards20))
+			$boards20 = array();
 		file_put_contents(KU_ROOTDIR . '/boards20.json', json_encode($boards20), LOCK_EX);
 	}
 }
