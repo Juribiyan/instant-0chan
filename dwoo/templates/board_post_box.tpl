@@ -12,7 +12,7 @@
 				<td class="postblock">
 					{t}Name{/t}</td>
 				<td>
-					<input type="text" name="name" placeholder="{t}Name{/t}#{t}tripcode{/t}" size="28" maxlength="{%KU_MAXNAMELENGTH}" accesskey="n"/>
+					<input type="text" name="name" placeholder="{t}Name{/t}#{t}tripcode{/t}" size="28" maxlength="{%KU_MAXNAMELENGTH}" accesskey="n" autocomplete="new-password"/>
 					<label for="disable_name">
 	          <input id="disable_name" type="checkbox" name="disable_name" value="1" style="vertical-align: -2px;">&nbsp;{t}Anonymously{/t}
 	        </label>
