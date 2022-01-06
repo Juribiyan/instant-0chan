@@ -5012,7 +5012,8 @@ class Manage {
 					// Get the number of bans in the database of this type
 					$hiddenbans = $tc_db->GetAll("SELECT HIGH_PRIORITY COUNT(*) FROM `" . KU_DBPREFIX . "banlist` WHERE `type` = '" . $i . "'");
 					// Subtract 15 from the count, since we only want the number not shown
-					$hiddenbans = $hiddenbans[0][0] - 15;
+					if (is_array($hiddenbans) && is_array($hiddenbans[0]))	
+						$hiddenbans = $hiddenbans[0][0] - 15;
 				}
 			}
 			if (count($results) > 0) {

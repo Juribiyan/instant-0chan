@@ -37,7 +37,7 @@ $pages = array(
         'body' => 'register'
     ),
 );
-$page = array_key_exists($_GET['p'], $pages) ? $pages[$_GET['p']] : $pages['boards'];
+$page = isset($_GET['p']) && array_key_exists($_GET['p'], $pages) ? $pages[$_GET['p']] : $pages['boards'];
 $title = $page['title'];
 $pattern = 'pages/patterns/'.$page['pattern'].'.php';
 $body = 'pages/contents/'.$page['body'].'.php';
