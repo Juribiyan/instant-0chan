@@ -171,6 +171,7 @@ if($captchalang == 'en')
 elseif($captchalang == 'ru')
 	$captcha = generate_code($ltrs);	
 else {
+	$captcha = '';
 	for ($i=0; $i < $ltrs; $i++) { 
 		$captcha .= rand(0, 9);
 	}
