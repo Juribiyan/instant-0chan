@@ -18,7 +18,7 @@
  * @date       2008-12-24
  * @package    Dwoo
  */
-function Dwoo_Plugin_date_format(Dwoo_Core $dwoo, $value, $format='%b %e, %Y', $default=null)
+function Dwoo_Plugin_date_format(Dwoo_Core $dwoo, $value, $format='M j, o', $default=null)
 {
 	if (!empty($value)) {
 		// convert if it's not a valid unix timestamp
@@ -35,20 +35,6 @@ function Dwoo_Plugin_date_format(Dwoo_Core $dwoo, $value, $format='%b %e, %Y', $
 	} else {
 		return '';
 	}
-
-	// Credits for that windows compat block to Monte Ohrt who made smarty's date_format plugin
-	if (DIRECTORY_SEPARATOR == '\\') {
-		$_win_from = array('%D',       '%h', '%n', '%r',          '%R',    '%t', '%T');
-		$_win_to   = array('%m/%d/%y', '%b', "\n", '%I:%M:%S %p', '%H:%M', "\t", '%H:%M:%S');
-		if (strpos($format, '%e') !== false) {
-			$_win_from[] = '%e';
-			$_win_to[]   = sprintf('%\' 2d', date('j', $value));
-		}
-		if (strpos($format, '%l') !== false) {
-			$_win_from[] = '%l';
-			$_win_to[]   = sprintf('%\' 2d', date('h', $value));
-		}
-		$format = str_replace($_win_from, $_win_to, $format);
-	}
-	return strftime($format, $value);
+	
+	return date($format, $value);
 }

@@ -24,9 +24,8 @@ function formatDate($timestamp, $type = 'post', $locale = 'en', $email = '') {
 		}
 		if ($locale == 'ja') {
 			/* Format the timestamp japanese style */
-			$fulldate = strftime ("%Yy%mm%dd(DAYOFWEEK) %HH%MM%SS", $timestamp);
-			$dayofweek = strftime('%a', $timestamp);
-
+			$fulldate = date('$Y\ym\md\d(\D\A\Y\O\F\W\E\E\K) H\Hi\Ms\S', $timestamp);
+			$dayofweek = date('D', $timestamp);
 
 			/* I don't like this method, but I can't rely on PHP's locale settings to do it for me... */
 			switch ($dayofweek) {

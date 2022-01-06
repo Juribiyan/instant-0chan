@@ -7,7 +7,7 @@
 <language>{%KU_LOCALE}</language>
 {foreach from=$entries item=item}
 	<item>
-	<title>{$item.timestamp|date_format:"%a %m/%d %H:%M"}</title>
+	<title>{$item.timestamp|date_format:"D m/d H:i"}</title>
 	<description><![CDATA[{$item.user} - {$item.entry}]]></description>
 	</item>
 {/foreach}

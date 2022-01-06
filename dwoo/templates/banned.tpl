@@ -1,6 +1,7 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <title>{t}YOU ARE BANNED{/t}!</title>
 <link rel="stylesheet" type="text/css" href="{%KU_BOARDSPATH}/css/site_futaba.css" title="Futaba">
 <link rel="shortcut icon" href="{%KU_WEBPATH}/favicon.ico">
@@ -22,12 +23,12 @@
 		{/if} 
 		<strong>{if $ban.globalban eq 1}{t}All boards{/t}{else}/{implode('/</strong>, <strong>/', explode('|', $ban.boards))}/{/if}</strong> {t}for the following reason{/t}:<br /><br />
 		<strong>{$ban.reason}</strong><br /><br />
-		{t}Your ban was placed on{/t} <strong>{$ban.at|date_format:"%B %e, %Y, %I:%M %P %Z"}</strong>, {t}and{/t}
+		{t}Your ban was placed on{/t} <strong>{$ban.at|date_format:"F j, Y, h:i a T"}</strong>, {t}and{/t}
 		{if $ban.expired eq 1}
-			{t}expired on{/t} <strong>{$ban.until|date_format:"%B %e, %Y, %I:%M %P"}</strong><br  />
+			{t}expired on{/t} <strong>{$ban.until|date_format:"F j, Y, h:i a"}</strong><br  />
 			<strong>{t}This ban has already expired, this message is for your information only and will not be displayed again{/t}</strong>
 		{else}
-			{if $ban.until > 0}{t}will expire on{/t} <strong>{$ban.until|date_format:"%B %e, %Y, %I:%M %P"}</strong>{else}{t}will not expire{/t}</strong>{/if}
+			{if $ban.until > 0}{t}will expire on{/t} <strong>{$ban.until|date_format:"F j, Y, h:i a"}</strong>{else}{t}will not expire{/t}</strong>{/if}
 		{/if}
 		<br /><br />
 		{if %KU_APPEAL neq '' && $ban.expired eq 0}

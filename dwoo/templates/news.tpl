@@ -50,7 +50,7 @@ line-height: 40px;
 <div id="entries">
 {foreach item=entry from=$entries}
 	<div class="content">
-		<h2><span class="newssub">{$entry.subject|stripslashes}{if $dwoo.get.p eq ''} by {if $entry.email neq ''}<a href="mailto:{$entry.email|stripslashes}">{/if}{$entry.poster|stripslashes}{if $entry.email neq ''}</a>{/if} - {$entry.timestamp|date_format:"%D @ %I:%M %p %Z"}{/if}</span>
+		<h2><span class="newssub">{$entry.subject|stripslashes}{if $dwoo.get.p eq ''} by {if $entry.email neq ''}<a href="mailto:{$entry.email|stripslashes}">{/if}{$entry.poster|stripslashes}{if $entry.email neq ''}</a>{/if} - {$entry.timestamp|date_format:"m/d/y @ h:i A T"}{/if}</span>
 		<span class="permalink"><a href="#{$entry.id}">#</a></span></h2>
 		<div style="margin:5px; padding-bottom: 5px;">{$entry.message|stripslashes}</div>
 	</div><br />
