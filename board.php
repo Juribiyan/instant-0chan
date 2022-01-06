@@ -117,7 +117,7 @@ class PolymorphicReporter {
 			'action' => $this->action,
 			'success' => $this->success,
 			'message' => $this->message,
-			'special_error' => $this->special_error
+			'special_error' => isset($this->special_error) ? $this->special_error : null
 		);
 	}
 }
@@ -588,9 +588,16 @@ elseif (
 
 	// Post-related actions
 	if (isset($_POST['post'])) foreach ($_POST['post'] as $val) {
-		list($post_id, $post_brd) = explode(':', $val);
+		$xpl = explode(':', $val);
+		if (count($xpl)==2) {
+			list($post_id, $post_brd) = $xpl;
+		}
+		else {
+			$post_id = $val;
+			$post_brd = $_POST['board'];
+		}
 		$post_action = new PolymorphicReporter('post', $post_id, (boolean)$_POST['AJAX']);
-		if ($is_overboard || ($post_brd!==NULL && $board_class->board['name'] != $post_brd)) { // is external board
+		if ((isset($is_overboard) && $is_overboard) || ($post_brd!==NULL && $board_class->board['name'] != $post_brd)) { // is external board
 			if (!isset($external_boards[$post_brd])) {
 				$external_boards[$post_brd] = new Board($post_brd);
 			}
@@ -867,7 +874,7 @@ elseif (
 	$need_overboard = false;
 	foreach($threads_to_regenerate as $room_id) {
 		list($brd, $thread_id) = explode(':', $room_id);
-		if ($is_overboard || $board_class->board['name'] != $brd) {
+		if ((isset($is_overboard) && $is_overboard) || $board_class->board['name'] != $brd) {
 			$external_boards[$brd]->RegenerateThreads($thread_id);
 			if (I0_OVERBOARD_ENABLED && !$need_overboard && $external_boards[$brd]->board['section'] != '0' && $external_boards[$brd]->board['hidden'] == '0') {
 				$need_overboard = true;
@@ -894,7 +901,7 @@ elseif (
 			|| 
 			count($out_of_range) != 0
 		) {
-			if ($is_overboard || $board_class->board['name'] != $brd) {
+			if ((isset($is_overboard) && $is_overboard) || $board_class->board['name'] != $brd) {
 				$external_boards[$brd]->RegeneratePages($pages_from[$brd], $pages_to[$brd], $out_of_range);
 				if (I0_OVERBOARD_ENABLED && !$need_overboard && $external_boards[$brd]->board['section'] != '0' && $external_boards[$brd]->board['hidden'] == '0') {
 					$need_overboard = true;
