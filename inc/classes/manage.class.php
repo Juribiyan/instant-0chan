@@ -459,7 +459,7 @@ class Manage {
           $this->CheckToken($_POST['token']);
 					$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "announcements` SET `subject` = " . $tc_db->qstr($_POST['subject']) . ", `message` = " . $tc_db->qstr($_POST['announcement']) . " WHERE `id` = " . $tc_db->qstr($_GET['id']));
 					$tpl_page .= '<hr /><h3>'. _gettext('Announcement edited') .'</h3><hr />';
-					management_addlogentry(_gettext('Edited an announcement'));
+					management_addlogentry(_gettext('Edited an announcement'), 9);
 				}
 				$formval = 'edit&amp;id='. $_GET['id']; $title .= ' - Edit';
 				$results = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "announcements` WHERE `id` = " . $tc_db->qstr($_GET['id']) . "");
@@ -1084,18 +1084,12 @@ class Manage {
 
 	/* Display moderators and administrators actions which were logged */
 	function modlog() {
-		global $tc_db, $tpl_page;
+		global $tc_db, $tpl_page, $dwoo, $dwoo_data;
 		$this->AdministratorsOnly();
 
-		$tc_db->Execute("DELETE FROM `" . KU_DBPREFIX . "modlog` WHERE `timestamp` < '" . (time() - KU_MODLOGDAYS * 86400) . "'");
-
-		$tpl_page .= '<h2>'. ('ModLog') . '</h2><br />
-		<table cellspacing="2" cellpadding="1" border="1" width="100%"><tr><th>'. _gettext('Time') .'</th><th>'. _gettext('User') .'</th><th width="100%">'. _gettext('Action') .'</th></tr>';
-		$results = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "modlog` ORDER BY `timestamp` DESC");
-		foreach ($results as $line) {
-			$tpl_page .= "<tr><td>" . date("y/m/d(D)H:i", $line['timestamp']) . "</td><td>" . $line['user'] . "</td><td>" . $line['entry'] . "</td></tr>";
-		}
-		$tpl_page .= '</table>';
+		$entries = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "modlog` ORDER BY `timestamp` DESC");
+		$dwoo_data->assign('modlog_entries', $entries);
+		$tpl_page .= $dwoo->get(KU_TEMPLATEDIR . '/modlog.tpl', $dwoo_data);
 	}
 
 	function proxyban() {
@@ -1141,7 +1135,7 @@ class Manage {
 				$tpl_page .= 'Error: '. $tc_db->ErrorMsg();
 			}
 			$tpl_page .= '<hr />';
-			management_addlogentry(_gettext('Inserted SQL'), 0);
+			management_addlogentry(_gettext('Inserted SQL'), 10);
 		}
 		$tpl_page .= '<form method="post" action="?action=sql">
     <input type="hidden" name="token" value="' . $_SESSION['token'] . '" />
@@ -1260,7 +1254,7 @@ class Manage {
 							if(count($existing) == 0) {
 								$salt = $this->CreateSalt();
 								$tc_db->Execute("INSERT HIGH_PRIORITY INTO `" .KU_DBPREFIX. "staff` ( `username` , `password` , `salt` , `type` , `addedon` ) VALUES (" .$tc_db->qstr($_POST['username']). " , '" .md5($_POST['pass1'] . $salt). "' , '" .$salt. "' , '3' , '" .time(). "' )");
-								management_addlogentry('New user '.$_POST['username'].' has joined 2.0chan', 6, '2.0 service');
+								management_addlogentry('New user '.$_POST['username'].' has joined 2.0chan', 6, '', '', '2.0 service');
 								$tpl_page = _gettext('Successfully registered new user. Now you can log in.');
 								$this->LoginForm();
 							}
@@ -1374,7 +1368,7 @@ class Manage {
 							unset($board_class);
 							$output .= _gettext('Board successfully added.') . '<br /><br /><a href="'. KU_BOARDSPATH . '/'. $dir . '/">/'. $dir . '/</a>!<br />';
 							$output .= '<form action="?action=boardopts" method="post"><input type="hidden" name="board" value="'. $dir . '" /><input type="submit" style="border: 1px solid; background: none; text-align: center;" value="'. _gettext('Click to edit board options') .'" /><br /><hr /></form>';
-							management_addlogentry(_gettext('Added board') . ': /'. $dir . '/', 3);
+							management_addlogentry(_gettext('Added board'), 3, $dir);
 						}
 						else {
 							$output .= '<br />'. _gettext('Unable to create directories.');
@@ -1441,7 +1435,7 @@ class Manage {
 							unset($board_class);
 							$output .= _gettext('Board successfully added.') . '<br /><br /><a href="'. KU_BOARDSPATH . '/'. $dir . '/">/'. $dir . '/</a>!<br />';
 							$output .= '<form action="?action=boardopts_mod" method="post"><input type="hidden" name="board" value="'. $dir . '" /><input type="submit" style="border: 1px solid; background: none; text-align: center;" value="'. _gettext('Click to edit board options') .'" /><br /><hr /></form>';
-							management_addlogentry(_gettext('Added board') . ': /'. $dir . '/', 3);
+							management_addlogentry(_gettext('Added board'), 3, $dir);
 							$this->rebuild20json();
 						}
 						else {
@@ -1510,7 +1504,7 @@ class Manage {
 						$menu_class = new Menu();
 						$menu_class->Generate();
 						$output .= _gettext('Board successfully deleted.');
-						management_addlogentry(_gettext('Deleted board') .': /'. $dir . '/', 3);
+						management_addlogentry(_gettext('Deleted board'), 3, $dir);
 					} else {
 						// Error
 						$output .= _gettext('Unable to delete board.');
@@ -1586,7 +1580,7 @@ class Manage {
 						$menu_class = new Menu();
 						$menu_class->Generate();
 						$output .= _gettext('Board successfully deleted.');
-						management_addlogentry(_gettext('Deleted board') .': /'. $dir . '/', 3);
+						management_addlogentry(_gettext('Deleted board'), 3, $dir);
 						$this->rebuild20json();
 					} else {
 						// Error
@@ -1810,7 +1804,7 @@ class Manage {
         $this->CheckToken($_POST['token']);
 				$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "ads` SET `disp` = " . $tc_db->qstr($_POST['disp']) . ", `code` = " . $tc_db->qstr($_POST['code']) . " WHERE `id` = " . $tc_db->qstr($_GET['edit']) . "");
 				$tpl_page .= '<hr /><h3>'. _gettext('Ad Edited.') .'</h3><p style="text-align: center;">'.sprintf(_gettext('Click %shere%s to return to Ad Management.'),'<a href="?action=ads">','</a>') .'</p><hr />'. "\n";
-				management_addlogentry(_gettext('Edited an ad'));
+				management_addlogentry(_gettext('Edited an ad'), 9);
 			}
 			$results = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "ads` WHERE `id` = '" . $_GET['edit'] . "'");
 			foreach ($results as $ad) {
@@ -1857,7 +1851,7 @@ class Manage {
           $this->CheckToken($_POST['token']);
 					$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "embeds` SET `filetype` = " . $tc_db->qstr(trim($_POST['filetype'])) . ", `videourl` = " . $tc_db->qstr(trim($_POST['videourl'])) . ", `name` = " . $tc_db->qstr(trim($_POST['name'])) . ", `width` = " . $tc_db->qstr(trim($_POST['width'])) . ", `height` = " . $tc_db->qstr(trim($_POST['height'])) . ", `code` = " . $tc_db->qstr(trim($_POST['embeds'])) . " WHERE `id` = " . $tc_db->qstr($_GET['id']) . "");
 					$tpl_page .= '<hr /><h3>'. _gettext('Embed Edited') .'</h3><hr />';
-					management_addlogentry(_gettext('Edited an embed'), 9);
+					management_addlogentry(_gettext('Edited an embed'), 13);
 				}
 				$formval = 'edit&amp;id='. $_GET['id']; $title .= ' - Edit';
 				$results = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "embeds` WHERE `id` = " . $tc_db->qstr($_GET['id']) . "");
@@ -1866,7 +1860,7 @@ class Manage {
 			} elseif ($_GET['act'] == 'del') {
 				$results = $tc_db->Execute("DELETE FROM `" . KU_DBPREFIX . "embeds` WHERE `id` = " . $tc_db->qstr($_GET['id']) . "");
 				$tpl_page .= '<hr /><h3>'. _gettext('Embed deleted') .'</h3><hr />';
-				management_addlogentry(_gettext('Deleted an Embed'), 9);
+				management_addlogentry(_gettext('Deleted an Embed'), 13);
 			} elseif ($_GET['act'] == 'add') {
 				if (isset($_POST['embeds']) && isset($_POST['name']) && isset($_POST['filetype']) && isset($_POST['videourl'])) {
 					if ($_POST['embeds'] != '') {
@@ -1878,7 +1872,7 @@ class Manage {
 						if ($_POST['embeds'] != '') {
 							$tc_db->Execute("INSERT HIGH_PRIORITY INTO `" . KU_DBPREFIX . "embeds` ( `name` , `filetype` , `videourl` , `width` , `height` , `code` ) VALUES ( " . $tc_db->qstr(trim($_POST['name'])) . " , " . $tc_db->qstr(trim($_POST['filetype'])) . " , " . $tc_db->qstr(trim($_POST['videourl'])) . " , " . $tc_db->qstr(trim($width)) . " , " . $tc_db->qstr(trim($height)) . " , " . $tc_db->qstr(trim($_POST['embeds'])) . " )");
 							$tpl_page .= '<h3>'. _gettext('Embed successfully added.') . '</h3>';
-							management_addlogentry(_gettext('Added an Embed'), 9);
+							management_addlogentry(_gettext('Added an Embed'), 13);
 						} else {
 							$tpl_page .= _gettext('You must enter code.');
 						}
@@ -3153,7 +3147,7 @@ class Manage {
 								$board_class->RegenerateAll();
 							}
 							$tpl_page .= _gettext('Update successful.');
-							management_addlogentry(_gettext('Updated board configuration') . " - /" . $_GET['updateboard'] . "/", 4);
+							management_addlogentry(_gettext('Updated board configuration'), 4, $_GET['updateboard']);
 						}
 						else $tpl_page .= _gettext('Locale unsupported.');
 					}
@@ -3590,7 +3584,7 @@ class Manage {
 							$board_class->RegenerateAll();
 						}
 						$tpl_page .= _gettext('Update successful.');
-						management_addlogentry(_gettext('Updated board configuration') . " - /" . $_GET['updateboard'] . "/", 4);
+						management_addlogentry(_gettext('Updated board configuration'), 4, $_GET['updateboard']);
 					}
 					else $tpl_page .= _gettext('Locale unsupported.');
 				}
@@ -4113,11 +4107,11 @@ class Manage {
 					$board_class->RegenerateAll();
 					unset($board_class);
 					$msg = _gettext('Thread successfully un-stickied');
+					management_addlogentry(_gettext('Unstickied thread') . ' #' . intval($_GET['postid']), 5, $sticky_board_name);
 					if ($_POST['AJAX'])
 					  exitWithSuccessJSON($msg);
 					else
 					  $tpl_page .= $msg;
-					management_addlogentry(_gettext('Unstickied thread') . ' #' . intval($_GET['postid']) . ' - /' . $sticky_board_name . '/', 5);
 				}
 				else {
 					$msg = _gettext('Invalid thread ID. This may have been caused by the thread recently being deleted.');
@@ -4173,11 +4167,11 @@ class Manage {
 					$board_class->RegenerateAll();
 					unset($board_class);
 					$msg = _gettext('Thread successfully stickied.');
+					management_addlogentry(_gettext('Stickied thread') . ' #' . intval($_GET['postid']), 5, $sticky_board_name);
 					if ($_POST['AJAX'])
 						exitWithSuccessJSON($msg);
 					else
 						$tpl_page .= $msg;
-					management_addlogentry(_gettext('Stickied thread') . ' #' . intval($_GET['postid']) . ' - /' . $sticky_board_name . '/', 5);
 				} else {
 					$msg = _gettext('Invalid thread ID. This may have been caused by the thread recently being deleted.');
 					if ($_POST['AJAX'])
@@ -4268,7 +4262,7 @@ class Manage {
 					  exitWithSuccessJSON($msg);
 					else
 					  $tpl_page .= $msg;
-					management_addlogentry(_gettext('Locked thread') . ' #'. intval($_GET['postid']) . ' - /'. intval($_GET['board']) . '/', 5);
+					management_addlogentry(_gettext('Locked thread') . ' #'. intval($_GET['postid']), 5, intval($_GET['board']));
 				} else {
 					$msg = _gettext('Invalid thread ID. This may have been caused by the thread recently being deleted.');
 					if ($_POST['AJAX'])
@@ -4321,7 +4315,7 @@ class Manage {
 					  exitWithSuccessJSON($msg);
 					else
 					  $tpl_page .= $msg;
-					management_addlogentry(_gettext('Unlocked thread') . ' #'. intval($_GET['postid']) . ' - /'. intval($_GET['board']) . '/', 5);
+					management_addlogentry(_gettext('Unlocked thread') . ' #'. intval($_GET['postid']), 5, intval($_GET['board']));
 				} else {
 					$msg = _gettext('Invalid thread ID. This may have been caused by the thread recently being deleted.');
 					if ($_POST['AJAX'])
@@ -4445,7 +4439,7 @@ class Manage {
 								unset($board_class);
 								unset($post_class);
 								$tpl_page .= _gettext('Thread '.$delthread_id.' successfully deleted.');
-								management_addlogentry(_gettext('Deleted thread') . ' #<a href="?action=viewthread&thread='. $delthread_id . '&board='. $_POST['boarddir'] . '">'. $delthread_id . '</a> ('. $numposts_deleted . ' replies) - /'. $board_dir . '/', 7);
+								management_addlogentry(_gettext('Deleted thread') . ' #<a href="?action=viewthread&thread='. $delthread_id . '&board='. $_POST['boarddir'] . '">'. $delthread_id . '</a> ('. $numposts_deleted . ' replies)', 7, $_POST['boarddir']);
 								if (!empty($_GET['postid'])) {
 									$tpl_page .= '<br /><br /><meta http-equiv="refresh" content="1;url='. KU_CGIPATH . '/manage_page.php?action=bans&banboard='. $_GET['boarddir'] . '&banpost='. $_GET['postid'] . $cp . '"><a href="'. KU_CGIPATH . '/manage_page.php?action=bans&banboard='. $_GET['boarddir'] . '&banpost='. $_GET['postid'] . $cp . '">'. _gettext('Redirecting') . '</a> to ban page...';
 								}
@@ -4492,7 +4486,7 @@ class Manage {
 								unset($board_class);
 								unset($post_class);
 								$tpl_page .= _gettext('Post '.$delpost_id.' successfully deleted.');
-								management_addlogentry(_gettext('Deleted post') . ' #<a href="?action=viewthread&thread='. $delpost_parentid . '&board='. $_POST['boarddir'] . '#'. $delpost_id . '">'. $delpost_id . '</a> - /'. $board_dir . '/', 7);
+								management_addlogentry(_gettext('Deleted post') . ' #<a href="?action=viewthread&thread='. $delpost_parentid . '&board='. $_POST['boarddir'] . '#'. $delpost_id . '">'. $delpost_id . '</a>', 7, $_POST['boarddir']);
 								if ($_GET['postid'] != '') {
 									$tpl_page .= '<br /><br /><meta http-equiv="refresh" content="1;url='. KU_CGIPATH . '/manage_page.php?action=bans&banboard='. $_GET['boarddir'] . '&banpost='. $_GET['postid'] . $cp . '"><a href="'. KU_CGIPATH . '/manage_page.php?action=bans&banboard='. $_GET['boarddir'] . '&banpost='. $_GET['postid'] . '">'. _gettext('Redirecting') . '</a> to ban page...';
 								} elseif ($isquickdel) {
@@ -4807,11 +4801,14 @@ class Manage {
 						exitWithErrorPage(_gettext('Sorry, a generic error has occurred.'));
 					}
 
-					$logentry = _gettext('Banned') . ' '. $ban_ip;
-					$logentry .= ($ban_duration == 0) ? ' '. _gettext('without expiration') : ' '. _gettext('until') . ' '. date('F j, Y, g:i a', time() + $ban_duration);
-					$logentry .= ' - '. _gettext('Reason') . ': '. $ban_reason . (($ban_note) ? (" (".$ban_note.")") : ("")). ' - '. _gettext('Banned from') . ': ';
-					$logentry .= ($ban_globalban == 1) ? _gettext('All boards') . ' ' : '/'. implode('/, /', explode('|', $ban_boards)) . '/ ';
-					management_addlogentry($logentry, 8);
+					$logentry = _gettext('Banned')
+					. (($ban_globalban == 1) ? ' ' . _gettext('from all all boards') : '')
+					. (($ban_duration == 0)
+						? ' '. _gettext('without expiration')
+						: ' '. _gettext('until') . ' '. date('F j, Y, g:i a', time() + $ban_duration) )
+					. ($ban_reason ? ' - '. _gettext('Reason') . ': '. $ban_reason : '')
+					. ($ban_note ? ' ('.$ban_note.')' : '');
+					management_addlogentry($logentry, 8, explode('|', $ban_boards), $ban_ip);
 					$ban_ip = '';
 					$i++;
 				}
@@ -4864,7 +4861,8 @@ class Manage {
 				$tc_db->Execute("DELETE FROM `" . KU_DBPREFIX . "banlist` WHERE `id` = " . $tc_db->qstr($_GET['delban']) . "");
 				$bans_class->UpdateHtaccess();
 				$tpl_page .= _gettext('Ban successfully removed.');
-				management_addlogentry(_gettext('Unbanned') . ' '. $unban_ip, 8);
+				$boards = explode('|', $results[0]['boards']);
+				management_addlogentry(_gettext('Unbanned'), 8, $boards, $unban_ip);
 			} else {
 				$tpl_page .= _gettext('Invalid ban ID');
 			}
@@ -5073,7 +5071,7 @@ class Manage {
 					$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "banlist` SET `expired` = 1, `appealat` = -4 WHERE `id` = " . $tc_db->qstr($_GET['accept']) . "");
 					$bans_class->UpdateHtaccess();
 					$tpl_page .= _gettext('Ban successfully removed.');
-					management_addlogentry('Accepted appeal #'.$_GET['accept'].' from: '. $unban_ip, 8);
+					management_addlogentry(_gettext('Appeal accepted'), 8, array(), $unban_ip);
 				} else {
 					$tpl_page .= _gettext('Invalid ID');
 				}
@@ -5089,7 +5087,7 @@ class Manage {
 					$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "banlist` SET `appealat` = -2 WHERE `id` = " . $tc_db->qstr($_GET['deny']) . "");
 					$bans_class->UpdateHtaccess();
 					$tpl_page .= _gettext('Appeal successfully denied.');
-					management_addlogentry(_gettext('Denied the ban appeal for') . ' '. $unban_ip, 8);
+					management_addlogentry(_gettext('Appeal denied'), 8, array(), $unban_ip);
 				} else {
 					$tpl_page .= _gettext('Invalid ID');
 				}
@@ -5220,7 +5218,7 @@ class Manage {
 						}
 
 						$tpl_page .= _gettext('All threads/posts by that IP in selected boards successfully deleted.') . '<br /><strong>'. $i . '</strong> posts were removed.<br />';
-						management_addlogentry(_gettext('Deleted posts by ip') . ' '. $ip, 7);
+						management_addlogentry(_gettext('Deleted posts by ip'), 7, array(), $ip);
 					}
 					else {
 						$tpl_page .= _gettext('No posts for that IP found');
@@ -5599,7 +5597,7 @@ class Manage {
 			$boardid = $tc_db->GetOne("SELECT HIGH_PRIORITY `id` FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($_GET['updateboard']) . " LIMIT 1");
 			if ($boardid != '') {
 				file_put_contents(KU_ROOTDIR . $_GET['updateboard']. '/spam.txt', $_POST['spam']);
-				management_addlogentry(_gettext('Updated spam list') . " - /" . $_GET['updateboard'] . "/", 4);
+				management_addlogentry(_gettext('Updated spam list'), 11, $_GET['updateboard']);
 				$tpl_page .= '<hr />'. _gettext('Spam.txt successfully edited.') .'<hr />';
 			}
 			else {

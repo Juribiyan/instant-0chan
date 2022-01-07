@@ -51,7 +51,7 @@ class Bans {
 		}
 		if(count($bans) > 0){
 			$tc_db->Execute("END TRANSACTION");
-			if ($_POST['AJAX']) {
+			if (isset($_POST['AJAX']) && $_POST['AJAX']) {
 				return $bans;
 			}
 			else {
@@ -106,6 +106,7 @@ class Bans {
 		require_once KU_ROOTDIR . 'lib/dwoo.php';
 
 		$dwoo_data->assign('bans', $bans);
+		$dwoo_data->assign('user_id', $ip);
 
 		return $dwoo->get(KU_TEMPLATEDIR .'/banned.tpl', $dwoo_data);
 	}

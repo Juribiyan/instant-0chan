@@ -462,8 +462,8 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 			} else {
 				$modpost_message .= $post_id;
 			}
-			$modpost_message .= '.html#' . $post_id . '">' . $post_id . '</a> in /'.$_POST['board'].'/ with flags: ' . $flags . '.';
-			management_addlogentry($modpost_message, 1, md5_decrypt($_POST['modpassword'], KU_RANDOMSEED));
+			$modpost_message .= '.html#' . $post_id . '">' . $post_id . '</a> with flags: ' . $flags . '.';
+			management_addlogentry($modpost_message, 12, $board_class->board['name']);
 		}
 		// $timer->mark('08_modpost');
 
@@ -745,7 +745,7 @@ elseif (
 									$threads_to_regenerate []= $room_id;
 								}
 								if ($ismod) {
-									management_addlogentry(_gettext('Deleted post') . ' #<a href="?action=viewthread&thread='. $thread_id . '&board='. $b_class->board['name'] . '#'. $post_id . '">'. $post_id . '</a> - /'. $b_class->board['name'] . '/', 7);
+									management_addlogentry(_gettext('Deleted post') . ' #<a href="?action=viewthread&thread='. $thread_id . '&board='. $b_class->board['name'] . '#'. $post_id . '">'. $post_id . '</a>', 7, $b_class->board['name']);
 								}
 								if ($delres == 'unbumped') { // thread may move down some pages
 									$destination_page = $b_class->GetPageNumber($thread_id);
@@ -793,7 +793,7 @@ elseif (
 									'by_op' => $isop
 								);
 								if ($ismod) {
-									management_addlogentry(_gettext('Deleted thread') . ' #<a href="?action=viewthread&thread='. $thread_id . '&board='. $b_class->board['name'] . '">'. $post_id . '</a> ('. ($delres-1) . ' replies) - /'. $b_class->board['name'] . '/', 7);
+									management_addlogentry(_gettext('Deleted thread') . ' #<a href="?action=viewthread&thread='. $thread_id . '&board='. $b_class->board['name'] . '">'. $post_id . '</a> ('. ($delres-1) . ' replies)', 7, $b_class->board['name']);
 								}
 								$post_action->succ(_gettext('Thread successfully deleted.')
 									.($ismod ? ' '._gettext('(By mod)') : '')

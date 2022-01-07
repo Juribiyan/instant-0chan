@@ -142,13 +142,22 @@ msgid "Ban successfully removed."
 msgstr "Бан удален."
 
 msgid "Banned"
-msgstr "Забанено"
+msgstr "Забанен"
 
 msgid "Banned %d IP addresses using an IP address list."
 msgstr "Забанено %d IP-адресов, используя лист IP."
 
 msgid "Banned from"
 msgstr "Забанено от"
+
+msgid "from all all boards"
+msgstr "на всех досках"
+
+msgid "without expiration"
+msgstr "навсегда"
+
+msgid "until"
+msgstr "до"
 
 msgid "Blotter"
 msgstr "Блоттер"
@@ -312,8 +321,11 @@ msgstr "Удаляю не-удаленные ответы из удаленно�
 msgid "Deleting unused images."
 msgstr "Удаляю ненужные изображения."
 
-msgid "Denied the ban appeal for"
-msgstr "Жалоба на бан отвергнута за"
+msgid "Appeal accepted"
+msgstr "Жалоба на бан отклонена"
+
+msgid "Appeal denied"
+msgstr "Жалоба на бан принята"
 
 msgid "Description"
 msgstr "Описание"

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>{t}YOU ARE BANNED{/t}!</title>
-<link rel="stylesheet" type="text/css" href="{%KU_BOARDSPATH}/css/site_futaba.css" title="Futaba">
+<link rel="stylesheet" type="text/css" href="{%KU_BOARDSPATH}/css/site_{%KU_DEFAULTSTYLE}.css" title="Futaba">
 <link rel="shortcut icon" href="{%KU_WEBPATH}/favicon.ico">
 </head>
 <body>

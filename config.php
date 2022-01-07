@@ -176,6 +176,7 @@ if (!$cache_loaded) {
 		$cf['I0_CURL_PROXY'] = false; // Proxy to use when fetching external resources, for example 'socks5h://127.0.0.1:9050' — to connect through TOR
 		$cf['KU_USE_GESHI']  = false;	//Use original code highlighter from 0chan.ru like the cargo cultist you are
 		$cf['KU_DISCLAIMER'] = false; // Whether or not a disclaimer (/dwoo/templates/disclaimer.tpl) should be displayed for new visitors.
+		$cf['I0_ENABLE_PUBLIC_MODLOG'] = true; // If set to false, users won't be able to view the modlog
 		$cf['KU_MODLOGDAYS'] = 7; 		// Days to keep modlog entries before removing them
 
 
@@ -228,7 +229,7 @@ if (!$cache_loaded) {
 
 
 	// ------------------------------------- Extra features -------------------------------------
-		$cf['KU_RSS']       = true; // Whether or not to enable the generation of rss for each board and modlog
+		$cf['KU_RSS']       = false; // Whether or not to enable the generation of rss for each board and modlog
 		$cf['KU_FIRSTLAST'] = false; // Whether or not to generate extra files for the first 100 posts/last 50 posts
 		$cf['KU_BLOTTER']   = true; // Whether or not to enable the blotter feature
 		$cf['KU_SITEMAP']   = false; // Whether or not to enable automatic sitemap generation (you will still need to link the search engine sites to the sitemap.xml file)

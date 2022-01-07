@@ -71,17 +71,37 @@ function exitWithSuccessJSON($data=array()) {
  * Add an entry to the modlog
  *
  * @param string $entry Entry text
- * @param integer $category Category to file under. 0 - No category, 1 - Login, 2 - Cleanup/rebuild boards and html files, 3 - Board adding/deleting, 4 - Board updates, 5 - Locking/stickying, 6 - Staff changes, 7 - Thread deletion/post deletion, 8 - Bans, 9 - News, 10 - Global changes, 11 - Wordfilter
+ * @param integer $category Category to file under. 
+  0 - No category, 
+  1 - Login, 
+  2 - Cleanup/rebuild boards and html files, 
+ +3 - Board adding/deleting, 
+ +4 - Board updates, 
+ +5 - Locking/stickying, 
+ +6 - Staff changes, 
+ +7 - Thread deletion/post deletion, 
+ +8 - Bans, 
+ +9 - News, 
+ +10 - Global changes, 
+ +11 - Wordfilter,
+ +12 - Modposting
+ +13 - Misc.
+ (entries marked with "+" will be displayed in a public modlog)
  * @param string $forceusername Username to force as the entry username
  */
-function management_addlogentry($entry, $category = 0, $forceusername = '') {
+function management_addlogentry($entry, $category = 0, $boards = array(), $user_id = '', $forceusername = '') {
 	global $tc_db;
 
+  if (is_array($boards))
+    $boards = implode(',', $boards);
 	$username = ($forceusername == '') ? $_SESSION['manageusername'] : $forceusername;
-
 	if ($entry != '') {
-		$tc_db->Execute("INSERT INTO `" . KU_DBPREFIX . "modlog` ( `entry` , `user` , `category` , `timestamp` ) VALUES ( " . $tc_db->qstr($entry) . " , '" . $username . "' , " . $tc_db->qstr($category) . " , '" . time() . "' )");
+		$tc_db->Execute("INSERT INTO `" . KU_DBPREFIX . "modlog` ( `entry` , `user` , `category` , `timestamp`, `boards`, `id` ) VALUES ( " . $tc_db->qstr($entry) . " , '" . $username . "' , " . $tc_db->qstr($category) . " , '" . time() . "' , " . $tc_db->qstr($boards) . " , " . $tc_db->qstr($user_id) . " )");
 	}
+  // Delete old entries
+  if (KU_MODLOGDAYS) {
+    $tc_db->Execute("DELETE FROM `" . KU_DBPREFIX . "modlog` WHERE `timestamp` < '" . (time() - KU_MODLOGDAYS * 86400) . "'");
+  }
 	if (KU_RSS) {
 		require_once(KU_ROOTDIR . 'inc/classes/rss.class.php');
 		$rss_class = new RSS();
