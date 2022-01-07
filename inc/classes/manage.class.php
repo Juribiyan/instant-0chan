@@ -5145,7 +5145,7 @@ class Manage {
 						$tpl_page .= date("F j, Y, g:i a", $line['until']);
 					}
 					$tpl_page .= '</td><td>'. $line['by'] . '</td>
-					<td>'.$line['appeal'].'</td>
+					<td>'.htmlentities($line['appeal']).'</td>
 					<td><a href="manage_page.php?action=appeals&deny='. $line['id'] . '">:(</a></td>
 					<td><a href="manage_page.php?action=appeals&accept='. $line['id'] . '">:)</a></td>';
 					$tpl_page .= '</tr>';

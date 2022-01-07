@@ -41,7 +41,7 @@
 			{elseif $ban.appealat eq -2}
 				{t}Your appeal was reviewed and denied. You may <strong>not</strong> appeal this ban again.{/t}
 				{t}For reference, your appeal message was{/t}:<br />
-				<strong>{$ban.appeal}</strong>
+				<strong>{htmlentities($ban.appeal)}</strong>
 			{else}
 				{if $ban.appealat < $.now}
 					{t}You may now appeal this ban.{/t}
