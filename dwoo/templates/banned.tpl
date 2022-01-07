@@ -22,7 +22,7 @@
 			{t}You have been banned from posting on{/t}
 		{/if} 
 		<strong>{if $ban.globalban eq 1}{t}All boards{/t}{else}/{implode('/</strong>, <strong>/', explode('|', $ban.boards))}/{/if}</strong> {t}for the following reason{/t}:<br /><br />
-		<strong>{$ban.reason}</strong><br /><br />
+		<strong>{htmlentities($ban.reason)}</strong><br /><br />
 		{t}Your ban was placed on{/t} <strong>{$ban.at|date_format:"F j, Y, h:i a T"}</strong>, {t}and{/t}
 		{if $ban.expired eq 1}
 			{t}expired on{/t} <strong>{$ban.until|date_format:"F j, Y, h:i a"}</strong><br  />
