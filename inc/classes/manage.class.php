@@ -969,7 +969,7 @@ class Manage {
 					} else {
 						exitWithErrorPage('Something went wrong.');
 					}
-					$logentry .= ': '. $username;
+					$logentry .= ': '. htmlentities($username);
 					if ($_POST['type'] != '1') {
 						$logentry .= ' - '. _gettext('Moderates') . ': ';
 						if (isset($_POST['modsallboards'])) {
@@ -1662,7 +1662,7 @@ class Manage {
 					if(array_in_array($brds, $bl_redux)) {
 						$tc_db->Execute("DELETE FROM `" . KU_DBPREFIX . "wordfilter` WHERE `id` = " . $tc_db->qstr($_GET['delword']) . "");
 						$tpl_page .= _gettext('Word successfully removed.');
-						management_addlogentry(_gettext('Removed word from wordfilter') . ': '. $del_word, 11);
+						management_addlogentry(_gettext('Removed word from wordfilter') . ': '. htmlentities($del_word), 11);
 					}
 					else {
 
@@ -1738,7 +1738,7 @@ class Manage {
 							$tc_db->Execute("UPDATE `". KU_DBPREFIX ."wordfilter` SET `replacedby` = " . $tc_db->qstr($_POST['replacedby']) . " , `boards` = " . $tc_db->qstr(implode('|', $wordfilter_boards)) . " , `regex` = '" . $is_regex . "' WHERE `id` = " . $tc_db->qstr($_GET['editword']) . "");
 
 							$tpl_page .= _gettext('Word successfully updated.');
-							management_addlogentry(_gettext('Updated word on wordfilter') . ': '. $wordfilter_word, 11);
+							management_addlogentry(_gettext('Updated word on wordfilter') . ': '. htmlentities($wordfilter_word), 11);
 						} else {
 							$tpl_page .= _gettext('Unable to locate that word.');
 						}
@@ -4806,8 +4806,8 @@ class Manage {
 					. (($ban_duration == 0)
 						? ' '. _gettext('without expiration')
 						: ' '. _gettext('until') . ' '. date('F j, Y, g:i a', time() + $ban_duration) )
-					. ($ban_reason ? ' - '. _gettext('Reason') . ': '. $ban_reason : '')
-					. ($ban_note ? ' ('.$ban_note.')' : '');
+					. ($ban_reason ? ' - '. _gettext('Reason') . ': '. htmlentities($ban_reason) : '')
+					. ($ban_note ? ' ('.htmlentities($ban_note).')' : '');
 					management_addlogentry($logentry, 8, explode('|', $ban_boards), $ban_ip);
 					$ban_ip = '';
 					$i++;
@@ -4839,7 +4839,7 @@ class Manage {
 						$results = $tc_db->GetOne("SELECT HIGH_PRIORITY COUNT(*) FROM `".KU_DBPREFIX."bannedhashes` WHERE `md5` = ".$tc_db->qstr($banhash)." LIMIT 1");
 						if ($results == 0) {
 							$tc_db->Execute("INSERT INTO `".KU_DBPREFIX."bannedhashes` ( `md5` , `bantime` , `description` ) VALUES ( ".$tc_db->qstr($banhash)." , ".$tc_db->qstr($_POST['banhashtime'])." , ".$tc_db->qstr($_POST['banhashdesc'])." )");
-							management_addlogentry('Banned md5 hash '. $banhash . ' with a description of '. $_POST['banhashdesc'], 8);
+							management_addlogentry('Banned md5 hash '. $banhash . ' with a description of '. htmlentities($_POST['banhashdesc']), 8);
 						}
 					}
 				}
