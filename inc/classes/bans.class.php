@@ -107,6 +107,8 @@ class Bans {
 
 		$dwoo_data->assign('bans', $bans);
 		$dwoo_data->assign('user_id', $ip);
+		$dwoo_data->assign('is_ip', !(I0_IPLESS_MODE==true || (I0_IPLESS_MODE=='auto' && $ip=='127.0.0.1')));
+		$dwoo_data->assign('user_id_encrypted', compress_md5(md5($ip . KU_RANDOMSEED)));
 
 		return $dwoo->get(KU_TEMPLATEDIR .'/banned.tpl', $dwoo_data);
 	}

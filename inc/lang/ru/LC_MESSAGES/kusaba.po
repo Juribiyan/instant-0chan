@@ -1486,6 +1486,9 @@ msgstr "Вы искали"
 msgid "Your IP address is"
 msgstr "Ваш IP адрес:"
 
+msgid "Your user ID is"
+msgstr "Ваш ID:"
+
 msgid "Your appeal is currently pending review."
 msgstr "Ваша жалоба ожидает рассмотрения."
 
@@ -2190,3 +2193,6 @@ msgstr "Ваш ID"
 
 msgid "ID's are encrypted"
 msgstr "ID зашифрованы"
+
+msgid "Encrypted ID"
+msgstr "Зашифрованный ID"
