@@ -2181,3 +2181,12 @@ msgstr "Перейти к настройкам доски"
 
 msgid "Register"
 msgstr "Регистрация"
+
+msgid "View Appeals"
+msgstr "Обжалование банов"
+
+msgid "Your ID is"
+msgstr "Ваш ID"
+
+msgid "ID's are encrypted"
+msgstr "ID зашифрованы"

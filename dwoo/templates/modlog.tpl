@@ -30,12 +30,12 @@
 	{/if}
 </style>
 <h2>{t}ModLog{/t}</h2>
-<h4>{t}Your ID is{/t} <span class="mentions-me">{$my_id}</span></h4>
+{if $standalone} <h4>{t}Your ID is{/t} <span class="mentions-me">{$my_id}</span> ({t}ID's are encrypted{/t})</h4>{/if}
 <table cellspacing="2" cellpadding="1" border="1" width="100%"><tbody>
 	<tr>
 	  <th>{t}Time{/t}</th>
 	  <th>{t}User{/t}</th>
-	  <th>ID</th>
+	  <th{if $standalone} title="{t}ID's are encrypted{/t}"{/if}>ID{if $standalone}*{/if}</th>
 	  <th>{t}Board{/t}</th>
 	  <th width="100%">{t}Action{/t}</th>
 	</tr>
