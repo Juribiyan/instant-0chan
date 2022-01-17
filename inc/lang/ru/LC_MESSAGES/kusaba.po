@@ -2196,3 +2196,6 @@ msgstr "ID зашифрованы"
 
 msgid "Encrypted ID"
 msgstr "Зашифрованный ID"
+
+msgid "Ban duration for posting this file"
+msgstr "Время бана за постинг этого файла"

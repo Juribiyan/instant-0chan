@@ -163,6 +163,12 @@ $posting_class = new Posting();
 
 // Expired ban removal, and then existing ban check on the current user
 if (isset($board_class)) {
+	checkBan();
+}
+
+function checkBan() {
+	global $bans_class, $posting_class, $board_class;
+
 	$ban_result = $bans_class->BanCheck($posting_class->user_id, $board_class->board['name']);
 	if ($ban_result && is_array($ban_result) && $_POST['AJAX']) {
 		exit(json_encode(array(
@@ -191,7 +197,11 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 	$posting_class->CheckValidPost($post_isreply);
 	$posting_class->CheckMessageLength();
 	$posting_class->CheckCaptcha();
-	$posting_class->CheckBannedHash();
+	if ($posting_class->CheckBannedHash()) {
+		$tc_db->Execute("COMMIT");
+		checkBan();
+	}
+
 	list($thread_replies, $thread_locked, $thread_replyto) = $post_isreply
 		? $posting_class->GetThreadInfo($_POST['replythread'])
 		: array(0,0,0);
@@ -846,7 +856,7 @@ elseif (
 		if (!isset($pages_to[$b_class->board['name']]))
 			$pages_to[$b_class->board['name']] = -1;
 
-		$fdres = $b_class->DeleteFile($file, $pass, $ismod, $b_class->board['name']);
+		$fdres = $b_class->DeleteFile($file, $pass, $ismod);
 		if ($fdres['error'])
 			$file_action->fail($fdres['error']);
 		else {
@@ -863,7 +873,11 @@ elseif (
 					$threads_to_regenerate []= $room_id;
 				}
 				$page = $b_class->GetPageNumber($fdres['parentid'])['page'];
-				if (!in_array($page, $pages_to_regenerate[$b_class->board['name']])) {
+				if (
+					!is_array($pages_to_regenerate[$b_class->board['name']]) 
+					|| 
+					!in_array($page, $pages_to_regenerate[$b_class->board['name']])
+				) {
 					$pages_to_regenerate[$b_class->board['name']] []= $page;
 				}
 			}

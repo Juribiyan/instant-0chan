@@ -23,7 +23,7 @@ class Posting {
 	function __construct() {
 		global $tc_db, $board_class;
 
-		$this->ipless_mode = (I0_IPLESS_MODE==true || (I0_IPLESS_MODE=='auto' && $_SERVER['REMOTE_ADDR']=='127.0.0.1'));
+		$this->ipless_mode = (I0_IPLESS_MODE=='true' || (I0_IPLESS_MODE=='auto' && $_SERVER['REMOTE_ADDR']=='127.0.0.1'));
 
 		// Set user ID
 		$this->is_new_user = false;
@@ -271,12 +271,13 @@ class Posting {
 				WHERE `md5` = " . $tc_db->qstr($attachment['file_md5']) . " 
 				LIMIT 1");
 			if (count($results) > 0) {
-				$bans_class->BanUser($this->user_id, 'SERVER', '1', $results[0]['bantime'], '', 'Posting a banned file.<br />' . $results[0]['description'], 0, 0, 1);
-				$bans_class->BanCheck($this->user_id, $board_class->board['name']);
-				die();
-				// TODO: AJAX response
+				$ban_reason = _gettext('Posting a banned file.');
+				$bans_class->BanUser($this->user_id, 'SERVER', '1', $results[0]['bantime'], '', $ban_reason . $results[0]['description'], '', 0, 0, 1);
+				management_addlogentry(_gettext('Banned').' '._gettext('from all all boards').' '. _gettext('without expiration').' - '.$ban_reason, 8, array(), $this->user_id, 'SERVER');
+				return true;
 			}
 		}
+		return false;
 	}
 
 	function CheckIsReply() {

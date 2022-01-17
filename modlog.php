@@ -10,7 +10,7 @@ $dwoo = new Dwoo();
 $dwoo_data = new Dwoo_Data();
 
 // Determine the User ID
-if ((I0_IPLESS_MODE==true || (I0_IPLESS_MODE=='auto' && $_SERVER['REMOTE_ADDR']=='127.0.0.1'))) {
+if ((I0_IPLESS_MODE=='true' || (I0_IPLESS_MODE=='auto' && $_SERVER['REMOTE_ADDR']=='127.0.0.1'))) {
 	if (isset($_COOKIE['I0_persistent_id'])) {
 		$user_id = $_COOKIE['I0_persistent_id'];
 	}

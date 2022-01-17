@@ -173,6 +173,7 @@ if (!$cache_loaded) {
 
 
 	// ------------------------------------- Misc settings --------------------------------------
+		$cf['KU_ALLOWREAD'] = false; // Enable banning from reading (only works on Apache)
 		$cf['I0_CURL_PROXY'] = false; // Proxy to use when fetching external resources, for example 'socks5h://127.0.0.1:9050' — to connect through TOR
 		$cf['KU_USE_GESHI']  = false;	//Use original code highlighter from 0chan.ru like the cargo cultist you are
 		$cf['KU_DISCLAIMER'] = false; // Whether or not a disclaimer (/dwoo/templates/disclaimer.tpl) should be displayed for new visitors.

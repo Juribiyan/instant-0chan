@@ -981,10 +981,11 @@ class Board {
 		}
 	}
 
-	function DeleteFile($file_id, $pass, $ismod, $boardname) {
+	function DeleteFile($file_id, $pass, $ismod) {
 		global $tc_db;
 		if (! is_numeric($file_id))
 			return array('error' => _gettext('Invalid file id'));
+		$boardname = $this->board['name'];
 		$postfile = $tc_db->GetAll("SELECT * FROM `".KU_DBPREFIX."postembeds` WHERE `file_id`=".$tc_db->qstr($file_id));
 		if (!$postfile)
 			return array('error' => _gettext('File does not exist.'));
@@ -994,37 +995,45 @@ class Board {
 				'error' => false,
 				'already_deleted' => true
 			);
-
-		// Delpass hashing
-		$passtype = $postfile['password'] [0];
-		if ($passtype == '+') {
-			$pass = $passtype . md5($pass . $postfile['id'] . $postfile['boardid'] . KU_RANDOMSEED);
-		}
-		elseif ($passtype == '-') {
-			$pass = $passtype . md5($pass . KU_RANDOMSEED);
+		
+		if ($ismod) {
+			$pass = $postfile['password'];
 		}
 		else {
-			$pass = md5($pass);
+			// Delpass hashing
+			$passtype = $postfile['password'] [0];
+			if ($passtype == '+') {
+				$pass = $passtype . md5($pass . $postfile['id'] . $postfile['boardid'] . KU_RANDOMSEED);
+			}
+			elseif ($passtype == '-') {
+				$pass = $passtype . md5($pass . KU_RANDOMSEED);
+			}
+			else {
+				$pass = md5($pass);
+			}
 		}
 
-		if (!$ismod && $postfile['password'] != $pass) {
+		if ($postfile['password'] != $pass) {
 			return array('error' => _gettext('Incorrect password.'));
 		}
 		$erase = !$ismod && I0_ERASE_DELETED;
-		clearPostCache($postfile['id'], $this->board['name']);
+		if (!$boardname || $boardname != $this->board['name']) {
+			$boardname = $tc_db->GetOne("SELECT `name` FROM `boards` WHERE `id`=".$tc_db->qstr($postfile['boardid']));
+		}
+		clearPostCache($postfile['id'], $boardname);
 		$tc_db->Execute("UPDATE `".KU_DBPREFIX."files` SET `file`='removed'".
 			($erase ? $this::FILE_ERASE : '').
 			" WHERE `file_id`=".$tc_db->qstr($file_id));
 		$this->EraseFileAndThumbs($postfile);
+		$parentid = $postfile['parentid']=='0' ? $postfile['id'] : $postfile['parentid'];
 		if ($ismod) {
-			$parentid = $postfile['parentid']=='0' ? $postfile['id'] : $postfile['parentid'];
 			management_addlogentry(_gettext('Deleted file') .
 				' "' . $postfile['file_original'] . '.' . $postfile['file_type'] .'" ' .
 				_gettext('from') . ' #<a href="/'.$boardname.'/res/'.$parentid.'.html#'. $postfile['id'] . '">'. $postfile['id'] . '</a> - /'. $boardname . '/', 7);
 		}
 		return array(
 			'error' => false,
-			'parentid' => $postfile['parentid']==0 ? $postfile['id'] : $postfile['parentid']
+			'parentid' => $parentid
 		);
 	}
 
