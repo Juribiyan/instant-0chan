@@ -77,7 +77,8 @@
 	{include file='disclaimer.tpl'}
 {/if}
 <div class="adminbar">
-{if $board.enablecatalog eq 1}[<a href="{%KU_BOARDSFOLDER}{$board.name}/catalog.html"><b>{t}Catalog{/t}</b></a>]{/if}
+{if $board.enablecatalog eq 1}[<a href="{%KU_BOARDSFOLDER}{$board.name}/catalog.html"><b>{t}Catalog{/t}</b></a>]&nbsp;{/if}
+{if %I0_ENABLE_PUBLIC_MODLOG}[<a href="{%KU_WEBPATH}/modlog.php"><b>{t}ModLog{/t}</b></a>]&nbsp;{/if}
 [<a href="{%KU_WEBPATH}/kusaba.php" target="_top">{t}Frames{/t}</a>]&nbsp;[<a href="{%KU_CGIPATH}/manage.php" target="_top">{t}Manage{/t}</a>]
 <svg class="icon b-icon history-toggle yesscript" onclick="pups.historyToggle()"><use title="{t}Show alert history{/t}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-bell"></use></svg>
 </div>
