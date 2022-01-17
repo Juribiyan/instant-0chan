@@ -247,7 +247,9 @@ CREATE TABLE `PREFIX_modlog` (
   `entry` text NOT NULL,
   `user` varchar(255) NOT NULL DEFAULT '',
   `category` tinyint(2) NOT NULL DEFAULT '0',
-  `timestamp` int(20) NOT NULL DEFAULT '0'
+  `timestamp` int(20) NOT NULL DEFAULT '0',
+  `boards` VARCHAR(50) NULL DEFAULT NULL,
+  `id` VARCHAR(50) NULL DEFAULT NULL
 ) DEFAULT CHARSET=KU_DBCHARSET;
 
 -- --------------------------------------------------------
