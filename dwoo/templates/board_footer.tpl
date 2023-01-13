@@ -20,6 +20,10 @@
 	<tr><td>
 		<input name="cancel_timer" value="{t}Cancel timer{/t}" type="submit" class="styled-button" />
 	</td></tr>
+	<noscript><tr><td><details>
+		<summary>{t}Moderation{/t}</summary>
+		<input name="moddelete" value="{t}Delete{/t} ({t}Mod{/t})" type="submit" class="styled-button bad-button" />
+	</details></td></tr></noscript>
 	</tbody></table>
 	</form>
 

@@ -567,6 +567,8 @@ elseif (
 		(
 			isset($_POST['deletepost'])
 			||
+			isset($_POST['moddelete']) // required to allow mod deleting multiple posts without AJAX
+			||
 			isset($_POST['reportpost'])
 			||
 			isset($_POST['cancel_timer'])
@@ -587,9 +589,11 @@ elseif (
 
 	// Check rights
 	$pass = (isset($_POST['postpassword']) && $_POST['postpassword']!="") ? $_POST['postpassword'] : null;
-	$ismod = $_POST['moddelete']=="true";
-	if ($ismod)
+	$ismod = !!$_POST['moddelete'];
+	if ($ismod) {
 		require_once KU_ROOTDIR . 'inc/classes/manage.class.php';
+		$_POST['deletepost'] = true; // required to allow mod deleting multiple posts without AJAX
+	}
 	$isop = ( 
 		$_POST['opdelete']
 		&&
