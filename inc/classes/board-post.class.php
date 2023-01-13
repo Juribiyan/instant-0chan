@@ -210,6 +210,9 @@ class Board {
 				for ($i=$from; $i <= $to; $i++) { 
 					@unlink($dir.'/'.($i==0 ? 'index' : $i).'.html');
 				}
+				foreach ($singles as &$i) {
+					@unlink($dir.'/'.($i==0 ? 'index' : $i).'.html');
+				}
 			}
 			return;
 		}
