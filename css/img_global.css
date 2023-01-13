@@ -430,7 +430,10 @@ pre {
   text-align: center;
   white-space: nowrap;
 }
-
+.userdelete summary {
+  font-size: 13px;
+  cursor: pointer;
+}
 .userdelete td {
   display: -webkit-box;
   display: flex;
@@ -447,6 +450,7 @@ pre {
 .userdelete label[for=opmod] {
   margin-left: 6px;
 }
+
 .replypage .replylink {
   display: none;
 }
