@@ -20,8 +20,8 @@ class Parse {
 	}
 
 	function MakeClickable($txt) {
-		$txt = preg_replace_callback('#«([^«»]*)»:(http:\/\/|https:\/\/|ftp:\/\/|gopher:\/\/)([^\s]+(([^\s\pP]|\/|\]|\pP(?=(\R|$))))+)#u',array(&$this, 'exturlcallback'),$txt);
-		$txt = preg_replace_callback('#(?<!href=")((?:http:|https:|ftp:|gopher:)\/\/)([^\s]+(([^\s\pP]|\/|\]|\pP(?=(\R|$))))+)#u',array(&$this, 'urlcallback'),$txt);
+		$txt = preg_replace_callback('#«([^«»]*)»:(http:\/\/|https:\/\/|ftp:\/\/|gopher:\/\/)([^\s<]+(([^\s\pP<]|\/|\]|\pP(?=(\R|$))))+)#u',array(&$this, 'exturlcallback'),$txt);
+		$txt = preg_replace_callback('#(?<!href=")((?:http:|https:|ftp:|gopher:)\/\/)([^\s<]+(([^\s\pP<]|\/|\]|\pP(?=(\R|$))))+)#u',array(&$this, 'urlcallback'),$txt);
 		return $txt;
 	}
 
