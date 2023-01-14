@@ -604,7 +604,7 @@ class Upload {
 		$newfn = $thumbpath.$filename;
 		exec('ffmpeg -i '.$filepath.$common.$scale.$foar.' '.$newfn.'s.jpg'.$common.$scalecat.$foar.' '.$newfn.'c.jpg 2>&1', $result, $x);
     if($x !== 0) return false;
-		preg_match('/Output[\s\S]+?(\d+)x(\d+)[\s\S]+?(\d+)x(\d+)/m', implode('<br>', $result), $ths);
+		preg_match('/Output[\s\S]+?\sStream.+?(\d+)x(\d+)[\s\S]+?Stream.+?(\d+)x(\d+)/m', implode('<br>', $result), $ths);
 		if(count($ths) == 5) return array(
 			'thumbwidth' => $ths[1],
 			'thumbheight' => $ths[2],
