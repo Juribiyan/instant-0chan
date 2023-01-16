@@ -1635,6 +1635,9 @@ ol,ul {
 .touch-mode .b-icon {
   width: 24px;
 }
+.touch-mode .qrl {
+  display: none;
+}
 .unpinned.pinner .use-pin, 
 .pinned.pinner .use-unpin,
 .collapsed.collapser .use-collapse,
