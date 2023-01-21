@@ -80,7 +80,7 @@
      <svg class="icon i-icon i-pin"><use xlink:href="#i-pin"></use></svg>
     {/if}
     <span id="hide{$post.id}" class="inthread-hide">
-     <a href="#" onclick="javascript:HiddenItems.hideThread('{$post.id}-{$board.name}');return false;" title="Hide Thread">
+     <a href="#" onclick="javascript:HiddenItems.hideThread('{$post.id}-{$board.name}');return false;" title="{t}Hide Thread{/t}">
       <svg class="icon b-icon"><use xlink:href="#i-hide"></use></svg>
      </a>
     </span>
@@ -98,6 +98,11 @@
    </a>
    {if $board.balls}
     <img class="_country_" src="{%KU_WEBPATH}/images/flags/{$post.country}.png">
+   {/if}
+   {if $post.parentid neq 0}
+    <a href="#" onclick="javascript:HiddenItems.togglePost('{$post.id}-{$board.name}');return false;" title="{t}Hide{/t} {t}post{/t}" class="hide-post-btn">
+     <svg class="icon b-icon"><use xlink:href="#i-hide"></use></svg>
+    </a>
    {/if}
   </span>
   {if $post.parentid eq 0}

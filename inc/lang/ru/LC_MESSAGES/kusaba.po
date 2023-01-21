@@ -241,7 +241,7 @@ msgid "Click Reply to view."
 msgstr "Нажмите Ответ для просмотра."
 
 msgid "Click to show/hide"
-msgstr "Нажмите Показать/Спрятать"
+msgstr "Нажмите Показать/Скрыть"
 
 msgid "Continue"
 msgstr "Продолжить"
@@ -484,13 +484,13 @@ msgid "Help"
 msgstr "Помощь"
 
 msgid "Hide Directories"
-msgstr "Спрятать директории"
+msgstr "Скрыть директории"
 
 msgid "Hide"
-msgstr "Спрятать"
+msgstr "Скрыть"
 
 msgid "hide"
-msgstr "cпрятать"
+msgstr "скрыть"
 
 msgid "Hide Thread"
 msgstr "Спрятать тред"
@@ -888,6 +888,9 @@ msgstr "Популярные"
 
 msgid "Post"
 msgstr "Пост"
+
+msgid "post"
+msgstr "пост"
 
 msgid "Post added."
 msgstr "Пост добавлен."
