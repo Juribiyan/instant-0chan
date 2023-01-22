@@ -32,7 +32,7 @@
 	//--></script>
 {/if}
 {if $replythread eq 0}
-	<table border="1">
+	<table border="1" id="pagination">
 	<tbody>
 		<tr>
 			<td>

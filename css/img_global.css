@@ -4077,3 +4077,13 @@ input[name=postpassword] + div {
   position: absolute;
   z-index: 2;
 }
+
+.endless-scroll-loading {
+  display: block;
+  height: 40px;
+}
+.endless-scroll-loading::before {
+  left: calc(50% - 8px);
+  top: calc(50% - 8px);
+  transform: translate(-12px,-8px);
+}

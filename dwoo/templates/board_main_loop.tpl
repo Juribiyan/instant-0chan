@@ -1,7 +1,7 @@
 {* INIT SECTION, STARTING LOOPS *}
  {if not $for_overboard}
  <form id="delform" action="{%KU_CGIPATH}/board.php" method="post">
- <input type="hidden" name="board" value="{$board.name}" />
+ <input type="hidden" name="board" value="{$board.name}" />{if !$isthread}<div class="i0svcel">!i0-page-start</div>{/if}
  {/if}
  {foreach name=thread item=posts_in_thread from=$posts}
   {foreach key=postkey item=post from=$posts_in_thread}
@@ -9,7 +9,6 @@
 
 {* PRE-POSTHEAD SECTION *}
  {if $post.parentid eq 0} {* If OP → *}
-  {if $isthread}<div class="i0svcel">!i0-pd:{$post.id}</div>{/if} {* post delimiter for quick parsing *}
   <span id="unhidethread{$post.id}-{$board.name}">
    {t}Thread{/t} 
    <a href="{%KU_BOARDSFOLDER}{$board.name}/res/{$post.id}.html" class="ref|{$board.name}|{$post.id}|{$post.id}">{if $for_overboard}/{$board.name}/{/if}{$post.id}</a> 
@@ -19,10 +18,11 @@
    </a>
   </span>
   <div id="thread{$post.id}-{$board.name}" data-threadid="{$post.id}"{if $isthread} class="replies"{/if} data-boardid="{$board.id}"> {* #thread → *}
+   <div class="i0svcel">!i0-pd:{$post.id}</div> {* post delimiter for quick parsing *}
    <div class="postnode op" data-id="{$post.id}" data-board="{$board.name}"> {* .postnode.op → *}
     <a name="s{$.foreach.thread.iteration}"></a>
  {else} {* If reply → *}
-  {if $isthread}<div class="i0svcel">!i0-pd:{$post.id}</div>{/if} {* post delimiter for quick parsing *}
+  <div class="i0svcel">!i0-pd:{$post.id}</div> {* post delimiter for quick parsing *}
   <table id="postnode{$post.id}-{$board.name}" class="postnode" data-id="{$post.id}" data-board="{$board.name}"><tbody>
    <tr>
     <td class="doubledash">&gt;&gt;</td>
@@ -249,6 +249,7 @@
 {* WRAP-UP SECTION *}
  {if $post.parentid eq 0}
   </div> {* ← /.postnode.op (at least I hope so) *}
+  <div class="i0svcel">!i0-pd-end</div> {* post delimiter for quick parsing *}
   {if not $isthread}
    <div id="replies{$post.id}-{$board.name}" class="replies">
    {if $post.replies}
@@ -313,8 +314,8 @@
     </td> {* ← /reply *}
    </tr>
   </tbody></table> {* ← .postnode *}
+  <div class="i0svcel">!i0-pd-end</div> {* post delimiter for quick parsing *}
  {/if}
- {if $isthread}<div class="i0svcel">!i0-pd-end</div>{/if} {* post delimiter for quick parsing *}
  {/foreach} 
  {if not $isthread}
   </div> {* ← I've given up at this point *}
@@ -360,5 +361,5 @@
   </div>
   <hr />
  {/if}
- {/foreach}
+ {/foreach}{if !$isthread && !$for_overboard}<div class="i0svcel">!i0-page-end</div>{/if}
 {* / WRAP-UP SECTION *}
