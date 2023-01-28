@@ -93,9 +93,9 @@ function getfiletypeinfo($filetype) {
 		foreach($results AS $line) {
 			$return = array($line['image'],$line['image_w'],$line['image_h']);
 		}
-	} else {
-		/* No info was found, return the generic icon */
-		$return = array('generic.png',48,48);
+	} 
+	else { /* No info was found, return the generic icon */
+		$return = array('*',0,0);
 	}
 
 	if (KU_APC) {

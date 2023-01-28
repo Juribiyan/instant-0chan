@@ -1091,7 +1091,7 @@ msgid "Sorry, because of your numerous failed logins, you have been locked out f
 msgstr "Слишком много попыток захода. Обожди 20 минут. И попробуй снова."
 
 msgid "Sorry, that filetype is not allowed on this board."
-msgstr "Типа файла не разрешен к отправке на эту доску."
+msgstr "Тип файла не разрешен к отправке на эту доску."
 
 msgid "Sorry, this board is locked and can not be posted in."
 msgstr "Эта доска закрыта, в неё нельзя отправлять сообщения."
@@ -2202,3 +2202,9 @@ msgstr "Зашифрованный ID"
 
 msgid "Ban duration for posting this file"
 msgstr "Время бана за постинг этого файла"
+
+msgid "All"
+msgstr "Все"
+
+msgid " except "
+msgstr ", кроме "

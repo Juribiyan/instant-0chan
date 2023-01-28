@@ -83,7 +83,8 @@ class Upload {
 		  			$file_type = '.jpg';
 		  		}
 		  		$filetype_withoutdot = substr($file_type, 1);
-		  		if (in_array($filetype_withoutdot, $board_class->board['filetypes_allowed'])) {
+		  		$generic_filetype_allowed = $board_class->board['any_filetype'] && !$this->isBannedFiletype($filetype_withoutdot);
+		  		if ($generic_filetype_allowed || in_array($filetype_withoutdot, $board_class->board['filetypes_allowed'])) {
 		  			$file_md5 = md5_file($_FILES['imagefile']['tmp_name'][$i]);
 		  			if (in_array($file_md5, $file_hashes)) {
 		  				$this->exitWithUploadErrorPage(_gettext('Duplicate file entry detected.'),
@@ -304,9 +305,10 @@ class Upload {
 					AND " . KU_DBPREFIX . "filetypes.id = " . KU_DBPREFIX . "board_filetypes.typeid
 					AND " . KU_DBPREFIX . "boards.name = '" . $board_class->board['name'] . "'
 					AND " . KU_DBPREFIX . "filetypes.filetype = '" . $attachment['filetype_withoutdot'] . "';");
-				if ($filetype_forcethumb != '') {
-					if ($filetype_forcethumb == 0) {
-
+				$generic_filetype_allowed = $board_class->board['any_filetype'] && !$this->isBannedFiletype($attachment['filetype_withoutdot']);
+				if ($generic_filetype_allowed || $filetype_forcethumb != '') {
+					// Make thumbnails for images and videos
+					if ($filetype_forcethumb != '' && $filetype_forcethumb == 0) {
 						/* If this board has a load balance url and password configured for it, attempt to use it */
 						if ($board_class->board['loadbalanceurl'] != '' && $board_class->board['loadbalancepassword'] != '') {
 							require_once KU_ROOTDIR . 'inc/classes/loadbalancer.class.php';
@@ -325,8 +327,8 @@ class Upload {
 							} else {
 								$this->exitWithUploadErrorPage(_gettext('File was not properly thumbnailed').': ' . $response, $atype, $i, $filename);
 							}
-						/* Otherwise, use this script alone */
-						} else {
+						} 
+						else { /* Otherwise, use this script alone */
 							$attachment['file_location'] = KU_BOARDSDIR . $board_class->board['name'] . '/src/' . $attachment['file_name'] . $attachment['file_type'];
 
 							if($attachment['is_video']) {
@@ -375,12 +377,15 @@ class Upload {
 									$imageDim_thumb = getimagesize($attachment['file_thumb_location']);
 									$attachment['imgWidth_thumb'] = $imageDim_thumb[0];
 									$attachment['imgHeight_thumb'] = $imageDim_thumb[1];
-								} else {
+								} 
+								else {
 									$this->exitWithUploadErrorPage(_gettext('File was not fully uploaded. Please go back and try again.'), $atype, $i, $filename);
 								}
 							}
 						}
-					} else {
+					}
+					// Assign a generic thumbnail to file
+					else {
 						/* Fetch the mime requirement for this special filetype */
 						$filetype_required_mime = $tc_db->GetOne("SELECT `mime`
 							FROM `" . KU_DBPREFIX . "filetypes`
@@ -405,7 +410,8 @@ class Upload {
 
 							$attachment['file_is_special'] = true;
 						/* Otherwise, use this script alone */
-						} else {
+						} 
+						else {
 							$attachment['file_location'] = KU_BOARDSDIR . $board_class->board['name'] . '/src/' . $attachment['file_name'] . $attachment['file_type'];
 
 							if (file_exists($attachment['file_location'])) {
@@ -486,7 +492,8 @@ class Upload {
 							$attachment['file_is_special'] = true;
 						}
 					}
-				} else {
+				} 
+				else {
 					$this->exitWithUploadErrorPage(_gettext('Sorry, that filetype is not allowed on this board.'), $atype, $i, $filename);
 				}
 			}
@@ -578,6 +585,10 @@ class Upload {
 				}
 			}
 		} unset($i);
+	}
+
+	function isBannedFiletype($type) {
+		return in_array($type, explode(':', I0_BANNED_FILETYPES));
 	}
 
 	function ffProbe($filepath) {

@@ -117,7 +117,12 @@ class Board {
 					}
 				}
 				foreach($filetypes_allowed as $filetype) {
-					$this->board['filetypes_allowed'] []= $filetype['filetype'];
+					if ($filetype['filetype']=="*") {
+						$this->board['any_filetype'] = true;
+						$this->board['filetypes_allowed'] = array();
+					}
+					else
+						$this->board['filetypes_allowed'] []= $filetype['filetype'];
 				}
 				$ftypes = $tc_db->GetAll("SELECT `filetype` FROM `" . KU_DBPREFIX . "embeds`");
 				$this->board['filetypes'] = array();
@@ -756,24 +761,30 @@ class Board {
 			) {
 				if(!isset($filetype_info[$embed['file_type']]))
 					$filetype_info[$embed['file_type']] = getfiletypeinfo($embed['file_type']);
-				$embed['nonstandard_file'] = KU_WEBPATH . '/inc/filetypes/' . $filetype_info[$embed['file_type']][0];
-				if($embed['thumb_w']!=0&&$embed['thumb_h']!=0) {
-					if(file_exists(KU_BOARDSDIR.$this->board['name'].'/thumb/'.$embed['file'].'s.jpg'))
-						$embed['nonstandard_file'] = KU_WEBPATH . '/' .$this->board['name'].'/thumb/'.$embed['file'].'s.jpg';
-					elseif(file_exists(KU_BOARDSDIR.$this->board['name'].'/thumb/'.$embed['file'].'s.png'))
-						$embed['nonstandard_file'] = KU_WEBPATH . '/' .$this->board['name'].'/thumb/'.$embed['file'].'s.png';
-					elseif(file_exists(KU_BOARDSDIR.$this->board['name'].'/thumb/'.$embed['file'].'s.gif'))
-						$embed['nonstandard_file'] = KU_WEBPATH . '/' .$this->board['name'].'/thumb/'.$embed['file'].'s.gif';
+				if ($filetype_info[$embed['file_type']][0] == "*") {
+					$embed['generic_icon'] = 2;
+					$embed['nonstandard_file'] = true;
+				}
+				else {
+					$embed['nonstandard_file'] = KU_WEBPATH . '/inc/filetypes/' . $filetype_info[$embed['file_type']][0];
+					if($embed['thumb_w']!=0&&$embed['thumb_h']!=0) {
+						if(file_exists(KU_BOARDSDIR.$this->board['name'].'/thumb/'.$embed['file'].'s.jpg'))
+							$embed['nonstandard_file'] = KU_WEBPATH . '/' .$this->board['name'].'/thumb/'.$embed['file'].'s.jpg';
+						elseif(file_exists(KU_BOARDSDIR.$this->board['name'].'/thumb/'.$embed['file'].'s.png'))
+							$embed['nonstandard_file'] = KU_WEBPATH . '/' .$this->board['name'].'/thumb/'.$embed['file'].'s.png';
+						elseif(file_exists(KU_BOARDSDIR.$this->board['name'].'/thumb/'.$embed['file'].'s.gif'))
+							$embed['nonstandard_file'] = KU_WEBPATH . '/' .$this->board['name'].'/thumb/'.$embed['file'].'s.gif';
+						else {
+							$embed['generic_icon'] = 1;
+							$embed['thumb_w'] = $filetype_info[$embed['file_type']][1];
+							$embed['thumb_h'] = $filetype_info[$embed['file_type']][2];
+						}
+					}
 					else {
-						$embed['generic_icon'] = true;
+						$embed['generic_icon'] = 1;
 						$embed['thumb_w'] = $filetype_info[$embed['file_type']][1];
 						$embed['thumb_h'] = $filetype_info[$embed['file_type']][2];
 					}
-				}
-				else {
-					$embed['generic_icon'] = true;
-					$embed['thumb_w'] = $filetype_info[$embed['file_type']][1];
-					$embed['thumb_h'] = $filetype_info[$embed['file_type']][2];
 				}
 			}
 		}

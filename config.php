@@ -170,6 +170,7 @@ if (!$cache_loaded) {
 		$cf['KU_OPTIPNGLV']        = '2'; 	// Optipng optimization level, from 1 (fastest) to 7 (slowest)
 		$cf['KU_YOUTUBEWIDTH']     = 200; 	// Width to display embedded YouTube videos
 		$cf['KU_YOUTUBEHEIGHT']    = 164; 	// Height to display embedded YouTube videos
+		$cf['I0_BANNED_FILETYPES'] = 'php:htaccess:html'; // List of filetypes that should never be allowed to upload. These filetypes should only be allowed to upload if you properly set up your server to not execute them
 
 
 	// ------------------------------------- Misc settings --------------------------------------
@@ -313,6 +314,7 @@ if (!isset($tc_db) && !isset($preconfig_db_unnecessary) && (!isset($GLOBALS['ski
 	} else {
 		$tc_db->Connect(KU_DBHOST, KU_DBUSERNAME, KU_DBPASSWORD, KU_DBDATABASE) or die('SQL database connection error: ' . $tc_db->ErrorMsg());
 	}
+	mysqli_report(MYSQLI_REPORT_OFF);
 
 	$tc_db->EXECUTE("set names '".KU_DBCHARSET."'");
 

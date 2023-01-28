@@ -1,0 +1,1 @@
+INSERT INTO `filetypes` (`filetype`, `image_w`, `image_h`) VALUES ('*', '0', '0');

@@ -1,6 +1,6 @@
 <div class="postarea">
 <a id="postbox"></a>
-{if not $isthread}<div class="i0svcel">!i0-pb</div>{/if}<form name="postform" id="postform" action="{%KU_CGIPATH}/board.php" method="post" enctype="multipart/form-data" class="main-reply-form" data-maxfiles="{$board.maxfiles}" data-allowed-filetypes="{foreach name=files item=filetype from=$board.filetypes_allowed}{$filetype}{if $.foreach.files.last}{else},{/if}{/foreach}">
+{if not $isthread}<div class="i0svcel">!i0-pb</div>{/if}<form name="postform" id="postform" action="{%KU_CGIPATH}/board.php" method="post" enctype="multipart/form-data" class="main-reply-form" data-maxfiles="{$board.maxfiles}" data-allowed-filetypes="{foreach name=files item=filetype from=$board.filetypes_allowed}{$filetype}{if $.foreach.files.last}{else},{/if}{/foreach}"{if $board.any_filetype} data-allowed-all-filetypes="*"{/if}>
 	<input type="hidden" name="board" value="{$board.name}" />
 	<input type="hidden" name="replythread" value="<!sm_threadid>" />
 	<input type="hidden" name="makepost" value="1" />
@@ -81,7 +81,7 @@
 		</tr>
 		{/if}
 		<input type="hidden" name="legacy-posting" value="1" />
-		{if $board.filetypes_allowed}
+		{if $board.filetypes_allowed || $board.any_filetype}
 			<tr class="file-row">
 				<td class="postblock">
 					<span class="file-count">{t}File{/t}</span>
@@ -213,12 +213,22 @@
 						<summary style="text-align: center;">[<b class="xlink">{t}Info{/t}</b>]</summary>
 						<ul class="blotter-entries">
 							<li>{t}Supported file types are{/t}: {strip}
-							{if $board.filetypes_allowed neq ''}
-								{foreach name=files item=filetype from=$board.filetypes_allowed}
-									{$filetype|upper}{if $.foreach.files.last}{else}, {/if}
+							{if ($board.filetypes_allowed neq '' && !empty($board.filetypes_allowed))}
+								{foreach name=types item=filetype from=$board.filetypes_allowed}
+									{$filetype|upper}{if $.foreach.types.last}{else}, {/if}
 								{/foreach}
 							{else}
-								{t}None{/t}
+								{if $board.any_filetype}
+									{t}All{/t}
+									{if %I0_BANNED_FILETYPES}
+										{t} except {/t}
+										{foreach name=types from=explode(':', %I0_BANNED_FILETYPES) item=filetype}
+											{$filetype|upper}{if $.foreach.types.last}{else}, {/if}
+										{/foreach}
+									{/if}
+								{else}
+									{t}None{/t}
+								{/if}
 							{/if}.{/strip}
 							</li>
 							<li>{t}Supported embed types are{/t}: {strip}

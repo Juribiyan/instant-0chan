@@ -470,6 +470,7 @@ INSERT INTO `PREFIX_ads` (`id`, `position`, `disp`, `boards`, `code`) VALUES (1,
 
 INSERT INTO `PREFIX_filetypes` 
 (`filetype`,               `mime`,                `image`,    `image_w`, `image_h`, `force_thumb`) VALUES
+(    '*',                    '',                     '',          0,         0,           1),
 (   'jpg',                   '',                     '',          0,         0,           0),
 (   'gif',                   '',                     '',          0,         0,           0),
 (   'png',                   '',                     '',          0,         0,           0),

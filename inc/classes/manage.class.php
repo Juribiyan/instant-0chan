@@ -3210,12 +3210,28 @@ class Manage {
 					<div class="desc">'. _gettext('What filetypes users are allowed to upload.') .'</div><br />';
 					$filetypes = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `filetype` FROM `" . KU_DBPREFIX . "filetypes` ORDER BY `filetype` ASC");
 					foreach ($filetypes as $filetype) {
-						$tpl_page .= '<label for="filetype_'. $filetype['id'] . '">'. strtoupper($filetype['filetype']) . '</label><input type="checkbox" name="filetype_'. $filetype['id'] . '"';
+						$is_any = $filetype['filetype']=="*";
+						$ftype_name = $is_any ? "<b>"._gettext('Any file type')."</b>" : strtoupper($filetype['filetype']);
+						$tpl_page .= '<label for="filetype_'. $filetype['id'] . '">'. $ftype_name . '</label><input type="checkbox" name="filetype_'. $filetype['id'] . '"';
 						$filetype_isenabled = $tc_db->GetOne("SELECT HIGH_PRIORITY COUNT(*) FROM `" . KU_DBPREFIX . "board_filetypes` WHERE `boardid` = '" . $lineboard['id'] . "' AND `typeid` = '" . $filetype['id'] . "' LIMIT 1");
 						if ($filetype_isenabled > 0) {
 							$tpl_page .= ' checked';
 						}
 						$tpl_page .= ' /><br />';
+						if ($is_any) {
+							$tpl_page .= "<script>
+								document.querySelector('input[name=filetype_".$filetype['id']."]').onchange = function() { 
+									document.querySelectorAll('input[name^=filetype]').forEach(i => {
+										if (i != this) {
+											if (this.checked) 
+												i.setAttribute('disabled', true)
+											else
+												i.removeAttribute('disabled')
+										}
+									})
+								}
+							</script>";
+						}
 					}
 
 					/* Allowed embeds */

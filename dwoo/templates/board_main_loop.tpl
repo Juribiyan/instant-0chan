@@ -210,7 +210,14 @@
          {if $embed.file_type eq 'css'} class="csswrap" {/if}
          {if %KU_NEWWINDOW}target="_blank"{/if}        
          href="{$file_path}/src/{$embed.file}.{$embed.file_type}">
-         <div id="thumb{$embed.file_id}"{if $embed.generic_icon eq ''} class="thumb playable-thumb" title="{t}Play{/t}"{/if}><img src="{$embed.nonstandard_file}" alt="{$post.id}" class="thumb" height="{$embed.thumb_h}" width="{$embed.thumb_w}" /></div>
+         {* FUCK THIS BULLSHIT LOGIC I WANNA KMS *}
+         {if $embed.generic_icon == 2}
+          <div id="thumb{$embed.file_id}" class="thumb generic-file-icon" style="background-color: hsl({color_from_extension($embed.file_type)}, 66%, 50%)">
+           <div class="gfi-extension">{$embed.file_type}</div>
+          </div>
+         {else}
+          <div id="thumb{$embed.file_id}"{if $embed.generic_icon eq ''} class="thumb playable-thumb" title="{t}Play{/t}"{/if}><img src="{$embed.nonstandard_file}" alt="{$post.id}" class="thumb" height="{$embed.thumb_h}" width="{$embed.thumb_w}" /></div>
+         {/if}
          </a>
         {/if}
        </figure>

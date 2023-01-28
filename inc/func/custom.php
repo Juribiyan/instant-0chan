@@ -65,6 +65,15 @@ function rainbow ($string)
   return base64_encode ($image_data);
 }
 
+function color_from_extension($ext) {
+  $chars = array_reverse(str_split($ext));
+  $s = '';
+  foreach ($chars as $char) {
+    $s .= ord($char);
+  }
+  return $s % 360;
+}
+
 function is_from_sosach($filename) {
   return preg_match('/^[0-9]{14}$/m', $filename);
 }
