@@ -299,13 +299,17 @@ class Upload {
 
 				$attachment['file_size'] = $attachment['size'];
 
-				$filetype_forcethumb = $tc_db->GetOne("SELECT " . KU_DBPREFIX . "filetypes.force_thumb
-					FROM " . KU_DBPREFIX . "boards, " . KU_DBPREFIX . "filetypes, " . KU_DBPREFIX . "board_filetypes
-					WHERE " . KU_DBPREFIX . "boards.id = " . KU_DBPREFIX . "board_filetypes.boardid
-					AND " . KU_DBPREFIX . "filetypes.id = " . KU_DBPREFIX . "board_filetypes.typeid
-					AND " . KU_DBPREFIX . "boards.name = '" . $board_class->board['name'] . "'
-					AND " . KU_DBPREFIX . "filetypes.filetype = '" . $attachment['filetype_withoutdot'] . "';");
-				$generic_filetype_allowed = $board_class->board['any_filetype'] && !$this->isBannedFiletype($attachment['filetype_withoutdot']);
+        $generic_filetype_allowed = $board_class->board['any_filetype'] && !$this->isBannedFiletype($attachment['filetype_withoutdot']);
+				$filetype_forcethumb = $generic_filetype_allowed 
+          ? $tc_db->GetOne("SELECT " . KU_DBPREFIX . "filetypes.force_thumb
+            FROM " . KU_DBPREFIX . "filetypes 
+            WHERE " . KU_DBPREFIX . "filetype = '" . $attachment['filetype_withoutdot'] . "';")
+          : $tc_db->GetOne("SELECT " . KU_DBPREFIX . "filetypes.force_thumb
+            FROM " . KU_DBPREFIX . "boards, " . KU_DBPREFIX . "filetypes, " . KU_DBPREFIX . "board_filetypes
+            WHERE " . KU_DBPREFIX . "boards.id = " . KU_DBPREFIX . "board_filetypes.boardid
+            AND " . KU_DBPREFIX . "filetypes.id = " . KU_DBPREFIX . "board_filetypes.typeid
+            AND " . KU_DBPREFIX . "boards.name = '" . $board_class->board['name'] . "'
+            AND " . KU_DBPREFIX . "filetypes.filetype = '" . $attachment['filetype_withoutdot'] . "';");
 				if ($generic_filetype_allowed || $filetype_forcethumb != '') {
 					// Make thumbnails for images and videos
 					if ($filetype_forcethumb != '' && $filetype_forcethumb == 0) {
