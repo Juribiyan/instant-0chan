@@ -67,7 +67,7 @@ function RegenerateOverboard($boardlist=null, $target_page=null) {
 	$total_pages = ceil($total_threads / I0_OVERBOARD_THREADS);
 	$over_board_class->dwoo_data->assign('numpages', $total_pages-1);
 
-	$form_start = '<form id="delform" action="'.KU_CGIPATH.'/board.php" method="post"><input type="hidden" name="board" value="'.I0_OVERBOARD_DIR.'">';
+	$form_start = '<form id="delform" action="'.KU_CGIPATH.'/board.php" method="post"><input type="hidden" name="board" value="'.I0_OVERBOARD_DIR.'"><div class="i0svcel">!i0-page-start</div>';
 
 	if (I0_DEFERRED_RENDER && $total_pages < ($target_page+1)) {
 		$target_page = $total_pages - 1;
@@ -75,6 +75,7 @@ function RegenerateOverboard($boardlist=null, $target_page=null) {
 	if (count($threads)) {
 		$previous_page = -1;
 		$pages = array();
+		$total = count($threads);
 		$i = 0; foreach($threads as &$thread) {
 			$current_page = floor($i / I0_OVERBOARD_THREADS);
 			if (I0_DEFERRED_RENDER && $current_page != $target_page) {
@@ -110,7 +111,7 @@ function RegenerateOverboard($boardlist=null, $target_page=null) {
 	if (I0_DEFERRED_RENDER) {
 		$over_board_class->dwoo_data->assign('thispage', $target_page);
 		$footer = $over_board_class->Footer(false, $execution_times[$target_page]);
-		$contents = $header.$pages[$target_page].$footer;
+		$contents = $header.$pages[$target_page].'<div class="i0svcel">!i0-page-end</div>'.$footer;
 		$pagename = ($target_page==0 ? KU_FIRSTPAGE : $target_page.'.html');
 		print_page(KU_BOARDSDIR.I0_OVERBOARD_DIR.'/'.$pagename, $contents, I0_OVERBOARD_DIR);
 		return $target_page;
