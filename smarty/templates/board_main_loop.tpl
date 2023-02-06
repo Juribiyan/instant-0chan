@@ -136,7 +136,7 @@
      {if $embed.file neq 'removed' || $post.deleted_files < 2}
       {if $embed.file eq 'removed'}
        <div class="nothumb">
-        {t}File<br />Removed{/t}
+        {t escape=no}File<br />Removed{/t}
        </div>
       {else}
        <figure class="multiembed{if $embed.is_embed} video-embed{/if}{if $embed.spoiler} f-spoiler{/if}" data-fileid="{$embed.file_id}">
