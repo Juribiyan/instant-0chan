@@ -1,9 +1,9 @@
-{* &#91;<a href="{%KU_WEBFOLDER}{$board.name}/">{t}Return{/t}</a>&#93; *}
-{if %KU_FIRSTLAST && ( count($posts) > 50 || $replycount > 50)}
-	&#91;<a href="{%KU_WEBFOLDER}{$board.name}/res/{$posts.0.id}.html">{t}Entire Thread{/t}</a>&#93; 
-	&#91;<a href="{%KU_WEBFOLDER}{$board.name}/res/{$posts.0.id}+50.html">{t}Last 50 posts{/t}</a>&#93;
+{* &#91;<a href="{$smarty.const.KU_WEBFOLDER}{$board.name}/">{t}Return{/t}</a>&#93; *}
+{if $smarty.const.KU_FIRSTLAST && ( count($posts) > 50 || $replycount > 50)}
+	&#91;<a href="{$smarty.const.KU_WEBFOLDER}{$board.name}/res/{$posts.0.id}.html">{t}Entire Thread{/t}</a>&#93; 
+	&#91;<a href="{$smarty.const.KU_WEBFOLDER}{$board.name}/res/{$posts.0.id}+50.html">{t}Last 50 posts{/t}</a>&#93;
 	{if ( count($posts) > 100 || $replycount > 100) }
-		&#91;<a href="{%KU_WEBFOLDER}{$board.name}/res/{$posts.0.id}-100.html">{t}First 100 posts{/t}</a>&#93;
+		&#91;<a href="{$smarty.const.KU_WEBFOLDER}{$board.name}/res/{$posts.0.id}-100.html">{t}First 100 posts{/t}</a>&#93;
 	{/if}
 {/if}
 {if not $isread}
@@ -14,6 +14,6 @@
 		[{t}Last 50 posts{/t}]
 	{/if}
 {else}
-	&#91;<a href="{%KU_WEBFOLDER}{$board.name}/res/{$posts.0.id}.html">{t}Entire Thread{/t}</a>&#93; 
+	&#91;<a href="{$smarty.const.KU_WEBFOLDER}{$board.name}/res/{$posts.0.id}.html">{t}Entire Thread{/t}</a>&#93; 
 {/if}
 </div>

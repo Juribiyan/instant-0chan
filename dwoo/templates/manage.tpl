@@ -2,10 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <title>{t}Manage Boards{/t}</title>
-<link rel="stylesheet" type="text/css" href="{%KU_WEBPATH}/css/manage_page.css?v={%KU_CSSVER}" />
+<link rel="stylesheet" type="text/css" href="{$smarty.const.KU_WEBPATH}/css/manage_page.css?v={$smarty.const.KU_CSSVER}" />
 <!--<link rel="stylesheet" type="text/css" href="{$ku_boardspath}/css/manage.css" title="Manage">-->
 {* loop $styles}
-	<link rel="{if $ neq %KU_DEFAULTSTYLE}alternate {/if}stylesheet" type="text/css" href="{%KU_WEBPATH}/css/site_{$}.css" />
+	<link rel="{if $ neq $smarty.const.KU_DEFAULTSTYLE}alternate {/if}stylesheet" type="text/css" href="{$smarty.const.KU_WEBPATH}/css/site_{$}.css" />
 {/loop *}
 {* literal}<style type="text/css">
 body, div, td, th, h2, h3, h4 { /* redundant rules for bad browsers */ 
@@ -56,7 +56,7 @@ label {
 	/*white-space: nowrap;*/
 }
 </style>{/literal *}
-<link rel="shortcut icon" href="{%KU_WEBPATH}/favicon.ico" />
+<link rel="shortcut icon" href="{$smarty.const.KU_WEBPATH}/favicon.ico" />
 </head>
 <body style="min-width: 600px; padding: 1em 20px 3em 20px;">
 {$includeheader}

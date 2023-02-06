@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-<meta http-equiv="Content-Type" content="text/html;charset={%KU_CHARSET}" />
+<meta http-equiv="Content-Type" content="text/html;charset={$smarty.const.KU_CHARSET}" />
 <title>{$title}</title>
 <link rel="apple-touch-icon" sizes="57x57" href="/fav/apple-touch-icon-57x57.png">
 <link rel="apple-touch-icon" sizes="114x114" href="/fav/apple-touch-icon-114x114.png">

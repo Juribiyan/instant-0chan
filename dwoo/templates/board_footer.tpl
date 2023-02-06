@@ -5,7 +5,7 @@
 	</td></tr>
 	<noscript><tr><td><details>
 		<summary>{t}Captcha{/t}</summary>
-		<iframe class="captchawrap" src="{%KU_BOARDSFOLDER}nojscaptcha.php" frameborder="0" width="150" height="32" style="vertical-align: middle;"></iframe><br>
+		<iframe class="captchawrap" src="{$smarty.const.KU_BOARDSFOLDER}nojscaptcha.php" frameborder="0" width="150" height="32" style="vertical-align: middle;"></iframe><br>
 		<input type="text" name="captcha" placeholder="{t}Captcha{/t}" style="margin-top:4px" accesskey="c" style="vertical-align: middle" autocomplete="off">
 	</details></td></tr></noscript>
 	<tr><td>
@@ -39,16 +39,16 @@
 				{if $thispage eq 0}
 					{t}Previous{/t}
 				{else}
-					<form method="get" action="{%KU_BOARDSFOLDER}{$board.name}/{if ($thispage-1) neq 0}{$thispage-1}.html{/if}">
+					<form method="get" action="{$smarty.const.KU_BOARDSFOLDER}{$board.name}/{if ($thispage-1) neq 0}{$thispage-1}.html{/if}">
 						<input value="{t}Previous{/t}" type="submit" /></form>
 				{/if}
 			</td>
 			<td>
-				&#91;{if $thispage neq 0}<a href="{%KU_BOARDSPATH}/{$board.name}/">{/if}0{if $thispage neq 0}</a>{/if}&#93;
+				&#91;{if $thispage neq 0}<a href="{$smarty.const.KU_BOARDSPATH}/{$board.name}/">{/if}0{if $thispage neq 0}</a>{/if}&#93;
 				{section name=pages loop=$numpages}
 				{strip}
 					&#91;
-					{if $.section.pages.iteration neq $thispage}<a href="{%KU_BOARDSFOLDER}{$board.name}/{$.section.pages.iteration}.html">
+					{if $.section.pages.iteration neq $thispage}<a href="{$smarty.const.KU_BOARDSFOLDER}{$board.name}/{$.section.pages.iteration}.html">
 					{/if}
 					
 					{$.section.pages.iteration}
@@ -64,7 +64,7 @@
 				{if $thispage eq $numpages}
 					{t}Next{/t}
 				{else}
-					<form method="get" action="{%KU_BOARDSPATH}/{$board.name}/{$thispage+1}.html"><input value="{t}Next{/t}" type="submit" /></form>
+					<form method="get" action="{$smarty.const.KU_BOARDSPATH}/{$board.name}/{$thispage+1}.html"><input value="{t}Next{/t}" type="submit" /></form>
 				{/if}
 	
 			</td>

@@ -1,17 +1,17 @@
 {* INIT SECTION, STARTING LOOPS *}
  {if not $for_overboard}
- <form id="delform" action="{%KU_CGIPATH}/board.php" method="post">
+ <form id="delform" action="{$smarty.const.KU_CGIPATH}/board.php" method="post">
  <input type="hidden" name="board" value="{$board.name}" />{if !$isthread}<div class="i0svcel">!i0-page-start</div>{/if}
  {/if}
- {foreach name=thread item=posts_in_thread from=$posts}
-  {foreach key=postkey item=post from=$posts_in_thread}
+ {foreach $posts as $thread}
+  {foreach $thread as $post}
 {* / INIT SECTION *}
 
 {* PRE-POSTHEAD SECTION *}
  {if $post.parentid eq 0} {* If OP → *}
   <span id="unhidethread{$post.id}-{$board.name}">
    {t}Thread{/t} 
-   <a href="{%KU_BOARDSFOLDER}{$board.name}/res/{$post.id}.html" class="ref|{$board.name}|{$post.id}|{$post.id}">{if $for_overboard}/{$board.name}/{/if}{$post.id}</a> 
+   <a href="{$smarty.const.KU_BOARDSFOLDER}{$board.name}/res/{$post.id}.html" class="ref|{$board.name}|{$post.id}|{$post.id}">{if $for_overboard}/{$board.name}/{/if}{$post.id}</a> 
    {t}hidden.{/t}
    <a href="#" onclick="javascript:HiddenItems.unhideThread('{$post.id}-{$board.name}');return false;" title="{t}Un-Hide Thread{/t}">
     <svg class="icon b-icon"><use xlink:href="#i-unhide"></use></svg>
@@ -20,7 +20,7 @@
   <div id="thread{$post.id}-{$board.name}" data-threadid="{$post.id}"{if $isthread} class="replies"{/if} data-boardid="{$board.id}"> {* #thread → *}
    <div class="i0svcel">!i0-pd:{$post.id}</div> {* post delimiter for quick parsing *}
    <div class="postnode op" data-id="{$post.id}" data-board="{$board.name}"> {* .postnode.op → *}
-    <a name="s{$.foreach.thread.iteration}"></a>
+    <a name="s{$thread@iteration}"></a>
  {else} {* If reply → *}
   <div class="i0svcel">!i0-pd:{$post.id}</div> {* post delimiter for quick parsing *}
   <table id="postnode{$post.id}-{$board.name}" class="postnode" data-id="{$post.id}" data-board="{$board.name}"><tbody>
@@ -97,7 +97,7 @@
     <svg class="icon b-icon"><use xlink:href="#i-qr"></use></svg>
    </a>
    {if $board.balls}
-    <img class="_country_" src="{%KU_WEBPATH}/images/flags/{$post.country}.png">
+    <img class="_country_" src="{$smarty.const.KU_WEBPATH}/images/flags/{$post.country}.png">
    {/if}
    {if $post.parentid neq 0}
     <a href="#" onclick="javascript:HiddenItems.togglePost('{$post.id}-{$board.name}');return false;" title="{t}Hide{/t} {t}post{/t}" class="hide-post-btn">
@@ -106,7 +106,7 @@
    {/if}
   </span>
   {if $post.parentid eq 0}
-   {strip}<span class="inthread-hide">[<a href="{%KU_BOARDSFOLDER}{$board.name}/res/{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}.html">
+   {strip}<span class="inthread-hide">[<a href="{$smarty.const.KU_BOARDSFOLDER}{$board.name}/res/{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}.html">
     {if $post.locked eq 1}
      {t}Enter{/t}
     {else}
@@ -114,11 +114,11 @@
     {/if}
    </a>]</span>{/strip}
    {* Unmaintained firstlast shit → *}
-   {if %KU_FIRSTLAST && (($post.stickied eq 1 && $post.replies + %KU_REPLIESSTICKY > 50) || ($post.stickied eq 0 && $post.replies + %KU_REPLIES > 50))}
-    {if (($post.stickied eq 1 && $post.replies + %KU_REPLIESSTICKY > 100) || ($post.stickied eq 0 && $post.replies + %KU_REPLIES > 100))}
-     [<a href="{%KU_BOARDSFOLDER}{$board.name}/res/{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}-100.html">{t}First 100 posts{/t}</a>]
+   {if $smarty.const.KU_FIRSTLAST && (($post.stickied eq 1 && $post.replies + $smarty.const.KU_REPLIESSTICKY > 50) || ($post.stickied eq 0 && $post.replies + $smarty.const.KU_REPLIES > 50))}
+    {if (($post.stickied eq 1 && $post.replies + $smarty.const.KU_REPLIESSTICKY > 100) || ($post.stickied eq 0 && $post.replies + $smarty.const.KU_REPLIES > 100))}
+     [<a href="{$smarty.const.KU_BOARDSFOLDER}{$board.name}/res/{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}-100.html">{t}First 100 posts{/t}</a>]
     {/if}
-    [<a href="{%KU_BOARDSFOLDER}{$board.name}/res/{$post.id}+50.html">{t}Last 50 posts{/t}</a>]
+    [<a href="{$smarty.const.KU_BOARDSFOLDER}{$board.name}/res/{$post.id}+50.html">{t}Last 50 posts{/t}</a>]
    {/if}
    {* ← /Unmaintained firstlast shit *}
    <br>
@@ -132,7 +132,7 @@
  <div id="postbody{$post.id}-{$board.name}" class="postbody{if $post.parentid neq 0 && !$post.message} pb-empty{/if}{if $post.parentid eq 0 && mb_strlen($post.message) > 1000} pb-long{/if}" data-htmlength="{mb_strlen($post.message)}">
   {if $post.embeds}
    <div class="embedgroup">
-    {foreach item=embed from=$post.embeds name=embeds}
+    {foreach $post.embeds as $embed}
      {if $embed.file neq 'removed' || $post.deleted_files < 2}
       {if $embed.file eq 'removed'}
        <div class="nothumb">
@@ -152,8 +152,8 @@
         {if !$embed.is_embed}
          {assign var="filename" value=get_embed_filename($embed)}
          <figcaption class="filesize">
-          {strip}<a download="{$filename}.{$embed.file_type}" {if %KU_NEWWINDOW}target="_blank"{/if} href="{$file_path}/src/{$embed.file}.{$embed.file_type}" title="{$filename}{if $embed.id3.comments_html.title.0 eq ''}.{$embed.file_type}{/if}">
-           {if %I0_DETECT_SOSACH}{if is_from_sosach($filename)}<img class="sosach_indicator" src="/images/2chfav.ico">{/if}{/if}
+          {strip}<a download="{$filename}.{$embed.file_type}" {if $smarty.const.KU_NEWWINDOW}target="_blank"{/if} href="{$file_path}/src/{$embed.file}.{$embed.file_type}" title="{$filename}{if $embed.id3.comments_html.title.0 eq ''}.{$embed.file_type}{/if}">
+           {if $smarty.const.I0_DETECT_SOSACH}{if is_from_sosach($filename)}<img class="sosach_indicator" src="/images/2chfav.ico">{/if}{/if}
            <span class="fc-filename"{set_max_filename_width($embed.thumb_w, $embed.id3.comments_html.title.0)}>
             {$filename}
            </span>
@@ -186,7 +186,7 @@
            <a href="{$embed.videourl}" target="_blank" title="{$embed.file_original} — {t}Watch on{/t} {$embed.site_name}">{$embed.file_original}</a>
           </div>
           {if $embed.file_size_formatted neq '0'}<div class="embed-duration">{$embed.file_size_formatted}</div>{/if}
-          <img src="{%KU_BOARDSFOLDER}images/site-logos/{strtolower($embed.site_name)}.png" alt="" class="embed-logo">
+          <img src="{$smarty.const.KU_BOARDSFOLDER}images/site-logos/{strtolower($embed.site_name)}.png" alt="" class="embed-logo">
           <button type="submit" class="emb-button yesscript file-control file-menu-toggle emb-button" value="{$embed.file_id}">
            <svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-dots"></use></svg>
           </button>
@@ -196,7 +196,7 @@
         {/if}
         {if !$embed.is_embed && $embed.file neq '' && ( $embed.file_type eq 'jpg' || $embed.file_type eq 'gif' || $embed.file_type eq 'png')}
          <a 
-         {if %KU_NEWWINDOW}
+         {if $smarty.const.KU_NEWWINDOW}
           target="_blank" 
          {/if}
          onclick="javascript:return expandimg('{$embed.file_id}', '{$file_path}/src/{$embed.file}.{$embed.file_type}', '{$file_path}/thumb/{$embed.file}s.{$embed.file_type}', '{$embed.image_w}', '{$embed.image_h}', '{$embed.thumb_w}', '{$embed.thumb_h}');" 
@@ -208,7 +208,7 @@
          {if $embed.file_type eq 'webm' or $embed.file_type eq 'mp4'} class="movie" data-id="{$embed.file_id}" data-thumb="{$embed.nonstandard_file}" data-width="{$embed.image_w}" data-height="{$embed.image_h}"{/if}
          {if $embed.file_type eq 'mp3' or $embed.file_type eq 'ogg'} class="audiowrap" {/if}
          {if $embed.file_type eq 'css'} class="csswrap" {/if}
-         {if %KU_NEWWINDOW}target="_blank"{/if}        
+         {if $smarty.const.KU_NEWWINDOW}target="_blank"{/if}        
          href="{$file_path}/src/{$embed.file}.{$embed.file_type}">
          {* FUCK THIS BULLSHIT LOGIC I WANNA KMS *}
          {if $embed.generic_icon == 2}
@@ -261,7 +261,7 @@
    <div id="replies{$post.id}-{$board.name}" class="replies">
    {if $post.replies}
     <span class="omittedposts">
-     <a href="{%KU_BOARDSFOLDER}{$board.name}/res/{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}.html" onclick="return expandthread('{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}','{$board.name}', event)" title="{t}Expand Thread{/t}">
+     <a href="{$smarty.const.KU_BOARDSFOLDER}{$board.name}/res/{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}.html" onclick="return expandthread('{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}','{$board.name}', event)" title="{t}Expand Thread{/t}">
       {if $locale == 'ru'}
        {omitted_syntax($post.replies, $post.images)}
       {else}
@@ -305,17 +305,6 @@
     {t}omitted{/t}. {t}Last 50 shown{/t}.
     </span>
    {/if}
-   {* if $numimages > 0}
-    <a href="#top" onclick="javascript:
-    {foreach key=postkey2 item=post2 from=$posts}
-     {if $post2.parentid neq 0}
-      {if $post2.file_type eq 'jpg' || $post2.file_type eq 'gif' || $post2.file_type eq 'png'}
-       expandimg('{$post2.id}', '{$file_path}/src/{$post2.file}.{$post2.file_type}', '{$file_path}/thumb/{$post2.file}s.{$post2.file_type}', '{$post2.image_w}', '{$post2.image_h}', '{$post2.thumb_w}', '{$post2.thumb_h}');
-      {/if}
-     {/if}
-    {/foreach}
-    return false;">{t}Expand all images{/t}</a>
-   {/if *}
   {/if}
  {else}
     </td> {* ← /reply *}
@@ -344,7 +333,7 @@
   {if $replycount > 2}
    <span style="float:right">
     &#91;<a href="/{$board.name}/">{t}Return{/t}</a>&#93;
-    {if %KU_FIRSTLAST && ( count($posts) > 50 || $replycount > 50)}
+    {if $smarty.const.KU_FIRSTLAST && ( count($posts) > 50 || $replycount > 50)}
      &#91;<a href="/{$board.name}/res/{$posts.0.id}.html">{t}Entire Thread{/t}</a>&#93; 
      &#91;<a href="/{$board.name}/res/{$posts.0.id}+50.html">{t}Last 50 posts{/t}</a>&#93;
      {if ( count($posts) > 100 || $replycount > 100) }

@@ -1,10 +1,10 @@
 <div class="postarea">
 <a id="postbox"></a>
-{if not $isthread}<div class="i0svcel">!i0-pb</div>{/if}<form name="postform" id="postform" action="{%KU_CGIPATH}/board.php" method="post" enctype="multipart/form-data" class="main-reply-form" data-maxfiles="{$board.maxfiles}" data-allowed-filetypes="{foreach name=files item=filetype from=$board.filetypes_allowed}{$filetype}{if $.foreach.files.last}{else},{/if}{/foreach}"{if $board.any_filetype} data-allowed-all-filetypes="*"{/if}>
+{if not $isthread}<div class="i0svcel">!i0-pb</div>{/if}<form name="postform" id="postform" action="{$smarty.const.KU_CGIPATH}/board.php" method="post" enctype="multipart/form-data" class="main-reply-form" data-maxfiles="{$board.maxfiles}" data-allowed-filetypes="{foreach $board.filetypes_allowed as $filetype}{$filetype}{if $filetype@last}{else},{/if}{/foreach}"{if $board.any_filetype} data-allowed-all-filetypes="*"{/if}>
 	<input type="hidden" name="board" value="{$board.name}" />
 	<input type="hidden" name="replythread" value="<!sm_threadid>" />
 	<input type="hidden" name="makepost" value="1" />
-	<input type="text" name="email" size="28" maxlength="{%KU_MAXEMAILLENGTH}" value="" style="display: none;" />
+	<input type="text" name="email" size="28" maxlength="{$smarty.const.KU_MAXEMAILLENGTH}" value="" style="display: none;" />
 	<table class="postform">
 		<tbody>
 		{if $board.forcedanon neq 1}
@@ -12,7 +12,7 @@
 				<td class="postblock">
 					{t}Name{/t}</td>
 				<td>
-					<input type="text" name="name" placeholder="{t}Name{/t}#{t}tripcode{/t}" size="28" maxlength="{%KU_MAXNAMELENGTH}" accesskey="n" autocomplete="new-password"/>
+					<input type="text" name="name" placeholder="{t}Name{/t}#{t}tripcode{/t}" size="28" maxlength="{$smarty.const.KU_MAXNAMELENGTH}" accesskey="n" autocomplete="new-password"/>
 					<label for="disable_name">
 	          <input id="disable_name" type="checkbox" name="disable_name" value="1" style="vertical-align: -2px;">&nbsp;{t}Anonymously{/t}
 	        </label>
@@ -33,7 +33,7 @@
 				{t}Subject{/t}
 			</td>
 			<td class="subject-submit">
-				{strip}<input type="text" name="subject" placeholder="{t}Subject{/t}" size="35" maxlength="{%KU_MAXSUBJLENGTH}" accesskey="s" />&nbsp;<input class="primary styled-button" type="submit" value="{if $replythread eq 0}{t}Submit{/t}{else}{t}Post reply{/t}{/if}" accesskey="z" />{/strip}
+				{strip}<input type="text" name="subject" placeholder="{t}Subject{/t}" size="35" maxlength="{$smarty.const.KU_MAXSUBJLENGTH}" accesskey="s" />&nbsp;<input class="primary styled-button" type="submit" value="{if $replythread eq 0}{t}Submit{/t}{else}{t}Post reply{/t}{/if}" accesskey="z" />{/strip}
 			</td>
 		</tr>
 		<tr class="message-row">
@@ -47,7 +47,7 @@
 					<a title="{t}Undeline{/t}" href="#" class="uibutton uib-mup" data-mups="[u]" data-mupe="[/u]"><u>{t}U{/t}</u></a>
 					<a title="{t}Strike{/t}" href="#" class="uibutton uib-mup" data-mups="~~" data-mupe="~~"><s>{t}S{/t}</s></a>
 					<a title="{t}Spoiler{/t}" href="#" class="uibutton uib-mup uib-spoiler" data-mups="%%" data-mupe="%%">{t}Sp{/t}</a>
-					<a title="{t}Code{/t}" href="#" class="uibutton {if %KU_USE_GESHI}opt-exp{else}uib-mup{/if}" data-mups="[code]" data-mupe="[/code]" data-imups="`" data-imupe="`"><span class="uib-code">();{if %KU_USE_GESHI} ▼{/if}</span>{if %KU_USE_GESHI}<div class="expandee code_markup markup-popup"><select size="8" class="code_markup_select"><option value="text">Простой текст</option><option value="actionscript">ActionScript</option><option value="actionscript3">ActionScript 3</option><option value="apache">Apache configuration</option><option value="asm">ASM</option><option value="bash">Bash</option><option value="batch">Windows Batch file</option><option value="bf">Brainfuck</option><option value="c">C</option><option value="clojure">Clojure</option><option value="coffeescript">CoffeeScript</option><option value="cpp">C++</option><option value="csharp">C#</option><option value="css">CSS</option><option value="d">D</option><option value="dart">Dart</option><option value="delphi">Delphi</option><option value="erlang">Erlang</option><option value="fsharp">F#</option><option value="glsl">glSlang</option><option value="go">Go</option><option value="groovy">Groovy</option><option value="haskell">Haskell</option><option value="haxe">Haxe</option><option value="html5">HTML5</option><option value="ini">INI</option><option value="io">Io</option><option value="java">Java</option><option value="javascript">Javascript</option><option value="kotlin">Kotlin</option><option value="latex">LaTeX</option><option value="lisp">Lisp</option><option value="lolcode">LOLcode</option><option value="lua">Lua</option><option value="make">GNU make</option><option value="mathematica">Mathematica</option><option value="matlab">Matlab M</option><option value="nginx">nginx</option><option value="objc">Objective-C</option><option value="ocaml">OCaml</option><option value="pcre">PCRE</option><option value="perl">Perl</option><option value="php">PHP</option><option value="python">Python</option><option value="racket">Racket</option><option value="rails">Rails</option><option value="ruby">Ruby</option><option value="rust">Rust</option><option value="sass">Sass</option><option value="scala">Scala</option><option value="scheme">Scheme</option><option value="smalltalk">Smalltalk</option><option value="smarty">Smarty</option><option value="sql">SQL</option><option value="systemverilog">SystemVerilog</option><option value="vb">Visual Basic</option><option value="vbnet">vb.net</option><option value="vbscript">VBScript</option><option value="verilog">Verilog</option><option value="vhdl">VHDL</option><option value="whitespace">Whitespace</option><option value="xml">XML</option><option value="yaml">YAML</option></select></div>{/if}</a>
+					<a title="{t}Code{/t}" href="#" class="uibutton {if $smarty.const.KU_USE_GESHI}opt-exp{else}uib-mup{/if}" data-mups="[code]" data-mupe="[/code]" data-imups="`" data-imupe="`"><span class="uib-code">();{if $smarty.const.KU_USE_GESHI} ▼{/if}</span>{if $smarty.const.KU_USE_GESHI}<div class="expandee code_markup markup-popup"><select size="8" class="code_markup_select"><option value="text">Простой текст</option><option value="actionscript">ActionScript</option><option value="actionscript3">ActionScript 3</option><option value="apache">Apache configuration</option><option value="asm">ASM</option><option value="bash">Bash</option><option value="batch">Windows Batch file</option><option value="bf">Brainfuck</option><option value="c">C</option><option value="clojure">Clojure</option><option value="coffeescript">CoffeeScript</option><option value="cpp">C++</option><option value="csharp">C#</option><option value="css">CSS</option><option value="d">D</option><option value="dart">Dart</option><option value="delphi">Delphi</option><option value="erlang">Erlang</option><option value="fsharp">F#</option><option value="glsl">glSlang</option><option value="go">Go</option><option value="groovy">Groovy</option><option value="haskell">Haskell</option><option value="haxe">Haxe</option><option value="html5">HTML5</option><option value="ini">INI</option><option value="io">Io</option><option value="java">Java</option><option value="javascript">Javascript</option><option value="kotlin">Kotlin</option><option value="latex">LaTeX</option><option value="lisp">Lisp</option><option value="lolcode">LOLcode</option><option value="lua">Lua</option><option value="make">GNU make</option><option value="mathematica">Mathematica</option><option value="matlab">Matlab M</option><option value="nginx">nginx</option><option value="objc">Objective-C</option><option value="ocaml">OCaml</option><option value="pcre">PCRE</option><option value="perl">Perl</option><option value="php">PHP</option><option value="python">Python</option><option value="racket">Racket</option><option value="rails">Rails</option><option value="ruby">Ruby</option><option value="rust">Rust</option><option value="sass">Sass</option><option value="scala">Scala</option><option value="scheme">Scheme</option><option value="smalltalk">Smalltalk</option><option value="smarty">Smarty</option><option value="sql">SQL</option><option value="systemverilog">SystemVerilog</option><option value="vb">Visual Basic</option><option value="vbnet">vb.net</option><option value="vbscript">VBScript</option><option value="verilog">Verilog</option><option value="vhdl">VHDL</option><option value="whitespace">Whitespace</option><option value="xml">XML</option><option value="yaml">YAML</option></select></div>{/if}</a>
 					<a title="{t}Greenquoting{/t}" href="#" class="uibutton opt-exp" data-bul="&gt;" data-imups="&gt;" data-imupe="&lt;"><span class="uib-imply">&gt; ▼</span>
 						<div class="expandee quote_markup markup-popup">
 							<select size="3" class="quote_select">
@@ -76,7 +76,7 @@
 					<div class="rotting-indicator"></div>
 					<div class="rotten-msg msg">{t}Captcha has expired{t}.</div>
 				</div>
-				<noscript><iframe class="captchawrap" src="{%KU_BOARDSFOLDER}nojscaptcha.php" frameborder="0" width="150" height="32" style="vertical-align: middle;"></iframe></noscript>
+				<noscript><iframe class="captchawrap" src="{$smarty.const.KU_BOARDSFOLDER}nojscaptcha.php" frameborder="0" width="150" height="32" style="vertical-align: middle;"></iframe></noscript>
 			</nobr></td>
 		</tr>
 		{/if}
@@ -89,7 +89,7 @@
 				</td>
 				<td>
 					<div class="noscript">
-						{for embcnt 1 $board.maxfiles}
+						{for $embcnt = 1 to $board.maxfiles}
 							<div class="multiembedwrap" data-pos="file-{$embcnt}">
 								<input type="file" multiple name="imagefile[]" size="35" accesskey="f" />
 								<label class="icon-checkbox-wrap" title="{t}Hide filename{/t}" for="hidename-{$embcnt-1}">
@@ -137,7 +137,7 @@
 					{t}Embed{/t}
 				</td>
 				<td>
-					{for embcnt 1 $board.maxfiles}
+					{for $embcnt = 1 to $board.maxfiles}
 						<div class="multiembedwrap" data-pos="embed-{$embcnt}">
 							<input type="text" name="embed[]" placeholder="{t}Embed{/t}" size="28" maxlength="75" accesskey="e" />
 							<label class="icon-checkbox-wrap" title="{t}Spoiler{/t}" for="embed-spoiler-{$embcnt-1}">
@@ -214,16 +214,16 @@
 						<ul class="blotter-entries">
 							<li>{t}Supported file types are{/t}: {strip}
 							{if ($board.filetypes_allowed neq '' && !empty($board.filetypes_allowed))}
-								{foreach name=types item=filetype from=$board.filetypes_allowed}
-									{$filetype|upper}{if $.foreach.types.last}{else}, {/if}
+								{foreach $board.filetypes_allowed as $filetype}
+									{$filetype|upper}{if $filetype@last}{else}, {/if}
 								{/foreach}
 							{else}
 								{if $board.any_filetype}
 									{t}All{/t}
-									{if %I0_BANNED_FILETYPES}
+									{if $smarty.const.I0_BANNED_FILETYPES}
 										{t} except {/t}
-										{foreach name=types from=explode(':', %I0_BANNED_FILETYPES) item=filetype}
-											{$filetype|upper}{if $.foreach.types.last}{else}, {/if}
+										{foreach explode(':', $smarty.const.I0_BANNED_FILETYPES) as $filetype}
+											{$filetype|upper}{if $filetype@last}{else}, {/if}
 										{/foreach}
 									{/if}
 								{else}
@@ -233,8 +233,8 @@
 							</li>
 							<li>{t}Supported embed types are{/t}: {strip}
 							{if $board.embeds_allowed neq ''}
-								{foreach name=embs item=emb from=$board.embeds_allowed}
-									{$emb.name}{if $.foreach.embs.last}{else}, {/if}
+								{foreach $board.embeds_allowed as $emb}
+									{$emb.name}{if $emb@last}{else}, {/if}
 								{/foreach}
 							{else}
 								{t}None{/t}
@@ -243,7 +243,7 @@
 							{if not $board.enablenofile}
 							<li>{t}A file or embed ID is required for a new thread.{/t}</li>
 							{/if}
-							{if %KU_FILESIZE_METHOD eq 'sum'}
+							{if $smarty.const.KU_FILESIZE_METHOD eq 'sum'}
 							<li>{t}Maximum total size for all files allowed is{/t} {math "round(x/1024)" x=$board.maximagesize} {t}KB{/t}.</li>
 							{else}
 							<li>{t}Maximum file size allowed is{/t} {math "round(x/1024)" x=$board.maximagesize} {t}KB{/t}.</li>
@@ -273,7 +273,7 @@
 		</tbody>
 	</table>
 	{if $board.enablecaptcha eq 2}
-	<div class="h-captcha" data-sitekey="{%I0_HCAPTCHA_SITEKEY}" data-size="invisible"></div>
+	<div class="h-captcha" data-sitekey="{$smarty.const.I0_HCAPTCHA_SITEKEY}" data-size="invisible"></div>
 	<script src="https://js.hcaptcha.com/1/api.js&recaptchacompat=false" async defer></script>
 	{/if}
 	<div class="formsending-overlay"><div class="form-spinner"></div></div>

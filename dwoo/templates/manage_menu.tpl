@@ -3,9 +3,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>{t}Manage Boards{/t}</title>
-	<link rel="stylesheet" type="text/css" href="{%KU_WEBPATH}/css/manage_page.css?v={%KU_CSSVER}" />
-	<link rel="stylesheet" type="text/css" href="{%KU_WEBPATH}/css/manage_menu.css?v={%KU_CSSVER}" />
-<link rel="shortcut icon" href="{%KU_WEBPATH}/favicon.ico" />
+	<link rel="stylesheet" type="text/css" href="{$smarty.const.KU_WEBPATH}/css/manage_page.css?v={$smarty.const.KU_CSSVER}" />
+	<link rel="stylesheet" type="text/css" href="{$smarty.const.KU_WEBPATH}/css/manage_menu.css?v={$smarty.const.KU_CSSVER}" />
+<link rel="shortcut icon" href="{$smarty.const.KU_WEBPATH}/favicon.ico" />
 {literal}
 <script type="text/javascript">
 function toggle(button, area) {

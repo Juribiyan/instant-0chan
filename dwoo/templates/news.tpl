@@ -2,12 +2,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
 <head>
-	<script src="{%KU_WEBFOLDER}lib/javascript/jquery-1.11.1.min.js"></script>
-	<title>{$dwoo.const.KU_NAME}</title>
+	<script src="{$smarty.const.KU_WEBFOLDER}lib/javascript/jquery-1.11.1.min.js"></script>
+	<title>{$smarty.const.KU_NAME}</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	
 	{for style $styles}
-				<link rel="{if $styles[$style] neq $dwoo.const.KU_DEFAULTMENUSTYLE}alternate {/if}stylesheet" type="text/css" href="{$dwoo.const.KU_WEBFOLDER}css/site_{$styles[$style]}.css" title="{$styles[$style]|capitalize}" />
+				<link rel="{if $styles[$style] neq $smarty.const.KU_DEFAULTMENUSTYLE}alternate {/if}stylesheet" type="text/css" href="{$smarty.const.KU_WEBFOLDER}css/site_{$styles[$style]}.css" title="{$styles[$style]|capitalize}" />
 	{/for}
 <script type="text/javascript">
 	var style_cookie_site = "kustyle_site";
@@ -30,12 +30,12 @@ vertical-align: middle;
 line-height: 40px;
 }
 </style>
-<link rel="shortcut icon" href="{$dwoo.const.KU_WEBFOLDER}favicon.ico" />
-<script type="text/javascript" src="{%KU_WEBFOLDER}lib/javascript/gettext.js"></script>
-<script type="text/javascript" src="{$dwoo.const.KU_WEBFOLDER}lib/javascript/kusaba.js"></script></head>
+<link rel="shortcut icon" href="{$smarty.const.KU_WEBFOLDER}favicon.ico" />
+<script type="text/javascript" src="{$smarty.const.KU_WEBFOLDER}lib/javascript/gettext.js"></script>
+<script type="text/javascript" src="{$smarty.const.KU_WEBFOLDER}lib/javascript/kusaba.js"></script></head>
 <body>
 	<center><div class="sitelogo"></div></center>
-	{if $dwoo.const.KU_SLOGAN neq ''}<center><h3>{$dwoo.const.KU_SLOGAN}</h3></center>{/if}
+	{if $smarty.const.KU_SLOGAN neq ''}<center><h3>{$smarty.const.KU_SLOGAN}</h3></center>{/if}
 	
 	<div class="menu" id="topmenu">
 	{$topads}<br />
@@ -48,11 +48,11 @@ line-height: 40px;
 	</div>
 {/if}
 <div id="entries">
-{foreach item=entry from=$entries}
+{foreach $entries as $entry}
 	<div class="content">
-		<h2><span class="newssub">{$entry.subject|stripslashes}{if $dwoo.get.p eq ''} by {if $entry.email neq ''}<a href="mailto:{$entry.email|stripslashes}">{/if}{$entry.poster|stripslashes}{if $entry.email neq ''}</a>{/if} - {$entry.timestamp|date_format:"m/d/y @ h:i A T"}{/if}</span>
+		<h2><span class="newssub">{stripslashes($entry.subject)}{if $smarty.get.p eq ''} by {if $entry.email neq ''}<a href="mailto:{stripslashes($entry.email)}">{/if}{stripslashes($entry.poster)}{if $entry.email neq ''}</a>{/if} - {$entry.timestamp|date_format:"m/d/y @ h:i A T"}{/if}</span>
 		<span class="permalink"><a href="#{$entry.id}">#</a></span></h2>
-		<div style="margin:5px; padding-bottom: 5px;">{$entry.message|stripslashes}</div>
+		<div style="margin:5px; padding-bottom: 5px;">{stripslashes($entry.message)}</div>
 	</div><br />
 {/foreach}
 </div>

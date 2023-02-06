@@ -1,12 +1,12 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>{%KU_NAME}</title>
-<link rel="shortcut icon" href="{%KU_WEBPATH}/favicon.ico" />
-<link rel="stylesheet" type="text/css" href="{%KU_BOARDSPATH}/css/menu_global.css" />
+<title>{$smarty.const.KU_NAME}</title>
+<link rel="shortcut icon" href="{$smarty.const.KU_WEBPATH}/favicon.ico" />
+<link rel="stylesheet" type="text/css" href="{$smarty.const.KU_BOARDSPATH}/css/menu_global.css" />
 {loop $styles}
-	<link rel="{if $ neq %KU_DEFAULTMENUSTYLE}alternate {/if}stylesheet" type="text/css" href="{%KU_WEBFOLDER}css/site_{$}.css" title="{$|capitalize}" />
-	<link rel="{if $ neq %KU_DEFAULTMENUSTYLE}alternate {/if}stylesheet" type="text/css" href="{%KU_WEBFOLDER}css/sitemenu_{$}.css" title="{$|capitalize}" />
+	<link rel="{if $ neq $smarty.const.KU_DEFAULTMENUSTYLE}alternate {/if}stylesheet" type="text/css" href="{$smarty.const.KU_WEBFOLDER}css/site_{$}.css" title="{$|capitalize}" />
+	<link rel="{if $ neq $smarty.const.KU_DEFAULTMENUSTYLE}alternate {/if}stylesheet" type="text/css" href="{$smarty.const.KU_WEBFOLDER}css/sitemenu_{$}.css" title="{$|capitalize}" />
 {/loop}
 
 <style type="text/css">{literal}
@@ -26,7 +26,7 @@ body {
 <br />
 <div class="footer" style="clear: both;">
 	{* I'd really appreciate it if you left the link to kusabax.org in the footer, if you decide to modify this. That being said, you are not bound by license or any other terms to keep it there *}
-	<div class="legal">	- <a href="http://kusabax.cultnet.net/" target="_top">kusaba x {%KU_VERSION}</a> -
+	<div class="legal">	- <a href="http://kusabax.cultnet.net/" target="_top">kusaba x {$smarty.const.KU_VERSION}</a> -
 </div>
 </div>
 </body>

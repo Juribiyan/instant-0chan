@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <title>{t}YOU ARE BANNED{/t}!</title>
-<link rel="stylesheet" type="text/css" href="{%KU_BOARDSPATH}/css/site_{%KU_DEFAULTSTYLE}.css" title="Futaba">
-<link rel="shortcut icon" href="{%KU_WEBPATH}/favicon.ico">
+<link rel="stylesheet" type="text/css" href="{$smarty.const.KU_BOARDSPATH}/css/site_{$smarty.const.KU_DEFAULTSTYLE}.css" title="Futaba">
+<link rel="shortcut icon" href="{$smarty.const.KU_WEBPATH}/favicon.ico">
 </head>
 <body>
-<h1>{%KU_NAME}</h1>
-<h3>{%KU_SLOGAN}</h3>
+<h1>{$smarty.const.KU_NAME}</h1>
+<h3>{$smarty.const.KU_SLOGAN}</h3>
 <div style="margin: 3em;">
 	<h2>&nbsp;{t}YOU ARE BANNED{/t}! :\</h2>
-	<img src="{%KU_BOARDSPATH}/youarebanned.jpg" style="float: right;" alt=":'(">
-	{foreach name=bans item=ban from=$bans}
-		{if not $.foreach.bans.first}
+	<img src="{$smarty.const.KU_BOARDSPATH}/youarebanned.jpg" style="float: right;" alt=":'(">
+	{foreach $bans as $ban}
+		{if not $ban@first}
 			{t}Additionally{/t},
 		{/if}
 		{if $ban.expired eq 1}
@@ -31,7 +31,7 @@
 			{if $ban.until > 0}{t}will expire on{/t} <strong>{$ban.until|date_format:"F j, Y, h:i a"}</strong>{else}{t}will not expire{/t}</strong>{/if}
 		{/if}
 		<br /><br />
-		{if %KU_APPEAL neq '' && $ban.expired eq 0}
+		{if $smarty.const.KU_APPEAL neq '' && $ban.expired eq 0}
 			{if $ban.appealat eq 0}
 				{t}You may <strong>not</strong> appeal this ban.{/t}
 			{elseif $ban.appealat eq -1}
@@ -46,7 +46,7 @@
 				{if $ban.appealat < $.now}
 					{t}You may now appeal this ban.{/t}
 					<br /><br />
-					<form action="{%KU_BOARDSPATH}/banned.php" method="post">
+					<form action="{$smarty.const.KU_BOARDSPATH}/banned.php" method="post">
 						<input type="hidden" name="banid" value="{$ban.id}" />
 						<label for="appealmessage">{t}Appeal Message{/t}:</label>
 						<br />
@@ -59,10 +59,16 @@
 			{/if}
 			<br />
 		{/if}
-		{if $.foreach.bans.last}
-			<br />{t}Your IP address is{/t} <strong>{$.server.REMOTE_ADDR}</strong>.<br /><br />
+		{if $ban@last}
+			<br />
+			{if $is_ip}
+				{t}Your IP address is{/t}
+			{else}
+				{t}Your user ID is{/t}
+			{/if}
+			<strong>{$user_id} (<i title="{t}Encrypted ID{/t}">{$user_id_encrypted}</i>)</strong>.<br /><br />
 		{/if}
-		{if count($bans) > 1 && not $.foreach.bans.last}
+		{if count($bans) > 1 && not $ban@last}
 			<hr />
 		{/if}
 
