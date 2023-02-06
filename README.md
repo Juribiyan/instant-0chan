@@ -1,7 +1,7 @@
 # <span style="color:red">THIS BRANCH IS NOT FUNCTIONAL; WAIT UNTIL MERGED</span>
 
 <p align="center">
-  <img src="http://i.imgur.com/SJwMUsY.png" alt="Instant 0chan"/>
+  <img src="https://slonik.0chan.ru/system/media_attachments/files/109/679/620/696/823/059/small/9a129bef20a8733d.png" alt="Instant 0chan"/>
 </p>
 
 # Instant 0chan
