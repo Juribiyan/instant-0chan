@@ -690,7 +690,6 @@ class Board {
 				}
 			}
 			if ($embed['file_type'] == 'mp3' && $this->board['loadbalanceurl'] == '') {
-				require_once(KU_ROOTDIR . 'lib/getid3/getid3.php');
 				$getID3 = new getID3;
 				$embed['id3'] = $getID3->analyze(KU_BOARDSDIR.$this->board['name'].'/src/'.$embed['file'].'.mp3');
 				getid3_lib::CopyTagsToComments($embed['id3']);

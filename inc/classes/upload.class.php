@@ -434,8 +434,6 @@ class Upload {
 							}
 
 							if($attachment['file_type'] == '.mp3' || $attachment['file_type'] == '.ogg') {
-								require_once(KU_ROOTDIR . 'lib/getid3/getid3.php');
-
 								$getID3 = new getID3;
 								$getID3->analyze($attachment['tmp_name']);
 								if (isset($getID3->info['id3v2']['APIC'][0]['data']) && isset($getID3->info['id3v2']['APIC'][0]['image_mime'])) {
