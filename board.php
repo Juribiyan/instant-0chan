@@ -236,7 +236,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 			exitWithErrorPage(_gettext('Sorry, this thread is locked and can not be replied to.'));
 		}
 
-		$post_message = $parse_class->ParsePost($_POST['message'], $board_class->board['name'], $thread_replyto, $board_class->board['id'], false, $ua, $dice, $posting_class->user_id_md5);
+		$post_message = $parse_class->ParsePost($_POST['message'], $board_class->board['name'], $thread_replyto, $board_class->board['id'], $ua, $dice, $posting_class->user_id_md5);
 	// Or, if they are a moderator/administrator...
 	} 
 	else {
@@ -252,7 +252,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 		// Otherwise, parse it as usual...
 		} 
 		else {
-			$post_message = $parse_class->ParsePost($_POST['message'], $board_class->board['name'], $thread_replyto, $board_class->board['id'], false, $ua, $dice, $posting_class->user_id_md5);
+			$post_message = $parse_class->ParsePost($_POST['message'], $board_class->board['name'], $thread_replyto, $board_class->board['id'], $ua, $dice, $posting_class->user_id_md5);
 			// (Moved) check against blacklist and detect flood
 		}
 		// $timer->mark('03_parsed');
