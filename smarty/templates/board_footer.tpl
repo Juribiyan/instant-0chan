@@ -48,12 +48,13 @@
 				{section name=pages loop=$numpages}
 				{strip}
 					&#91;
-					{if $.section.pages.iteration neq $thispage}<a href="{$smarty.const.KU_BOARDSFOLDER}{$board.name}/{$.section.pages.iteration}.html">
+					{if $smarty.section.pages.iteration neq $thispage}
+					<a href="{$smarty.const.KU_BOARDSFOLDER}{$board.name}/{$smarty.section.pages.iteration}.html">
 					{/if}
 					
-					{$.section.pages.iteration}
+					{$smarty.section.pages.iteration}
 					
-					{if $.section.pages.iteration neq $thispage}
+					{if $smarty.section.pages.iteration neq $thispage}
 					</a>
 					{/if}
 					&#93;
