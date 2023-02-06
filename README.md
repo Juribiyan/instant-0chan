@@ -1,3 +1,5 @@
+# <span style="color:red">THIS BRANCH IS NOT FUNCTIONAL; WAIT UNTIL MERGED</span>
+
 <p align="center">
   <img src="http://i.imgur.com/SJwMUsY.png" alt="Instant 0chan"/>
 </p>
