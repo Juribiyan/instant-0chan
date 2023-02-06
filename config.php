@@ -380,7 +380,7 @@ class _Smarty extends Smarty {
 
     $this->addPluginsDir(KU_ROOTDIR.'lib/smarty-faketext');
     $this->setTemplateDir(KU_TEMPLATEDIR);
-    // $this->setConfigDir(KU_ROOTDIR.'smarty/config');
+    $this->muteUndefinedOrNullWarnings(); // Eat shit PHP devs
     $this->setCompileDir(KU_ROOTDIR.'smarty/templates_c');
     $this->setCacheDir(KU_ROOTDIR.'smarty/cache');
   }
