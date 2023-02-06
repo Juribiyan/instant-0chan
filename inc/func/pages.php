@@ -42,7 +42,7 @@ function RegenerateOverboard($boardlist=null, $target_page=null) {
 
 	$over_board_class = new Board('', false, true);
 	$over_board_class->is_overboard = true;
-	$over_board_class->InitializeDwoo();
+	$over_board_class->InitializeSmarty();
 	
 	$over_board_class->board = array(
 		"name" => I0_OVERBOARD_DIR,
@@ -52,7 +52,7 @@ function RegenerateOverboard($boardlist=null, $target_page=null) {
 
 	$over_board_class->board['boardlist'] = $boardlist ? $boardlist : $over_board_class->DisplayBoardList(); 
 
-	$over_board_class->dwoo_data->assign('for_overboard', 1);
+	$over_board_class->smarty->assign('for_overboard', 1);
 	$header = $over_board_class->PageHeader(0,0,-1,0, true);
 
 	$threads = $tc_db->GetAll("SELECT `latest_threads`.`id`, `visible_boards`.`boardname` FROM
@@ -65,7 +65,7 @@ function RegenerateOverboard($boardlist=null, $target_page=null) {
 	// determine the real thread and page count
 	$total_threads = count($threads);
 	$total_pages = ceil($total_threads / I0_OVERBOARD_THREADS);
-	$over_board_class->dwoo_data->assign('numpages', $total_pages-1);
+	$over_board_class->smarty->assign('numpages', $total_pages-1);
 
 	$form_start = '<form id="delform" action="'.KU_CGIPATH.'/board.php" method="post"><input type="hidden" name="board" value="'.I0_OVERBOARD_DIR.'"><div class="i0svcel">!i0-page-start</div>';
 
@@ -92,10 +92,10 @@ function RegenerateOverboard($boardlist=null, $target_page=null) {
 			// For all the boards involved create a board_class instance
 			if (!isset($boards[$thread['boardname']])) { // (only if it's not already created)
 				$boards[$thread['boardname']] = new Board($thread['boardname'], true, true);
-				$boards[$thread['boardname']]->InitializeDwoo();
+				$boards[$thread['boardname']]->InitializeSmarty();
 				$boards[$thread['boardname']]->is_overboard = true;
-				$boards[$thread['boardname']]->dwoo_data->assign('for_overboard', 1);
-				$boards[$thread['boardname']]->dwoo_data->assign('board', $boards[$thread['boardname']]->board);
+				$boards[$thread['boardname']]->smarty->assign('for_overboard', 1);
+				$boards[$thread['boardname']]->smarty->assign('board', $boards[$thread['boardname']]->board);
 				// $pages[$current_page] .= $boards[$thread['boardname']]->Postbox(); // Add postboxes for every board with specific rules
 				// $pages[$current_page] .= "<script>over_board_info['".$thread['boardname']."'] = ".json_encode($boards[$thread['boardname']]->board)."</script>";
 			}
@@ -109,7 +109,7 @@ function RegenerateOverboard($boardlist=null, $target_page=null) {
 	}
 
 	if (I0_DEFERRED_RENDER) {
-		$over_board_class->dwoo_data->assign('thispage', $target_page);
+		$over_board_class->smarty->assign('thispage', $target_page);
 		$footer = $over_board_class->Footer(false, $execution_times[$target_page]);
 		$contents = $header.$pages[$target_page].'<div class="i0svcel">!i0-page-end</div>'.$footer;
 		$pagename = ($target_page==0 ? KU_FIRSTPAGE : $target_page.'.html');
@@ -118,7 +118,7 @@ function RegenerateOverboard($boardlist=null, $target_page=null) {
 	}
 	else {
 		$page = 0; foreach($pages as &$contents) {
-			$over_board_class->dwoo_data->assign('thispage', $page);
+			$over_board_class->smarty->assign('thispage', $page);
 			$footer = $over_board_class->Footer(false, $execution_times[$page]);
 			$contents = $header.$contents.$footer;
 			print_page(KU_BOARDSDIR.I0_OVERBOARD_DIR.'/'.($page==0 ? KU_FIRSTPAGE : '/'.$page.'.html'), $contents, I0_OVERBOARD_DIR);

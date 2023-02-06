@@ -2191,8 +2191,8 @@ msgstr "Vezi / Adaugă / Şterge banuri"
 msgid "Viewed disk space used"
 msgstr "Văzut spaţiul ocupat"
 
-msgid "Visit <a href=\"http://wiki.dwoo.org/\">http://wiki.dwoo.org/</a> for syntax information."
-msgstr "Intră pe <a href=\"http://wiki.dwoo.org/\">http://wiki.dwoo.org/</a> pentru informaţii despre sintaxă."
+msgid "Visit <a href=\"https://smarty-php.github.io/smarty/4.x/\">https://smarty-php.github.io/smarty/4.x/</a> for syntax information."
+msgstr "Intră pe <a href=\"https://smarty-php.github.io/smarty/4.x/\">https://smarty-php.github.io/smarty/4.x/</a> pentru informaţii despre sintaxă."
 
 msgid "Warning"
 msgstr "Atenţie"

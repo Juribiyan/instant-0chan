@@ -16,7 +16,7 @@ function array_in_array($some, $all) {
 }
 
 function exitWithErrorPage($errormsg, $extended = '', $error_type=null, $error_data=null) {
-	global $dwoo, $dwoo_data, $board_class;
+	global $smarty, $board_class;
 
   if ($_POST['AJAX']) {
     $resp = array(
@@ -33,25 +33,27 @@ function exitWithErrorPage($errormsg, $extended = '', $error_type=null, $error_d
   }
 
   else {
-    if (!isset($dwoo)) {
-      require_once KU_ROOTDIR . 'lib/dwoo.php';
+    if (!isset($smarty)) {
+      $GLOBALS['skipdb'] = true;
+      require 'config.php';
+      $smarty = new _Smarty();
     }
     if (!isset($board_class)) {
       require_once KU_ROOTDIR . 'inc/classes/board-post.class.php';
       $board_class = new Board('');
     }
 
-    $dwoo_data->assign('styles', explode(':', KU_MENUSTYLES));
-    $dwoo_data->assign('errormsg', $errormsg);
+    $smarty->assign('styles', explode(':', KU_MENUSTYLES));
+    $smarty->assign('errormsg', $errormsg);
 
     if ($extended != '') {
-      $dwoo_data->assign('errormsgext', '<br /><div style="text-align: center;font-size: 1.25em;">' . $extended . '</div>');
+      $smarty->assign('errormsgext', '<br /><div style="text-align: center;font-size: 1.25em;">' . $extended . '</div>');
     } else {
-      $dwoo_data->assign('errormsgext', $extended);
+      $smarty->assign('errormsgext', $extended);
     }
 
 
-    echo $dwoo->get(KU_TEMPLATEDIR . '/error.tpl', $dwoo_data);
+    echo $smarty->fetch('error.tpl');
 
     die();
   }

@@ -124,29 +124,29 @@ class Upload {
 		  if (is_array($_POST['embed']) || is_object($_POST['embed'])) {
 				foreach($_POST['embed'] as $i => $url) {
 					list($site, $code, $time) = $this->ParseEmbed($url);
-			  	if ($code != '') {
-			  		if (array_key_exists($site, $board_class->board['embeds_allowed_assoc'])) {
-			  			$hash = md5($site.'/'.$code);
-			  			if (in_array($hash, $embed_hashes)) {
-			  				$this->exitWithUploadErrorPage(_gettext('Duplicate embed entry detected.'),
-			  					$atype, $i, $site . '/' . $code);
-			  			}
-			  			else {
-			  				$embed_hashes []= $hash;
-			  			}
-			  			$attachments []= array(
-			  				'attachmenttype' => 'embed',
-			  				'spoiler' => isset($_POST['embed-spoiler-'.$i]) ? $_POST['embed-spoiler-'.$i] : '0',
-			  				'embedtype' => $site,
-			  				'embedtime' => $time,
-			  				'embed' => $code,
-			  				'filetype_withoutdot' => $site,
-			  				'file_md5' => $hash,
-			  				'start' => $time
-			  			);
-			  		}
-			  		else $this->exitWithUploadErrorPage(_gettext('Sorry, that filetype is not allowed on this board.'),
-			  					$atype, $i, $site . '/' . $code);
+					if ($code != '') {
+						if (array_key_exists($site, $board_class->board['embeds_allowed_assoc'])) {
+							$hash = md5($site.'/'.$code);
+							if (in_array($hash, $embed_hashes)) {
+								$this->exitWithUploadErrorPage(_gettext('Duplicate embed entry detected.'),
+									$atype, $i, $site . '/' . $code);
+							}
+							else {
+								$embed_hashes []= $hash;
+							}
+							$attachments []= array(
+								'attachmenttype' => 'embed',
+								'spoiler' => isset($_POST['embed-spoiler-'.$i]) ? $_POST['embed-spoiler-'.$i] : '0',
+								'embedtype' => $site,
+								'embedtime' => $time,
+								'embed' => $code,
+								'filetype_withoutdot' => $site,
+								'file_md5' => $hash,
+								'start' => $time
+							);
+						}
+						else $this->exitWithUploadErrorPage(_gettext('Sorry, that filetype is not allowed on this board.'),
+									$atype, $i, $site . '/' . $code);
 					}
 				}
 			}
@@ -165,7 +165,7 @@ class Upload {
 
 	function ParseEmbed($url) {
 		$sites = array(
-			'you' => "/(?:youtu(?:\.be|be\.com)\/(?:.*v(?:\/|=)|(?:.*\/)?)(?P<code>[\w'-]+))(?:[?#&]t=(?:(?P<h>[0-9]{1,2})h)?(?:(?P<m>[0-9]{1,2})m)?(?:(?P<s>[0-9]{1,2})s)?)?/i",
+			'you' => "/(?:youtu(?:\.be|be\.com)\/(?:.*v(?:\/|=)|(?:(?:(?P<type>shorts|live)|.*)\/)?)(?P<code>[\w'-]+))(?:.*[?#&]t=(?:(?:(?P<h>[0-9]{1,2})h)?(?:(?P<m>[0-9]{1,2})m)?(?:(?P<s>[0-9]{1,2})s)|(?P<time>[0-9]+)))?/i",
 			'vim' => "/[\w\W]*vimeo\.com\/(?:.*?)(?P<code>[0-9]+)(?:#t=(?:(?P<h>[0-9]{1,2})h)?(?:(?P<m>[0-9]{1,2})m)?(?:(?P<s>[0-9]{1,2})s)?)?/i",
 			'cob' => "/[\w\W]*coub\.com\/view\/(?P<code>[\w\W]*)[\w\W]*/i",
 			'scl' => "/[\w\W]*soundcloud.com\/(?P<code>[\w\W]*)[\w\W]*/i",
@@ -174,17 +174,27 @@ class Upload {
 		foreach ($sites as $s => $rx) {
 			preg_match($rx, $url, $matches);
 			if ($matches) {
-				$time = 0;
+				$time = $matches['time'] || 0;
 				$code = $matches['code'];
 				$site = $s;
-				foreach(array('h', 'm', 's') as $u) {
-					$t = isset($matches[$u]) ? (int)$matches[$u] : 0;
-					if ($t > 0 && $t < 60) {
-						if ($u == 'h')
-							$t *= 60;
-						if ($u != 's')
-							$t *= 60;
-						$time += $t;
+				if ($site == 'you') {
+					if ($matches['type']=='shorts') {
+						$site = 'yts';
+					}
+					if (!$time && $matches['type']=='live') { // For currently live videos
+						$time = '?';
+					}
+				}
+				if (!$time) {
+					foreach(array('h', 'm', 's') as $u) {
+						$t = isset($matches[$u]) ? (int)$matches[$u] : 0;
+						if ($t > 0 && $t < 60) {
+							if ($u == 'h')
+								$t *= 60;
+							if ($u != 's')
+								$t *= 60;
+							$time += $t;
+						}
 					}
 				}
 				break;
@@ -299,17 +309,17 @@ class Upload {
 
 				$attachment['file_size'] = $attachment['size'];
 
-        $generic_filetype_allowed = $board_class->board['any_filetype'] && !$this->isBannedFiletype($attachment['filetype_withoutdot']);
+				$generic_filetype_allowed = ($board_class->board['any_filetype'] ?? 0) && !$this->isBannedFiletype($attachment['filetype_withoutdot']);
 				$filetype_forcethumb = $generic_filetype_allowed 
-          ? $tc_db->GetOne("SELECT " . KU_DBPREFIX . "filetypes.force_thumb
-            FROM " . KU_DBPREFIX . "filetypes 
-            WHERE " . KU_DBPREFIX . "filetype = '" . $attachment['filetype_withoutdot'] . "';")
-          : $tc_db->GetOne("SELECT " . KU_DBPREFIX . "filetypes.force_thumb
-            FROM " . KU_DBPREFIX . "boards, " . KU_DBPREFIX . "filetypes, " . KU_DBPREFIX . "board_filetypes
-            WHERE " . KU_DBPREFIX . "boards.id = " . KU_DBPREFIX . "board_filetypes.boardid
-            AND " . KU_DBPREFIX . "filetypes.id = " . KU_DBPREFIX . "board_filetypes.typeid
-            AND " . KU_DBPREFIX . "boards.name = '" . $board_class->board['name'] . "'
-            AND " . KU_DBPREFIX . "filetypes.filetype = '" . $attachment['filetype_withoutdot'] . "';");
+					? $tc_db->GetOne("SELECT " . KU_DBPREFIX . "filetypes.force_thumb
+						FROM " . KU_DBPREFIX . "filetypes 
+						WHERE " . KU_DBPREFIX . "filetype = '" . $attachment['filetype_withoutdot'] . "';")
+					: $tc_db->GetOne("SELECT " . KU_DBPREFIX . "filetypes.force_thumb
+						FROM " . KU_DBPREFIX . "boards, " . KU_DBPREFIX . "filetypes, " . KU_DBPREFIX . "board_filetypes
+						WHERE " . KU_DBPREFIX . "boards.id = " . KU_DBPREFIX . "board_filetypes.boardid
+						AND " . KU_DBPREFIX . "filetypes.id = " . KU_DBPREFIX . "board_filetypes.typeid
+						AND " . KU_DBPREFIX . "boards.name = '" . $board_class->board['name'] . "'
+						AND " . KU_DBPREFIX . "filetypes.filetype = '" . $attachment['filetype_withoutdot'] . "';");
 				if ($generic_filetype_allowed || $filetype_forcethumb != '') {
 					// Make thumbnails for images and videos
 					if ($filetype_forcethumb != '' && $filetype_forcethumb == 0) {
@@ -596,12 +606,12 @@ class Upload {
 	}
 
 	function ffProbe($filepath) {
-    if(KU_FFMPEGPATH) putenv('PATH=' . KU_FFMPEGPATH . PATH_SEPARATOR . getenv('PATH'));
+		if(KU_FFMPEGPATH) putenv('PATH=' . KU_FFMPEGPATH . PATH_SEPARATOR . getenv('PATH'));
 		exec("ffprobe -v error -show_entries format=duration:stream=width,height -of default=noprint_wrappers=1:nokey=1 ".$filepath." 2>&1", $finfo, $x);
-    if($x !== 0 || count($finfo) !== 3) return false;
-    $w = (int)$finfo[0];
-    $h = (int)$finfo[1];
-    $s = (float)$finfo[2];
+		if($x !== 0 || count($finfo) !== 3) return false;
+		$w = (int)$finfo[0];
+		$h = (int)$finfo[1];
+		$s = (float)$finfo[2];
 		return array(
 			'width' => $w,
 			'height' => $h,
@@ -610,7 +620,7 @@ class Upload {
 	}
 
 	function ffThumb($filepath, $thumbpath, $filename, $midtime) {
-    if(KU_FFMPEGPATH) putenv('PATH=' . KU_FFMPEGPATH . PATH_SEPARATOR . getenv('PATH'));
+		if(KU_FFMPEGPATH) putenv('PATH=' . KU_FFMPEGPATH . PATH_SEPARATOR . getenv('PATH'));
 		$scale = "w=".KU_THUMBWIDTH.":h=".KU_THUMBHEIGHT;
 		$scalecat = "w=".KU_CATTHUMBWIDTH.":h=".KU_CATTHUMBHEIGHT;
 		$foar = ':force_original_aspect_ratio=decrease';
@@ -618,7 +628,7 @@ class Upload {
 		$common = ' -ss '.$midtime.' -vframes 1 -filter:v scale=';
 		$newfn = $thumbpath.$filename;
 		exec('ffmpeg -i '.$filepath.$common.$scale.$foar.' '.$newfn.'s.jpg'.$common.$scalecat.$foar.' '.$newfn.'c.jpg 2>&1', $result, $x);
-    if($x !== 0) return false;
+		if($x !== 0) return false;
 		preg_match('/Output[\s\S]+?\sStream.+?(\d+)x(\d+)[\s\S]+?Stream.+?(\d+)x(\d+)/m', implode('<br>', $result), $ths);
 		if(count($ths) == 5) return array(
 			'thumbwidth' => $ths[1],

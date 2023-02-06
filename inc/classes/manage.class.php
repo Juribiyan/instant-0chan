@@ -24,7 +24,7 @@ class Manage {
 
 	/* Show the header of the manage page */
 	function Header() {
-		global $dwoo_data, $tpl_page;
+		global $smarty, $tpl_page;
 
 		if (is_file(KU_ROOTDIR . 'inc/pages/modheader.html')) {
 			$tpl_includeheader = file_get_contents(KU_ROOTDIR . 'inc/pages/modheader.html');
@@ -32,20 +32,20 @@ class Manage {
 			$tpl_includeheader = '';
 		}
 
-		$dwoo_data->assign('includeheader', $tpl_includeheader);
+		$smarty->assign('includeheader', $tpl_includeheader);
 	}
 
 	/* Show the footer of the manage page */
 	function Footer() {
-		global $dwoo_data, $dwoo, $tpl_page;
+		global $smarty, $tpl_page;
 
-		$dwoo_data->assign('page', $tpl_page);
+		$smarty->assign('page', $tpl_page);
 
 		$board_class = new Board('');
-		if(!isset($dwoo_data->footer)) {
-			$dwoo_data->footer = '';
-		}
-		$dwoo->output(KU_TEMPLATEDIR . '/manage.tpl', $dwoo_data);
+		// if(!isset($smarty->footer)) {
+		// 	$smarty->footer = '';
+		// }
+		$smarty->display('manage.tpl');
 	}
 
 	// Creates a salt to be used for passwords
@@ -505,7 +505,7 @@ class Manage {
 		}
 	}
 
-	/* Edit Dwoo templates */
+	/* Edit Smarty templates */
 	function templates() {
 		global $tc_db, $tpl_page;
 		$this->AdministratorsOnly();
@@ -559,8 +559,8 @@ class Manage {
 					<textarea wrap=off rows=40 cols=100 name="templatedata">'. htmlspecialchars(file_get_contents(KU_TEMPLATEDIR . '/'. $file)) . '</textarea>
 					<label for="rebuild">'. _gettext('Rebuild HTML after edit?') .'</label>
 					<input type="checkbox" name="rebuild" /><br /><br />
-					<div class="desc">'. _gettext('Visit <a href="http://wiki.dwoo.org/">http://wiki.dwoo.org/</a> for syntax information.') . '</div>
-					<div class="desc">'. sprintf(_gettext('To access Kusaba variables, use {%%KU_VARNAME}, for example {%%KU_BOARDSPATH} would be replaced with %s'), KU_BOARDSPATH) . '</div>
+					<div class="desc">'. _gettext('Visit <a href="https://smarty-php.github.io/smarty/4.x/">https://smarty-php.github.io/smarty/4.x/</a> for syntax information.') . '</div>
+					<div class="desc">'. sprintf(_gettext('To access Kusaba variables, use {$smarty.const.KU_VARNAME}, for example {$smarty.const.KU_BOARDSPATH} would be replaced with %s'), KU_BOARDSPATH) . '</div>
 					<div class="desc">'. _gettext('Enclose text in {t}{/t} blocks to allow them to be translated for different languages.') . '</div><br /><br />';
 				}
 			}
@@ -1089,12 +1089,12 @@ class Manage {
 
 	/* Display moderators and administrators actions which were logged */
 	function modlog() {
-		global $tc_db, $tpl_page, $dwoo, $dwoo_data;
+		global $tc_db, $tpl_page, $smarty;
 		$this->AdministratorsOnly();
 
 		$entries = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "modlog` ORDER BY `timestamp` DESC");
-		$dwoo_data->assign('modlog_entries', $entries);
-		$tpl_page .= $dwoo->get(KU_TEMPLATEDIR . '/modlog.tpl', $dwoo_data);
+		$smarty->assign('modlog_entries', $entries);
+		$tpl_page .= $smarty->fetch('modlog.tpl');
 	}
 
 	function proxyban() {

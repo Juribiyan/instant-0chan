@@ -66,6 +66,6 @@ label {
 		{$page}
 	</div>
 </div>	
-{$footer}
+{* {$footer} *}
 </body>
 </html>

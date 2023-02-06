@@ -177,7 +177,7 @@ if (!$cache_loaded) {
 		$cf['KU_ALLOWREAD'] = false; // Enable banning from reading (only works on Apache)
 		$cf['I0_CURL_PROXY'] = false; // Proxy to use when fetching external resources, for example 'socks5h://127.0.0.1:9050' — to connect through TOR
 		$cf['KU_USE_GESHI']  = false;	//Use original code highlighter from 0chan.ru like the cargo cultist you are
-		$cf['KU_DISCLAIMER'] = false; // Whether or not a disclaimer (/dwoo/templates/disclaimer.tpl) should be displayed for new visitors.
+		$cf['KU_DISCLAIMER'] = false; // Whether or not a disclaimer (/smarty/templates/disclaimer.tpl) should be displayed for new visitors.
 		$cf['I0_ENABLE_PUBLIC_MODLOG'] = true; // If set to false, users won't be able to view the modlog
 		$cf['KU_MODLOGDAYS'] = 7; 		// Days to keep modlog entries before removing them
 
@@ -261,15 +261,14 @@ if (!$cache_loaded) {
 
 
 	// --------------------------------------- Templates ----------------------------------------
-		$cf['KU_TEMPLATEDIR']       = $cf['KU_ROOTDIR'] . 'dwoo/templates'; // Dwoo templates directory
-		$cf['KU_CACHEDTEMPLATEDIR'] = $cf['KU_ROOTDIR'] . 'dwoo/templates_c'; // Dwoo compiled templates directory.  This folder MUST be writable (you may need to chmod it to 755).  Set to '' to disable template caching
+		$cf['KU_TEMPLATEDIR'] = $cf['KU_ROOTDIR'] . 'smarty/templates'; // Smarty templates directory
 
 
 	// -------------------------------- Post-config (do not modify) -----------------------------
 		require 'instance-config.php';
 		putenv('TZ='.$cf['KU_TIMEZONE']); 
 
-		$cf['KU_VERSION']    = '0.9.3';
+		$cf['KU_VERSION']    = '2.0.0';
 		$cf['KU_TRIPS']      = serialize($cf['KU_TRIPS']);
 		$cf['KU_LINELENGTH'] = $cf['KU_LINELENGTH'] * 15;
 
@@ -297,8 +296,9 @@ if (in_array('CHANGEME', $required) || in_array('', $required)){
 	echo 'You must set KU_ROOTDIR and KU_WEBFOLDER before installation will finish!';
 	die();
 }
-require KU_ROOTDIR . 'lib/gettext/gettext.inc.php';
-require KU_ROOTDIR . 'lib/adodb/adodb.inc.php';
+
+require KU_ROOTDIR . 'lib/vendor/autoload.php';
+require KU_ROOTDIR . 'lib/faketext/gettext.inc.php';
 
 // Gettext
 _textdomain('kusaba');
@@ -369,6 +369,21 @@ if (!isset($tc_db) && !isset($preconfig_db_unnecessary) && (!isset($GLOBALS['ski
 
 		unset($results_events, $line_events);
 	}
+}
+
+// use Smarty\Smarty;
+
+class _Smarty extends Smarty {
+  public function __construct()
+  {
+    parent::__construct();
+
+    $this->addPluginsDir(KU_ROOTDIR.'lib/smarty-faketext');
+    $this->setTemplateDir(KU_TEMPLATEDIR);
+    // $this->setConfigDir(KU_ROOTDIR.'smarty/config');
+    $this->setCompileDir(KU_ROOTDIR.'smarty/templates_c');
+    $this->setCacheDir(KU_ROOTDIR.'smarty/cache');
+  }
 }
 
 

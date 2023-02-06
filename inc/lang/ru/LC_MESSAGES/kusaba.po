@@ -2208,3 +2208,6 @@ msgstr "Все"
 
 msgid " except "
 msgstr ", кроме "
+
+msgid "Visit <a href=\"https://smarty-php.github.io/smarty/4.x/\">https://smarty-php.github.io/smarty/4.x/</a> for syntax information."
+msgstr "Документация по синтаксису: <a href=\"https://smarty-php.github.io/smarty/4.x/\">https://smarty-php.github.io/smarty/4.x/</a>"

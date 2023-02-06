@@ -26,12 +26,12 @@
 session_start();
 
 require 'config.php';
-require KU_ROOTDIR . 'lib/dwoo.php';
+$smarty = new _Smarty();
 require KU_ROOTDIR . 'inc/functions.php';
 require KU_ROOTDIR . 'inc/classes/manage.class.php';
 
 $manage_class = new Manage();
-$dwoo_data->assign('styles', explode(':', KU_MENUSTYLES));
+$smarty->assign('styles', explode(':', KU_MENUSTYLES));
 
 
 $tpl_links = '';
@@ -184,7 +184,7 @@ function section_html($section, $abbreviation, $show=true) {
 	</h2>
 	<div id="' . $abbreviation . '" style="' . ($show ? '' : 'display:none') . '">';
 }
-$dwoo_data->assign('logo20', $includelogo20);
-$dwoo_data->assign('links', $tpl_links);
-$dwoo->output(KU_TEMPLATEDIR . '/manage_menu.tpl', $dwoo_data);
+$smarty->assign('logo20', $includelogo20);
+$smarty->assign('links', $tpl_links);
+$smarty->display('manage_menu.tpl');
 ?>

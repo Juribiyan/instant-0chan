@@ -5,10 +5,10 @@
 <title>{$smarty.const.KU_NAME} Navigation</title>
 {if $smarty.const.KU_MENUTYPE eq 'normal'}
 	<link rel="stylesheet" type="text/css" href="{$boardpath}css/menu_global.css" />
-	{loop $styles}
-			<link rel="{if $ neq $smarty.const.KU_DEFAULTMENUSTYLE}alternate {/if}stylesheet" type="text/css" href="{$smarty.const.KU_WEBFOLDER}css/site_{$}.css" title="{$|capitalize}" />
-			<link rel="{if $ neq $smarty.const.KU_DEFAULTMENUSTYLE}alternate {/if}stylesheet" type="text/css" href="{$smarty.const.KU_WEBFOLDER}css/sitemenu_{$}.css" title="{$|capitalize}" />
-	{/loop}
+	{foreach $styles as $style}
+		<link rel="{if $style neq $smarty.const.KU_DEFAULTMENUSTYLE}alternate {/if}stylesheet" type="text/css" href="{$smarty.const.KU_WEBFOLDER}css/site_{$style}.css" title="{$style|capitalize}" />
+		<link rel="{if $style neq $smarty.const.KU_DEFAULTMENUSTYLE}alternate {/if}stylesheet" type="text/css" href="{$smarty.const.KU_WEBFOLDER}css/sitemenu_{$style}.css" title="{$style|capitalize}" />
+	{/foreach}
 {else}
 	{literal}<style type="text/css">body { margin: 0px; } h1 { font-size: 1.25em; } h2 { font-size: 0.8em; font-weight: bold; color: #CC3300; } ul { list-style-type: none; padding: 0px; margin: 0px; } li { font-size: 0.8em; padding: 0px; margin: 0px; }</style>{/literal}
 {/if}

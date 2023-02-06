@@ -23,14 +23,12 @@
 class Menu {
 
 	function GetMenu($savetofile = false, $option = false) {
-		global $tc_db, $dwoo, $dwoo_data, $kusabaxorg;
+		global $tc_db, $smarty, $kusabaxorg;
 
-		require_once KU_ROOTDIR.'lib/dwoo.php';
-
-		$dwoo_data->assign('boardpath', getCLBoardPath());
+		$smarty->assign('boardpath', getCLBoardPath());
 
 		if (KU_MENUTYPE == 'normal') {
-			$dwoo_data->assign('styles', explode(':', KU_MENUSTYLES));
+			$smarty->assign('styles', explode(':', KU_MENUSTYLES));
 		}
 
 		if ($savetofile) {
@@ -39,7 +37,7 @@ class Menu {
 			$files = array('menu.php', 'menu.php');
 		}
 
-		$dwoo_data->assign('files', $files);
+		$smarty->assign('files', $files);
 
 		$sections = Array();
 
@@ -54,26 +52,26 @@ class Menu {
 				}
 			}
 		}
-		$dwoo_data->assign('boards', $sections);
+		$smarty->assign('boards', $sections);
 
 		for ($i = 0; $i < 2; $i++) {
-			if ($i == 0) $dwoo_data->assign('showdirs', 0);
-			else $dwoo_data->assign('showdirs', 1);
+			if ($i == 0) $smarty->assign('showdirs', 0);
+			else $smarty->assign('showdirs', 1);
 			if ($savetofile) {
 				if ($i == 0) {
-					file_put_contents(KU_ROOTDIR . $files[0], $dwoo->get(KU_TEMPLATEDIR . '/menu.tpl', $dwoo_data));
+					file_put_contents(KU_ROOTDIR . $files[0], $smarty->fetch('menu.tpl'));
 				} else {
-					file_put_contents(KU_ROOTDIR . $files[1], $dwoo->get(KU_TEMPLATEDIR . '/menu.tpl', $dwoo_data));
+					file_put_contents(KU_ROOTDIR . $files[1], $smarty->fetch('menu.tpl'));
 				}
 			} else {
 				if ($i == 0) {
-					$menu_nodirs = $dwoo->get(KU_TEMPLATEDIR . '/menu.tpl', $dwoo_data);
+					$menu_nodirs = $smarty->fetch('menu.tpl');
 					if ($option == 'nodirs') {
 						return $menu_nodirs;
 					}
 				} else {
 					if ($option == 'dirs') {
-						$menu_dirs = $dwoo->get(KU_TEMPLATEDIR . '/menu.tpl', $dwoo_data);
+						$menu_dirs = $smarty->fetch('menu.tpl');
 						return $menu_dirs;
 					}
 				}
