@@ -1,6 +1,6 @@
 <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
 {if $replythread > 0}<!-- i0:thrno={$replythread} -->{/if}
-<meta property="i0:buildtime" content="{time();}"/>
+<meta property="i0:buildtime" content="{time()}"/>
 <script type="text/javascript">
 	var captchaTimeout = {$smarty.const.KU_CAPTCHALIFE} - 0.5;
 	var liveupd_api = '{$smarty.const.KU_CLI_LIVEUPD_API}';
@@ -29,12 +29,12 @@
 <noscript><style>.yesscript { display: none!important; }</style></noscript>
 <link rel="stylesheet" type="text/css" href="{$cwebpath}css/img_global.css?v={$smarty.const.KU_CSSVER}" />
 <script>document.write('{strip}
-{loop $ku_styles}
-	<link rel="{if $ neq $__.ku_defaultstyle}alternate {/if}stylesheet" type="text/css" 
-	href="{$__.cwebpath}css/{if $__.customstyle eq $}custom/{/if}{$}.css?v={if $__.customstyle eq $}{$__.csver}{else}{$smarty.const.KU_CSSVER}{/if}" 
-	title="{$|capitalize}" 
-	{if $__.customstyle eq $}data-custom="true"{/if}/>
-{/loop}{/strip}')</script>
+{foreach $ku_styles as $style}
+	<link rel="{if $style neq $__.ku_defaultstyle}alternate {/if}stylesheet" type="text/css" 
+	href="{$cwebpath}css/{if $__.customstyle eq $style}custom/{/if}{$style}.css?v={if $__.customstyle eq $style}{$__.csver}{else}{$smarty.const.KU_CSSVER}{/if}" 
+	title="{$style|capitalize}" 
+	{if $__.customstyle eq $style}data-custom="true"{/if}/>
+{/foreach}{/strip}')</script>
 <noscript><link rel="stylesheet" href="{$cwebpath}getpreferredstylesheet.php?allowed={implode(',', $ku_styles)}&default={$__.ku_defaultstyle}&v={$smarty.const.KU_CSSVER}{if $__.customstyle}&custom={$__.customstyle}&cv={$__.csver}{/if}"></noscript>
 <link href="{$cwebpath}css/prettify.css" type="text/css" rel="stylesheet" />
 {if $locale eq 'ja'}
@@ -60,7 +60,7 @@
 {if $smarty.const.KU_LIVEUPD_ENA}
 <script src="{$smarty.const.KU_CLI_LIVEUPD_API}/socket.io/socket.io.js"></script>
 {/if}
-<script>if(localStorage['constrainWidth']=='true') document.write('<style id="injector:constrainWidth">body\{max-width:960px;margin:0px auto\}</style>')</script>
+{literal}<script>if(localStorage['constrainWidth']=='true') document.write('<style id="injector:constrainWidth">body\{max-width:960px;margin:0px auto\}</style>')</script>{/literal}
 </head>
 <body{if $replythread neq 0} class="isthread"{/if}>
 <script>
@@ -144,9 +144,9 @@
 		{/foreach}
 		<div class="menu-sect" id="ms-_options">
 			{t}Styles{/t}:
-			{loop $ku_styles}
-			[<a href="#" onclick="javascript:Styles.change('{$|capitalize}');return false;">{if $__.customstyle eq $}Custom{else}{$|capitalize}{/if}</a>]
-			{/loop}<br />
+			{foreach $ku_styles as $style}
+			[<a href="#" onclick="javascript:Styles.change('{$style|capitalize}');return false;">{if $__.customstyle eq $}Custom{else}{$style|capitalize}{/if}</a>]
+			{/foreach}<br />
 			<a href="#" onclick="javascript:menu_pin();return false;">{t}Pin/Unpin{/t}</a>  |
 			<a href="#" onclick="javascript:toggle_oldmenu(true);return false;">{t}Simple list{/t}</a>
 			<div id="js_settings"></div>

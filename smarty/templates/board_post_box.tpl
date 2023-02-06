@@ -74,7 +74,7 @@
 					<div class="captcha-show msg">{t}Show captcha{/t}</div>
 					<img class="captchaimage" valign="middle" border="0" alt="{t}Captcha image{/t}">
 					<div class="rotting-indicator"></div>
-					<div class="rotten-msg msg">{t}Captcha has expired{t}.</div>
+					<div class="rotten-msg msg">{t}Captcha has expired{/t}.</div>
 				</div>
 				<noscript><iframe class="captchawrap" src="{$smarty.const.KU_BOARDSFOLDER}nojscaptcha.php" frameborder="0" width="150" height="32" style="vertical-align: middle;"></iframe></noscript>
 			</nobr></td>
@@ -244,9 +244,9 @@
 							<li>{t}A file or embed ID is required for a new thread.{/t}</li>
 							{/if}
 							{if $smarty.const.KU_FILESIZE_METHOD eq 'sum'}
-							<li>{t}Maximum total size for all files allowed is{/t} {math "round(x/1024)" x=$board.maximagesize} {t}KB{/t}.</li>
+							<li>{t}Maximum total size for all files allowed is{/t} {round($board.maximagesize/1024)} {t}KB{/t}.</li>
 							{else}
-							<li>{t}Maximum file size allowed is{/t} {math "round(x/1024)" x=$board.maximagesize} {t}KB{/t}.</li>
+							<li>{t}Maximum file size allowed is{/t} {round($board.maximagesize/1024)} {t}KB{/t}.</li>
 							{/if}
 							<li>{t}Maximum number of files + embeds per post is{/t} {$board.maxfiles}.</li>
 							{if $board.enablenofile}
