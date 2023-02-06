@@ -71,7 +71,7 @@ function color_from_extension($ext) {
   foreach ($chars as $char) {
     $s .= ord($char);
   }
-  return $s % 360;
+  return (int)$s % 360;
 }
 
 function is_from_sosach($filename) {
