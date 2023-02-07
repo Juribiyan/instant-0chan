@@ -17,6 +17,15 @@ function toggle(button, area) {
 	}
 	createCookie('nav_show_'+area, tog.style.display?'0':'1', 365);
 }
+function createCookie(name,value,days) {
+  if (days) {
+    var date = new Date();
+    date.setTime(date.getTime()+(days*24*60*60*1000));
+    var expires = "; expires="+date.toGMTString();
+  }
+  else var expires = "";
+  document.cookie = name+"="+value+expires+"; path=/";
+}
 </script>
 {/literal}
 <base target="manage_main" />
@@ -34,5 +43,13 @@ function toggle(button, area) {
 	{$links}
 </ul>
 </div>
+{literal}
+<script>
+	document.querySelectorAll('#navbar-container div').forEach(sect => {
+		if (!!~document.cookie.indexOf('nav_show_' + sect.id + '=0'))
+			sect.style.display = 'none'
+	})
+</script>
+{/literal}
 </body>
 </html>
