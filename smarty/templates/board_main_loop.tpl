@@ -34,6 +34,14 @@
 {* POSTHEAD SECTION *}
  <div class="posthead{if $post.parentid eq 0}{if $post.locked eq 1} thread-locked{/if}{if $post.stickied eq 1} thread-stickied{/if}{/if}">
   {if $post.parentid eq 0 and $for_overboard}<a href="/{$board.name}" target="_blank" class="over-boardlabel">/{$board.name}/ — {$board.desc}</a>{/if}
+  {strip}
+  {if $post.parentid neq 0}
+  <span class="extrabtns yesscript">
+   <a href="#" onclick="javascript:HiddenItems.togglePost('{$post.id}-{$board.name}');return false;" title="{t}Hide{/t} {t}post{/t}" class="hide-post-btn">
+    <svg class="icon b-icon"><use xlink:href="#i-hide"></use></svg>
+   </a>
+  </span>
+  {/if}
   <label class="postinfo">
    <svg class="icon b-icon post-menu-toggle yesscript"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#i-dots"></use></svg>
    <input type="checkbox" name="post[]" class="multidel noscript" value="{$post.id}:{$board.name}" />
@@ -98,13 +106,9 @@
    </a>
    {if $board.balls}
     <img class="_country_" src="{$smarty.const.KU_WEBPATH}/images/flags/{$post.country}.png">
-   {/if}
-   {if $post.parentid neq 0}
-    <a href="#" onclick="javascript:HiddenItems.togglePost('{$post.id}-{$board.name}');return false;" title="{t}Hide{/t} {t}post{/t}" class="hide-post-btn">
-     <svg class="icon b-icon"><use xlink:href="#i-hide"></use></svg>
-    </a>
-   {/if}
+   {/if}   
   </span>
+  {/strip}
   {if $post.parentid eq 0}
    {strip}<span class="inthread-hide">[<a href="{$smarty.const.KU_BOARDSFOLDER}{$board.name}/res/{if $post.parentid eq 0}{$post.id}{else}{$post.parentid}{/if}.html">
     {if $post.locked eq 1}
