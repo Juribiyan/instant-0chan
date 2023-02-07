@@ -43,85 +43,85 @@ class Upload {
 		global $board_class;
 
 		if ($_POST['legacy-posting']) { // no-js file input (implemented first)
-		  $attachments = array();
+			$attachments = array();
 
-		  // 1) Collect uploaded files
-		  $file_hashes = array();
-      if (isset($_FILES['imagefile']) && is_array($_FILES['imagefile']['name']))
-		  foreach($_FILES['imagefile']['name'] as $i => $filename) {
-		  	if ($_FILES['imagefile']['error'][$i] != UPLOAD_ERR_NO_FILE) {
-		  		switch ($_FILES['imagefile']['error'][$i]) {
-		  			case UPLOAD_ERR_OK:
-		  				break;
-		  			case UPLOAD_ERR_INI_SIZE:
-		  				$this->exitWithUploadErrorPage(sprintf(_gettext('The uploaded file exceeds the upload_max_filesize directive (%s) in php.ini.'), ini_get('upload_max_filesize')),
-		  					$atype, $i, $filename);
-		  				break;
-		  			case UPLOAD_ERR_FORM_SIZE:
-		  				$this->exitWithUploadErrorPage(sprintf(_gettext('Please make sure your file is smaller than %dB'), $board_class->board['maximagesize']),
-		  					$atype, $i, $filename);
-		  				break;
-		  			case UPLOAD_ERR_PARTIAL:
-		  				$this->exitWithUploadErrorPage(_gettext('The uploaded file was only partially uploaded.'),
-		  					$atype, $i, $filename);
-		  				break;
-		  			case UPLOAD_ERR_NO_TMP_DIR:
-		  				$this->exitWithUploadErrorPage(_gettext('Missing a temporary folder.'),
-		  					$atype, $i, $filename);
-		  				break;
-		  			case UPLOAD_ERR_CANT_WRITE:
-		  				$this->exitWithUploadErrorPage(_gettext('Failed to write file to disk'),
-		  					$atype, $i, $filename);
-		  				break;
-		  			default:
-		  				$this->exitWithUploadErrorPage(_gettext('Unknown File Error'),
-		  					$atype, $i, $filename);
-		  		}
-		  		$file_type = strtolower(preg_replace('/.*(\..+)/','\1', $filename));
-		  		if ($file_type == '.jpeg') {
-		  			// Fix for the rarely used 4-char format
-		  			$file_type = '.jpg';
-		  		}
-		  		$filetype_withoutdot = substr($file_type, 1);
-		  		$generic_filetype_allowed = @$board_class->board['any_filetype'] && !$this->isBannedFiletype($filetype_withoutdot);
-		  		if ($generic_filetype_allowed || in_array($filetype_withoutdot, $board_class->board['filetypes_allowed'])) {
-		  			$file_md5 = md5_file($_FILES['imagefile']['tmp_name'][$i]);
-		  			if (in_array($file_md5, $file_hashes)) {
-		  				$this->exitWithUploadErrorPage(_gettext('Duplicate file entry detected.'),
-		  					$atype, $i, $filename);
-		  			}
-		  			else {
-		  				$file_hashes []= $file_md5;
-		  			}
-		  			$file_entry = array(
-		  				'attachmenttype' => 'file',
-		  				'spoiler' => isset($_POST['spoiler-'.$i]) ? $_POST['spoiler-'.$i] : '0',
-		  				'file_original' => isset($_POST['spoiler-'.$i]) && ($_POST['hidename-'.$i]==1)
-		  					? '/hidden' 
-		  					: ( $_POST['filename-'.$i]
-		  							? htmlspecialchars($_POST['filename-'.$i])
-		  							: preg_replace('/(.*)\..+/','\1', $filename)
-		  						),
-		  				'tmp_name' => $_FILES['imagefile']['tmp_name'][$i],
-		  				'type' => $_FILES['imagefile']['type'][$i],
-		  				'size' => $_FILES['imagefile']['size'][$i],
-		  				'file_type' => $file_type,
-		  				'filetype_withoutdot' => $filetype_withoutdot,
-		  				'file_md5' => $file_md5
-		  			);
-		  			if (in_array($file_entry['file_type'], array('.png', '.gif'))) {
-		  				$file_entry['emoji_candidate'] = true;
-		  			}
-		  			$attachments []= $file_entry;
-		  		}
-		  		else $this->exitWithUploadErrorPage(_gettext('Sorry, that filetype is not allowed on this board.'),
-		  					$atype, $i, $filename);
-		  	}
-		  }
+			// 1) Collect uploaded files
+			$file_hashes = array();
+			if (isset($_FILES['imagefile']) && is_array($_FILES['imagefile']['name']))
+			foreach($_FILES['imagefile']['name'] as $i => $filename) {
+				if ($_FILES['imagefile']['error'][$i] != UPLOAD_ERR_NO_FILE) {
+					switch ($_FILES['imagefile']['error'][$i]) {
+						case UPLOAD_ERR_OK:
+							break;
+						case UPLOAD_ERR_INI_SIZE:
+							$this->exitWithUploadErrorPage(sprintf(_gettext('The uploaded file exceeds the upload_max_filesize directive (%s) in php.ini.'), ini_get('upload_max_filesize')),
+								$atype, $i, $filename);
+							break;
+						case UPLOAD_ERR_FORM_SIZE:
+							$this->exitWithUploadErrorPage(sprintf(_gettext('Please make sure your file is smaller than %dB'), $board_class->board['maximagesize']),
+								$atype, $i, $filename);
+							break;
+						case UPLOAD_ERR_PARTIAL:
+							$this->exitWithUploadErrorPage(_gettext('The uploaded file was only partially uploaded.'),
+								$atype, $i, $filename);
+							break;
+						case UPLOAD_ERR_NO_TMP_DIR:
+							$this->exitWithUploadErrorPage(_gettext('Missing a temporary folder.'),
+								$atype, $i, $filename);
+							break;
+						case UPLOAD_ERR_CANT_WRITE:
+							$this->exitWithUploadErrorPage(_gettext('Failed to write file to disk'),
+								$atype, $i, $filename);
+							break;
+						default:
+							$this->exitWithUploadErrorPage(_gettext('Unknown File Error'),
+								$atype, $i, $filename);
+					}
+					$file_type = strtolower(preg_replace('/.*(\..+)/','\1', $filename));
+					if ($file_type == '.jpeg') {
+						// Fix for the rarely used 4-char format
+						$file_type = '.jpg';
+					}
+					$filetype_withoutdot = substr($file_type, 1);
+					$generic_filetype_allowed = @$board_class->board['any_filetype'] && !$this->isBannedFiletype($filetype_withoutdot);
+					if ($generic_filetype_allowed || in_array($filetype_withoutdot, $board_class->board['filetypes_allowed'])) {
+						$file_md5 = md5_file($_FILES['imagefile']['tmp_name'][$i]);
+						if (in_array($file_md5, $file_hashes)) {
+							$this->exitWithUploadErrorPage(_gettext('Duplicate file entry detected.'),
+								$atype, $i, $filename);
+						}
+						else {
+							$file_hashes []= $file_md5;
+						}
+						$file_entry = array(
+							'attachmenttype' => 'file',
+							'spoiler' => isset($_POST['spoiler-'.$i]) ? $_POST['spoiler-'.$i] : '0',
+							'file_original' => isset($_POST['spoiler-'.$i]) && ($_POST['hidename-'.$i]==1)
+								? '/hidden' 
+								: ( $_POST['filename-'.$i]
+										? htmlspecialchars($_POST['filename-'.$i])
+										: preg_replace('/(.*)\..+/','\1', $filename)
+									),
+							'tmp_name' => $_FILES['imagefile']['tmp_name'][$i],
+							'type' => $_FILES['imagefile']['type'][$i],
+							'size' => $_FILES['imagefile']['size'][$i],
+							'file_type' => $file_type,
+							'filetype_withoutdot' => $filetype_withoutdot,
+							'file_md5' => $file_md5
+						);
+						if (in_array($file_entry['file_type'], array('.png', '.gif'))) {
+							$file_entry['emoji_candidate'] = true;
+						}
+						$attachments []= $file_entry;
+					}
+					else $this->exitWithUploadErrorPage(_gettext('Sorry, that filetype is not allowed on this board.'),
+								$atype, $i, $filename);
+				}
+			}
 
-		  // 2) Collect embeds
-		  $embed_hashes = array();
-		  if (is_array($_POST['embed']) || is_object($_POST['embed'])) {
+			// 2) Collect embeds
+			$embed_hashes = array();
+			if (is_array($_POST['embed']) || is_object($_POST['embed'])) {
 				foreach($_POST['embed'] as $i => $url) {
 					list($site, $code, $time) = $this->ParseEmbed($url);
 					if ($code != '') {
