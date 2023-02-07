@@ -1194,7 +1194,7 @@ class Post extends Board {
 				 WHERE
 					`boardid` = '" . $boardid . "'
 					AND
-					`file_id` IN (".implode($file_ids, ',').")");
+					`file_id` IN (".implode(',', $file_ids).")");
 				// Physically delete all files
 				foreach($this->post['embeds'] as $embed) {
 					$this->EraseFileAndThumbs($embed);
