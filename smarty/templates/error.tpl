@@ -4,10 +4,10 @@
 <title>{$smarty.const.KU_NAME}</title>
 <link rel="shortcut icon" href="{$smarty.const.KU_WEBPATH}/favicon.ico" />
 <link rel="stylesheet" type="text/css" href="{$smarty.const.KU_BOARDSPATH}/css/menu_global.css" />
-{loop $styles}
-	<link rel="{if $ neq $smarty.const.KU_DEFAULTMENUSTYLE}alternate {/if}stylesheet" type="text/css" href="{$smarty.const.KU_WEBFOLDER}css/site_{$}.css" title="{$|capitalize}" />
-	<link rel="{if $ neq $smarty.const.KU_DEFAULTMENUSTYLE}alternate {/if}stylesheet" type="text/css" href="{$smarty.const.KU_WEBFOLDER}css/sitemenu_{$}.css" title="{$|capitalize}" />
-{/loop}
+{foreach $styles}
+	<link rel="{if $style neq $smarty.const.KU_DEFAULTMENUSTYLE}alternate {/if}stylesheet" type="text/css" href="{$smarty.const.KU_WEBFOLDER}css/site_{$style}.css" title="{$style|capitalize}" />
+	<link rel="{if $style neq $smarty.const.KU_DEFAULTMENUSTYLE}alternate {/if}stylesheet" type="text/css" href="{$smarty.const.KU_WEBFOLDER}css/sitemenu_{$style}.css" title="{$style|capitalize}" />
+{/foreach}
 
 <style type="text/css">{literal}
 body {
