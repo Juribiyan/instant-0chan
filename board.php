@@ -584,13 +584,13 @@ elseif (
 
 	// Check rights
 	$pass = (isset($_POST['postpassword']) && $_POST['postpassword']!="") ? $_POST['postpassword'] : null;
-	$ismod = !!$_POST['moddelete'];
+	$ismod = @$_POST['moddelete'] == 'true';
 	if ($ismod) {
 		require_once KU_ROOTDIR . 'inc/classes/manage.class.php';
 		$_POST['deletepost'] = true; // required to allow mod deleting multiple posts without AJAX
 	}
 	$isop = ( 
-		$_POST['opdelete']
+		@$_POST['opdelete']
 		&&
 		$board_class->board['opmod']=='1'
 	);
