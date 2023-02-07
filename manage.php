@@ -103,11 +103,11 @@ background: -ms-linear-gradient(top, #bebebe 0px,#ffffff 253px);
 			});
 		}
 	};
-	$('#menu').load(function() {
+	$('#menu').on("load", function() {
 		$frames.menu = $(frames['menu'].document);
 		if(typeof $frames.page !== 'undefined' && !$frames.fired) $frames.readyset();
 	});
-	$('#manage_main').load(function() {
+	$('#manage_main').on("load", function() {
 		$frames.page = $(frames['manage_main'].document);
 		if(typeof $frames.menu !== 'undefined' && !$frames.fired) {
 			$frames.readyset();
