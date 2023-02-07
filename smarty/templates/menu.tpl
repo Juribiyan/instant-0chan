@@ -20,7 +20,7 @@
 <link rel="shortcut icon" href="{$smarty.const.KU_WEBFOLDER}favicon.ico" />
 <script type="text/javascript" src="{$smarty.const.KU_WEBFOLDER}lib/javascript/gettext.js"></script>
 <!-- <script type="text/javascript" src="{$smarty.const.KU_WEBFOLDER}inc/javascript/menu.js"></script> -->
-<script type="text/javascript" src="{$smarty.const.KU_WEBFOLDER}lib/javascript/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="{$smarty.const.KU_WEBFOLDER}lib/javascript/jquery-3.6.3.min.js"></script>
 <script type="text/javascript" src="{$smarty.const.KU_WEBFOLDER}lib/javascript/lodash.min.js"></script>
 <script type="text/javascript" src="{$smarty.const.KU_WEBFOLDER}inc/javascript/kusaba.new.js"></script>
 <script type="text/javascript"><!--

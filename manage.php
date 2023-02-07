@@ -29,7 +29,7 @@ header("Expires: Mon, 1 Jan 2030 05:00:00 GMT");
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<script src="/lib/javascript/jquery-1.11.1.min.js"></script>
+<script src="/lib/javascript/jquery-3.6.3.min.js"></script>
 </script>
 <title>Manage Boards</title>
 <link rel="shortcut icon" href="<?php echo KU_WEBPATH . '/'; ?>favicon.ico" />

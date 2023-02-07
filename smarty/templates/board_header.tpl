@@ -52,7 +52,7 @@
 {/if}
 <script src="{$cwebpath}lib/javascript/gettext.js"></script>
 <script src="{$cwebpath}lib/javascript/head.load.min.js"></script>
-<script src="{$cwebpath}lib/javascript/jquery-1.11.1.min.js"></script>
+<script src="{$cwebpath}lib/javascript/jquery-3.6.3.min.js"></script>
 <script src="{$cwebpath}lib/javascript/lodash.min.js"></script>
 <script src="{$cwebpath}lib/javascript/prettify/prettify.js"></script>
 <script src="{$smarty.const.KU_WEBPATH}/lib/javascript/Sortable.min.js"></script>
