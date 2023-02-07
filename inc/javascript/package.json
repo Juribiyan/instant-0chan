@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "0chan revival kit",
   "scripts": {
-    "build": "babel src --out-dir ../ --source-maps"
+    "build": "babel src --out-dir ./ --source-maps"
   },
   "babel": {
     "presets": [

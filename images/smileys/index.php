@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
 	<title>Sayers</title>
 	<link rel="stylesheet" href="../../css/img_gallery.css">
-	<script src="../../lib/javascript/img_gallery.js"></script>
+	<script src="../../inc/javascript/img_gallery.js"></script>
 </head>
 <body>
 <?php

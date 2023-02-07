@@ -32,7 +32,7 @@ line-height: 40px;
 </style>
 <link rel="shortcut icon" href="{$smarty.const.KU_WEBFOLDER}favicon.ico" />
 <script type="text/javascript" src="{$smarty.const.KU_WEBFOLDER}lib/javascript/gettext.js"></script>
-<script type="text/javascript" src="{$smarty.const.KU_WEBFOLDER}lib/javascript/kusaba.js"></script></head>
+<script type="text/javascript" src="{$smarty.const.KU_WEBFOLDER}inc/javascript/kusaba.js"></script></head>
 <body>
 	<center><div class="sitelogo"></div></center>
 	{if $smarty.const.KU_SLOGAN neq ''}<center><h3>{$smarty.const.KU_SLOGAN}</h3></center>{/if}

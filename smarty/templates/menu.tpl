@@ -19,10 +19,10 @@
 		//--></script>
 <link rel="shortcut icon" href="{$smarty.const.KU_WEBFOLDER}favicon.ico" />
 <script type="text/javascript" src="{$smarty.const.KU_WEBFOLDER}lib/javascript/gettext.js"></script>
-<!-- <script type="text/javascript" src="{$smarty.const.KU_WEBFOLDER}lib/javascript/menu.js"></script> -->
+<!-- <script type="text/javascript" src="{$smarty.const.KU_WEBFOLDER}inc/javascript/menu.js"></script> -->
 <script type="text/javascript" src="{$smarty.const.KU_WEBFOLDER}lib/javascript/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="{$smarty.const.KU_WEBFOLDER}lib/javascript/lodash.min.js"></script>
-<script type="text/javascript" src="{$smarty.const.KU_WEBFOLDER}lib/javascript/kusaba.new.js"></script>
+<script type="text/javascript" src="{$smarty.const.KU_WEBFOLDER}inc/javascript/kusaba.new.js"></script>
 <script type="text/javascript"><!--
 var ku_boardspath = '{$smarty.const.KU_BOARDSPATH}';
 {if $showdirs eq 0 && $files.0 neq $files.1 }

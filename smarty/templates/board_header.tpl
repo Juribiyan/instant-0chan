@@ -56,7 +56,7 @@
 <script src="{$cwebpath}lib/javascript/lodash.min.js"></script>
 <script src="{$cwebpath}lib/javascript/prettify/prettify.js"></script>
 <script src="{$smarty.const.KU_WEBPATH}/lib/javascript/Sortable.min.js"></script>
-<script src="{$smarty.const.KU_WEBPATH}/lib/javascript/kusaba.new.js?v={$smarty.const.KU_JSVER}"></script>
+<script src="{$smarty.const.KU_WEBPATH}/inc/javascript/kusaba.new.js?v={$smarty.const.KU_JSVER}"></script>
 {if $smarty.const.KU_LIVEUPD_ENA}
 <script src="{$smarty.const.KU_CLI_LIVEUPD_API}/socket.io/socket.io.js"></script>
 {/if}
