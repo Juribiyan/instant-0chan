@@ -83,7 +83,7 @@ class Upload {
 		  			$file_type = '.jpg';
 		  		}
 		  		$filetype_withoutdot = substr($file_type, 1);
-		  		$generic_filetype_allowed = $board_class->board['any_filetype'] && !$this->isBannedFiletype($filetype_withoutdot);
+		  		$generic_filetype_allowed = @$board_class->board['any_filetype'] && !$this->isBannedFiletype($filetype_withoutdot);
 		  		if ($generic_filetype_allowed || in_array($filetype_withoutdot, $board_class->board['filetypes_allowed'])) {
 		  			$file_md5 = md5_file($_FILES['imagefile']['tmp_name'][$i]);
 		  			if (in_array($file_md5, $file_hashes)) {
@@ -303,8 +303,10 @@ class Upload {
 				}
 				else {
 					$imageDim = getimagesize($attachment['tmp_name']);
-					$attachment['imgWidth'] = $imageDim[0];
-					$attachment['imgHeight'] = $imageDim[1];
+					if ($imageDim) {
+						$attachment['imgWidth'] = $imageDim[0];
+						$attachment['imgHeight'] = $imageDim[1];
+					}
 				}
 
 				$attachment['file_size'] = $attachment['size'];

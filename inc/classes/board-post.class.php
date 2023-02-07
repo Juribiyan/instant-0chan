@@ -1343,17 +1343,17 @@ class Post extends Board {
 					//file_md5
 					$attachment['file_md5'],
 					//image_w
-					intval($attachment['imgWidth']),
+					intval(@$attachment['imgWidth']),
 					//image_h
-					intval($attachment['imgHeight']),
+					intval(@$attachment['imgHeight']),
 					//file_size
 					($is_embed ? $attachment['start'] : $attachment['file_size']),
 					//file_size_formatted
 					(($is_embed || (isset($attachment['is_duplicate']) && $attachment['is_duplicate'])) ? $attachment['file_size_formatted'] : ConvertBytes($attachment['size'])),
 					//thumb_w
-					intval($attachment['imgWidth_thumb']),
+					intval(@$attachment['imgWidth_thumb']),
 					//thumb_h
-					intval($attachment['imgHeight_thumb']),
+					intval(@$attachment['imgHeight_thumb']),
 					//spoiler
 					$attachment['spoiler'] ? '1' : '0'
 				);
