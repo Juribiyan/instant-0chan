@@ -143,9 +143,8 @@ if (isset($_POST['board']) || isset($_GET['board'])) $_POST['board'] = (isset($_
 
 // If the script was called using a board name:
 if (isset($_POST['board'])) {
-	if ($_POST['board'] == I0_OVERBOARD_DIR)
-		$is_overboard = true;
-	else {
+	$is_overboard = ($_POST['board'] == I0_OVERBOARD_DIR);
+	if (!$is_overboard) {
 		$board_name = $tc_db->GetOne("SELECT `name` FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($_POST['board']) . "");
 		if ($board_name !== false) {
 			$board_class = new Board($board_name);
@@ -836,7 +835,7 @@ elseif (
 	}
 	// File deleting
 	if (isset($_POST['delete-file'])) foreach($_POST['delete-file'] as $val) {
-		list($file, $post_brd) = explode(':', $val);
+		@list($file, $post_brd) = explode(':', $val);
 		$file_action = new PolymorphicReporter('file', $file, (boolean)$_POST['AJAX']);
 		$file_action->action = 'delete-file';
 		if ($is_overboard || ($post_brd!==NULL && $board_class->board['name'] != $post_brd)) { // is external board
@@ -868,13 +867,13 @@ elseif (
 				'id' => $file
 			);
 			$file_action->succ(_gettext('Image successfully deleted from your post.'));
-			if (! $fdres['already_deleted']) {
+			if (! @$fdres['already_deleted']) {
 				if (! in_array($room_id, $threads_to_regenerate)) {
 					$threads_to_regenerate []= $room_id;
 				}
 				$page = $b_class->GetPageNumber($fdres['parentid'])['page'];
 				if (
-					!is_array($pages_to_regenerate[$b_class->board['name']]) 
+					!is_array(@$pages_to_regenerate[$b_class->board['name']]) 
 					|| 
 					!in_array($page, $pages_to_regenerate[$b_class->board['name']])
 				) {
