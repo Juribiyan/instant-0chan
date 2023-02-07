@@ -77,7 +77,7 @@ class Upload {
 							$this->exitWithUploadErrorPage(_gettext('Unknown File Error'),
 								$atype, $i, $filename);
 					}
-					$file_type = strtolower(preg_replace('/.*(\..+)/','\1', $filename));
+					$file_type = strtolower(preg_replace('/.*(\..+)/', '\1', $filename));
 					if ($file_type == '.jpeg') {
 						// Fix for the rarely used 4-char format
 						$file_type = '.jpg';
@@ -151,8 +151,6 @@ class Upload {
 				}
 			}
 		}
-
-		/*else { // Fancy embeds (not yet implemented)	}*/
 
 		if (count($attachments) > $board_class->board['maxfiles']) {
 			exitWithErrorPage(_gettext('Attachments number limit reached.'), _gettext('Maximum number of files + embeds per post is').' '.$board_class->board['maxfiles'].'.', 'upload_error');
@@ -365,7 +363,6 @@ class Upload {
 							else {
 								$attachment['file_thumb_location'] = KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $attachment['file_name'] . 's' . $attachment['file_type'];
 								$attachment['file_thumb_cat_location'] = KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $attachment['file_name'] . 'c' . $attachment['file_type'];
-
 								if (!move_uploaded_file($attachment['tmp_name'], $attachment['file_location'])) {
 									$this->exitWithUploadErrorPage(_gettext('Could not copy uploaded image.'), $atype, $i, $filename);
 								}
@@ -406,8 +403,7 @@ class Upload {
 						$filetype_required_mime = $tc_db->GetOne("SELECT `mime`
 							FROM `" . KU_DBPREFIX . "filetypes`
 							WHERE `filetype` = " . $tc_db->qstr($attachment['filetype_withoutdot']));
-
-						$attachment['file_is_special'] = false;
+						$attachment['file_is_special'] = true;
 						/* If this board has a load balance url and password configured for it, attempt to use it */
 						if ($board_class->board['loadbalanceurl'] != '' && $board_class->board['loadbalancepassword'] != '') {
 							require_once KU_ROOTDIR . 'inc/classes/loadbalancer.class.php';
@@ -423,11 +419,9 @@ class Upload {
 							}
 
 							$response = $loadbalancer->Send('direct', $attachment['tmp_name'], 'src/' . $attachment['file_name'] . $attachment['file_type'], '', '', $checkmime, false, true);
-
-							$attachment['file_is_special'] = true;
-						/* Otherwise, use this script alone */
 						} 
-						else {
+						/* Otherwise, use this script alone */
+						else { 
 							$attachment['file_location'] = KU_BOARDSDIR . $board_class->board['name'] . '/src/' . $attachment['file_name'] . $attachment['file_type'];
 
 							if (file_exists($attachment['file_location'])) {
@@ -501,9 +495,6 @@ class Upload {
 							/* Make sure the entire file was uploaded */
 							if ($attachment['size'] != filesize($attachment['file_location']))
 								$this->exitWithUploadErrorPage(_gettext('File transfer failure. Please go back and try again.'), $atype, $i, $filename);
-
-							/* Flag that the file used isn't an internally supported type */
-							$attachment['file_is_special'] = true;
 						}
 					}
 				} 
