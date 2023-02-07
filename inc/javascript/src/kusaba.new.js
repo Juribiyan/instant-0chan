@@ -679,10 +679,17 @@ var Styles = {
     if (scrollAnchor && scrollAnchor.save)
       scrollAnchor.save('setstyle', '.postnode')
     _.each(this.all, function(sheet) {
-      sheet.disabled=true;    // Hello IE
-      if(sheet.getAttribute("title") === stylename)
-        sheet.disabled=false;
-    });
+      sheet.disabled=true;
+      sheet.setAttribute('rel', 'alternate stylesheet')
+    })
+    _.each(this.all, function(sheet) {
+      if(sheet.getAttribute("title") === stylename) {
+        requestAnimationFrame(() => {
+          sheet.disabled=false;
+          sheet.setAttribute('rel', 'stylesheet')
+        })
+      }
+    })
     if (scrollAnchor && scrollAnchor.restore)
       scrollAnchor.restore('setstyle')
     this.current = stylename;
