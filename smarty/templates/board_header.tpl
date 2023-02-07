@@ -30,12 +30,12 @@
 <link rel="stylesheet" type="text/css" href="{$cwebpath}css/img_global.css?v={$smarty.const.KU_CSSVER}" />
 <script>document.write('{strip}
 {foreach $ku_styles as $style}
-	<link rel="{if $style neq $__.ku_defaultstyle}alternate {/if}stylesheet" type="text/css" 
-	href="{$cwebpath}css/{if $__.customstyle eq $style}custom/{/if}{$style}.css?v={if $__.customstyle eq $style}{$__.csver}{else}{$smarty.const.KU_CSSVER}{/if}" 
+	<link rel="{if $style neq $ku_defaultstyle}alternate {/if}stylesheet" type="text/css" 
+	href="{$cwebpath}css/{if $customstyle eq $style}custom/{/if}{$style}.css?v={if $customstyle eq $style}{$csver}{else}{$smarty.const.KU_CSSVER}{/if}" 
 	title="{$style|capitalize}" 
-	{if $__.customstyle eq $style}data-custom="true"{/if}/>
+	{if $customstyle eq $style}data-custom="true"{/if}/>
 {/foreach}{/strip}')</script>
-<noscript><link rel="stylesheet" href="{$cwebpath}getpreferredstylesheet.php?allowed={implode(',', $ku_styles)}&default={$__.ku_defaultstyle}&v={$smarty.const.KU_CSSVER}{if $__.customstyle}&custom={$__.customstyle}&cv={$__.csver}{/if}"></noscript>
+<noscript><link rel="stylesheet" href="{$cwebpath}getpreferredstylesheet.php?allowed={implode(',', $ku_styles)}&default={$ku_defaultstyle}&v={$smarty.const.KU_CSSVER}{if $customstyle}&custom={$customstyle}&cv={$csver}{/if}"></noscript>
 <link href="{$cwebpath}css/prettify.css" type="text/css" rel="stylesheet" />
 {if $locale eq 'ja'}
 	{literal}
@@ -145,7 +145,7 @@
 		<div class="menu-sect" id="ms-_options">
 			{t}Styles{/t}:
 			{foreach $ku_styles as $style}
-			[<a href="#" onclick="javascript:Styles.change('{$style|capitalize}');return false;">{if $__.customstyle eq $}Custom{else}{$style|capitalize}{/if}</a>]
+			[<a href="#" onclick="javascript:Styles.change('{$style|capitalize}');return false;">{if $customstyle eq $style}Custom{else}{$style|capitalize}{/if}</a>]
 			{/foreach}<br />
 			<a href="#" onclick="javascript:menu_pin();return false;">{t}Pin/Unpin{/t}</a>  |
 			<a href="#" onclick="javascript:toggle_oldmenu(true);return false;">{t}Simple list{/t}</a>
