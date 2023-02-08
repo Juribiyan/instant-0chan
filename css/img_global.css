@@ -4483,10 +4483,10 @@ input[name=postpassword]+div {
   display: inline-block;
   height: 48px;
   width: 36px;
-  background-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+  background-image: radial-gradient(circle at 50% 30%, transparent 0%, rgba(0, 0, 0, .5) 200%);
   -webkit-clip-path: polygon(-1px -1px, 24.5px -1px, 37px 11.5px, 37px 49px, -1px 49px, -1px -1px);
   clip-path: polygon(-1px -1px, 24.5px -1px, 37px 11.5px, 37px 49px, -1px 49px, -1px -1px);
-  box-shadow: 0 2px 2px rgb(0 0 0 / 30%);
+  box-shadow: 0 2px 2px rgb(0 0 0 / 30%), inset 0 1px 0px rgba(255, 255, 255, .2);
   transition: filter .2s;
   position: relative;
   line-height: normal;
@@ -4531,6 +4531,8 @@ input[name=postpassword]+div {
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  mask-image: linear-gradient(90deg, rgba(0,0,0,1) 40px, rgba(0,0,0,0) 55px);
+  -webkit-mask-image: linear-gradient(90deg, rgba(0,0,0,1) 40px, rgba(0,0,0,0) 55px);
 }
 
 .generic-file-icon:hover {
