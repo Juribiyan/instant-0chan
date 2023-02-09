@@ -1773,7 +1773,6 @@ const Ajax = {
         res = JSON.parse(xr.response)
       }
       catch(e) {
-        showError(_l.xhrError)
         logJSONexpectedError(xr.response)
         return
       }
@@ -1860,7 +1859,6 @@ const Ajax = {
         res = JSON.parse(xr.response)
       }
       catch(e) {
-        pups.err(_l.xhrError)
         logJSONexpectedError(xr.response)
         return callback(false)
       }
@@ -1921,7 +1919,6 @@ const Ajax = {
         res = JSON.parse(xr.response)
       }
       catch(e) {
-        pups.err(_l.xhrError)
         logJSONexpectedError(xr.response)
         return callback(false)
       }
@@ -1984,7 +1981,6 @@ const Ajax = {
         res = JSON.parse(xr.response)
       }
       catch(e) {
-        pups.err(_l.xhrError)
         logJSONexpectedError(xr.response)
         return
       }
@@ -2056,7 +2052,6 @@ const Ajax = {
         res = JSON.parse(xr.response)
       }
       catch(e) {
-        pups.err(_l.xhrError)
         logJSONexpectedError(xr.response)
         return callback(null)
       }
@@ -6188,5 +6183,6 @@ var pups = {
 }
 
 function logJSONexpectedError(output) {
+  pups.err(_l.xhrError)
   console.error('Malformed response (JSON expected):\n', output.replace(/<br\s*\/?>/g, '\n'))
 }
