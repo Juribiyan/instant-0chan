@@ -1774,7 +1774,7 @@ const Ajax = {
       }
       catch(e) {
         showError(_l.xhrError)
-        console.error('Malformed response (JSON expected):', xr.response)
+        logJSONexpectedError(xr.response)
         return
       }
       if (res.error) {
@@ -1861,7 +1861,7 @@ const Ajax = {
       }
       catch(e) {
         pups.err(_l.xhrError)
-        console.error('Malformed response (JSON expected):', xr.response)
+        logJSONexpectedError(xr.response)
         return callback(false)
       }
       if (callback)
@@ -1922,7 +1922,7 @@ const Ajax = {
       }
       catch(e) {
         pups.err(_l.xhrError)
-        console.error('Malformed response (JSON expected):', xr.response)
+        logJSONexpectedError(xr.response)
         return callback(false)
       }
       if (res.error) {
@@ -1985,7 +1985,7 @@ const Ajax = {
       }
       catch(e) {
         pups.err(_l.xhrError)
-        console.error('Malformed response (JSON expected):', xr.response)
+        logJSONexpectedError(xr.response)
         return
       }
       if (res.error) {
@@ -2057,7 +2057,7 @@ const Ajax = {
       }
       catch(e) {
         pups.err(_l.xhrError)
-        console.error('Malformed response (JSON expected):', xr.response)
+        logJSONexpectedError(xr.response)
         return callback(null)
       }
       if (callback)
@@ -6185,4 +6185,8 @@ var pups = {
     localStorage['I0_event_log'] = JSON.stringify(ss)
   },
   stack: []
+}
+
+function logJSONexpectedError(output) {
+  console.error('Malformed response (JSON expected):\n', output.replace(/<br\s*\/?>/g, '\n'))
 }
