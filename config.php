@@ -29,18 +29,19 @@ if (!headers_sent()) {
 }
 
 $cf = array();
+// $config_start = microtime(true); // Uncomment this and below statements to see the staggering 0.15 microseconds of time saved by caching the configuration
 
 // Caching (this needs to be set at the start because if enabled, it skips the rest of the configuration process)
-	$cf['KU_APC'] = false;
+$cf['I0_YAC'] = true;
+$cf['I0_YAC_PREFIX'] = 'i0:';
 
-$cache_loaded = false;
-if ($cf['KU_APC']) {
-	if (apc_load_constants('config')) {
-		$cache_loaded = true;
-	}
+// ------------ Loading config from cache ------------
+if ($cf['I0_YAC']) {
+	$yac = new Yac($cf['I0_YAC_PREFIX']);
+	$cached_config = $yac->get("config");
 }
 
-if (!$cache_loaded) {
+if (!@$cached_config) {
 	// ----------------------------------- Basic credentials ------------------------------------
 		$cf['KU_NAME']       = 'Øchan'; // The name of your site
 		$cf['KU_SLOGAN']     = '<em>Oops! Divided by zero!</em>'; // Site slogan, set to nothing to disable its display
@@ -153,7 +154,8 @@ if (!$cache_loaded) {
 
 
 	// ---------------------------------- Attachment handling -----------------------------------
-		$cf['KU_FFMPEGPATH'] = '/usr/local/bin/ffmpeg'; //path to FFMPEG, on windows it's usually 'C:\ffmpeg\bin' (REQUIRED for videos)
+		$cf['KU_FFMPEGPATH'] = 'C:\Program Files\ffmpeg\bin'; //path to FFMPEG, on windows it's usually 'C:\Program Files\ffmpeg\bin\' (REQUIRED for videos)
+		$cf['KU_MAGICKPATH'] = 'C:\Program Files\ImageMagick-7.1.0-Q16-HDRI'; //path to imagemagick
 		$cf['KU_YOUTUBE_APIKEY'] = 'your_api_key'; //Your personal anal probe ID. Can be obtained it Google Dev. Console
 		$cf['I0_YOUTUBE_DL_PATH'] = ''; // Path to youtube-dl binary. If not empty, youtube-dl will be used instead of default API (in this case you won't need KU_YOUTUBE_APIKEY)
 		$cf['KU_THUMBWIDTH']       = 200; 	// Maximum thumbnail width
@@ -164,7 +166,11 @@ if (!$cache_loaded) {
 		$cf['KU_CATTHUMBWIDTH']    = 50; 		// Maximum thumbnail width (catalog)
 		$cf['KU_CATTHUMBHEIGHT']   = 50; 		// Maximum thumbnail height (catalog)
 		$cf['KU_FILESIZE_METHOD']  = 'sum'; // Method to use when determining the post file size limit. If it is set to 'sum', limit will be applied to the sum of all files in the post. Otherwise, if it is set to 'single', limit will be applied to each file separately.
-		$cf['KU_THUMBMETHOD']      = 'gd'; 	// Method to use when thumbnailing images in jpg, gif, or png format.  Options available: gd, imagemagick, ffmpeg
+		// Thumbnailing methods for images: the engine will try to make a thumbnail using every enabled method in sequential order
+		$cf['KU_USE_GD'] 					 = false; 	// Whether or not GD should be used for thumbnailing
+		$cf['KU_USE_IMAGICK'] 		 = false; 	// Whether or not Imagemagick should be used for thumbnailing
+		$cf['KU_USE_FFMPEG'] 			 = true; 	// Whether or not FFMpeg should be used for thumbnailing images
+		$cf['KU_WEBP_THUMBNAILS']	 = true;	// Whether or not all thumbnails should be in WebP format (supported by all modern browsers); If false, png, gif and jpg images will have thumbnails of native format; video thumbnails will be jpg
 		$cf['KU_ANIMATEDTHUMBS']   = false; // Whether or not to allow animated thumbnails (only applies if using ffmpeg or imagemagick)
 		$cf['KU_USEOPTIPNG']       = false; // Whether or not to use optipng for PNG thumbnails optimization. Suitable only when useing imagemagick or ffmpeg
 		$cf['KU_OPTIPNGLV']        = '2'; 	// Optipng optimization level, from 1 (fastest) to 7 (slowest)
@@ -266,7 +272,6 @@ if (!$cache_loaded) {
 
 	// -------------------------------- Post-config (do not modify) -----------------------------
 		require 'instance-config.php';
-		putenv('TZ='.$cf['KU_TIMEZONE']); 
 
 		$cf['KU_VERSION']    = '2.0.0';
 		$cf['KU_TRIPS']      = serialize($cf['KU_TRIPS']);
@@ -280,14 +285,21 @@ if (!$cache_loaded) {
 		$cf['KU_BOARDSPATH'] = rtrim($cf['KU_BOARDSPATH'], '/');
 		$cf['KU_CGIPATH'] = rtrim($cf['KU_CGIPATH'], '/');
 
-		if ($cf['KU_APC']) {
-			apc_define_constants('config', $cf);
+		if ($cf['I0_YAC']) {
+			$yac->set('config', $cf);
 		}
-		foreach ($cf as $key => $value) {
-			define($key, $value);
-		}
-		unset($cf);
-};
+		// echo 'Parsed config in '.(microtime(true) - $config_start);
+}
+else {
+	$cf = $cached_config;
+	// echo 'Loaded config in '.(microtime(true) - $config_start);
+}
+// -------------------------------- Post-config (do not modify) -----------------------------
+putenv('TZ='.$cf['KU_TIMEZONE']); 
+foreach ($cf as $key => $value) {
+	define($key, $value);
+}
+unset($cf);
 
 // DO NOT MODIFY BELOW THIS LINE UNLESS YOU KNOW WHAT YOU ARE DOING OR ELSE BAD THINGS MAY HAPPEN
 $modules_loaded = array();

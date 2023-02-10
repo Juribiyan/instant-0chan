@@ -2493,7 +2493,7 @@ class Manage {
 
 	/* Add, view, and delete filetypes */
 	function editfiletypes() {
-		global $tc_db, $tpl_page;
+		global $tc_db, $tpl_page, $yac;
 		$this->AdministratorsOnly();
 
 		$tpl_page .= '<h2>'. _gettext('Edit filetypes') . '</h2><br />';
@@ -2539,8 +2539,8 @@ class Manage {
 					if ($_POST['filetype'] != '' && $_POST['image'] != '') {
             $this->CheckToken($_POST['token']);
 						$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "filetypes` SET `filetype` = " . $tc_db->qstr($_POST['filetype']) . " , `mime` = " . $tc_db->qstr($_POST['mime']) . " , `image` = " . $tc_db->qstr($_POST['image']) . " , `image_w` = " . $tc_db->qstr($_POST['image_w']) . " , `image_h` = " . $tc_db->qstr($_POST['image_h']) . " WHERE `id` = " . $tc_db->qstr($_GET['filetypeid']) . "");
-						if (KU_APC) {
-							apc_delete('filetype|'. $_POST['filetype']);
+						if (I0_YAC) {
+							$yac->delete('filetype|'. $_POST['filetype']);
 						}
 						$tpl_page .= _gettext('Filetype updated.');
 					}
@@ -5507,41 +5507,35 @@ class Manage {
 	* +------------------------------------------------------------------------------+
 	*/
 
-	/* Show APC info */
-	function apc() {
-		global $tpl_page;
+	/* Show YAC info */
+	function yac() {
+		global $tpl_page, $yac;
 
-		if (KU_APC) {
-			$apc_info_system = apc_cache_info();
-			$apc_info_user = apc_cache_info('user');
-			//print_r($apc_info_user);
-			$tpl_page .= '<h2>APC</h2><h3>'. _gettext('System (File cache)') .'</h3><ul>';
-			$tpl_page .= '<li>Start time: <strong>'. date("y/m/d(D)H:i", $apc_info_system['start_time']) . '</strong></li>';
-			$tpl_page .= '<li>Hits: <strong>'. $apc_info_system['num_hits'] . '</strong></li>';
-			$tpl_page .= '<li>Misses: <strong>'. $apc_info_system['num_misses'] . '</strong></li>';
-			$tpl_page .= '<li>Entries: <strong>'. $apc_info_system['num_entries'] . '</strong></li>';
-			$tpl_page .= '</ul><br /><h3>User (kusaba)</h3><ul>';
-			$tpl_page .= '<li>Start time: <strong>'. date("y/m/d(D)H:i", $apc_info_user['start_time']) . '</strong></li>';
-			$tpl_page .= '<li>Hits: <strong>'. $apc_info_user['num_hits'] . '</strong></li>';
-			$tpl_page .= '<li>Misses: <strong>'. $apc_info_user['num_misses'] . '</strong></li>';
-			$tpl_page .= '<li>Entries: <strong>'. $apc_info_user['num_entries'] . '</strong></li>';
-			$tpl_page .= '</ul><br /><br /><a href="?action=clearcache">Clear APC cache</a>';
+		if (I0_YAC) {
+			$yac_info = $yac->info();
+			if (is_array($yac_info)) {
+				$tpl_page .= '<table>';
+				foreach($yac_info as $k=>$v) {
+					$tpl_page .=  '<tr><td>'.$k.'</td><td>'.$v.'</td></tr>';
+				}
+				$tpl_page .= '</table>';
+			}
+			$tpl_page .= '</ul><br /><br /><a href="?action=clearcache">Clear YAC cache</a>';
 		} else {
-			$tpl_page .= 'APC isn\'t enabled!';
+			$tpl_page .= 'YAC isn\'t enabled!';
 		}
 	}
 
-	/* Clear the APC cache */
+	/* Clear the YAC cache */
 	function clearcache() {
-		global $tpl_page;
+		global $tpl_page, $yac;
 
-		if (KU_APC) {
-			apc_clear_cache();
-			apc_clear_cache('user');
-			$tpl_page .= 'APC cache cleared.';
-			management_addlogentry(_gettext('Cleared APC cache'), 0);
+		if (I0_YAC) {
+			$yac->flush();
+			$tpl_page .= 'YAC cache cleared.';
+			management_addlogentry(_gettext('Cleared YAC cache'), 0);
 		} else {
-			$tpl_page .= 'APC isn\'t enabled!';
+			$tpl_page .= 'YAC isn\'t enabled!';
 		}
 	}
 

@@ -231,8 +231,8 @@ msgstr "НЕ ТРОГАТЬ!!"
 msgid "Cleanup finished."
 msgstr "Очистка завершена."
 
-msgid "Cleared APC cache"
-msgstr "APC кеш очищен"
+msgid "Cleared YAC cache"
+msgstr "YAC кэш очищен"
 
 msgid "Click Reply to view, or %sexpand%s."
 msgstr "Нажмите Ответ для просмтра, или %sраскройте%s."

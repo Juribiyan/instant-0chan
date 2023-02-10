@@ -1,8 +1,9 @@
 <?php
 function clearBlotterCache() {
-	if (KU_APC) {
-		apc_delete('blotter|all');
-		apc_delete('blotter|last4');
+	global $yac;
+	if (I0_YAC) {
+		$yac->delete('blotter|all');
+		$yac->delete('blotter|last4');
 	}
 }
 
@@ -14,11 +15,27 @@ function clearBlotterCache() {
  * @param boolean $skipdb Whether or not deleting from reports table should be skipped
  */
 function clearPostCache($id, $board, $skipdb=false) {
-	global $tc_db;
-	if (KU_APC) {
-		apc_delete('post|' . $board . '|' . $id);
+	global $tc_db, $yac;
+	if (I0_YAC) {
+		$yac->delete('post|' . $board . '|' . $id);
 	}
   if (!$skipdb)
 	 $tc_db->Execute("DELETE FROM `" . KU_DBPREFIX . "reports` WHERE `postid` = " . $id . " AND `board` = " . $tc_db->qstr($board));
 }
+
+function cache_get($key) {
+	global $yac;
+	if (I0_YAC) {
+		return $yac->get($key);
+	}
+}
+
+function cache_set($key, $val) {
+	global $yac;
+	if (I0_YAC) {
+		$yac->set($key, $val);
+	}
+	return $val;
+}
+
 ?>

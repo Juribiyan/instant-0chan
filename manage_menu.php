@@ -90,7 +90,7 @@ if (!$manage_class->ValidateSession(true)) {
 		<li><a href="manage_page.php?action=proxyban">' . _gettext('Ban proxy list') . '</a></li>
 		<li><a href="manage_page.php?action=sql">' . _gettext('SQL query') . '</a></li>
 		<li><a href="manage_page.php?action=cleanup">' . _gettext('Cleanup') . '</a></li>' . "\n";
-		if (KU_APC) $tpl_links .= '<li><a href="manage_page.php?action=apc">APC</a></li>' . "\n";
+		if (I0_YAC) $tpl_links .= '<li><a href="manage_page.php?action=yac">YAC</a></li>' . "\n";
 		$tpl_links .= '</ul></div>' .
 		section_html(_gettext('Boards Administration'), 'boardsadministration') .
 		'<ul>
