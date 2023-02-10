@@ -269,8 +269,6 @@ if (!@$cached_config) {
 	// --------------------------------------- Templates ----------------------------------------
 		$cf['KU_TEMPLATEDIR'] = $cf['KU_ROOTDIR'] . 'smarty/templates'; // Smarty templates directory
 
-
-	// -------------------------------- Post-config (do not modify) -----------------------------
 		require 'instance-config.php';
 
 		$cf['KU_VERSION']    = '2.0.0';
