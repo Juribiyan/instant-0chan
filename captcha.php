@@ -63,10 +63,10 @@ function img_code($code) {
 			: ($space + $prev_width); // Space between chars
 		$vspace = (($canvas_height-2*$rad)/2) * $font['v_scatter'];
 		$y = round($size/2 + $canvas_height/2)
-			+ rand(-$vspace, $vspace) // Random component
+			+ from_range([-$vspace, $vspace], true) // Random component
 			+ round($rad * (cos($at-$rr)-cos($at))); // Y offset due to ratation
 		$prev_width = $width;
-		imagettftext ($im, $size, $rot, $x + $offset_x, $y, $color, $fname, $letter);
+		imagettftext ($im, $size, $rot, (int)($x + $offset_x), (int)$y, $color, $fname, $letter);
 	}
 	for ($i=0; $i<$lines; $i++) {
 		imageline($im, rand(0, 20), rand(0, 70), rand(120, 150), rand(0, 70), $color);
@@ -126,10 +126,10 @@ function opsmaz($img,$ncolor){
 				if($sx<0 || $sy<0 || $sx>=$width-1 || $sy>=$height-1){
 					continue;
 				}else{
-					$color=imagecolorat($img, $sx, $sy) & 0xFF;
-					$color_x=imagecolorat($img, $sx+1, $sy) & 0xFF;
-					$color_y=imagecolorat($img, $sx, $sy+1) & 0xFF;
-					$color_xy=imagecolorat($img, $sx+1, $sy+1) & 0xFF;
+					$color=imagecolorat($img, (int)$sx, (int)$sy) & 0xFF;
+					$color_x=imagecolorat($img, (int)($sx+1), (int)$sy) & 0xFF;
+					$color_y=imagecolorat($img, (int)$sx, (int)($sy+1)) & 0xFF;
+					$color_xy=imagecolorat($img, (int)($sx+1), (int)($sy+1)) & 0xFF;
 				}
 				if($color==255 && $color_x==255 && $color_y==255 && $color_xy==255){
 					continue;
