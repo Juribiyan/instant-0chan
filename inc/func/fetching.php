@@ -80,15 +80,14 @@ function getfiletypeinfo($filetype) {
 	global $tc_db;
 
 	$key = 'filetype|' . $filetype;
-
 	if ($r = cache_get($key)) return $r;
 
 	$qr = $tc_db->GetAll("SELECT `image`, `image_w`, `image_h` FROM `" . KU_DBPREFIX . "filetypes` WHERE `filetype` = " . $tc_db->qstr($filetype) . " LIMIT 1");
-	var_dump($qr);
 	$r = (count($qr) > 0)
-		? array($r[0]['image'],$r[0]['image_w'],$r[0]['image_h'])
+		? array($qr[0]['image'],$qr[0]['image_w'],$qr[0]['image_h'])
 		: array('*',0,0); /* No info was found, return the generic icon */
 	cache_set($key, $r);
+
 	return $r;
 }
 
