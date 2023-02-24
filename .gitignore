@@ -21,3 +21,5 @@
 Backup *
 node_modules
 package-lock.json
+lib/vendor
+composer.lock
