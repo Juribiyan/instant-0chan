@@ -155,7 +155,6 @@ if (!@$cached_config) {
 
 	// ---------------------------------- Attachment handling -----------------------------------
 		$cf['KU_FFMPEGPATH'] = 'C:\Program Files\ffmpeg\bin'; //path to FFMPEG, on windows it's usually 'C:\Program Files\ffmpeg\bin\' (REQUIRED for videos)
-		$cf['KU_MAGICKPATH'] = 'C:\Program Files\ImageMagick-7.1.0-Q16-HDRI'; //path to imagemagick
 		$cf['KU_YOUTUBE_APIKEY'] = 'your_api_key'; //Your personal anal probe ID. Can be obtained it Google Dev. Console
 		$cf['I0_YOUTUBE_DL_PATH'] = ''; // Path to youtube-dl binary. If not empty, youtube-dl will be used instead of default API (in this case you won't need KU_YOUTUBE_APIKEY)
 		$cf['KU_THUMBWIDTH']       = 200; 	// Maximum thumbnail width
@@ -166,11 +165,15 @@ if (!@$cached_config) {
 		$cf['KU_CATTHUMBWIDTH']    = 50; 		// Maximum thumbnail width (catalog)
 		$cf['KU_CATTHUMBHEIGHT']   = 50; 		// Maximum thumbnail height (catalog)
 		$cf['KU_FILESIZE_METHOD']  = 'sum'; // Method to use when determining the post file size limit. If it is set to 'sum', limit will be applied to the sum of all files in the post. Otherwise, if it is set to 'single', limit will be applied to each file separately.
+
+		// Options below temporarily have no effect. Not implemented yet
+		//$cf['KU_MAGICKPATH'] = 'C:\Program Files\ImageMagick-7.1.0-Q16-HDRI'; //path to imagemagick
 		// Thumbnailing methods for images: the engine will try to make a thumbnail using every enabled method in sequential order
-		$cf['KU_USE_GD'] 					 = false; 	// Whether or not GD should be used for thumbnailing
-		$cf['KU_USE_IMAGICK'] 		 = false; 	// Whether or not Imagemagick should be used for thumbnailing
-		$cf['KU_USE_FFMPEG'] 			 = true; 	// Whether or not FFMpeg should be used for thumbnailing images
-		$cf['KU_WEBP_THUMBNAILS']	 = true;	// Whether or not all thumbnails should be in WebP format (supported by all modern browsers); If false, png, gif and jpg images will have thumbnails of native format; video thumbnails will be jpg
+		// $cf['KU_USE_GD'] 					 = false; 	// Whether or not GD should be used for thumbnailing
+		// $cf['KU_USE_IMAGICK'] 		 = false; 	// Whether or not Imagemagick should be used for thumbnailing
+		// $cf['KU_USE_FFMPEG'] 			 = true; 	// Whether or not FFMpeg should be used for thumbnailing images
+		// $cf['KU_WEBP_THUMBNAILS']	 = true;	// Whether or not all thumbnails should be in WebP format (supported by all modern browsers); If false, png, gif and jpg images will have thumbnails of native format; video thumbnails will be jpg
+
 		$cf['KU_ANIMATEDTHUMBS']   = false; // Whether or not to allow animated thumbnails (only applies if using ffmpeg or imagemagick)
 		$cf['KU_USEOPTIPNG']       = false; // Whether or not to use optipng for PNG thumbnails optimization. Suitable only when useing imagemagick or ffmpeg
 		$cf['KU_OPTIPNGLV']        = '2'; 	// Optipng optimization level, from 1 (fastest) to 7 (slowest)
