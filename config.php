@@ -155,6 +155,7 @@ if (!@$cached_config) {
 
 	// ---------------------------------- Attachment handling -----------------------------------
 		$cf['KU_FFMPEGPATH'] = 'C:\Program Files\ffmpeg\bin'; //path to FFMPEG, on windows it's usually 'C:\Program Files\ffmpeg\bin\' (REQUIRED for videos)
+		$cf['KU_MAGICKPATH'] = 'C:\Program Files\ImageMagick-7.1.0-Q16-HDRI'; //path to imagemagick
 		$cf['KU_YOUTUBE_APIKEY'] = 'your_api_key'; //Your personal anal probe ID. Can be obtained it Google Dev. Console
 		$cf['I0_YOUTUBE_DL_PATH'] = ''; // Path to youtube-dl binary. If not empty, youtube-dl will be used instead of default API (in this case you won't need KU_YOUTUBE_APIKEY)
 		$cf['KU_THUMBWIDTH']       = 200; 	// Maximum thumbnail width
@@ -166,8 +167,8 @@ if (!@$cached_config) {
 		$cf['KU_CATTHUMBHEIGHT']   = 50; 		// Maximum thumbnail height (catalog)
 		$cf['KU_FILESIZE_METHOD']  = 'sum'; // Method to use when determining the post file size limit. If it is set to 'sum', limit will be applied to the sum of all files in the post. Otherwise, if it is set to 'single', limit will be applied to each file separately.
 
+		$cf['KU_THUMBMETHOD']      = 'gd'; 	// Method to use when thumbnailing images in jpg, gif, or png format.  Options available: gd, imagemagick, ffmpeg
 		// Options below temporarily have no effect. Not implemented yet
-		//$cf['KU_MAGICKPATH'] = 'C:\Program Files\ImageMagick-7.1.0-Q16-HDRI'; //path to imagemagick
 		// Thumbnailing methods for images: the engine will try to make a thumbnail using every enabled method in sequential order
 		// $cf['KU_USE_GD'] 					 = false; 	// Whether or not GD should be used for thumbnailing
 		// $cf['KU_USE_IMAGICK'] 		 = false; 	// Whether or not Imagemagick should be used for thumbnailing
