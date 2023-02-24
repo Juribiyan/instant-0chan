@@ -347,7 +347,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 					!file_exists(KU_BOARDSDIR . $board_class->board['name'] . '/src/' . $attachment['file_name'] . $attachment['file_type'])
 					||
 					(
-						@$attachment['file_is_special']
+						@!$attachment['file_is_special']
 						&&
 						!(
 							file_exists(KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $attachment['file_name'] . 's' . $thumbfiletype)
