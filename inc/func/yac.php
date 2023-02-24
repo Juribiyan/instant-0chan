@@ -25,17 +25,12 @@ function clearPostCache($id, $board, $skipdb=false) {
 
 function cache_get($key) {
 	global $yac;
-	if (I0_YAC) {
-		return $yac->get($key);
-	}
+	return I0_YAC ? $yac->get($key) : null;
 }
 
 function cache_set($key, $val) {
 	global $yac;
-	if (I0_YAC) {
-		$yac->set($key, $val);
-	}
-	return $val;
+	return I0_YAC ? $yac->set($key, $val) : false;
 }
 
 ?>
