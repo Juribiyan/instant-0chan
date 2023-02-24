@@ -10,9 +10,11 @@ else {
 	$post  = $_GET['p'];
 }
 $key = implode(':', [$board, $post]);
-$result = ($result = cache_get($key)) ? $result : cache_set($key, $result = 
-	$tc_db->GetOne("SELECT `parentid` FROM `".KU_DBPREFIX."posts` WHERE `id`=? AND `boardid`=(SELECT `id` FROM `".KU_DBPREFIX."boards` WHERE `name`=?)", array($post, $board))
-);
+
+if ($result = cache_get($key)) return $result;
+
+$result = $tc_db->GetOne("SELECT `parentid` FROM `".KU_DBPREFIX."posts` WHERE `id`=? AND `boardid`=(SELECT `id` FROM `".KU_DBPREFIX."boards` WHERE `name`=?)", array($post, $board));
+cache_set($key, $result);
 
 if ($result === 0) {
 	$thread_id = ($result == 0) ? $post : $result;
