@@ -89,6 +89,9 @@ class PolymorphicReporter {
 		$this->itemtype = $itemtype;
 		$this->id = $id;
 		$this->is_ajax = $is_ajax;
+		// Lines below are entirely useless just like PHP8
+		$this->special_error = false;
+		$this->action = 'unset';
 	}
 
 	function fail($msg="", $special_error=false) {
@@ -584,7 +587,7 @@ elseif (
 
 	// Check rights
 	$pass = (isset($_POST['postpassword']) && $_POST['postpassword']!="") ? $_POST['postpassword'] : null;
-	$ismod = @$_POST['moddelete'] == 'true';
+	$ismod = @$_POST['moddelete'];
 	if ($ismod) {
 		require_once KU_ROOTDIR . 'inc/classes/manage.class.php';
 		$_POST['deletepost'] = true; // required to allow mod deleting multiple posts without AJAX
@@ -616,7 +619,7 @@ elseif (
 			$post_action->fail(_gettext('No board provided'));
 		else {
 			$b_class = $board_class;
-			$ismod = $ismod && Manage::CurrentUserIsModeratorOfBoard($b_class->board['name'], $_SESSION['manageusername']);
+			$ismod = $ismod && isset($_SESSION['manageusername']) && Manage::CurrentUserIsModeratorOfBoard($b_class->board['name'], $_SESSION['manageusername']);
 		}
 		if (!isset($pages_to_regenerate[$b_class->board['name']]))
 			$pages_to_regenerate[$b_class->board['name']] = array();

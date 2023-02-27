@@ -2017,7 +2017,6 @@ const Ajax = {
   deleteItems: function(fd, callback=null, asMod=false) {
     let kind = 'Items'
     if (asMod) {
-      console.log('yes')
       fd.append('moddelete', 1)
     }
     if (fd.has) {
@@ -2053,7 +2052,7 @@ const Ajax = {
       }
       catch(e) {
         logJSONexpectedError(xr.response)
-        return callback(null)
+        return callback ? callback(null) : null
       }
       if (callback)
         callback(res.data)
@@ -3222,7 +3221,8 @@ function readyset() {
     else
       fd.append('post[]', $item.parents('.postnode').data('id'))
     let asMod = $this.hasClass('menu-delete-mod')
-    fd.append('moddelete', asMod)
+    if (asMod)
+      fd.append('moddelete', 1)
     fd.append('opdelete', +$this.hasClass('menu-delete-op'))
     fd.append('board', isFile 
       ? menu.__menuProps.board
