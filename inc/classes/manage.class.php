@@ -4805,8 +4805,8 @@ class Manage {
 						$tc_db->Execute("UPDATE `".KU_DBPREFIX."posts` SET `message` = CONCAT(`message`, " . $tc_db->qstr($ban_msg) . ") WHERE `boardid` = " . $tc_db->qstr($ban_board_id) . " AND `id` = ".$tc_db->qstr($ban_post_id)." LIMIT 1");
 						
 						// Get the thread ID to regenerate
-						$parentid = $tc_db->GetAll("SELECT `parentid` FROM `".KU_DBPREFIX."posts` WHERE `boardid` = " . $tc_db->qstr($ban_board_id) . " AND `id` = ".$tc_db->qstr($ban_post_id)." LIMIT 1");
-						$thread_id = $line['parentid']==0 ? $ban_post_id : $line['parentid'];
+						$parentid = $tc_db->GetOne("SELECT `parentid` FROM `".KU_DBPREFIX."posts` WHERE `boardid` = " . $tc_db->qstr($ban_board_id) . " AND `id` = ".$tc_db->qstr($ban_post_id)." LIMIT 1");
+						$thread_id = $parentid==0 ? $ban_post_id : $parentid;
 						$regenerate = $thread_id;
 
 						clearPostCache($ban_post_id, $ban_board_id);
