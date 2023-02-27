@@ -3023,7 +3023,8 @@ class Manage {
 		global $tc_db, $tpl_page;
 		$this->AdministratorsOnly();
 
-		$_POST['desc'] = htmlspecialchars($_POST['desc']);
+		if(isset($_POST['desc']))
+			$_POST['desc'] = htmlspecialchars($_POST['desc']);
 
 		$tpl_page .= '<h2>'. _gettext('Board options') . '</h2><br />';
 		if (
