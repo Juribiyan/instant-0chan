@@ -130,7 +130,7 @@ CREATE TABLE `PREFIX_boards` (
   `redirecttothread` tinyint(1) NOT NULL DEFAULT '0',
   `anonymous` varchar(255) NOT NULL DEFAULT 'Аноним',
   `forcedanon` tinyint(1) NOT NULL DEFAULT '0',
-  `embeds_allowed` varchar(255) NOT NULL DEFAULT 'you,vim,cob',
+  `embeds_allowed` varchar(255) NOT NULL DEFAULT 'you,vim,cob,yts',
   `trial` tinyint(1) NOT NULL DEFAULT '0',
   `popular` tinyint(1) NOT NULL DEFAULT '0',
   `defaultstyle` varchar(50) CHARACTER SET latin1 NOT NULL DEFAULT '',
@@ -487,7 +487,8 @@ INSERT INTO `PREFIX_embeds` (`id`, `filetype`, `name`, `videourl`) VALUES
   (1, 'you', 'Youtube', 'https://www.youtube.com/watch?v='),
   (2, 'vim', 'Vimeo', 'https://vimeo.com/'),
   (3, 'cob', 'Coub', 'https://coub.com/view/'),
-  (4, 'scl', 'Soundcloud', 'https://soundcloud.com/');
+  (4, 'scl', 'Soundcloud', 'https://soundcloud.com/'),
+  (5, 'yts', 'Youtube Shorts', 'https://www.youtube.com/shorts/');
 
 INSERT INTO `PREFIX_boards` 
 (`section`, `order`, `name`, `desc`,                    `maximagesize`, `maxpages`, `createdon`,           `anonymous`, `forcedanon`, `enablenofile`, `dice`, `useragent` ) VALUES

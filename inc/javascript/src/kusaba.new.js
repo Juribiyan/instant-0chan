@@ -4537,7 +4537,7 @@ function unwrapEmbed($fig) {
   })
   let code = $iw.data('code')
   , iframeOptions = `frameborder="0" scrolling="no" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""`
-  if ($iw.data('site') == "Youtube") {
+  if (~$iw.data('site').indexOf("Youtube")) {
     let start = $iw.data('startraw')
     $iw.append(`<iframe src="https://www.youtube-nocookie.com/embed/${code}?autoplay=1${start ? `&start=${start}` : ''}" ${iframeOptions}></iframe>`)
   }
@@ -5253,16 +5253,6 @@ var catalog = {
         localStorage.removeItem('catalogSettings');
       }
     }
-
-    /*var sortOptionElements = '';
-    _.each([
-      ['bumped', 'bumpOrder'],
-      ['replied', 'lastReply'],
-      ['timestamp', 'creationDate'],
-      ['reply_count', 'replyCount']
-    ], (function(val_desc) {
-      sortOptionElements += '<option value="'+val_desc[0]+'"'+(val_desc[0]==this.conf.sortBy ? ' selected' : '')+'>'+_l[val_desc[1]]+'</option>';
-    }).bind(this));*/
     // Catalog refresh button
     var refreshBtn = `<div class="refresh-catalog" title="${_l.refreshCatalog}"><svg class="icon i-16in20"><use xlink:href="#i-refresh"></use></svg></div>`
     // catalog control buttons
@@ -5422,10 +5412,10 @@ var catalog = {
   },
   fileTypes: {
     image: ['jpg', 'gif', 'png'],
-    jpgThumb: ['webm', 'mp4', 'cob', 'vim', 'you'],
+    jpgThumb: ['webm', 'mp4', 'cob', 'vim', 'you', 'yts'],
     iconsAvailable: ['swf', 'mp3', 'ogg', 'css', 'flv'],
     audio: ['mp3', 'ogg'],
-    embed: ['cob', 'vim', 'you']
+    embed: ['cob', 'vim', 'you', 'yts']
   },
   authorities: ['', 'Admin', 'Mod', '?', 'God'],
   formatDate: function(timestamp, short) {

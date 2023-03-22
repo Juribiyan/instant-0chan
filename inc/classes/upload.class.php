@@ -49,6 +49,7 @@ class Upload {
 			$file_hashes = array();
 			if (isset($_FILES['imagefile']) && is_array($_FILES['imagefile']['name']))
 			foreach($_FILES['imagefile']['name'] as $i => $filename) {
+				$atype = 'file';
 				if ($_FILES['imagefile']['error'][$i] != UPLOAD_ERR_NO_FILE) {
 					switch ($_FILES['imagefile']['error'][$i]) {
 						case UPLOAD_ERR_OK:
@@ -122,6 +123,7 @@ class Upload {
 			// 2) Collect embeds
 			$embed_hashes = array();
 			if (is_array($_POST['embed']) || is_object($_POST['embed'])) {
+				$atype = 'embed';
 				foreach($_POST['embed'] as $i => $url) {
 					list($site, $code, $time) = $this->ParseEmbed($url);
 					if ($code != '') {
@@ -172,10 +174,10 @@ class Upload {
 		foreach ($sites as $s => $rx) {
 			preg_match($rx, $url, $matches);
 			if ($matches) {
-				$time = $matches['time'] || 0;
+				$time = isset($matches['time']) ? $matches['time'] : 0; // This is fucking stupid
 				$code = $matches['code'];
 				$site = $s;
-				if ($site == 'you') {
+				if ($site == 'you' && isset($matches['type'])) {
 					if ($matches['type']=='shorts') {
 						$site = 'yts';
 					}
@@ -542,11 +544,16 @@ class Upload {
 						// Copy or create thumbnail
 						$metaData = stream_get_meta_data($thumb_tmpfile);
 						$thumbfile = $metaData['uri'];
-						if ($video_data['width'] <= KU_VIDEOTHUMBWIDTH) {
+						// Verticalize YouTube shorts thumbnail
+						$is_yts = $attachment['embedtype'] == 'yts';
+						/*if ($is_yts) {
+							$video_data['width'] = 2*floor($video_data['height']*(9/16)/2);
+						}*/
+						if (!$is_yts && $video_data['width'] <= KU_VIDEOTHUMBWIDTH) {
 							$thumbnailed = copy($thumbfile, $attachment['file_thumb_location']);
 						}
 						else {
-							$thumbnailed = createThumbnail($thumbfile, $attachment['file_thumb_location'], KU_VIDEOTHUMBWIDTH, KU_VIDEOTHUMBWIDTH);
+							$thumbnailed = createThumbnail($thumbfile, $attachment['file_thumb_location'], KU_VIDEOTHUMBWIDTH, KU_VIDEOTHUMBWIDTH, $is_yts);
 						}
 						if (!$thumbnailed) {
 							$this->exitWithUploadErrorPage(_gettext('Could not create thumbnail.'), $atype, $i, $filename);
@@ -556,7 +563,7 @@ class Upload {
 							$thumbnailed = copy($thumbfile, $attachment['file_thumb_cat_location']);
 						}
 						else {
-							$thumbnailed = createThumbnail($thumbfile, $attachment['file_thumb_cat_location'], KU_CATTHUMBWIDTH, KU_CATTHUMBHEIGHT);
+							$thumbnailed = createThumbnail($thumbfile, $attachment['file_thumb_cat_location'], KU_CATTHUMBWIDTH, KU_CATTHUMBHEIGHT, $is_yts);
 						}
 						if (!$thumbnailed) {
 							$this->exitWithUploadErrorPage(_gettext('Could not create thumbnail.'), $atype, $i, $filename);

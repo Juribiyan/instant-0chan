@@ -18,7 +18,7 @@ function array_in_array($some, $all) {
 function exitWithErrorPage($errormsg, $extended = '', $error_type=null, $error_data=null) {
 	global $smarty, $board_class;
 
-  if ($_POST['AJAX']) {
+  if (@$_POST['AJAX']) {
     $resp = array(
       'error' => $errormsg,
       'error_verbose' => $extended
@@ -174,7 +174,10 @@ function check_css($css) {
  * '/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/'
  */
 function ISO8601_callback($matches) {
-  return 60*(60*((int)$matches[1]) + (int)$matches[2]) + (int)$matches[3];
+  $h = @(int)$matches[1] ?? 0;
+  $m = @(int)$matches[2] ?? 0;
+  $s = @(int)$matches[3] ?? 0;
+  return 60*(60*$h + $m) + $s;
 }
 
 // For debugging

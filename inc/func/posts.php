@@ -30,15 +30,19 @@ function checkMd5($md5, $board, $boardid) {
  * @param string $filename Path to place the thumbnail
  * @param integer $new_w Maximum width
  * @param integer $new_h Maximum height
+ * @param boolean $crop_yts Crop a 16×9 rectangle from the source of the image (for YouTube Shorts)
  * @return boolean Success/fail
  */
-function createThumbnail($name, $filename, $new_w, $new_h) {
+function createThumbnail($name, $filename, $new_w, $new_h, $crop_yts=false) {
 	if (KU_THUMBMETHOD == 'imagemagick') {
-		$convert = 'convert ' . escapeshellarg($name);
+		$convert = 'magick ' . escapeshellarg($name);
 		if (!KU_ANIMATEDTHUMBS) {
 			$convert .= '[0] ';
 		}
-		$convert .= ' -resize ' . $new_w . 'x' . $new_h . ' -quality ';
+    if ($crop_yts) {
+      $convert .= '-crop "%[fx:2*floor(h*(9/16)/2)]x%[fx:h]+%[fx:(w-2*floor(h*(9/16)/2))/2]+0" ';
+    }
+		$convert .= '-resize ' . $new_w . 'x' . $new_h . ' -quality ';
 		if (substr(strrchr($filename,'.'),1) != 'gif') {
 			$convert .= '70';
 		} else {
@@ -67,6 +71,9 @@ function createThumbnail($name, $filename, $new_w, $new_h) {
     $convert = 'ffmpeg -i ' . escapeshellarg($name);
     if (!KU_ANIMATEDTHUMBS) {
       $convert .= ' -vframes 1';
+    }
+    if ($crop_yts) {
+      $convert .= ' -vf crop="2*floor(ih*(9/16)/2):ih"';
     }
     if ($imagewidth > $imageheight) {
       $convert .= ' -vf scale="' . $new_w . ':-1" -quality ';
@@ -107,18 +114,26 @@ function createThumbnail($name, $filename, $new_w, $new_h) {
     	if (!$src_img) 
 				exitWithErrorPage(_gettext('Unable to read uploaded file during thumbnailing.'), _gettext('A common cause for this is an incorrect extension when the file is actually of a different type.'));
 		}
-		$old_x = imageSX($src_img);
-		$old_y = imageSY($src_img);
-		if ($old_x > $old_y) {
-			$percent = $new_w / $old_x;
+		$src_w = imageSX($src_img);
+		$src_h = imageSY($src_img);
+    if ($crop_yts) {
+      $crop_w = 2*floor(($src_h*(9/16))/2);
+      $src_x = round(($src_w-$crop_w)/2);
+      $src_w = $crop_w;
+    }
+    else {
+      $src_x = 0;
+    }
+		if ($src_w > $src_h) {
+			$percent = $new_w / $src_w;
 		} else {
-			$percent = $new_h / $old_y;
+			$percent = $new_h / $src_h;
 		}
-		$thumb_w = round($old_x * $percent);
-		$thumb_h = round($old_y * $percent);
+		$thumb_w = round($src_w * $percent);
+		$thumb_h = round($src_h * $percent);
 
 		$dst_img = ImageCreateTrueColor($thumb_w, $thumb_h);
-		fastImageCopyResampled($dst_img, $src_img, 0, 0, 0, 0, $thumb_w, $thumb_h, $old_x, $old_y, $system);
+		fastImageCopyResampled($dst_img, $src_img, 0, 0, $src_x, 0, $thumb_w, $thumb_h, $src_w, $src_h, $system);
 
 		if ($actual_type) {
 			if (($actual_type == 'jpg' || $actual_type == 'webp') && !imagejpeg($dst_img, $filename, 70)) {
@@ -243,10 +258,10 @@ function fastImageCopyResampled(&$dst_image, &$src_image, $dst_x, $dst_y, $src_x
  	 )
  */
 function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
-  if (!in_array($site, array('you', 'vim', 'cob', 'scl')))
+  if (!in_array($site, array('you', 'vim', 'cob', 'scl', 'yts')))
     return array('error' => 'unsupported_site');
 
-  $use_youtube_dl = I0_YOUTUBE_DL_PATH !== '' && $site === 'you';
+  $use_youtube_dl = I0_YOUTUBE_DL_PATH !== '' && ($site === 'you' || $site === 'yts');
 
   // Pre-setup
   if ($use_youtube_dl) {
@@ -280,7 +295,7 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
       case 'vim':
         $url = 'https://vimeo.com/api/v2/video/'.$code.'.json';
         break;
-      case 'you':
+      case 'you': case 'yts':
         $url = 'https://www.googleapis.com/youtube/v3/videos?part=contentDetails%2Csnippet&id='.$code.'&key='.KU_YOUTUBE_APIKEY;
         break;
       case 'scl':
@@ -313,9 +328,13 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
     $i = 0; 
     foreach($ydl_info->thumbnails as &$thumb) {
       $i++;
-      if ($thumb->width >= $maxwidth || $options_available == $i) {
+      $width_corrected = ($site=='yts')
+        ? 2*floor(($thumb->height)/(16/9)/2)
+        : $thumb->width;
+      if ($width_corrected >= $maxwidth || $options_available == $i) {
         $thumb_url = $thumb->url;
-        $thumbwidth = $thumb->width;
+        $thumbwidth = $width_corrected;
+        $thumbheight = $thumb->height;
         break;
       }
     }
@@ -338,13 +357,13 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
           'large' => 640
         );
         break;
-      case 'you':
+      case 'you': case 'yts':
         $widths_available = array(
-          'default' => 120,
-          'medium' => 320,
-          'high' => 480,
-          'standard' => 640,
-          'maxres' => 1280
+          'default' => [120, 90],
+          'medium' => [320, 180],
+          'high' => [480, 360],
+          'standard' => [640, 480],
+          'maxres' => [1280, 720]
         );
         break;
       case 'scl':
@@ -357,11 +376,21 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
     }
     $i = 0; 
     $options_available = count($widths_available);
-    foreach ($widths_available as $preset => $width) {
+    foreach ($widths_available as $preset => $wh) {
       $i++;
+      if ($site=='you' || $site=='yts') {
+        list($width, $height) = $wh;
+        if ($site=='yts') {
+          $width = 2*floor($height/(16/9)/2);
+        }
+      }
+      else {
+        $width = $wh;
+      }
       if ($width >= $maxwidth || $options_available == $i) {
         $chosen_preset = $preset;
         $thumbwidth = $width;
+        $thumbheight = @$height;
         break;
       }
     }
@@ -375,7 +404,7 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
     case 'vim':
       $thumb_url = preg_replace('/\.webp/', '.jpg', $data[0]['thumbnail_'.$chosen_preset]);
       break;
-    case 'you':
+    case 'you': case 'yts':
       if (!$use_youtube_dl) {
         $thumb_url = $data['items'][0]['snippet']['thumbnails'][$chosen_preset]['url'];
       }
@@ -410,7 +439,7 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
   curl_close($ch);
 
   // Get the rest of the data
-  $r = array('width' => $thumbwidth);
+  $r = array(/*'width' => $thumbwidth*/);
   switch ($site) {
     case 'cob':
       $r['width'] = (int)$data['dimensions']['big'][0];
@@ -424,9 +453,10 @@ function fetch_video_data($site, $code, $maxwidth, $thumb_tmpfile) {
       $r['title'] = $data[0]['title'];
       $duration = $data[0]['duration'];
       break;
-    case 'you':
-      $r['width'] = 1920;
-      $r['height'] = 1080;
+    case 'you': case 'yts':
+      $r['height'] = $thumbheight;
+      $r['width'] = $thumbwidth;
+      $r['height'] = $thumbheight;
       if ($use_youtube_dl) {
         $r['title'] = $ydl_info->title;
         $duration = $ydl_info->duration;
