@@ -319,8 +319,8 @@ class Manage {
 					if ($line['type'] == '1') {
 						return true;
 					} else {
-						$array_boards = explode('|', $line['boards']);
-						if (in_array($board, $array_boards)) {
+						$array_boards = @explode('|', $line['boards']);
+						if ($array_boards && in_array($board, $array_boards)) {
 							return true;
 						} else {
 							return false;
