@@ -1412,7 +1412,10 @@ class Manage {
 			if ($dir != '' && $desc != '') {
 				$results = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($dir) . "");
 				if (count($results) == 0) {
-					$moderating = array_filter(explode('|', $tc_db->GetOne("SELECT HIGH_PRIORITY `boards` FROM `" . KU_DBPREFIX . "staff` WHERE `username` = '" . $_SESSION['manageusername'] . "'")));
+					$user_boards = $tc_db->GetOne("SELECT HIGH_PRIORITY `boards` FROM `" . KU_DBPREFIX . "staff` WHERE `username` = '" . $_SESSION['manageusername'] . "'");
+					$moderating = $user_boards
+						? array_filter(explode('|', $user_boards))
+						: array();
 					$existingboards = $tc_db->GetAll("SELECT HIGH_PRIORITY `name` from `" . KU_DBPREFIX . "boards`");
 					foreach($existingboards as &$exb) {
 						$xba[] = $exb['name'];
@@ -3523,7 +3526,8 @@ class Manage {
 		global $tc_db, $tpl_page;
 		$this->BoardOwnersOnly();
 
-		$_POST['desc'] = htmlspecialchars($_POST['desc']);
+		if (isset($_POST['desc']))
+			$_POST['desc'] = htmlspecialchars($_POST['desc']);
 
 		$tpl_page .= '<h2>'. _gettext('Board options') . '</h2><br />';
 		if (
@@ -3641,7 +3645,9 @@ class Manage {
 					<div class="desc">'. _gettext('What filetypes users are allowed to upload.') .'</div><br />';
 					$filetypes = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `filetype` FROM `" . KU_DBPREFIX . "filetypes` ORDER BY `filetype` ASC");
 					foreach ($filetypes as $filetype) {
-						$tpl_page .= '<label for="filetype_'. $filetype['id'] . '">'. strtoupper($filetype['filetype']) . '</label><input type="checkbox" name="filetype_'. $filetype['id'] . '"';
+						$is_any = $filetype['filetype']=="*";
+						$ftype_name = $is_any ? "<b>"._gettext('Any file type')."</b>" : strtoupper($filetype['filetype']);
+						$tpl_page .= '<label for="filetype_'. $filetype['id'] . '">'. $ftype_name . '</label><input type="checkbox" name="filetype_'. $filetype['id'] . '"';
 						$filetype_isenabled = $tc_db->GetOne("SELECT HIGH_PRIORITY COUNT(*) FROM `" . KU_DBPREFIX . "board_filetypes` WHERE `boardid` = '" . $lineboard['id'] . "' AND `typeid` = '" . $filetype['id'] . "' LIMIT 1");
 						if ($filetype_isenabled > 0) {
 							$tpl_page .= ' checked';
@@ -5546,13 +5552,13 @@ class Manage {
 
 		$staff_boardsmoderated = array();
 		$results = $tc_db->GetAll("SELECT HIGH_PRIORITY `boards` FROM `" . KU_DBPREFIX . "staff` WHERE `username` = '" . $username . "' LIMIT 1");
-		if ($this->CurrentUserIsAdministrator() || $results[0][0] == 'allboards') {
+		if ($this->CurrentUserIsAdministrator() || $results[0]['boards'] == 'allboards') {
 			$resultsboard = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `name` FROM `" . KU_DBPREFIX . "boards` ORDER BY `name` ASC");
 			foreach ($resultsboard as $lineboard) {
 					$staff_boardsmoderated = array_merge($staff_boardsmoderated, array(array( 'name' => $lineboard['name'], 'id' => $lineboard['id'])));
 			}
 		} else {
-			if ($results[0][0] != '') {
+			if ($results[0]['boards'] != '') {
 				foreach ($results as $line) {
 					$array_boards = explode('|', $line['boards']);
 				}
