@@ -23,7 +23,9 @@
 class Menu {
 
 	function GetMenu($savetofile = false, $option = false) {
-		global $tc_db, $smarty, $kusabaxorg;
+		global $tc_db;
+
+		$smarty = new _Smarty();
 
 		$smarty->assign('boardpath', getCLBoardPath());
 

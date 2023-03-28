@@ -6,9 +6,11 @@
 	<title>{$smarty.const.KU_NAME}</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	
-	{for style $styles}
-				<link rel="{if $styles[$style] neq $smarty.const.KU_DEFAULTMENUSTYLE}alternate {/if}stylesheet" type="text/css" href="{$smarty.const.KU_WEBFOLDER}css/site_{$styles[$style]}.css" title="{$styles[$style]|capitalize}" />
-	{/for}
+	{foreach $styles as $style}
+		<link rel="{if $style neq $smarty.const.KU_DEFAULTMENUSTYLE}alternate {/if}stylesheet" type="text/css" 
+		href="{$cwebpath}css/{$style}.css?v={$smarty.const.KU_CSSVER}" 
+		title="{$style|capitalize}" />
+	{/foreach}
 <script type="text/javascript">
 	var style_cookie_site = "kustyle_site";
 </script>

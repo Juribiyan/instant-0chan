@@ -37,7 +37,7 @@ function showstyleswitcher() {
 		{if $smarty.const.KU_MENUSTYLESWITCHER && $smarty.const.KU_MENUTYPE eq 'normal'}
 			{t}Styles{/t}:
 			{foreach $styles as $style}
-				[<a href="#" onclick="javascript:Styles.change(\'{$style|capitalize}\', false, true);reloadmain();" style="display: inline;" target="_self">{$style|upper|truncate:1}</a>]{if !$style@last} {/if}
+				[<a href="#" onclick="javascript:Styles.change(\'{$style|capitalize}\', false, true);reloadmain();" style="display: inline;" target="_self">{$style|upper|truncate:1:""}</a>]{if !$style@last} {/if}
 			{/foreach}
 		{/if}
 		{/strip}';
