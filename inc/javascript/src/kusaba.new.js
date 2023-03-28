@@ -1687,7 +1687,12 @@ const richFileInput = {
 }
 
 function makeGenericFileIcon(ext) {
-  let color = ext.toLowerCase().split('').map(char=>char.charCodeAt(0)).reverse().join('') % 360
+  let hash = 0
+  ext.toLowerCase().split('').reverse().forEach((char, i) => {
+    char = char.charCodeAt(0)
+    hash += char*(i*10 + 7)
+  })
+  let color = hash % 360
   return `<div class="generic-file-icon" style="background-color: hsl(${color}, 66%, 50%)"><div class="gfi-extension">${ext}</div></div>`
 }
 

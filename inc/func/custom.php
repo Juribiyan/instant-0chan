@@ -67,11 +67,12 @@ function rainbow ($string)
 
 function color_from_extension($ext) {
   $chars = array_reverse(str_split($ext));
-  $s = '';
+  $s = 0;  $i = 0;
   foreach ($chars as $char) {
-    $s .= ord($char);
+    $s += ord($char) * ($i*10 + 7);
+    $i++;
   }
-  return (int)$s % 360;
+  return $s % 360;
 }
 
 function is_from_sosach($filename) {
