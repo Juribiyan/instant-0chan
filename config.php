@@ -95,7 +95,7 @@ if (!@$cached_config) {
 	// ---------------------------------- Userboards (aka 2.0) ----------------------------------
 		$cf['KU_20_BOARDSLIMIT'] = 5;	// How many 2.0 boards a user can create
 		$cf['KU_20_CLOUDTIME'] = "-24 hours";
-		$cf['I0_20_LINK'] = "/?p-2.0"; // A link yo 2.0 boards page. "/?p-2.0" (default) will work with default index page; try "/register" if you use a custom index page
+		$cf['I0_20_LINK'] = "/?p=2.0"; // A link yo 2.0 boards page. "/?p-2.0" (default) will work with default index page; try "/register" if you use a custom index page
 		$cf['KU_20MAXLOGINPASS'] = 50; // Maximum login and password size for 2.0
 	
 
