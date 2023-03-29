@@ -24,7 +24,7 @@ class Manage {
 
 	/* Show the header of the manage page */
 	function Header() {
-		global $dwoo_data, $tpl_page;
+		global $smarty, $tpl_page;
 
 		if (is_file(KU_ROOTDIR . 'inc/pages/modheader.html')) {
 			$tpl_includeheader = file_get_contents(KU_ROOTDIR . 'inc/pages/modheader.html');
@@ -32,20 +32,20 @@ class Manage {
 			$tpl_includeheader = '';
 		}
 
-		$dwoo_data->assign('includeheader', $tpl_includeheader);
+		$smarty->assign('includeheader', $tpl_includeheader);
 	}
 
 	/* Show the footer of the manage page */
 	function Footer() {
-		global $dwoo_data, $dwoo, $tpl_page;
+		global $smarty, $tpl_page;
 
-		$dwoo_data->assign('page', $tpl_page);
+		$smarty->assign('page', $tpl_page);
 
 		$board_class = new Board('');
-		if(!isset($dwoo_data->footer)) {
-			$dwoo_data->footer = '';
-		}
-		$dwoo->output(KU_TEMPLATEDIR . '/manage.tpl', $dwoo_data);
+		// if(!isset($smarty->footer)) {
+		// 	$smarty->footer = '';
+		// }
+		$smarty->display('manage.tpl');
 	}
 
 	// Creates a salt to be used for passwords
@@ -319,8 +319,8 @@ class Manage {
 					if ($line['type'] == '1') {
 						return true;
 					} else {
-						$array_boards = explode('|', $line['boards']);
-						if (in_array($board, $array_boards)) {
+						$array_boards = @explode('|', $line['boards']);
+						if ($array_boards && in_array($board, $array_boards)) {
 							return true;
 						} else {
 							return false;
@@ -505,7 +505,7 @@ class Manage {
 		}
 	}
 
-	/* Edit Dwoo templates */
+	/* Edit Smarty templates */
 	function templates() {
 		global $tc_db, $tpl_page;
 		$this->AdministratorsOnly();
@@ -559,8 +559,8 @@ class Manage {
 					<textarea wrap=off rows=40 cols=100 name="templatedata">'. htmlspecialchars(file_get_contents(KU_TEMPLATEDIR . '/'. $file)) . '</textarea>
 					<label for="rebuild">'. _gettext('Rebuild HTML after edit?') .'</label>
 					<input type="checkbox" name="rebuild" /><br /><br />
-					<div class="desc">'. _gettext('Visit <a href="http://wiki.dwoo.org/">http://wiki.dwoo.org/</a> for syntax information.') . '</div>
-					<div class="desc">'. sprintf(_gettext('To access Kusaba variables, use {%%KU_VARNAME}, for example {%%KU_BOARDSPATH} would be replaced with %s'), KU_BOARDSPATH) . '</div>
+					<div class="desc">'. _gettext('Visit <a href="https://smarty-php.github.io/smarty/4.x/">https://smarty-php.github.io/smarty/4.x/</a> for syntax information.') . '</div>
+					<div class="desc">'. sprintf(_gettext('To access Kusaba variables, use {$smarty.const.KU_VARNAME}, for example {$smarty.const.KU_BOARDSPATH} would be replaced with %s'), KU_BOARDSPATH) . '</div>
 					<div class="desc">'. _gettext('Enclose text in {t}{/t} blocks to allow them to be translated for different languages.') . '</div><br /><br />';
 				}
 			}
@@ -1089,12 +1089,12 @@ class Manage {
 
 	/* Display moderators and administrators actions which were logged */
 	function modlog() {
-		global $tc_db, $tpl_page, $dwoo, $dwoo_data;
+		global $tc_db, $tpl_page, $smarty;
 		$this->AdministratorsOnly();
 
 		$entries = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "modlog` ORDER BY `timestamp` DESC");
-		$dwoo_data->assign('modlog_entries', $entries);
-		$tpl_page .= $dwoo->get(KU_TEMPLATEDIR . '/modlog.tpl', $dwoo_data);
+		$smarty->assign('modlog_entries', $entries);
+		$tpl_page .= $smarty->fetch('modlog.tpl');
 	}
 
 	function proxyban() {
@@ -1412,7 +1412,10 @@ class Manage {
 			if ($dir != '' && $desc != '') {
 				$results = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($dir) . "");
 				if (count($results) == 0) {
-					$moderating = array_filter(explode('|', $tc_db->GetOne("SELECT HIGH_PRIORITY `boards` FROM `" . KU_DBPREFIX . "staff` WHERE `username` = '" . $_SESSION['manageusername'] . "'")));
+					$user_boards = $tc_db->GetOne("SELECT HIGH_PRIORITY `boards` FROM `" . KU_DBPREFIX . "staff` WHERE `username` = '" . $_SESSION['manageusername'] . "'");
+					$moderating = $user_boards
+						? array_filter(explode('|', $user_boards))
+						: array();
 					$existingboards = $tc_db->GetAll("SELECT HIGH_PRIORITY `name` from `" . KU_DBPREFIX . "boards`");
 					foreach($existingboards as &$exb) {
 						$xba[] = $exb['name'];
@@ -2493,7 +2496,7 @@ class Manage {
 
 	/* Add, view, and delete filetypes */
 	function editfiletypes() {
-		global $tc_db, $tpl_page;
+		global $tc_db, $tpl_page, $yac;
 		$this->AdministratorsOnly();
 
 		$tpl_page .= '<h2>'. _gettext('Edit filetypes') . '</h2><br />';
@@ -2539,8 +2542,8 @@ class Manage {
 					if ($_POST['filetype'] != '' && $_POST['image'] != '') {
             $this->CheckToken($_POST['token']);
 						$tc_db->Execute("UPDATE `" . KU_DBPREFIX . "filetypes` SET `filetype` = " . $tc_db->qstr($_POST['filetype']) . " , `mime` = " . $tc_db->qstr($_POST['mime']) . " , `image` = " . $tc_db->qstr($_POST['image']) . " , `image_w` = " . $tc_db->qstr($_POST['image_w']) . " , `image_h` = " . $tc_db->qstr($_POST['image_h']) . " WHERE `id` = " . $tc_db->qstr($_GET['filetypeid']) . "");
-						if (KU_APC) {
-							apc_delete('filetype|'. $_POST['filetype']);
+						if (I0_YAC) {
+							$yac->delete('filetype|'. $_POST['filetype']);
 						}
 						$tpl_page .= _gettext('Filetype updated.');
 					}
@@ -3023,7 +3026,8 @@ class Manage {
 		global $tc_db, $tpl_page;
 		$this->AdministratorsOnly();
 
-		$_POST['desc'] = htmlspecialchars($_POST['desc']);
+		if(isset($_POST['desc']))
+			$_POST['desc'] = htmlspecialchars($_POST['desc']);
 
 		$tpl_page .= '<h2>'. _gettext('Board options') . '</h2><br />';
 		if (
@@ -3522,7 +3526,8 @@ class Manage {
 		global $tc_db, $tpl_page;
 		$this->BoardOwnersOnly();
 
-		$_POST['desc'] = htmlspecialchars($_POST['desc']);
+		if (isset($_POST['desc']))
+			$_POST['desc'] = htmlspecialchars($_POST['desc']);
 
 		$tpl_page .= '<h2>'. _gettext('Board options') . '</h2><br />';
 		if (
@@ -3640,7 +3645,9 @@ class Manage {
 					<div class="desc">'. _gettext('What filetypes users are allowed to upload.') .'</div><br />';
 					$filetypes = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `filetype` FROM `" . KU_DBPREFIX . "filetypes` ORDER BY `filetype` ASC");
 					foreach ($filetypes as $filetype) {
-						$tpl_page .= '<label for="filetype_'. $filetype['id'] . '">'. strtoupper($filetype['filetype']) . '</label><input type="checkbox" name="filetype_'. $filetype['id'] . '"';
+						$is_any = $filetype['filetype']=="*";
+						$ftype_name = $is_any ? "<b>"._gettext('Any file type')."</b>" : strtoupper($filetype['filetype']);
+						$tpl_page .= '<label for="filetype_'. $filetype['id'] . '">'. $ftype_name . '</label><input type="checkbox" name="filetype_'. $filetype['id'] . '"';
 						$filetype_isenabled = $tc_db->GetOne("SELECT HIGH_PRIORITY COUNT(*) FROM `" . KU_DBPREFIX . "board_filetypes` WHERE `boardid` = '" . $lineboard['id'] . "' AND `typeid` = '" . $filetype['id'] . "' LIMIT 1");
 						if ($filetype_isenabled > 0) {
 							$tpl_page .= ' checked';
@@ -4805,8 +4812,8 @@ class Manage {
 						$tc_db->Execute("UPDATE `".KU_DBPREFIX."posts` SET `message` = CONCAT(`message`, " . $tc_db->qstr($ban_msg) . ") WHERE `boardid` = " . $tc_db->qstr($ban_board_id) . " AND `id` = ".$tc_db->qstr($ban_post_id)." LIMIT 1");
 						
 						// Get the thread ID to regenerate
-						$parentid = $tc_db->GetAll("SELECT `parentid` FROM `".KU_DBPREFIX."posts` WHERE `boardid` = " . $tc_db->qstr($ban_board_id) . " AND `id` = ".$tc_db->qstr($ban_post_id)." LIMIT 1");
-						$thread_id = $line['parentid']==0 ? $ban_post_id : $line['parentid'];
+						$parentid = $tc_db->GetOne("SELECT `parentid` FROM `".KU_DBPREFIX."posts` WHERE `boardid` = " . $tc_db->qstr($ban_board_id) . " AND `id` = ".$tc_db->qstr($ban_post_id)." LIMIT 1");
+						$thread_id = $parentid==0 ? $ban_post_id : $parentid;
 						$regenerate = $thread_id;
 
 						clearPostCache($ban_post_id, $ban_board_id);
@@ -5507,41 +5514,35 @@ class Manage {
 	* +------------------------------------------------------------------------------+
 	*/
 
-	/* Show APC info */
-	function apc() {
-		global $tpl_page;
+	/* Show YAC info */
+	function yac() {
+		global $tpl_page, $yac;
 
-		if (KU_APC) {
-			$apc_info_system = apc_cache_info();
-			$apc_info_user = apc_cache_info('user');
-			//print_r($apc_info_user);
-			$tpl_page .= '<h2>APC</h2><h3>'. _gettext('System (File cache)') .'</h3><ul>';
-			$tpl_page .= '<li>Start time: <strong>'. date("y/m/d(D)H:i", $apc_info_system['start_time']) . '</strong></li>';
-			$tpl_page .= '<li>Hits: <strong>'. $apc_info_system['num_hits'] . '</strong></li>';
-			$tpl_page .= '<li>Misses: <strong>'. $apc_info_system['num_misses'] . '</strong></li>';
-			$tpl_page .= '<li>Entries: <strong>'. $apc_info_system['num_entries'] . '</strong></li>';
-			$tpl_page .= '</ul><br /><h3>User (kusaba)</h3><ul>';
-			$tpl_page .= '<li>Start time: <strong>'. date("y/m/d(D)H:i", $apc_info_user['start_time']) . '</strong></li>';
-			$tpl_page .= '<li>Hits: <strong>'. $apc_info_user['num_hits'] . '</strong></li>';
-			$tpl_page .= '<li>Misses: <strong>'. $apc_info_user['num_misses'] . '</strong></li>';
-			$tpl_page .= '<li>Entries: <strong>'. $apc_info_user['num_entries'] . '</strong></li>';
-			$tpl_page .= '</ul><br /><br /><a href="?action=clearcache">Clear APC cache</a>';
+		if (I0_YAC) {
+			$yac_info = $yac->info();
+			if (is_array($yac_info)) {
+				$tpl_page .= '<table>';
+				foreach($yac_info as $k=>$v) {
+					$tpl_page .=  '<tr><td>'.$k.'</td><td>'.$v.'</td></tr>';
+				}
+				$tpl_page .= '</table>';
+			}
+			$tpl_page .= '</ul><br /><br /><a href="?action=clearcache">Clear YAC cache</a>';
 		} else {
-			$tpl_page .= 'APC isn\'t enabled!';
+			$tpl_page .= 'YAC isn\'t enabled!';
 		}
 	}
 
-	/* Clear the APC cache */
+	/* Clear the YAC cache */
 	function clearcache() {
-		global $tpl_page;
+		global $tpl_page, $yac;
 
-		if (KU_APC) {
-			apc_clear_cache();
-			apc_clear_cache('user');
-			$tpl_page .= 'APC cache cleared.';
-			management_addlogentry(_gettext('Cleared APC cache'), 0);
+		if (I0_YAC) {
+			$yac->flush();
+			$tpl_page .= 'YAC cache cleared.';
+			management_addlogentry(_gettext('Cleared YAC cache'), 0);
 		} else {
-			$tpl_page .= 'APC isn\'t enabled!';
+			$tpl_page .= 'YAC isn\'t enabled!';
 		}
 	}
 
@@ -5551,13 +5552,13 @@ class Manage {
 
 		$staff_boardsmoderated = array();
 		$results = $tc_db->GetAll("SELECT HIGH_PRIORITY `boards` FROM `" . KU_DBPREFIX . "staff` WHERE `username` = '" . $username . "' LIMIT 1");
-		if ($this->CurrentUserIsAdministrator() || $results[0][0] == 'allboards') {
+		if ($this->CurrentUserIsAdministrator() || $results[0]['boards'] == 'allboards') {
 			$resultsboard = $tc_db->GetAll("SELECT HIGH_PRIORITY `id`, `name` FROM `" . KU_DBPREFIX . "boards` ORDER BY `name` ASC");
 			foreach ($resultsboard as $lineboard) {
 					$staff_boardsmoderated = array_merge($staff_boardsmoderated, array(array( 'name' => $lineboard['name'], 'id' => $lineboard['id'])));
 			}
 		} else {
-			if ($results[0][0] != '') {
+			if ($results[0]['boards'] != '') {
 				foreach ($results as $line) {
 					$array_boards = explode('|', $line['boards']);
 				}

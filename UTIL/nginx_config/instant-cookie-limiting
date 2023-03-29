@@ -1,0 +1,7 @@
+# This is to be included inside the location ~\.php$ block
+# Enables cookie-based request and connection limiting. Useful for hidden networks
+# Works in pair with instant-cookie-zones included in http{} block
+limit_conn phpsid_c 3;
+limit_conn_status 429;
+limit_req zone=phpsid_r burst=5;
+limit_req_status 429;

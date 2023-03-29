@@ -27,18 +27,17 @@
 // Require the configuration file
 require 'config.php';
 require KU_ROOTDIR . 'inc/functions.php';
-require_once KU_ROOTDIR . 'lib/dwoo.php';
-$dwoo_tpl = new Dwoo_Template_File(KU_TEMPLATEDIR . '/news.tpl');
+$smarty = new _Smarty();
 
 $topads = $tc_db->GetOne("SELECT code FROM `" . KU_DBPREFIX . "ads` WHERE `position` = 'top' AND `disp` = '1'");
 $botads = $tc_db->GetOne("SELECT code FROM `" . KU_DBPREFIX . "ads` WHERE `position` = 'bot' AND `disp` = '1'");
-$dwoo_data->assign('topads', $topads);
-$dwoo_data->assign('botads', $botads);
+$smarty->assign('topads', $topads);
+$smarty->assign('botads', $botads);
 
 if(isset($_GET['partial'])) $partial = true;
 else $partial = false;
 
-$dwoo_data->assign('partial', $partial);
+$smarty->assign('partial', $partial);
 
 if (!isset($_GET['p'])) $_GET['p'] = '';
 
@@ -51,9 +50,9 @@ if ($_GET['p'] == 'faq') {
 }
 $styles = explode(':', KU_MENUSTYLES);
 
-$dwoo_data->assign('styles', $styles);
-$dwoo_data->assign('ku_webpath', getCWebPath());
-$dwoo_data->assign('entries', $entries);
+$smarty->assign('styles', $styles);
+$smarty->assign('ku_webpath', getCWebPath());
+$smarty->assign('entries', $entries);
 
-$dwoo->output($dwoo_tpl, $dwoo_data);
+$smarty->display('news.tpl');
 ?>

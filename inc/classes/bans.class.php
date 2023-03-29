@@ -103,14 +103,14 @@ class Bans {
 		/* Set a cookie with the users current IP address in case they use a proxy to attempt to make another post */
 		setcookie('tc_previousip', $ip, (time() + 604800), KU_BOARDSFOLDER);
 
-		require_once KU_ROOTDIR . 'lib/dwoo.php';
+		$smarty = new _Smarty();
 
-		$dwoo_data->assign('bans', $bans);
-		$dwoo_data->assign('user_id', $ip);
-		$dwoo_data->assign('is_ip', !(I0_IPLESS_MODE==true || (I0_IPLESS_MODE=='auto' && $ip=='127.0.0.1')));
-		$dwoo_data->assign('user_id_encrypted', compress_md5(md5($ip . KU_RANDOMSEED)));
+		$smarty->assign('bans', $bans);
+		$smarty->assign('user_id', $ip);
+		$smarty->assign('is_ip', !(I0_IPLESS_MODE==true || (I0_IPLESS_MODE=='auto' && $ip=='127.0.0.1')));
+		$smarty->assign('user_id_encrypted', compress_md5(md5($ip . KU_RANDOMSEED)));
 
-		return $dwoo->get(KU_TEMPLATEDIR .'/banned.tpl', $dwoo_data);
+		return $smarty->fetch('banned.tpl');
 	}
 
 	function UpdateHtaccess() {

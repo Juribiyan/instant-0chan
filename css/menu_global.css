@@ -7,3 +7,10 @@ img {
 .trial {
   font-style: italic;
 }
+
+.menu-checkbox,
+.menu-checkbox:not(:checked) + div,
+#showstyleswitcher, 
+#showstyleswitcher:not(:checked) + div {
+  display: none;
+}

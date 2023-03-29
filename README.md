@@ -1,5 +1,7 @@
+# <span style="color:red">THIS BRANCH IS NOT FUNCTIONAL; WAIT UNTIL MERGED</span>
+
 <p align="center">
-  <img src="http://i.imgur.com/SJwMUsY.png" alt="Instant 0chan"/>
+  <img src="https://camo.githubusercontent.com/5bf26b2c504125351ad8f6fb545a3e36228e53d5f1a6842293c1761b7bc78702/687474703a2f2f692e696d6775722e636f6d2f534a774d5573592e706e67" alt="Instant 0chan"/>
 </p>
 
 # Instant 0chan
