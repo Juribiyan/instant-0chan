@@ -23,3 +23,6 @@
 
 node_modules
 package-lock.json
+
+/lib/vendor/*
+/lib/composer.lock
