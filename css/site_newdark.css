@@ -6,14 +6,15 @@ body {
 	font-family: sans-serif;
 }
 
-
-a, a:visited {
+a, a:visited, .pseudo-link {
 	text-decoration: none;
 	color: rgb(55, 201, 153);
 }
-
-a:hover {
-color: rgb(54, 171, 133);
+a:hover, .pseudo-link:hover {
+	color: rgb(54, 171, 133);
+}
+.pseudo-link {
+	cursor: pointer;
 }
 
 h2 {

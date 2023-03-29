@@ -5,10 +5,12 @@
 <title>{$smarty.const.KU_NAME} Navigation</title>
 {if $smarty.const.KU_MENUTYPE eq 'normal'}
 	<link rel="stylesheet" type="text/css" href="{$boardpath}css/menu_global.css" />
+	{assign var="pref_style" value=$smarty.cookies.kustyle_site|default:$smarty.const.KU_DEFAULTMENUSTYLE|lower}
 	{foreach $styles as $style}
-		<link rel="{if $style neq $smarty.const.KU_DEFAULTMENUSTYLE}alternate {/if}stylesheet" type="text/css" href="{$smarty.const.KU_WEBFOLDER}css/site_{$style}.css" title="{$style|capitalize}" />
-		<link rel="{if $style neq $smarty.const.KU_DEFAULTMENUSTYLE}alternate {/if}stylesheet" type="text/css" href="{$smarty.const.KU_WEBFOLDER}css/sitemenu_{$style}.css" title="{$style|capitalize}" />
+		<link rel="{if $style neq $pref_style}alternate {/if}stylesheet" type="text/css" href="{$smarty.const.KU_WEBFOLDER}css/site_{$style}.css" title="{$style|capitalize}"/>
+		<link rel="{if $style neq $pref_style}alternate {/if}stylesheet" type="text/css" href="{$smarty.const.KU_WEBFOLDER}css/sitemenu_{$style}.css" title="{$style|capitalize}" />
 	{/foreach}
+
 {else}
 	{literal}<style type="text/css">body { margin: 0px; } h1 { font-size: 1.25em; } h2 { font-size: 0.8em; font-weight: bold; color: #CC3300; } ul { list-style-type: none; padding: 0px; margin: 0px; } li { font-size: 0.8em; padding: 0px; margin: 0px; }</style>{/literal}
 {/if}
@@ -30,31 +32,17 @@ var ku_boardspath = '{$smarty.const.KU_BOARDSPATH}';
 		window.location = '{$smarty.const.KU_BOARDSPATH}/{$files.1}';
 	}
 {/if}
-
-function showstyleswitcher() {
-		var switcher = document.getElementById('sitestyles');
-		switcher.innerHTML = '{strip}
-		{if $smarty.const.KU_MENUSTYLESWITCHER && $smarty.const.KU_MENUTYPE eq 'normal'}
-			{t}Styles{/t}:
-			{foreach $styles as $style}
-				[<a href="#" onclick="javascript:Styles.change(\'{$style|capitalize}\', false, true);reloadmain();" style="display: inline;" target="_self">{$style|upper|truncate:1:""}</a>]{if !$style@last} {/if}
-			{/foreach}
-		{/if}
-		{/strip}';
-
-}
 {literal}
-function toggle(button, area) {
-	var tog=document.getElementById(area);
-	if(tog.style.display)	{
-		tog.style.display="";
-	} else {
-		tog.style.display="none";
-	}
-	button.innerHTML=(tog.style.display)?'+':'&minus;';
-	set_cookie('nav_show_'+area, tog.style.display?'0':'1', 30);
+function toggle(label, area) {
+	let span = label.children[0]
+	console.log(span)
+	let show = !document.getElementById(label.getAttribute('for')).checked
+	if (show)
+		span.textContent = '-'
+	else 
+		span.textContent = '+'
+	set_cookie('nav_show_'+area, show ? '1' : '0', 30);
 }
-
 function removeframes() {
 	var boardlinks = document.getElementsByTagName("a");
 	for(var i=0;i<boardlinks.length;i++) if(boardlinks[i].className == "boardlink") boardlinks[i].target = "_top";
@@ -117,18 +105,31 @@ function iter_obj(object, callback) {
 <body>
 <h1><a href="{$smarty.const.KU_WEBFOLDER}" target="_top" title="{t}Front Page{/t}">{$smarty.const.KU_NAME}</a></h1>
 <ul>
-{if $showdirs eq 0}
-	<li><a onclick="javascript:showdirs();" href="{$files.1}" target="_self">[{t}Show Directories{/t}]</a></li>
-{else}
-	<li><a onclick="javascript:hidedirs();" href="{$files.0}" target="_self">[{t}Hide Directories{/t}]</a></li>
-{/if}
+<script>document.write('{strip}
+	{if $showdirs eq 0}
+		<li><a onclick="javascript:showdirs();" href="{$files.1}" target="_self">[{t}Show Directories{/t}]</a></li>
+	{else}
+		<li><a onclick="javascript:hidedirs();" href="{$files.0}" target="_self">[{t}Hide Directories{/t}]</a></li>
+	{/if}
+{/strip}')</script>
 {if $smarty.const.KU_MENUSTYLESWITCHER && $smarty.const.KU_MENUTYPE eq 'normal'}
-	<li id="sitestyles"><a onclick="javascript:showstyleswitcher();" href="#" target="_self">[{t}Site Styles{/t}]</a></li>
+	<li id="sitestyles">
+		<label for="showstyleswitcher" class="pseudo-link">[{t}Site Styles{/t}]</label>
+		<input type="checkbox" id="showstyleswitcher">
+		<div id="style_switcher">
+			{t}Styles{/t}:
+			{foreach $styles as $style}
+				[<a href="/setstylesheet.php?site=1&style={$style|capitalize}" onclick="javascript:Styles.change('{$style|capitalize}', false, true);reloadmain();return false;" style="display: inline;" target="_self">{$style|upper|truncate:1:""}</a>]{if !$style@last} {/if}
+			{/foreach}
+		</div>
+	</li>
 {/if}
 {* if $smarty.const.KU_MENUTYPE eq 'normal'}
 	<li id="removeframes"><a href="#" onclick="javascript:return removeframes();" target="_self">[{t}Remove Frames{/t}]</a></li>
 {/if *}
-<li id="refreshnewposts"><a href="#" onclick="javascript:updatenewpostscount();return false" target="_self">Обновить</a></li>
+<script>document.write('{strip}
+	<li id="refreshnewposts"><a href="#" onclick="javascript:updatenewpostscount();return false" target="_self">Обновить</a></li>
+{/strip}')</script>
 </ul>
 {if empty($boards)}
 	<ul>
@@ -144,11 +145,14 @@ function iter_obj(object, callback) {
 			<h2 style="display: inline;"><br />
 		{/if}
 		{if $smarty.const.KU_MENUTYPE eq 'normal'}
-			<span class="plus" onclick="toggle(this, '{$sect.abbreviation}');" title="{t}Click to show/hide{/t}">{if $sect.hidden eq 1}+{else}&minus;{/if}</span>&nbsp;
+			<label for="toggle_{$sect.abbreviation}" onclick="toggle(this, '{$sect.abbreviation}');">
+				<span class="plus" title="{t}Click to show/hide{/t}">{if $sect.hidden eq 1}+{else}&minus;{/if}</span>&nbsp;
+			</label>
 		{/if}
 		{$sect.name}</h2>
 		{if $smarty.const.KU_MENUTYPE eq 'normal'}
-			<div id="{$sect.abbreviation}"{if $sect.hidden eq 1} style="display: none;"{/if}>
+			<input type="checkbox" id="toggle_{$sect.abbreviation}" class="menu-checkbox" {if $sect.hidden eq 0} checked{/if}>
+			<div id="{$sect.abbreviation}">
 		{/if}
 		<ul>
 		{if count($sect.boards) > 0}
@@ -188,6 +192,15 @@ function iter_obj(object, callback) {
 $(document).ready(function() {
 	updatenewpostscount();
 	$('#refreshnewposts').click(updatenewpostscount);
+	$('.menu-checkbox').each(function() {
+		var sect = this.id.split('toggle_')[1]
+		, userCookie = getCookie('nav_show_'+sect)
+		, show = (userCookie!=='')
+			? !!(+userCookie)
+			: this.checked
+		this.checked = show
+		$('label[for="'+this.id+'"] span').text(show ? '-' : '+')
+	})
 })</script>
 </body>
 </html>

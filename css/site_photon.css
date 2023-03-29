@@ -4,15 +4,17 @@ html, body {
 	font-size: 90%;
 	font-family: "Trebuchet MS",Trebuchet,serif;
 }
-a {
+a, a:visited, .pseudo-link {
 	color: #FF6600;
+}
+a:hover, .pseudo-link:hover {
+	color: #0066FF;
+}
+.pseudo-link {
+	cursor: pointer;
 }
 h3{
 	float:center;
-}
-
-a:hover {
-	color: #0066FF;
 }
 .logo {
 	clear:both;

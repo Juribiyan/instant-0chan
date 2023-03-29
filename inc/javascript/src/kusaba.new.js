@@ -736,6 +736,7 @@ if(style_cookie) Styles.decide();
 
 var HiddenItems = {
   init: function() {
+    if (typeof this_board_dir == 'undefined') return;
     this.hideCompletely = localStorage['hideCompletely.'+this_board_dir]=='true'
     ;['posts', 'threads'].forEach(kind => {
       let ls = localStorage[`hidden${_.capitalize(kind)}`]
