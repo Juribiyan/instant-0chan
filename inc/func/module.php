@@ -26,7 +26,7 @@
 function hook_process($hookname, $data) {
 	global $hooks;
 
-	if (is_array($hooks[$hookname])) {
+	if (is_array(@$hooks[$hookname])) {
 		foreach ($hooks[$hookname] as $hook) {
 			$data = module_call_function($hook, 'process_' . $hookname, $data);
 		}

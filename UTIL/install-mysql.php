@@ -189,7 +189,6 @@ Before running this script, make sure that:<br />
 		require_once KU_ROOTDIR . 'inc/func/fetching.php';
 		require_once KU_ROOTDIR . 'inc/func/numberformatting.php';
 		require_once KU_ROOTDIR . 'inc/classes/board-post.class.php';
-		require_once KU_ROOTDIR.'lib/dwoo.php';
 		$ft_query .= implode(', ', $ft_rows);
 		$tc_db->Execute($ft_query);
 		foreach($allboards as $line) {

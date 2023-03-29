@@ -24,7 +24,7 @@
  * @package kusaba
  */
 
-include KU_ROOTDIR . 'inc/func/apc.php';
+include KU_ROOTDIR . 'inc/func/yac.php';
 include KU_ROOTDIR . 'inc/func/calculations.php';
 include KU_ROOTDIR . 'inc/func/directories.php';
 include KU_ROOTDIR . 'inc/func/encryption.php';

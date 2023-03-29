@@ -1,12 +1,12 @@
 <?php
 function getBlotter($all = false) {
-	global $tc_db;
+	global $tc_db, $yac;
 
-	if (KU_APC) {
+	if (I0_YAC) {
 		if ($all) {
-			$cache_blotter = apc_fetch('blotter|all');
+			$cache_blotter = $yac->get('blotter|all');
 		} else {
-			$cache_blotter = apc_fetch('blotter|last4');
+			$cache_blotter = $yac->get('blotter|last4');
 		}
 		if ($cache_blotter !== false) {
 			return $cache_blotter;
@@ -30,9 +30,9 @@ function getBlotter($all = false) {
 			} elseif (!$all) {
 				$output .= '<li class="blotterentry" style="display: none;">' . "\n";
 				if ($line['important'] == 1) {
-					$output .= '	<span style="color: red;">' . "\n" . '	';
+					$output .= '  <span style="color: red;">' . "\n" . '  ';
 				}
-				$output .= '	';
+				$output .= '  ';
 			}
 			$output .= date('m/d/y', $line['at']) . ' - ' . $line['message'];
 			if ($all && $line['important'] == 1) {
@@ -40,7 +40,7 @@ function getBlotter($all = false) {
 			} elseif (!$all) {
 				$output .= "\n";
 				if ($line['important'] == 1) {
-					$output .= '	</span>' . "\n";
+					$output .= '  </span>' . "\n";
 				}
 				$output .= '</li>';
 			} else {
@@ -53,11 +53,11 @@ function getBlotter($all = false) {
 		}
 	}
 
-	if (KU_APC) {
+	if (I0_YAC) {
 		if ($all) {
-			apc_store('blotter|all', $output);
+			$yac->set('blotter|all', $output);
 		} else {
-			apc_store('blotter|last4', $output);
+			$yac->set('blotter|last4', $output);
 		}
 	}
 
@@ -79,30 +79,16 @@ function getBlotterLastUpdated() {
 function getfiletypeinfo($filetype) {
 	global $tc_db;
 
-	$return = '';
-	if (KU_APC) {
-		$return = apc_fetch('filetype|' . $filetype);
-	}
+	$key = 'filetype|' . $filetype;
+	if ($r = cache_get($key)) return $r;
 
-	if ($return != '') {
-		return unserialize($return);
-	}
+	$qr = $tc_db->GetAll("SELECT `image`, `image_w`, `image_h` FROM `" . KU_DBPREFIX . "filetypes` WHERE `filetype` = " . $tc_db->qstr($filetype) . " LIMIT 1");
+	$r = (count($qr) > 0)
+		? array($qr[0]['image'],$qr[0]['image_w'],$qr[0]['image_h'])
+		: array('*',0,0); /* No info was found, return the generic icon */
+	cache_set($key, $r);
 
-	$results = $tc_db->GetAll("SELECT `image`, `image_w`, `image_h` FROM `" . KU_DBPREFIX . "filetypes` WHERE `filetype` = " . $tc_db->qstr($filetype) . " LIMIT 1");
-	if (count($results) > 0) {
-		foreach($results AS $line) {
-			$return = array($line['image'],$line['image_w'],$line['image_h']);
-		}
-	} 
-	else { /* No info was found, return the generic icon */
-		$return = array('*',0,0);
-	}
-
-	if (KU_APC) {
-		apc_store('filetype|' . $filetype, serialize($return), 600);
-	}
-
-	return $return;
+	return $r;
 }
 
 /**
@@ -117,8 +103,7 @@ function group_embeds($r, $group_deleted_files = false) {
 	$rg = array();
 	$i = -1;
 	$current_id = 0;
-
-	foreach($r as $pe) {
+	if ($r) foreach($r as $pe) {
 		$id = (int)$pe['id'];
 		if ($id !== $current_id) {
 			$rg []= $pe;
@@ -138,10 +123,10 @@ function group_embeds($r, $group_deleted_files = false) {
 			unset($rg[$i]['spoiler']);
 			$current_id = $id;
 		}
-		if ($pe['file']) {
+		if (@$pe['file']) {
 			if ($group_deleted_files) {
 				if ($pe['file'] == 'removed') {
-					if ($rg[$i]['deleted_files']) {
+					if (@$rg[$i]['deleted_files']) {
 						$rg[$i]['deleted_files']++;
 					}
 					else {
@@ -169,28 +154,28 @@ function group_embeds($r, $group_deleted_files = false) {
 }
 
 function GetFileAndThumbs($file) {
-  $res = array();
-  if (strpos($file['file_size_formatted'], ':') == false) {
-    $res []= '/src/'.$file['file'].'.'.$file['file_type'];
-    $res []= '/thumb/'.$file['file'].'s.'.$file['file_type'];
-    $res []= '/thumb/'.$file['file'].'c.'.$file['file_type'];
-    if ($file['file_type'] == 'mp3') {
-      $res []= '/thumb/'.$file['file'].'s.jpg';
-      $res []= '/thumb/'.$file['file'].'s.png';
-      $res []= '/thumb/'.$file['file'].'s.gif';
-      $res []= '/thumb/'.$file['file'].'c.jpg';
-      $res []= '/thumb/'.$file['file'].'c.png';
-      $res []= '/thumb/'.$file['file'].'c.gif';
-    }
-    if ($file['file_type'] == 'webm' || $file['file_type'] == 'mp4') {
-      $res []= '/thumb/'.$file['file'].'s.jpg';
-      $res []= '/thumb/'.$file['file'].'c.jpg';
-    }
-  }
-  else { //if embed
-    $res []= '/thumb/'.$file['file_type'].'-'.$file['file'].'-'.'s.jpg';
-    $res []= '/thumb/'.$file['file_type'].'-'.$file['file'].'-'.'c.jpg';
-  }
-  return $res;
+	$res = array();
+	if (strpos($file['file_size_formatted'], ':') == false) {
+		$res []= '/src/'.$file['file'].'.'.$file['file_type'];
+		$res []= '/thumb/'.$file['file'].'s.'.$file['file_type'];
+		$res []= '/thumb/'.$file['file'].'c.'.$file['file_type'];
+		if ($file['file_type'] == 'mp3') {
+			$res []= '/thumb/'.$file['file'].'s.jpg';
+			$res []= '/thumb/'.$file['file'].'s.png';
+			$res []= '/thumb/'.$file['file'].'s.gif';
+			$res []= '/thumb/'.$file['file'].'c.jpg';
+			$res []= '/thumb/'.$file['file'].'c.png';
+			$res []= '/thumb/'.$file['file'].'c.gif';
+		}
+		if ($file['file_type'] == 'webm' || $file['file_type'] == 'mp4') {
+			$res []= '/thumb/'.$file['file'].'s.jpg';
+			$res []= '/thumb/'.$file['file'].'c.jpg';
+		}
+	}
+	else { //if embed
+		$res []= '/thumb/'.$file['file_type'].'-'.$file['file'].'-'.'s.jpg';
+		$res []= '/thumb/'.$file['file_type'].'-'.$file['file'].'-'.'c.jpg';
+	}
+	return $res;
 }
 ?>

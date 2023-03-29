@@ -23,26 +23,20 @@
 class RSS {
 	function GenerateRSS($rssboard, $rssboardid) {
 		if (isset($rssboard)) {
-			global $tc_db;
-			require_once KU_ROOTDIR.'lib/dwoo.php';
-			$dwoo = new Dwoo();
-			$dwoo_data = new Dwoo_Data();
+			global $tc_db, $smarty;
 			$posts = $tc_db->GetAll("SELECT * FROM `".KU_DBPREFIX."posts` WHERE `boardid` = " . $rssboardid . " AND `IS_DELETED` = '0' ORDER BY `id` DESC LIMIT 15");
-			$dwoo_data->assign('posts', $posts);
-			$dwoo_data->assign('boardname', $rssboard);
-			$rss = $dwoo->get(KU_TEMPLATEDIR . '/rss_board.tpl', $dwoo_data);
+			$smarty->assign('posts', $posts);
+			$smarty->assign('boardname', $rssboard);
+			$rss = $smarty->fetch('rss_board.tpl');
 		}
 		return $rss;
 	}
 
 	function GenerateModLogRSS() {
-		global $tc_db;
-		require_once KU_ROOTDIR.'lib/dwoo.php';
-		$dwoo = new Dwoo();
-		$dwoo_data = new Dwoo_Data();
+		global $tc_db, $smarty;
 		$entries = $tc_db->GetAll("SELECT * FROM `".KU_DBPREFIX."modlog` ORDER BY `timestamp` DESC LIMIT 15");
-		$dwoo_data->assign('entries', $entries);
-		$rss = $dwoo->get(KU_TEMPLATEDIR . '/rss_mod.tpl', $dwoo_data);
+		$smarty->assign('entries', $entries);
+		$rss = $smarty->fetch('rss_mod.tpl');
 
 		return($rss);
 	}

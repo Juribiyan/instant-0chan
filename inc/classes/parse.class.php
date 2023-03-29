@@ -227,7 +227,7 @@ class Parse {
 		return '<span class="'.$class.'">'.$matches[1].' '.$matches[3].'</span>';
 	}
 
-	function ClickableQuote($buffer, $board, $parentid, $boardid, $ispage = false) {
+	function ClickableQuote($buffer, $board, $parentid, $boardid) {
 		global $thread_board_return;
 		$thread_board_return = $board;
 		$thread_board_id = $boardid;
@@ -248,7 +248,7 @@ class Parse {
 	}
 
 	function InterthreadProofLabel($matches) {
-		global $tc_db, $ispage, $thread_board_return, $thread_board_id;
+		global $tc_db, $thread_board_return, $thread_board_id;
 
 		if (in_array(strtoupper($matches[1]), array('OP', 'ОП'))) 
 			$matches[1] = $this->parentid;
@@ -435,7 +435,7 @@ class Parse {
 		return $ret;
 	}
 
-	function ParsePost($message, $board, $parentid, $boardid, $ispage = false, $useragent, $dice, $ipmd5) {
+	function ParsePost($message, $board, $parentid, $boardid, $useragent, $dice, $ipmd5) {
 		$this->parentid = $parentid;
 		$this->boardid = $boardid;
 		$this->boardname = $board;
@@ -450,17 +450,17 @@ class Parse {
 		if ($matches && $matches[1])
 			$summary = htmlspecialchars($matches[1]);
 
-		$message = $this->ParsePostFragment($before_cut, $board, $parentid, $boardid, $ispage = false, $useragent, $dice, $ipmd5);
+		$message = $this->ParsePostFragment($before_cut, $board, $parentid, $boardid, $useragent, $dice, $ipmd5);
 		if ($after_cut) {
 			if (!$summary)
 				$summary = _gettext('Read more').'...';
-			$message .= '<details><summary class="read-more"><span class="xlink">'.$summary.'</span></summary>'.$this->ParsePostFragment($after_cut, $board, $parentid, $boardid, $ispage = false, $useragent, $dice, $ipmd5).'</details>';
+			$message .= '<details><summary class="read-more"><span class="xlink">'.$summary.'</span></summary>'.$this->ParsePostFragment($after_cut, $board, $parentid, $boardid, $useragent, $dice, $ipmd5).'</details>';
 		}
 
 		return $message;
 	}
 
-	function ParsePostFragment($message, $board, $parentid, $boardid, $ispage = false, $useragent, $dice, $ipmd5) {
+	function ParsePostFragment($message, $board, $parentid, $boardid, $useragent, $dice, $ipmd5) {
 		if(KU_CUTPOSTS) {
 			$message = $this->CutWord($message, (KU_LINELENGTH / 15));
 		}
@@ -474,7 +474,7 @@ class Parse {
 			$message = $this->SaysThinks($message);
 		}
 
-		$message = $this->ClickableQuote($message, $board, $parentid, $boardid, $ispage);
+		$message = $this->ClickableQuote($message, $board, $parentid, $boardid);
 		$message = $this->ColoredQuote($message);
 
 		$message = str_replace("\n", '<br />', $message);

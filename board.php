@@ -89,6 +89,9 @@ class PolymorphicReporter {
 		$this->itemtype = $itemtype;
 		$this->id = $id;
 		$this->is_ajax = $is_ajax;
+		// Lines below are entirely useless just like PHP8
+		$this->special_error = false;
+		$this->action = 'unset';
 	}
 
 	function fail($msg="", $special_error=false) {
@@ -143,9 +146,8 @@ if (isset($_POST['board']) || isset($_GET['board'])) $_POST['board'] = (isset($_
 
 // If the script was called using a board name:
 if (isset($_POST['board'])) {
-	if ($_POST['board'] == I0_OVERBOARD_DIR)
-		$is_overboard = true;
-	else {
+	$is_overboard = ($_POST['board'] == I0_OVERBOARD_DIR);
+	if (!$is_overboard) {
 		$board_name = $tc_db->GetOne("SELECT `name` FROM `" . KU_DBPREFIX . "boards` WHERE `name` = " . $tc_db->qstr($_POST['board']) . "");
 		if ($board_name !== false) {
 			$board_class = new Board($board_name);
@@ -236,7 +238,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 			exitWithErrorPage(_gettext('Sorry, this thread is locked and can not be replied to.'));
 		}
 
-		$post_message = $parse_class->ParsePost($_POST['message'], $board_class->board['name'], $thread_replyto, $board_class->board['id'], false, $ua, $dice, $posting_class->user_id_md5);
+		$post_message = $parse_class->ParsePost($_POST['message'], $board_class->board['name'], $thread_replyto, $board_class->board['id'], $ua, $dice, $posting_class->user_id_md5);
 	// Or, if they are a moderator/administrator...
 	} 
 	else {
@@ -252,7 +254,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 		// Otherwise, parse it as usual...
 		} 
 		else {
-			$post_message = $parse_class->ParsePost($_POST['message'], $board_class->board['name'], $thread_replyto, $board_class->board['id'], false, $ua, $dice, $posting_class->user_id_md5);
+			$post_message = $parse_class->ParsePost($_POST['message'], $board_class->board['name'], $thread_replyto, $board_class->board['id'], $ua, $dice, $posting_class->user_id_md5);
 			// (Moved) check against blacklist and detect flood
 		}
 		// $timer->mark('03_parsed');
@@ -348,11 +350,7 @@ if (isset($_POST['makepost'])) { // A more evident way to identify post action, 
 					!file_exists(KU_BOARDSDIR . $board_class->board['name'] . '/src/' . $attachment['file_name'] . $attachment['file_type'])
 					||
 					(
-						(
-							!isset($attachment['file_is_special'])
-							||
-							!$attachment['file_is_special']
-						)
+						@!$attachment['file_is_special']
 						&&
 						!(
 							file_exists(KU_BOARDSDIR . $board_class->board['name'] . '/thumb/' . $attachment['file_name'] . 's' . $thumbfiletype)
@@ -589,13 +587,13 @@ elseif (
 
 	// Check rights
 	$pass = (isset($_POST['postpassword']) && $_POST['postpassword']!="") ? $_POST['postpassword'] : null;
-	$ismod = !!$_POST['moddelete'];
+	$ismod = @$_POST['moddelete'];
 	if ($ismod) {
 		require_once KU_ROOTDIR . 'inc/classes/manage.class.php';
 		$_POST['deletepost'] = true; // required to allow mod deleting multiple posts without AJAX
 	}
 	$isop = ( 
-		$_POST['opdelete']
+		@$_POST['opdelete']
 		&&
 		$board_class->board['opmod']=='1'
 	);
@@ -621,7 +619,7 @@ elseif (
 			$post_action->fail(_gettext('No board provided'));
 		else {
 			$b_class = $board_class;
-			$ismod = $ismod && Manage::CurrentUserIsModeratorOfBoard($b_class->board['name'], $_SESSION['manageusername']);
+			$ismod = $ismod && isset($_SESSION['manageusername']) && Manage::CurrentUserIsModeratorOfBoard($b_class->board['name'], $_SESSION['manageusername']);
 		}
 		if (!isset($pages_to_regenerate[$b_class->board['name']]))
 			$pages_to_regenerate[$b_class->board['name']] = array();
@@ -840,7 +838,7 @@ elseif (
 	}
 	// File deleting
 	if (isset($_POST['delete-file'])) foreach($_POST['delete-file'] as $val) {
-		list($file, $post_brd) = explode(':', $val);
+		@list($file, $post_brd) = explode(':', $val);
 		$file_action = new PolymorphicReporter('file', $file, (boolean)$_POST['AJAX']);
 		$file_action->action = 'delete-file';
 		if ($is_overboard || ($post_brd!==NULL && $board_class->board['name'] != $post_brd)) { // is external board
@@ -872,13 +870,13 @@ elseif (
 				'id' => $file
 			);
 			$file_action->succ(_gettext('Image successfully deleted from your post.'));
-			if (! $fdres['already_deleted']) {
+			if (! @$fdres['already_deleted']) {
 				if (! in_array($room_id, $threads_to_regenerate)) {
 					$threads_to_regenerate []= $room_id;
 				}
 				$page = $b_class->GetPageNumber($fdres['parentid'])['page'];
 				if (
-					!is_array($pages_to_regenerate[$b_class->board['name']]) 
+					!is_array(@$pages_to_regenerate[$b_class->board['name']]) 
 					|| 
 					!in_array($page, $pages_to_regenerate[$b_class->board['name']])
 				) {

@@ -1,7 +1,7 @@
 <?php
 /*
 	This script lets you choose what languages will be displayed in post box dropdown list.
-	It generates code for /dwoo/templates/board_post_box.tpl (.code_markup_select) and also parse.class.php ($geshi_langs)
+	It generates code for /smarty/templates/board_post_box.tpl (.code_markup_select) and also parse.class.php ($geshi_langs)
 
 	Usage: copy to root directory, select languages you want, press 'GET CODE', see generated code in the console.
 */

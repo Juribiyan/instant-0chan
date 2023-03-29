@@ -29,18 +29,19 @@ if (!headers_sent()) {
 }
 
 $cf = array();
+// $config_start = microtime(true); // Uncomment this and below statements to see the staggering 0.15 microseconds of time saved by caching the configuration
 
 // Caching (this needs to be set at the start because if enabled, it skips the rest of the configuration process)
-	$cf['KU_APC'] = false;
+$cf['I0_YAC'] = true;
+$cf['I0_YAC_PREFIX'] = 'i0:';
 
-$cache_loaded = false;
-if ($cf['KU_APC']) {
-	if (apc_load_constants('config')) {
-		$cache_loaded = true;
-	}
+// ------------ Loading config from cache ------------
+if ($cf['I0_YAC']) {
+	$yac = new Yac($cf['I0_YAC_PREFIX']);
+	$cached_config = $yac->get("config");
 }
 
-if (!$cache_loaded) {
+if (!@$cached_config) {
 	// ----------------------------------- Basic credentials ------------------------------------
 		$cf['KU_NAME']       = 'Øchan'; // The name of your site
 		$cf['KU_SLOGAN']     = '<em>Oops! Divided by zero!</em>'; // Site slogan, set to nothing to disable its display
@@ -94,7 +95,7 @@ if (!$cache_loaded) {
 	// ---------------------------------- Userboards (aka 2.0) ----------------------------------
 		$cf['KU_20_BOARDSLIMIT'] = 5;	// How many 2.0 boards a user can create
 		$cf['KU_20_CLOUDTIME'] = "-24 hours";
-		$cf['I0_20_LINK'] = "/?p-2.0"; // A link yo 2.0 boards page. "/?p-2.0" (default) will work with default index page; try "/register" if you use a custom index page
+		$cf['I0_20_LINK'] = "/?p=2.0"; // A link yo 2.0 boards page. "/?p=2.0" (default) will work with default index page; try "/register" if you use a custom index page
 		$cf['KU_20MAXLOGINPASS'] = 50; // Maximum login and password size for 2.0
 	
 
@@ -153,7 +154,8 @@ if (!$cache_loaded) {
 
 
 	// ---------------------------------- Attachment handling -----------------------------------
-		$cf['KU_FFMPEGPATH'] = '/usr/local/bin/ffmpeg'; //path to FFMPEG, on windows it's usually 'C:\ffmpeg\bin' (REQUIRED for videos)
+		$cf['KU_FFMPEGPATH'] = 'C:\Program Files\ffmpeg\bin'; //path to FFMPEG, on windows it's usually 'C:\Program Files\ffmpeg\bin\' (REQUIRED for videos)
+		$cf['KU_MAGICKPATH'] = 'C:\Program Files\ImageMagick-7.1.0-Q16-HDRI'; //path to imagemagick
 		$cf['KU_YOUTUBE_APIKEY'] = 'your_api_key'; //Your personal anal probe ID. Can be obtained it Google Dev. Console
 		$cf['I0_YOUTUBE_DL_PATH'] = ''; // Path to youtube-dl binary. If not empty, youtube-dl will be used instead of default API (in this case you won't need KU_YOUTUBE_APIKEY)
 		$cf['KU_THUMBWIDTH']       = 200; 	// Maximum thumbnail width
@@ -164,7 +166,15 @@ if (!$cache_loaded) {
 		$cf['KU_CATTHUMBWIDTH']    = 50; 		// Maximum thumbnail width (catalog)
 		$cf['KU_CATTHUMBHEIGHT']   = 50; 		// Maximum thumbnail height (catalog)
 		$cf['KU_FILESIZE_METHOD']  = 'sum'; // Method to use when determining the post file size limit. If it is set to 'sum', limit will be applied to the sum of all files in the post. Otherwise, if it is set to 'single', limit will be applied to each file separately.
+
 		$cf['KU_THUMBMETHOD']      = 'gd'; 	// Method to use when thumbnailing images in jpg, gif, or png format.  Options available: gd, imagemagick, ffmpeg
+		// Options below temporarily have no effect. Not implemented yet
+		// Thumbnailing methods for images: the engine will try to make a thumbnail using every enabled method in sequential order
+		// $cf['KU_USE_GD'] 					 = false; 	// Whether or not GD should be used for thumbnailing
+		// $cf['KU_USE_IMAGICK'] 		 = false; 	// Whether or not Imagemagick should be used for thumbnailing
+		// $cf['KU_USE_FFMPEG'] 			 = true; 	// Whether or not FFMpeg should be used for thumbnailing images
+		// $cf['KU_WEBP_THUMBNAILS']	 = true;	// Whether or not all thumbnails should be in WebP format (supported by all modern browsers); If false, png, gif and jpg images will have thumbnails of native format; video thumbnails will be jpg
+
 		$cf['KU_ANIMATEDTHUMBS']   = false; // Whether or not to allow animated thumbnails (only applies if using ffmpeg or imagemagick)
 		$cf['KU_USEOPTIPNG']       = false; // Whether or not to use optipng for PNG thumbnails optimization. Suitable only when useing imagemagick or ffmpeg
 		$cf['KU_OPTIPNGLV']        = '2'; 	// Optipng optimization level, from 1 (fastest) to 7 (slowest)
@@ -177,7 +187,7 @@ if (!$cache_loaded) {
 		$cf['KU_ALLOWREAD'] = false; // Enable banning from reading (only works on Apache)
 		$cf['I0_CURL_PROXY'] = false; // Proxy to use when fetching external resources, for example 'socks5h://127.0.0.1:9050' — to connect through TOR
 		$cf['KU_USE_GESHI']  = false;	//Use original code highlighter from 0chan.ru like the cargo cultist you are
-		$cf['KU_DISCLAIMER'] = false; // Whether or not a disclaimer (/dwoo/templates/disclaimer.tpl) should be displayed for new visitors.
+		$cf['KU_DISCLAIMER'] = false; // Whether or not a disclaimer (/smarty/templates/disclaimer.tpl) should be displayed for new visitors.
 		$cf['I0_ENABLE_PUBLIC_MODLOG'] = true; // If set to false, users won't be able to view the modlog
 		$cf['KU_MODLOGDAYS'] = 7; 		// Days to keep modlog entries before removing them
 
@@ -261,15 +271,11 @@ if (!$cache_loaded) {
 
 
 	// --------------------------------------- Templates ----------------------------------------
-		$cf['KU_TEMPLATEDIR']       = $cf['KU_ROOTDIR'] . 'dwoo/templates'; // Dwoo templates directory
-		$cf['KU_CACHEDTEMPLATEDIR'] = $cf['KU_ROOTDIR'] . 'dwoo/templates_c'; // Dwoo compiled templates directory.  This folder MUST be writable (you may need to chmod it to 755).  Set to '' to disable template caching
+		$cf['KU_TEMPLATEDIR'] = $cf['KU_ROOTDIR'] . 'smarty/templates'; // Smarty templates directory
 
-
-	// -------------------------------- Post-config (do not modify) -----------------------------
 		require 'instance-config.php';
-		putenv('TZ='.$cf['KU_TIMEZONE']); 
 
-		$cf['KU_VERSION']    = '0.9.3';
+		$cf['KU_VERSION']    = '2.0.0';
 		$cf['KU_TRIPS']      = serialize($cf['KU_TRIPS']);
 		$cf['KU_LINELENGTH'] = $cf['KU_LINELENGTH'] * 15;
 
@@ -281,14 +287,21 @@ if (!$cache_loaded) {
 		$cf['KU_BOARDSPATH'] = rtrim($cf['KU_BOARDSPATH'], '/');
 		$cf['KU_CGIPATH'] = rtrim($cf['KU_CGIPATH'], '/');
 
-		if ($cf['KU_APC']) {
-			apc_define_constants('config', $cf);
+		if ($cf['I0_YAC']) {
+			$yac->set('config', $cf);
 		}
-		foreach ($cf as $key => $value) {
-			define($key, $value);
-		}
-		unset($cf);
-};
+		// echo 'Parsed config in '.(microtime(true) - $config_start);
+}
+else {
+	$cf = $cached_config;
+	// echo 'Loaded config in '.(microtime(true) - $config_start);
+}
+// -------------------------------- Post-config (do not modify) -----------------------------
+putenv('TZ='.$cf['KU_TIMEZONE']); 
+foreach ($cf as $key => $value) {
+	define($key, $value);
+}
+unset($cf);
 
 // DO NOT MODIFY BELOW THIS LINE UNLESS YOU KNOW WHAT YOU ARE DOING OR ELSE BAD THINGS MAY HAPPEN
 $modules_loaded = array();
@@ -297,8 +310,9 @@ if (in_array('CHANGEME', $required) || in_array('', $required)){
 	echo 'You must set KU_ROOTDIR and KU_WEBFOLDER before installation will finish!';
 	die();
 }
-require KU_ROOTDIR . 'lib/gettext/gettext.inc.php';
-require KU_ROOTDIR . 'lib/adodb/adodb.inc.php';
+
+require KU_ROOTDIR . 'lib/vendor/autoload.php';
+require KU_ROOTDIR . 'lib/faketext/gettext.inc.php';
 
 // Gettext
 _textdomain('kusaba');
@@ -369,6 +383,21 @@ if (!isset($tc_db) && !isset($preconfig_db_unnecessary) && (!isset($GLOBALS['ski
 
 		unset($results_events, $line_events);
 	}
+}
+
+// use Smarty\Smarty;
+
+class _Smarty extends Smarty {
+  public function __construct()
+  {
+    parent::__construct();
+
+    $this->addPluginsDir(KU_ROOTDIR.'lib/smarty-faketext');
+    $this->setTemplateDir(KU_TEMPLATEDIR);
+    $this->muteUndefinedOrNullWarnings(); // Eat shit PHP devs
+    $this->setCompileDir(KU_ROOTDIR.'smarty/templates_c');
+    $this->setCacheDir(KU_ROOTDIR.'smarty/cache');
+  }
 }
 
 

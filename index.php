@@ -49,7 +49,7 @@ $body = 'pages/contents/'.$page['body'].'.php';
 	<title><?php echo $title;?></title>
     <?php include($pattern);?>
 	<link href="/pages/index.css?v=<?php echo KU_CSSVER?>" media="all" rel="stylesheet" type="text/css">
-	<script src="/lib/javascript/jquery-1.11.1.min.js"></script>
+	<script src="/lib/javascript/jquery-3.6.3.min.js"></script>
     <script src="/lib/javascript/lodash.min.js"></script>
 	<script src="/pages/index.js?v=<?php echo KU_JSVER?>"></script>
 </head>

@@ -7,8 +7,9 @@ if (!isset($_GET['info'])) {
 }
 require 'config.php';
 $menufile = (KU_STATICMENU) ? 'menu.html' : 'menu.php';
-$menusize = (KU_MENUTYPE == 'normal') ? '15%' : '10%';
+$menusize = (KU_MENUTYPE == 'normal') ? '15' : '10';
 $mainsize = 100-$menusize . '%';
+$menusize = $menusize . '%';
 header("Expires: Mon, 1 Jan 2030 05:00:00 GMT");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

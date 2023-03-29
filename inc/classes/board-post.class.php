@@ -44,17 +44,11 @@ class Board {
 	 */
 	var $archive_dir;
 	/**
-	 * Dwoo class
+	 * Smarty class
 	 *
-	 * @var class Dwoo
+	 * @var class Smarty
 	 */
-	var $dwoo;
-	/**
-	 * Dwoo data class
-	 *
-	 * @var class Dwoo
-	 */
-	var $dwoo_data;
+	var $smarty;
 	/**
 	 * Load balancer class
 	 *
@@ -153,6 +147,9 @@ class Board {
 		$this->RegeneratePages();
 		if (I0_DEFERRED_RENDER) {
 			RemoveFiles(KU_BOARDSDIR.$this->board['name'].'/res/*.html');
+			if (!file_exists(KU_BOARDSDIR.$this->board['name'].'/index.php')) {
+				file_put_contents(KU_BOARDSDIR.$this->board['name'].'/index.php', '<?php header(\'Location: 0.html\'); exit();');
+			}
 		}
 		else {
 			$this->RegenerateThreads();
@@ -223,7 +220,7 @@ class Board {
 		}
 
 		$tc_db->SetFetchMode(ADODB_FETCH_ASSOC);
-		$this->InitializeDwoo();
+		$this->InitializeSmarty();
 
 		$skip_catalog = $this->board['enablecatalog'] == 0 || (I0_DEFERRED_RENDER && $on_demand!='catalog');
 
@@ -278,7 +275,7 @@ class Board {
 			if ($totalpages==0) {
 				$pages []= array();
 			}
-			$this->dwoo_data->assign('numpages', $totalpages-1);
+			$this->smarty->assign('numpages', $totalpages-1);
 			$rebuilt = 0;
 			foreach ($pages as $pagethreads) {
 				if (($page >= $from && $page <= $to) || in_array($page, $singles)) {
@@ -286,7 +283,7 @@ class Board {
 					// page must be rebuilt
 					$executiontime_start_page = microtime_float();
 					$newposts = array();
-					$this->dwoo_data->assign('thispage', $page);
+					$this->smarty->assign('thispage', $page);
 					foreach ($pagethreads as &$thread) {
 						// Get last posts to render →
 						$posts = $tc_db->GetAll("SELECT * FROM `".KU_DBPREFIX."postembeds`
@@ -348,10 +345,10 @@ class Board {
 						$postbox = $this->Postbox();
 						$postbox = str_replace("<!sm_threadid>", 0, $postbox);
 					}
-					$this->dwoo_data->assign('posts', $newposts);
-					$this->dwoo_data->assign('file_path', getCLBoardPath($this->board['name'], $this->board['loadbalanceurl_formatted'], ''));
+					$this->smarty->assign('posts', $newposts);
+					$this->smarty->assign('file_path', getCLBoardPath($this->board['name'], $this->board['loadbalanceurl_formatted'], ''));
 
-					$content = $this->dwoo->get(KU_TEMPLATEDIR . '/board_main_loop.tpl', $this->dwoo_data);
+					$content = $this->smarty->fetch('board_main_loop.tpl');
 					$footer = $this->Footer(false, (microtime_float() - $executiontime_start_page), false);
 					$content = $header.$postbox.$content.$footer;
 
@@ -564,12 +561,12 @@ class Board {
 		$posts[0]['images'] = $omitted_images;
 		// ← Calculate omitted posts and images
 
-		$this->dwoo_data->assign('locale', KU_LOCALE); // No idea why it can't be done in board.php 
-		$this->dwoo_data->assign('posts', array($posts));
-		$this->dwoo_data->assign('for_overboard', 1); // Indicate that this is overboard, for board_main_loop
-		$this->dwoo_data->assign('file_path', getCLBoardPath($this->board['name'], $this->board['loadbalanceurl_formatted'], ''));
+		$this->smarty->assign('locale', KU_LOCALE); // No idea why it can't be done in board.php 
+		$this->smarty->assign('posts', array($posts));
+		$this->smarty->assign('for_overboard', 1); // Indicate that this is overboard, for board_main_loop
+		$this->smarty->assign('file_path', getCLBoardPath($this->board['name'], $this->board['loadbalanceurl_formatted'], ''));
 		
-		$content = $this->dwoo->get(KU_TEMPLATEDIR . '/board_main_loop.tpl', $this->dwoo_data);
+		$content = $this->smarty->fetch('board_main_loop.tpl');
 		
 		$content = str_replace("\t", '',$content);
 		$content = str_replace("&nbsp;\r\n", '&nbsp;',$content);
@@ -593,17 +590,13 @@ class Board {
 			}
 			return;
 		}
-		$this->InitializeDwoo();
-		// require_once(KU_ROOTDIR."lib/dwoo.php");
-		// if (!isset($this->dwoo)) { $this->dwoo = New Dwoo(); $this->dwoo_data = new Dwoo_Data(); $this->InitializeDwoo(); }
-		// $embeds = Array();
+		$this->InitializeSmarty();
 		$numimages = 0;
 		$embeds = $tc_db->GetAll("SELECT * FROM `" . KU_DBPREFIX . "embeds`");
-		// $this->dwoo_data->assign('embeds', $embeds); //TODO: remove
 		foreach ($embeds as $embed) {
 			$this->board['filetypes'][] .= $embed['filetype'];
 		}
-		$this->dwoo_data->assign('filetypes', $this->board['filetypes']);
+		$this->smarty->assign('filetypes', $this->board['filetypes']);
 		if ($id == 0) {
 			// Build every thread
 			$header = $this->PageHeader(1);
@@ -639,66 +632,23 @@ class Board {
 			}
 
 			$header_replaced = $header ? str_replace("<!sm_threadid>", $id, $header) : $this->PageHeader($id);
-			$this->dwoo_data->assign('numimages', $numimages);
-			$this->dwoo_data->assign('isthread', true);
-			$this->dwoo_data->assign('posts', array($posts)); // Wrap the posts into array to keep unified structure with board page
-			$this->dwoo_data->assign('file_path', getCLBoardPath($this->board['name'], $this->board['loadbalanceurl_formatted'], ''));
+			$this->smarty->assign('numimages', $numimages);
+			$this->smarty->assign('isthread', true);
+			$this->smarty->assign('posts', array($posts)); // Wrap the posts into array to keep unified structure with board page
+			$this->smarty->assign('file_path', getCLBoardPath($this->board['name'], $this->board['loadbalanceurl_formatted'], ''));
 		 
 			if (!$postbox) {
 				$postbox = $this->Postbox($id);
 			}
 			$postbox_replaced = str_replace("<!sm_threadid>", $id, $postbox);
-			$reply   = $this->dwoo->get(KU_TEMPLATEDIR . '/board_reply_header.tpl', $this->dwoo_data);
-			$content = $this->dwoo->get(KU_TEMPLATEDIR . '/board_main_loop.tpl', $this->dwoo_data);
+			$reply   = $this->smarty->fetch('board_reply_header.tpl');
+			$content = $this->smarty->fetch('board_main_loop.tpl');
 			if (!isset($footer)) $footer = $this->Footer(false, (microtime_float() - $executiontime_start_thread), false);
 			$content = $header_replaced.$reply.$postbox_replaced.$content.$footer;
 
 			$content = str_replace("\t", '',$content);
 			$content = str_replace("&nbsp;\r\n", '&nbsp;',$content);
 			$this->PrintPage(KU_BOARDSDIR . $this->board['name'] . $this->archive_dir . '/res/' . $id . '.html', $content, $this->board['name']);
-			/*if (KU_FIRSTLAST) {
-
-				$replycount = (count($posts)-1);
-				if ($replycount > 50) {
-					$this->dwoo_data->assign('replycount', $replycount);
-					$this->dwoo_data->assign('modifier', "last50");
-
-					// Grab the last 50 replies
-					$posts50 = array_slice($posts, -50, 50);
-
-					// Add on the OP
-					array_unshift($posts50, $posts[0]);
-				 
-					$this->dwoo_data->assign('posts', $posts50);
-
-					$content = $this->dwoo->get(KU_TEMPLATEDIR . '/img_thread.tpl', $this->dwoo_data);
-					$content = $header_replaced.$reply.$postbox_replaced.$content.$footer;
-					$content = str_replace("\t", '',$content);
-					$content = str_replace("&nbsp;\r\n", '&nbsp;',$content);
-
-					unset($posts50);
-
-					$this->PrintPage(KU_BOARDSDIR . $this->board['name'] . $this->archive_dir . '/res/' . $id . '+50.html', $content, $this->board['name']);
-					if ($replycount > 100) {
-						$this->dwoo_data->assign('modifier', "first100");
-
-						// Grab the first 100 posts
-						$posts100 = array_slice($posts, 0, 100);
-
-						$this->dwoo_data->assign('posts', $posts100);
-
-						$content = $this->dwoo->get(KU_TEMPLATEDIR . '/img_thread.tpl', $this->dwoo_data);
-						$content = $header_replaced.$reply.$postbox_replaced.$content.$footer;
-						$content = str_replace("\t", '',$content);
-						$content = str_replace("&nbsp;\r\n", '&nbsp;',$content);
-
-						unset($posts100);
-					 
-						$this->PrintPage(KU_BOARDSDIR . $this->board['name'] . $this->archive_dir . '/res/' . $id . '-100.html', $content, $this->board['name']);
-					}
-					$this->dwoo_data->assign('modifier', "");
-				} //TODO: add support for firstlast
-			}*/
 			return 1;
 		}
 		return 0;
@@ -743,7 +693,6 @@ class Board {
 				}
 			}
 			if ($embed['file_type'] == 'mp3' && $this->board['loadbalanceurl'] == '') {
-				require_once(KU_ROOTDIR . 'lib/getid3/getid3.php');
 				$getID3 = new getID3;
 				$embed['id3'] = $getID3->analyze(KU_BOARDSDIR.$this->board['name'].'/src/'.$embed['file'].'.mp3');
 				getid3_lib::CopyTagsToComments($embed['id3']);
@@ -819,17 +768,17 @@ class Board {
 		if ($replythread!=0) {
 			$ad_top += 50;
 		}
-		$this->dwoo_data->assign('title', $tpl['title']);
-		$this->dwoo_data->assign('htmloptions', $tpl['htmloptions']);
-		$this->dwoo_data->assign('locale', $CURRENTLOCALE);
-		$this->dwoo_data->assign('ad_top', $ad_top);
-		$this->dwoo_data->assign('ad_right', $ad_right);
-		$this->dwoo_data->assign('board', $this->board);
-		$this->dwoo_data->assign('replythread', $replythread);
-		$this->dwoo_data->assign('is_catalog', $is_catalog);
-		$this->dwoo_data->assign('filetypes', isset($this->board['filetypes']) ? $this->board['filetypes'] : array());
+		$this->smarty->assign('title', $tpl['title']);
+		$this->smarty->assign('htmloptions', $tpl['htmloptions']);
+		$this->smarty->assign('locale', $CURRENTLOCALE);
+		$this->smarty->assign('ad_top', $ad_top);
+		$this->smarty->assign('ad_right', $ad_right);
+		$this->smarty->assign('board', $this->board);
+		$this->smarty->assign('replythread', $replythread);
+		$this->smarty->assign('is_catalog', $is_catalog);
+		$this->smarty->assign('filetypes', isset($this->board['filetypes']) ? $this->board['filetypes'] : array());
 		$topads = $tc_db->GetOne("SELECT code FROM `" . KU_DBPREFIX . "ads` WHERE `position` = 'top' AND `disp` = '1'");
-		$this->dwoo_data->assign('topads', $topads);
+		$this->smarty->assign('topads', $topads);
 		// #snivystuff include alien style
 		$styles =  explode(':', KU_STYLES);
 		$defaultstyle = isset($this->board['defaultstyle']) ? $this->board['defaultstyle'] : null;
@@ -838,22 +787,22 @@ class Board {
 				$custom_style_version = $tc_db->GetOne("SELECT `version` FROM `customstyles` WHERE `name` = '".$defaultstyle."'");
 				if($custom_style_version > 0) {
 					$styles[]= $defaultstyle;
-					$this->dwoo_data->assign('customstyle', $defaultstyle);
-					$this->dwoo_data->assign('csver', $custom_style_version);
+					$this->smarty->assign('customstyle', $defaultstyle);
+					$this->smarty->assign('csver', $custom_style_version);
 				}
 			}
-			else { $this->dwoo_data->assign('customstyle', false); }
+			else { $this->smarty->assign('customstyle', false); }
 		}
 		else $defaultstyle = KU_DEFAULTSTYLE;
-		$this->dwoo_data->assign('ku_styles', $styles);
-		$this->dwoo_data->assign('ku_defaultstyle', $defaultstyle);
-		$this->dwoo_data->assign('boardlist', $this->board['boardlist']);
+		$this->smarty->assign('ku_styles', $styles);
+		$this->smarty->assign('ku_defaultstyle', $defaultstyle);
+		$this->smarty->assign('boardlist', $this->board['boardlist']);
 		$this->PrebuildBoardlist();
-		$this->dwoo_data->assign('boardlist_prebuilt', $this->board['boardlist_prebuilt']);
+		$this->smarty->assign('boardlist_prebuilt', $this->board['boardlist_prebuilt']);
 
-		$global_header = $this->dwoo->get(KU_TEMPLATEDIR . '/global_board_header.tpl', $this->dwoo_data);
+		$global_header = $this->smarty->fetch('global_board_header.tpl');
 
-		$header = $this->dwoo->get(KU_TEMPLATEDIR . '/board_header.tpl', $this->dwoo_data);
+		$header = $this->smarty->fetch('board_header.tpl');
 
 		return $global_header.$header;
 	}
@@ -868,10 +817,10 @@ class Board {
 	function Postbox($replythread = 0) {
 		global $tc_db;
 		if (KU_BLOTTER) {
-			$this->dwoo_data->assign('blotter', getBlotter());
-			$this->dwoo_data->assign('blotter_updated', getBlotterLastUpdated());
+			$this->smarty->assign('blotter', getBlotter());
+			$this->smarty->assign('blotter_updated', getBlotterLastUpdated());
 		}
-		return $this->dwoo->get(KU_TEMPLATEDIR . '/board_post_box.tpl', $this->dwoo_data);
+		return $this->smarty->fetch('board_post_box.tpl');
 	}
 
 	/**
@@ -908,7 +857,7 @@ class Board {
 
 	function PrebuildBoardlist() {
 		if (!isset($this->board['boardlist_prebuilt']))
-			$this->board['boardlist_prebuilt'] = $this->dwoo->get(KU_TEMPLATEDIR . '/boardlist.tpl', $this->dwoo_data);
+			$this->board['boardlist_prebuilt'] = $this->smarty->fetch('boardlist.tpl');
 	}
 
 	/**
@@ -920,19 +869,19 @@ class Board {
 	 * @return string The generated footer
 	 */
 	function Footer($noboardlist = false, $executiontime = '', $hide_extra = false) {
-		global $tc_db, $dwoo, $dwoo_data;
+		global $tc_db;
 
 		$footer = '';
 
-		if ($hide_extra || $noboardlist) $this->dwoo_data->assign('boardlist', '');
+		if ($hide_extra || $noboardlist) $this->smarty->assign('boardlist', '');
 
-		if ($executiontime != '') $this->dwoo_data->assign('executiontime', $executiontime);
+		if ($executiontime != '') $this->smarty->assign('executiontime', $executiontime);
 	
 		$botads = $tc_db->GetOne("SELECT code FROM `" . KU_DBPREFIX . "ads` WHERE `position` = 'bot' AND `disp` = '1'");
-		$this->dwoo_data->assign('botads', $botads);
-		$footer = $this->dwoo->get(KU_TEMPLATEDIR . '/board_footer.tpl', $this->dwoo_data);
+		$this->smarty->assign('botads', $botads);
+		$footer = $this->smarty->fetch('board_footer.tpl');
 	
-		$footer .= $this->dwoo->get(KU_TEMPLATEDIR . '/global_board_footer.tpl', $this->dwoo_data);
+		$footer .= $this->smarty->fetch('global_board_footer.tpl');
 
 		return $footer;
 	}
@@ -957,15 +906,13 @@ class Board {
 	/**
 	 * Initialize the instance of smary which will be used for generating pages
 	 */
-	function InitializeDwoo() {
-		if (isset($this->dwoo)) return;
+	function InitializeSmarty() {
+		if (isset($this->smarty)) return;
 
-		require_once KU_ROOTDIR . 'lib/dwoo.php';
-		$this->dwoo = new Dwoo();
-		$this->dwoo_data = new Dwoo_Data();
+		$this->smarty = new _Smarty();
 
-		$this->dwoo_data->assign('cwebpath', getCWebpath());
-		$this->dwoo_data->assign('boardpath', getCLBoardPath());
+		$this->smarty->assign('cwebpath', getCWebpath());
+		$this->smarty->assign('boardpath', getCLBoardPath());
 	}
 
 	/**
@@ -1250,7 +1197,7 @@ class Post extends Board {
 				 WHERE
 					`boardid` = '" . $boardid . "'
 					AND
-					`file_id` IN (".implode($file_ids, ',').")");
+					`file_id` IN (".implode(',', $file_ids).")");
 				// Physically delete all files
 				foreach($this->post['embeds'] as $embed) {
 					$this->EraseFileAndThumbs($embed);
@@ -1399,17 +1346,17 @@ class Post extends Board {
 					//file_md5
 					$attachment['file_md5'],
 					//image_w
-					intval($attachment['imgWidth']),
+					intval(@$attachment['imgWidth']),
 					//image_h
-					intval($attachment['imgHeight']),
+					intval(@$attachment['imgHeight']),
 					//file_size
 					($is_embed ? $attachment['start'] : $attachment['file_size']),
 					//file_size_formatted
 					(($is_embed || (isset($attachment['is_duplicate']) && $attachment['is_duplicate'])) ? $attachment['file_size_formatted'] : ConvertBytes($attachment['size'])),
 					//thumb_w
-					intval($attachment['imgWidth_thumb']),
+					intval(@$attachment['imgWidth_thumb']),
 					//thumb_h
-					intval($attachment['imgHeight_thumb']),
+					intval(@$attachment['imgHeight_thumb']),
 					//spoiler
 					$attachment['spoiler'] ? '1' : '0'
 				);

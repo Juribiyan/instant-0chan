@@ -26,12 +26,12 @@
 session_start();
 
 require 'config.php';
-require KU_ROOTDIR . 'lib/dwoo.php';
+$smarty = new _Smarty();
 require KU_ROOTDIR . 'inc/functions.php';
 require KU_ROOTDIR . 'inc/classes/manage.class.php';
 
 $manage_class = new Manage();
-$dwoo_data->assign('styles', explode(':', KU_MENUSTYLES));
+$smarty->assign('styles', explode(':', KU_MENUSTYLES));
 
 
 $tpl_links = '';
@@ -90,7 +90,7 @@ if (!$manage_class->ValidateSession(true)) {
 		<li><a href="manage_page.php?action=proxyban">' . _gettext('Ban proxy list') . '</a></li>
 		<li><a href="manage_page.php?action=sql">' . _gettext('SQL query') . '</a></li>
 		<li><a href="manage_page.php?action=cleanup">' . _gettext('Cleanup') . '</a></li>' . "\n";
-		if (KU_APC) $tpl_links .= '<li><a href="manage_page.php?action=apc">APC</a></li>' . "\n";
+		if (I0_YAC) $tpl_links .= '<li><a href="manage_page.php?action=yac">YAC</a></li>' . "\n";
 		$tpl_links .= '</ul></div>' .
 		section_html(_gettext('Boards Administration'), 'boardsadministration') .
 		'<ul>
@@ -184,7 +184,7 @@ function section_html($section, $abbreviation, $show=true) {
 	</h2>
 	<div id="' . $abbreviation . '" style="' . ($show ? '' : 'display:none') . '">';
 }
-$dwoo_data->assign('logo20', $includelogo20);
-$dwoo_data->assign('links', $tpl_links);
-$dwoo->output(KU_TEMPLATEDIR . '/manage_menu.tpl', $dwoo_data);
+$smarty->assign('logo20', $includelogo20);
+$smarty->assign('links', $tpl_links);
+$smarty->display('manage_menu.tpl');
 ?>
