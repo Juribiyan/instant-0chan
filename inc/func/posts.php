@@ -543,11 +543,11 @@ function collect_dead() {
   $dl_struct = array();
   if (isset($deathlist) && $deathlist) {
     foreach ($deathlist as $post) {
-      if (! $dl_struct[$post['boardid']]) {
+      if (! @$dl_struct[$post['boardid']]) {
         $dl_struct[$post['boardid']] = array();
       }
       $thread_id = $post['parentid'] == 0 ? $post['id'] : $post['parentid'];
-      if (! $dl_struct[$post['boardid']][$thread_id]) {
+      if (! @$dl_struct[$post['boardid']][$thread_id]) {
         $dl_struct[$post['boardid']][$thread_id] = array();
       }
       $dl_struct[$post['boardid']][$thread_id] []= $post['id'];

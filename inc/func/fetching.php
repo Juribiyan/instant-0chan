@@ -103,8 +103,7 @@ function group_embeds($r, $group_deleted_files = false) {
 	$rg = array();
 	$i = -1;
 	$current_id = 0;
-
-	foreach($r as $pe) {
+	if ($r) foreach($r as $pe) {
 		$id = (int)$pe['id'];
 		if ($id !== $current_id) {
 			$rg []= $pe;
