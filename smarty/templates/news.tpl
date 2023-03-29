@@ -5,11 +5,9 @@
 	<script src="{$smarty.const.KU_WEBFOLDER}lib/javascript/jquery-3.6.3.min.js"></script>
 	<title>{$smarty.const.KU_NAME}</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	
+	{assign var="pref_style" value=($smarty.cookies.kustyle_site)|default:($smarty.const.KU_DEFAULTMENUSTYLE)|lower}
 	{foreach $styles as $style}
-		<link rel="{if $style neq $smarty.const.KU_DEFAULTMENUSTYLE}alternate {/if}stylesheet" type="text/css" 
-		href="{$cwebpath}css/{$style}.css?v={$smarty.const.KU_CSSVER}" 
-		title="{$style|capitalize}" />
+		<link rel="{if $style neq $pref_style}alternate {/if}stylesheet" type="text/css" href="{$smarty.const.KU_WEBFOLDER}css/site_{$style}.css" title="{$style|capitalize}" pref="{$pref_style}"/>
 	{/foreach}
 <script type="text/javascript">
 	var style_cookie_site = "kustyle_site";
@@ -21,20 +19,19 @@
 }
 #mfmenu {
 	text-align: center;
-height: 40px;
-font-size: 1.5em;
+	height: 40px;
+	font-size: 1.5em;
 }
 #mfmenu a {
 	display: inline-block;
-min-width: 100px;
-height: 40px;
-vertical-align: middle;
-line-height: 40px;
+	min-width: 100px;
+	height: 40px;
+	vertical-align: middle;
+	line-height: 40px;
 }
 </style>
 <link rel="shortcut icon" href="{$smarty.const.KU_WEBFOLDER}favicon.ico" />
-<script type="text/javascript" src="{$smarty.const.KU_WEBFOLDER}lib/javascript/gettext.js"></script>
-<script type="text/javascript" src="{$smarty.const.KU_WEBFOLDER}inc/javascript/kusaba.js"></script></head>
+<script type="text/javascript" src="{$smarty.const.KU_WEBFOLDER}lib/javascript/gettext.js"></script></head>
 <body>
 	<center><div class="sitelogo"></div></center>
 	{if $smarty.const.KU_SLOGAN neq ''}<center><h3>{$smarty.const.KU_SLOGAN}</h3></center>{/if}
