@@ -32,6 +32,9 @@ function RegenerateOverboard($boardlist=null, $target_page=null) {
 	// Invalidate HTML cache when this function is called from anywhere except getpage.php
 	if (I0_DEFERRED_RENDER && is_null($target_page)) {
 		RemoveFiles(KU_BOARDSDIR.I0_OVERBOARD_DIR.'/*.html');
+		if (!file_exists(KU_BOARDSDIR.I0_OVERBOARD_DIR.'/index.php')) {
+			file_put_contents(KU_BOARDSDIR.I0_OVERBOARD_DIR.'/index.php', '<?php header(\'Location: 0.html\'); exit();');
+		}
 		return;
 	}
 

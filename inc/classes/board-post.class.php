@@ -147,6 +147,9 @@ class Board {
 		$this->RegeneratePages();
 		if (I0_DEFERRED_RENDER) {
 			RemoveFiles(KU_BOARDSDIR.$this->board['name'].'/res/*.html');
+			if (!file_exists(KU_BOARDSDIR.$this->board['name'].'/index.php')) {
+				file_put_contents(KU_BOARDSDIR.$this->board['name'].'/index.php', '<?php header(\'Location: 0.html\'); exit();');
+			}
 		}
 		else {
 			$this->RegenerateThreads();
