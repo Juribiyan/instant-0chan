@@ -1,0 +1,8 @@
+{
+  "require": {
+    "smarty/smarty": "^4.3",
+    "james-heinrich/getid3": "^1.9",
+    "adodb/adodb-php": "dev-master",
+    "geshi/geshi": "v1.0.9.1"
+  }
+}
