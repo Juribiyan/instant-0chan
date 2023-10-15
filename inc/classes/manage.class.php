@@ -2270,6 +2270,8 @@ class Manage {
 	// Credits to Eman for this code
 	function viewthread() {
 		global $tc_db, $tpl_page;
+		$this->AdministratorsOnly();
+
 		$tpl_page .= '<h2>'. _gettext('View Threads (including deleted)') .'</h2>';
 		$board = isset($_GET['board']) ? $_GET['board'] : '';
 		$thread = isset($_GET['thread']) ? $_GET['thread'] : '';
@@ -2310,33 +2312,37 @@ class Manage {
 				th,td {
 					font-size: 14px !important;
 				}
+				.file-cell {
+					display: inline-block;
+				}
+				.file-cell-container {
+					display: flex;
+					flex-direction: row;
+					justify-content: space-around;
+				}
 				</style>
 				<form method=\"get\" action=\"\">
 				<input type=\"hidden\" name=\"action\" value=\"viewthread\" />
 				<input type=\"hidden\" name=\"board\" value=\"$board\" />";
 			if ($thread == "0" ) {
 				$tpl_page .= "<h2>". sprintf(_gettext('All threads on /%s/'), $board) ."</h2>";
-				$results = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = $board_id AND (`id` = ".$tc_db->qstr($thread)." OR `parentid` = ".$tc_db->qstr($thread).") ORDER BY `id` DESC LIMIT 500");
+				$results = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "postembeds` WHERE `boardid` = $board_id AND (`id` = ".$tc_db->qstr($thread)." OR `parentid` = ".$tc_db->qstr($thread).") ORDER BY `id` DESC LIMIT 500");
 			} else {
 				$tpl_page .= "<h2>". sprintf(_gettext('Thread %s on /%s/'), $thread, $board) ."</h2>";
-				$results = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "posts` WHERE `boardid` = $board_id AND (`id` = ".$tc_db->qstr($thread)." OR `parentid` = ".$tc_db->qstr($thread).") ORDER BY `id` ASC");
+				$results = $tc_db->GetAll("SELECT HIGH_PRIORITY * FROM `" . KU_DBPREFIX . "postembeds` WHERE `boardid` = $board_id AND (`id` = ".$tc_db->qstr($thread)." OR `parentid` = ".$tc_db->qstr($thread).") ORDER BY `id` ASC");
 			}
-			$time = round(microtime(), 5);
+			$time = round(microtime(true), 5);
 			$first = "1";
+			$results = group_embeds($results);
 			foreach ($results as $line) {
 				$bans = "";
 				$id = $line['id'];
 				$ip = md5_decrypt($line['ip'], KU_RANDOMSEED);
-				$filename = $line['file'];
-				$file_original = $line['file_original'];
-				$filetype = $line['file_type'];
-				$filesize_formatted = $line['file_size_formatted'];
-				$image_w = $line['image_w'];
-				$image_h = $line['image_h'];
+				$embeds = $line['embeds'];
 				$message = $line['message'];
 				$name = $line['name'];
 				$tripcode = $line['tripcode'];
-				$timestamp = date(r, $line['timestamp']);
+				$timestamp = date('r', $line['timestamp']);
 				$subject = $line['subject'];
 				$posterauthority = $line['posterauthority'];
 				$deleted = isset($line['IS_DELETED']) ? $line['IS_DELETED'] : $line['is_deleted'] ;
@@ -2386,24 +2392,32 @@ class Manage {
 								</td>
 							</tr>
 				";
-				if ($filename != "") {
-					$tpl_page .= "
-						<tr>
-							<td colspan=\"2\" style=\"vertical-align: top;\">". _gettext('File') .": <a href=\"". KU_WEBPATH ."/$board/src/$filename.$filetype\" target=\"_blank\">$filename.$filetype</a> -( $filesize_formatted, {$image_w}x{$image_h}, $file_original.$filetype )</td>
-						</tr>
-					";
+				if (count($embeds)) {
+					$tpl_page .= "<tr><td colspan=\"2\" style=\"vertical-align: top;\" class=\"file-cell-container\">";
+					foreach($embeds as $e) {
+						$filename = $e['file'];
+						$file_original = $e['file_original'];
+						$filetype = $e['file_type'];
+						$filesize_formatted = $e['file_size_formatted'];
+						$image_w = $e['image_w'];
+						$image_h = $e['image_h'];
+						$tpl_page .= "<div class=\"file-cell\">". _gettext('File') .": <a href=\"". KU_WEBPATH ."/$board/src/$filename.$filetype\" target=\"_blank\">$filename.$filetype</a> -( $filesize_formatted, {$image_w}x{$image_h}, $file_original.$filetype )</div>";
+					}
+					$tpl_page .= "</td></tr>";
 				}
 				$tpl_page .= "
 				</tbody></table>
 								<table style=\"text-align: left; width: 100%;\" border=\"1\" cellpadding=\"0\" cellspacing=\"0\">
 						<tbody>
 				<tr>";
-
-
-				if ($filename != "") {
-					$tpl_page .= "
-						<td style=\"vertical-align: top; width: 200px;\"><center><a href=\"". KU_WEBPATH ."/$board/src/$filename.$filetype\" target=\"_blank\"><img src=\"". KU_WEBPATH ."/$board/thumb/{$filename}s.$filetype\" border=\"0\"></a></center></td>
-					";
+				if (count($embeds)) {
+					$tpl_page .= "<tr><td colspan=\"2\" style=\"vertical-align: top;\" class=\"file-cell-container\">";
+					$filename = $e['file'];
+					$filetype = $e['file_type'];
+					foreach($embeds as $e) {
+						$tpl_page .= "<div class=\"file-cell\"><center><a href=\"". KU_WEBPATH ."/$board/src/$filename.$filetype\" target=\"_blank\"><img src=\"". KU_WEBPATH ."/$board/thumb/{$filename}s.$filetype\" border=\"0\"></a></center></div>";
+					}
+					$tpl_page .= "</td></tr>";
 				}
 				if ($message == "") {
 					$message = "&nbsp;";
@@ -2411,16 +2425,11 @@ class Manage {
 				$tpl_page .= "<td style=\"vertical-align: top; height: 100%;\">$message</td></tr></tbody></table><br />";
 				$first = "0";
 			}
-			$time2 = round(microtime(), 5);
+			$time2 = round(microtime(true), 5);
 			$generation = $time2 - $time;
 			$generation = abs($generation);
 			$tpl_page .= '
 			'. _gettext('Render Time') .':'. $generation .' '._gettext('Seconds').'
-			<!--<h2>'. _gettext('Ban') .'</h2>
-			'. _gettext('Reason') .': <input type="text" name="banreason" value="'. _gettext('You Are Banned') .'" />&nbsp;&nbsp;
-			'. _gettext('Duration') .': <input type="text" name="banduration" value="0" />&nbsp;&nbsp;
-			'. _gettext('Appeal') .': <input type="text" name="banappeal" value="0" />&nbsp;&nbsp;
-			<input type="submit" value="'. _gettext('Submit') .'" />-->
 			</form>';
 		}
 	}
